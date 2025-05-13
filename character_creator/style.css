@@ -546,3 +546,17 @@ button[type="button"]#exportJson:hover {
 button[type="button"]#importJsonBtn:hover {
     background-color: #0056b3;
 }
+/* --- Skill Slot Background Colors --- */
+#fixed-skill-race-1,
+#fixed-skill-race-2 {
+    background-color: #67989a; /* Light Blue */
+}
+
+#fixed-skill-group-1 {
+    background-color: #458388; /* Light Green */
+}
+
+#fixed-skill-job-1,
+#fixed-skill-job-2 {
+    background-color: #17595b; /* Light Yellow */
+}

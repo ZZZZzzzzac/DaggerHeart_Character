@@ -61,3 +61,4 @@ This file tracks the project's current status, including recent changes, current
         *   Filter skills from the JSON `技能` array to prevent re-adding fixed-type skills as dynamic rows. Only custom/additional skills from JSON are added as dynamic rows.
     *   Updated `exportButton` logic to correctly gather data from both fixed slots and any additional dynamic skill rows.
     *   This resolves the bug where changing race/group/job after import would add new skills instead of replacing old ones, and fulfills the requirement for fixed, modifiable slots for these core traits.
+* [2025-05-13 23:58:29] - 为“技能”部分中的固定技能槽（种族、社群、职业）在 `character_creator/style.css` 中添加了不同的背景色。
