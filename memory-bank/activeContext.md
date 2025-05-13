@@ -45,3 +45,4 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-13 21:38:08] - 根据用户反馈调整技能表格：降低描述输入框高度，使其与其他项平齐 (修改了 style.css)。
 * [2025-05-13 21:44:47] - 根据用户反馈实现技能描述框高度根据内容自动调整的功能 (修改了 style.css 以设置初始状态，并修改了 script.js 添加了 autoGrowTextarea 功能)。
 * [2025-05-13 21:46:39] - 根据用户反馈调整技能描述框自动高度逻辑：修改 autoGrowTextarea JS 函数，以更精确地控制高度变化，防止过早增加高度 (修改了 script.js)。
+* [2025-05-13 21:52:46] - 修复了“经历”和“道具”删除按钮失效的问题。原因是删除逻辑错误地查找 `<tr>` 元素，已修改为正确查找 `.experience-item` 或 `.item`。 (修改了 character_creator/script.js)

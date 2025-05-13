@@ -34,9 +34,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addRemoveListener(button) {
         if (button) {
-            button.addEventListener('click', function() {
-                this.closest('tr').remove(); // Changed to remove the closest TR for table structure
-                // No need to re-index or change counts here, export will handle current DOM
+            button.addEventListener('click', function(event) {
+                const experienceItem = event.target.closest('.experience-item');
+                if (experienceItem) {
+                    experienceItem.remove();
+                    return;
+                }
+                const itemItem = event.target.closest('.item');
+                if (itemItem) {
+                    itemItem.remove();
+                    return;
+                }
+                const skillItemRow = event.target.closest('tr.skill-item'); // More specific for skills
+                if (skillItemRow) {
+                    skillItemRow.remove();
+                    return;
+                }
             });
         }
     }
