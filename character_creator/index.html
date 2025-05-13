@@ -26,20 +26,20 @@
                         <input type="text" id="gender" name="gender">
                     </div>
                     <div>
-                        <label for="race">种族:</label>
-                        <input type="text" id="race" name="race">
+                        <label for="raceSelect">种族:</label>
+                        <select id="raceSelect" name="race"></select>
                     </div>
                     <div>
-                        <label for="mixedRace">混血种族:</label>
-                        <input type="text" id="mixedRace" name="mixedRace">
+                        <label for="mixedRaceSelect">混血种族:</label>
+                        <select id="mixedRaceSelect" name="mixedRace"></select>
                     </div>
                     <div>
-                        <label for="community">社群:</label>
-                        <input type="text" id="community" name="community">
+                        <label for="communitySelect">社群:</label>
+                        <select id="communitySelect" name="community"></select>
                     </div>
                     <div>
-                        <label for="profession">职业:</label>
-                        <input type="text" id="profession" name="profession">
+                        <label for="professionSelect">职业:</label>
+                        <select id="professionSelect" name="profession"></select>
                     </div>
                     <div>
                         <label for="subProfession">子职业:</label>
@@ -204,16 +204,7 @@
                 <div class="section-header"><h3>技能</h3><button type="button" class="add-btn" id="addSkillBtn">+</button></div>
                 <table id="skillsTable" class="skills-table">
                     <tbody id="skillsContainer">
-                        <tr class="skill-item">
-                            <td><input type="text" name="skillConfig" placeholder="配置"></td>
-                            <td><input type="text" name="skillName" placeholder="名称"></td>
-                            <td><input type="text" name="skillDomain" placeholder="领域"></td>
-                            <td><input type="text" name="skillLevel" placeholder="等级"></td>
-                            <td><input type="text" name="skillAttribute" placeholder="属性"></td>
-                            <td><input type="text" name="skillRecall" placeholder="回想"></td>
-                            <td><textarea name="skillDescription" placeholder="描述"></textarea></td>
-                            <td><button type="button" class="remove-item-btn">-</button></td>
-                        </tr>
+                        <!-- Initial skill items will be added by script if needed -->
                     </tbody>
                 </table>
             </div> <!-- End right-column -->
@@ -225,6 +216,9 @@
         </div>
     </form>
 
+    <script src="data/races_data.js"></script>
+    <script src="data/groups_data.js"></script>
+    <script src="data/jobs_data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

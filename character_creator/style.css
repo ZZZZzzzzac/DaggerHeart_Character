@@ -404,7 +404,7 @@ input[type="checkbox"] {
     overflow: hidden; /* Hide scrollbar, JS will adjust height */
 }
 
-.skills-table td:nth-child(8) { width: 10px; text-align: center; } /* 操作 */
+.skills-table td:nth-child(8) { width: 20px; text-align: center; } /* 操作 */
 .skills-table td:nth-child(8) .remove-item-btn {
     display: inline-block;
     margin: 0 auto; /* Center button in cell */

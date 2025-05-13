@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const FixedSkillSlotIds = {
+        RACE_1: 'fixed-skill-race-1',
+        RACE_2: 'fixed-skill-race-2',
+        GROUP_1: 'fixed-skill-group-1',
+        JOB_1: 'fixed-skill-job-1',
+        JOB_2: 'fixed-skill-job-2'
+    };
+    const AllFixedSlotIds = Object.values(FixedSkillSlotIds);
+
     const form = document.getElementById('characterForm');
     const exportButton = document.getElementById('exportJson');
     const importJsonBtn = document.getElementById('importJsonBtn');
@@ -10,25 +19,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const experiencesContainer = document.getElementById('experiences');
     const itemsContainer = document.getElementById('items');
-    const skillsContainer = document.getElementById('skillsContainer'); // Changed from 'skills' to 'skillsContainer' for tbody
+    const skillsContainer = document.getElementById('skillsContainer');
     const appearanceUpload = document.getElementById('appearanceUpload');
     const appearancePreview = document.getElementById('appearancePreview');
     const removeAppearanceBtn = document.getElementById('removeAppearanceBtn');
 
+    const raceSelect = document.getElementById('raceSelect');
+    const mixedRaceSelect = document.getElementById('mixedRaceSelect');
+    const communitySelect = document.getElementById('communitySelect');
+    const professionSelect = document.getElementById('professionSelect');
+
     let experienceNextId = experiencesContainer.children.length + 1;
     let itemNextId = itemsContainer.children.length + 1;
-    let skillNextId = skillsContainer.children.length + 1; // This should still work as it counts TRs in TBODY
+    // skillNextId will be used for dynamic skills later, if any.
+    // let skillNextId = skillsContainer.children.length + 1; // Comment out for now or adjust after fixed slots
     let appearanceDataUrl = "";
 
     function autoGrowTextarea(event) {
         const textarea = event.target;
-        // First, reset the height to a very small value (or 'auto') to correctly calculate scrollHeight for shrinking.
-        // Using '0px' or a small fixed value can be more reliable than 'auto' in some cases.
         textarea.style.height = '0px';
-        // Then, set the height to scrollHeight to fit the content.
-        // scrollHeight includes padding but not margin or border if box-sizing is content-box.
-        // If box-sizing is border-box, scrollHeight is the height of the content and padding.
-        // Since our CSS uses border-box for inputs/textareas, this should be fine.
         textarea.style.height = textarea.scrollHeight + 'px';
     }
 
@@ -45,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     itemItem.remove();
                     return;
                 }
-                const skillItemRow = event.target.closest('tr.skill-item'); // More specific for skills
+                const skillItemRow = event.target.closest('tr.skill-item');
                 if (skillItemRow) {
                     skillItemRow.remove();
                     return;
@@ -54,8 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Add remove listeners to initially loaded items
-    // Adjusted selector to include skill table remove buttons
     document.querySelectorAll('.experience-item .remove-item-btn, .item .remove-item-btn, .skill-item .remove-item-btn').forEach(btn => {
         addRemoveListener(btn);
     });
@@ -89,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
     addExperienceBtn.addEventListener('click', () => {
         const newItem = document.createElement('div');
         newItem.classList.add('experience-item');
-        // const currentId = experienceNextId++; // No longer needed for ID/name
         newItem.innerHTML = `
             <label for="expKeyword">关键词:</label>
             <input type="text" id="expKeyword" name="expKeyword">
@@ -118,28 +124,123 @@ document.addEventListener('DOMContentLoaded', () => {
         addRemoveListener(newItem.querySelector('.remove-item-btn'));
     });
 
-    addSkillBtn.addEventListener('click', () => {
+    // Helper to create skill row TR element (used by fixed slots and potentially dynamic ones)
+    function createSkillRowElement(skillData = {}, isFixedSlot = false, slotId = '') {
         const newRow = document.createElement('tr');
         newRow.classList.add('skill-item');
-        // const currentId = skillNextId++; // Not using ID/name suffixes for simplicity with table structure
+        if (isFixedSlot) {
+            newRow.id = slotId;
+            newRow.classList.add('fixed-skill-slot');
+        }
+
+        // Determine default attribute for fixed slots if skillData.属性 is not provided
+        let defaultAttribute = skillData.属性 || '';
+        if (isFixedSlot && !defaultAttribute) {
+            if (slotId.startsWith('fixed-skill-race')) defaultAttribute = "种族";
+            else if (slotId.startsWith('fixed-skill-group')) defaultAttribute = "社群";
+            else if (slotId.startsWith('fixed-skill-job')) defaultAttribute = "职业";
+        }
+        
+        const defaultConfig = skillData.配置 || (isFixedSlot ? '永久' : '');
+        const defaultLevel = skillData.等级 || (isFixedSlot ? '' : '0'); // Fixed slots might not have a numeric level initially
+
         newRow.innerHTML = `
-            <td><input type="text" name="skillConfig" placeholder="配置"></td>
-            <td><input type="text" name="skillName" placeholder="名称"></td>
-            <td><input type="text" name="skillDomain" placeholder="领域"></td>
-            <td><input type="number" name="skillLevel" value="0" placeholder="等级"></td>
-            <td><input type="text" name="skillAttribute" placeholder="属性"></td>
-            <td><input type="text" name="skillRecall" placeholder="回想"></td>
-            <td><textarea name="skillDescription" placeholder="描述"></textarea></td>
-            <td><button type="button" class="remove-item-btn">-</button></td>
+            <td><input type="text" name="skillConfig" placeholder="配置" value="${defaultConfig}"></td>
+            <td><input type="text" name="skillName" placeholder="名称" value="${skillData.名称 || ''}"></td>
+            <td><input type="text" name="skillDomain" placeholder="领域" value="${skillData.领域 || ''}"></td>
+            <td><input type="text" name="skillLevel" placeholder="等级" value="${defaultLevel}"></td>
+            <td><input type="text" name="skillAttribute" placeholder="属性" value="${defaultAttribute}"></td>
+            <td><input type="text" name="skillRecall" placeholder="回想" value="${skillData.回想 || ''}"></td>
+            <td><textarea name="skillDescription" placeholder="描述">${skillData.描述 || ''}</textarea></td>
+            <td><button type="button" class="remove-item-btn" style="${isFixedSlot ? 'display:none;' : ''}">-</button></td>
         `;
-        skillsContainer.appendChild(newRow);
-        addRemoveListener(newRow.querySelector('.remove-item-btn'));
 
         const newTextarea = newRow.querySelector('textarea[name="skillDescription"]');
         if (newTextarea) {
             newTextarea.addEventListener('input', autoGrowTextarea);
-            // autoGrowTextarea({ target: newTextarea }); // Initial call for empty textarea is usually not strictly needed
         }
+        if (!isFixedSlot) {
+            addRemoveListener(newRow.querySelector('.remove-item-btn'));
+        }
+        return newRow;
+    }
+
+    function initializeFixedSkillSlots() {
+        if (!skillsContainer) return;
+        // This function ensures the 5 fixed slots are present.
+        // It doesn't clear other dynamic skills that might be added later.
+        AllFixedSlotIds.forEach(slotId => {
+            if (!document.getElementById(slotId)) {
+                const slotRow = createSkillRowElement({}, true, slotId);
+                skillsContainer.appendChild(slotRow);
+                const textarea = slotRow.querySelector('textarea[name="skillDescription"]');
+                // Initial auto-grow for textareas in fixed slots
+                if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
+            }
+        });
+    }
+    
+    initializeFixedSkillSlots(); // Create the 5 fixed slots on load
+
+    function updateSkillInSlot(slotId, skillData) {
+        const slotRow = document.getElementById(slotId);
+        if (!slotRow) {
+            console.warn(`Skill slot with ID ${slotId} not found during update.`);
+            return;
+        }
+
+        const inputs = {
+            config: slotRow.querySelector('input[name="skillConfig"]'),
+            name: slotRow.querySelector('input[name="skillName"]'),
+            domain: slotRow.querySelector('input[name="skillDomain"]'),
+            level: slotRow.querySelector('input[name="skillLevel"]'),
+            attribute: slotRow.querySelector('input[name="skillAttribute"]'),
+            recall: slotRow.querySelector('input[name="skillRecall"]'),
+            description: slotRow.querySelector('textarea[name="skillDescription"]')
+        };
+
+        let currentAttributeType = "";
+        if (slotId === FixedSkillSlotIds.RACE_1 || slotId === FixedSkillSlotIds.RACE_2) currentAttributeType = "种族";
+        else if (slotId === FixedSkillSlotIds.GROUP_1) currentAttributeType = "社群";
+        else if (slotId === FixedSkillSlotIds.JOB_1 || slotId === FixedSkillSlotIds.JOB_2) currentAttributeType = "职业";
+
+        if (skillData) {
+            inputs.config.value = skillData.配置 || "永久";
+            inputs.name.value = skillData.名称 || "";
+            inputs.domain.value = skillData.领域 || "";
+            inputs.level.value = skillData.等级 || "";
+            inputs.attribute.value = skillData.属性 || currentAttributeType; // Use skillData.属性 if provided, else default for slot
+            inputs.recall.value = skillData.回想 || "";
+            inputs.description.value = skillData.描述 || "";
+        } else { // Clear the slot, but maintain config and attribute type
+            inputs.config.value = "永久";
+            inputs.name.value = "";
+            inputs.domain.value = "";
+            inputs.level.value = "";
+            inputs.attribute.value = currentAttributeType; // Keep placeholder attribute
+            inputs.recall.value = "";
+            inputs.description.value = "";
+        }
+        // Ensure textarea height is adjusted after update
+        if (inputs.description) {
+             setTimeout(() => autoGrowTextarea({ target: inputs.description }), 0);
+        }
+    }
+
+    // addSkillEntry is now for DYNAMIC, non-fixed skills, added AFTER fixed slots
+    function addSkillEntry(skillData) {
+        const newRow = createSkillRowElement(skillData, false); // isFixedSlot = false
+        skillsContainer.appendChild(newRow);
+        const textarea = newRow.querySelector('textarea[name="skillDescription"]');
+        // Initial auto-grow for dynamically added textareas
+        if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
+        return newRow;
+    }
+
+    addSkillBtn.addEventListener('click', () => {
+        addSkillEntry({
+            配置: "", 名称: "", 领域: "", 等级: "0", 属性: "", 回想: "", 描述: ""
+        });
     });
 
     if (importJsonBtn && importFile) {
@@ -168,17 +269,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function populateForm(data) {
         if (!data) return;
-        form.reset(); // Reset form to default values first
+        form.reset();
 
-        // Clear existing dynamic items
+        // Clear dynamic sections, but fixed skill slots are managed by initializeFixedSkillSlots and updateSkillInSlot
         experiencesContainer.innerHTML = '';
         experienceNextId = 1;
         itemsContainer.innerHTML = '';
         itemNextId = 1;
-        skillsContainer.innerHTML = '';
-        skillNextId = 1;
+        // skillNextId = 1; // Reset for dynamic skills, if any are added
+
+        // Clear fixed skill slots before populating
+        AllFixedSlotIds.forEach(slotId => {
+            updateSkillInSlot(slotId, null);
+        });
         
-        // Reset appearance
+        // Clear any dynamically added skill rows (not the fixed ones)
+        const dynamicSkillRows = skillsContainer.querySelectorAll('tr.skill-item:not(.fixed-skill-slot)');
+        dynamicSkillRows.forEach(row => row.remove());
+        
         appearancePreview.src = "#";
         appearancePreview.style.display = 'none';
         removeAppearanceBtn.style.display = 'none';
@@ -186,15 +294,21 @@ document.addEventListener('DOMContentLoaded', () => {
         appearanceUpload.value = null;
         appearanceDataUrl = "";
 
-        // Populate "设定"
         if (data.设定) {
             form.roleName.value = data.设定.角色名 || "";
             form.age.value = data.设定.年龄 || 0;
             form.gender.value = data.设定.性别 || "";
-            form.race.value = data.设定.种族 || "";
-            form.mixedRace.value = data.设定.混血种族 || "";
-            form.community.value = data.设定.社群 || "";
-            form.profession.value = data.设定.职业 || "";
+            
+            if (form.raceSelect) form.raceSelect.value = data.设定.种族 || "";
+            if (form.mixedRaceSelect) form.mixedRaceSelect.value = data.设定.混血种族 || "";
+            if (form.communitySelect) form.communitySelect.value = data.设定.社群 || "";
+            if (form.professionSelect) form.professionSelect.value = data.设定.职业 || "";
+
+            // After setting dropdowns from JSON, update the fixed skill slots accordingly
+            updateRaceTraitsAsSkills();
+            updateGroupTraitAsSkill();
+            updateJobTraitsAsSkills();
+            
             form.subProfession.value = data.设定.子职业 || "";
             form.partTimeJob.value = data.设定.兼职 || "";
             form.backgroundStory.value = data.设定.背景故事 || "";
@@ -208,13 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (data.设定.经历 && Array.isArray(data.设定.经历)) {
-                data.设定.经历.forEach((exp, index) => {
-                    // Logic to populate experiences needs to be more robust without unique IDs per item if multiple exist initially
-                    // For now, assuming addExperienceBtn.click() correctly creates new distinct items
-                    // and we populate them sequentially.
-                    // If initial HTML has multiple, this might need adjustment or rely on initial items being handled by direct form field names if they are unique.
-
-                    // Create a new row for each experience from JSON
+                data.设定.经历.forEach((exp) => {
                     addExperienceBtn.click();
                     const currentExpItem = experiencesContainer.lastElementChild;
                     if (currentExpItem) {
@@ -227,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Populate "状态"
         if (data.状态) {
             form.hpCurrent.value = data.状态.HP?.当前 || 0;
             form.hpMax.value = data.状态.HP?.最大 || 0;
@@ -249,7 +356,6 @@ document.addEventListener('DOMContentLoaded', () => {
             form.grace.value = data.状态.风度 || 0;
         }
 
-        // Populate "物品"
         if (data.物品) {
             if (data.物品.武器 && data.物品.武器.length > 0) {
                 const weapon = data.物品.武器[0];
@@ -270,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (data.物品.道具 && Array.isArray(data.物品.道具)) {
                 data.物品.道具.forEach((item, index) => {
-                     if(index === 0 && itemsContainer.children[index]){ // Fill initial item
+                     if(index === 0 && itemsContainer.children[index]){ 
                         itemsContainer.children[index].querySelector(`input[name^="itemName"]`).value = item.名称 || "";
                         itemsContainer.children[index].querySelector(`input[name^="itemQuantity"]`).value = item.数量 || 0;
                         itemsContainer.children[index].querySelector(`input[name^="itemDescription"]`).value = item.描述 || "";
@@ -285,29 +391,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        // Populate "技能"
         if (data.技能 && Array.isArray(data.技能)) {
-            data.技能.forEach((skill) => { // Removed index, always add new row
-                addSkillBtn.click(); // This creates a new table row with inputs
-                const currentSkillRow = skillsContainer.lastElementChild;
-                if (currentSkillRow && currentSkillRow.cells.length >= 7) {
-                    currentSkillRow.cells[0].querySelector('input[name="skillConfig"]').value = skill.配置 || "";
-                    currentSkillRow.cells[1].querySelector('input[name="skillName"]').value = skill.名称 || "";
-                    currentSkillRow.cells[2].querySelector('input[name="skillDomain"]').value = skill.领域 || "";
-                    currentSkillRow.cells[3].querySelector('input[name="skillLevel"]').value = skill.等级 || 0;
-                    currentSkillRow.cells[4].querySelector('input[name="skillAttribute"]').value = skill.属性 || "";
-                    currentSkillRow.cells[5].querySelector('input[name="skillRecall"]').value = skill.回想 || "";
-                    const skillDescTextarea = currentSkillRow.cells[6].querySelector('textarea[name="skillDescription"]');
-                    skillDescTextarea.value = skill.描述 || "";
-                    // After setting value from import, trigger autoGrow
-                    setTimeout(() => autoGrowTextarea({ target: skillDescTextarea }), 0);
+            data.技能.forEach((skill) => {
+                // Only add skills from JSON if they are not meant for the fixed slots
+                // (which are now populated by update...AsSkills calls above)
+                const isFixedTypeAttribute = skill.属性 === "种族" || skill.属性 === "社群" || skill.属性 === "职业" || skill.属性 === "混血";
+                // A more robust check might involve skill names if they are predictable for fixed slots,
+                // e.g. if jobData.希望特性 always results in a skill named "希望特性".
+                // For now, primarily rely on attribute.
+                if (!isFixedTypeAttribute) {
+                    const newSkillRow = addSkillEntry(skill); // This adds a dynamic, removable row
+                    const skillDescTextarea = newSkillRow.querySelector('textarea[name="skillDescription"]');
+                    if (skillDescTextarea) {
+                        setTimeout(() => autoGrowTextarea({ target: skillDescTextarea }), 0);
+                    }
                 }
             });
         }
-         // After populating, reset counters based on actual DOM elements for future additions
+        
+        // The update...AsSkills() calls were moved up to after dropdowns are set from JSON.
+        // This ensures fixed slots are populated based on the imported character's race/group/job.
+
         experienceNextId = experiencesContainer.children.length + 1;
         itemNextId = itemsContainer.children.length + 1;
-        skillNextId = skillsContainer.children.length + 1;
+        skillNextId = skillsContainer.children.length + 1; 
     }
 
 
@@ -316,15 +423,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const characterData = {
             "设定": {},
             "状态": {},
-            "物品": {
-                "武器": [],
-                "护甲": [],
-                "道具": []
-            },
+            "物品": { "武器": [], "护甲": [], "道具": [] },
             "技能": []
         };
 
-        // 设定
         characterData.设定.角色名 = formData.get('roleName') || "";
         characterData.设定.年龄 = parseInt(formData.get('age'), 10) || 0;
         characterData.设定.性别 = formData.get('gender') || "";
@@ -334,27 +436,26 @@ document.addEventListener('DOMContentLoaded', () => {
         currentExperienceItems.forEach((item) => {
             const keywordInput = item.querySelector('input[name="expKeyword"]');
             const valueInput = item.querySelector('input[name="expValue"]');
-            if (keywordInput && valueInput) { // Ensure inputs exist
+            if (keywordInput && valueInput) { 
                  characterData.设定.经历.push({
                     "关键词": keywordInput.value || "",
-                    "调整值": parseInt(valueInput.value, 10) || 0 // Keep parseInt for safety, though type=number helps
+                    "调整值": parseInt(valueInput.value, 10) || 0 
                 });
             }
         });
-        while (characterData.设定.经历.length < 5) {
-            characterData.设定.经历.push({"关键词": "", "调整值": 0});
-        }
+        // while (characterData.设定.经历.length < 5) {  // Removed: Do not pad experiences to 5
+        //     characterData.设定.经历.push({"关键词": "", "调整值": 0});
+        // }
 
         characterData.设定.背景故事 = formData.get('backgroundStory') || "";
         characterData.设定.形象 = appearanceDataUrl || "";
-        characterData.设定.种族 = formData.get('race') || "";
-        characterData.设定.混血种族 = formData.get('mixedRace') || "";
-        characterData.设定.社群 = formData.get('community') || "";
-        characterData.设定.职业 = formData.get('profession') || "";
+        characterData.设定.种族 = form.raceSelect ? form.raceSelect.value : ""; 
+        characterData.设定.混血种族 = form.mixedRaceSelect ? form.mixedRaceSelect.value : ""; 
+        characterData.设定.社群 = form.communitySelect ? form.communitySelect.value : ""; 
+        characterData.设定.职业 = form.professionSelect ? form.professionSelect.value : ""; 
         characterData.设定.子职业 = formData.get('subProfession') || "";
         characterData.设定.兼职 = formData.get('partTimeJob') || "";
 
-        // 状态
         characterData.状态.HP = {"当前": parseInt(formData.get('hpCurrent'), 10) || 0, "最大": parseInt(formData.get('hpMax'), 10) || 0};
         characterData.状态.压力 = {"当前": parseInt(formData.get('stressCurrent'), 10) || 0, "最大": parseInt(formData.get('stressMax'), 10) || 0};
         characterData.状态.希望 = {"当前": parseInt(formData.get('hopeCurrent'), 10) || 0, "最大": parseInt(formData.get('hopeMax'), 10) || 0};
@@ -370,7 +471,6 @@ document.addEventListener('DOMContentLoaded', () => {
         characterData.状态.知识 = parseInt(formData.get('knowledge'), 10) || 0;
         characterData.状态.风度 = parseInt(formData.get('grace'), 10) || 0;
 
-        // 物品 - 武器
         if (form.querySelector('#weaponName1')) {
              characterData.物品.武器.push({
                 "名称": formData.get('weaponName1') || "", "检定": formData.get('weaponCheck1') || "", "属性": formData.get('weaponAttribute1') || "",
@@ -379,13 +479,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 "特性": formData.get('weaponTrait1') || ""
             });
         }
-        // 物品 - 护甲
         if (form.querySelector('#armorName1')) {
             characterData.物品.护甲.push({
                 "名称": formData.get('armorName1') || "", "防御": parseInt(formData.get('armorDefense1'), 10) || 0, "特性": formData.get('armorTrait1') || ""
             });
         }
-        // 物品 - 道具
         characterData.物品.道具 = [];
         const currentItemElements = itemsContainer.querySelectorAll('.item');
         currentItemElements.forEach((itemElement) => {
@@ -400,45 +498,57 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
-        if (currentItemElements.length === 0 && form.querySelector('#itemName1')) { // If all removed but was one initially
+        if (currentItemElements.length === 0 && form.querySelector('#itemName1')) { 
              characterData.物品.道具.push({ "名称": "", "数量": 0, "描述": "" });
         }
 
-
-        // 技能
         characterData.技能 = [];
-        const currentSkillElements = skillsContainer.querySelectorAll('tr.skill-item');
-        currentSkillElements.forEach((rowElement) => {
-            if (rowElement.cells.length >= 7) { // Ensure row has enough cells
-                const configInput = rowElement.cells[0].querySelector('input[name="skillConfig"]');
-                const nameInput = rowElement.cells[1].querySelector('input[name="skillName"]');
-                const domainInput = rowElement.cells[2].querySelector('input[name="skillDomain"]');
-                const levelInput = rowElement.cells[3].querySelector('input[name="skillLevel"]');
-                const attributeInput = rowElement.cells[4].querySelector('input[name="skillAttribute"]');
-                const recallInput = rowElement.cells[5].querySelector('input[name="skillRecall"]');
-                const descriptionTextarea = rowElement.cells[6].querySelector('textarea[name="skillDescription"]');
 
-                // Only add if at least a name is present, or to match previous behavior of adding if an input exists
-                if (nameInput) { // Or a more robust check like if any field has value
-                    characterData.技能.push({
-                        "配置": configInput?.value || "",
-                        "名称": nameInput?.value || "",
-                        "领域": domainInput?.value || "",
-                        "等级": parseInt(levelInput?.value, 10) || 0,
-                        "属性": attributeInput?.value || "",
-                        "回想": recallInput?.value || "",
-                        "描述": descriptionTextarea?.value || ""
-                    });
-                }
+        // Helper function to extract skill data from a row element
+        function getSkillDataFromRow(rowElement) {
+            if (!rowElement || rowElement.cells.length < 7) return null;
+
+            const configInput = rowElement.cells[0].querySelector('input[name="skillConfig"]');
+            const nameInput = rowElement.cells[1].querySelector('input[name="skillName"]');
+            const domainInput = rowElement.cells[2].querySelector('input[name="skillDomain"]');
+            const levelInput = rowElement.cells[3].querySelector('input[name="skillLevel"]');
+            const attributeInput = rowElement.cells[4].querySelector('input[name="skillAttribute"]');
+            const recallInput = rowElement.cells[5].querySelector('input[name="skillRecall"]');
+            const descriptionTextarea = rowElement.cells[6].querySelector('textarea[name="skillDescription"]');
+
+            // Only include the skill if it has a name (considered non-empty)
+            if (nameInput && nameInput.value.trim() !== "") {
+                return {
+                    "配置": configInput?.value || "",
+                    "名称": nameInput.value,
+                    "领域": domainInput?.value || "",
+                    "等级": levelInput?.value || "", // Keep level as string, or parse if strictly numeric
+                    "属性": attributeInput?.value || "",
+                    "回想": recallInput?.value || "",
+                    "描述": descriptionTextarea?.value || ""
+                };
+            }
+            return null;
+        }
+
+        // Export fixed skill slots
+        AllFixedSlotIds.forEach(slotId => {
+            const slotRow = document.getElementById(slotId);
+            const skillData = getSkillDataFromRow(slotRow);
+            if (skillData) { // Only add if the slot has a name (is considered filled)
+                characterData.技能.push(skillData);
             }
         });
-        // If no skills were added (e.g., all empty or deleted), ensure an empty skill object if template expects it.
-        // The original template implies skills can be an empty array if none are defined.
-        // If the character_template.json implies a skill object must exist, this might need adjustment.
-        // For now, if no skills are found, characterData.技能 will be an empty array, which is fine.
-        // The old fallback for #skillName1 is removed as that ID no longer exists.
 
-        // 导出JSON文件
+        // Export dynamic (non-fixed) skill slots
+        const dynamicSkillElements = skillsContainer.querySelectorAll('tr.skill-item:not(.fixed-skill-slot)');
+        dynamicSkillElements.forEach((rowElement) => {
+            const skillData = getSkillDataFromRow(rowElement);
+            if (skillData) {
+                characterData.技能.push(skillData);
+            }
+        });
+        
         const jsonDataString = JSON.stringify(characterData, null, 4);
         const blob = new Blob([jsonDataString], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -453,11 +563,201 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(characterData);
         });
     
-        // Attach autoGrow to existing textareas on load
-        document.querySelectorAll('#skillsContainer textarea[name="skillDescription"]').forEach(textarea => {
-            textarea.addEventListener('input', autoGrowTextarea);
-            // Trigger it once in case of pre-filled content from browser cache or initial HTML
-            // Use a slight delay or ensure it's after full layout calculation if needed
-            setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
-        });
+    document.querySelectorAll('#skillsContainer textarea[name="skillDescription"]').forEach(textarea => {
+        textarea.addEventListener('input', autoGrowTextarea);
+        setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
     });
+
+    function populateGenericSelect(selectElement, data, valueField, textField, defaultText, dataName) {
+        if (!selectElement) {
+            return;
+        }
+        if (typeof data === 'undefined' || !Array.isArray(data)) {
+            console.warn(`${dataName || 'Data'} is not available or not an array. ${selectElement.id} will not be populated.`);
+            selectElement.innerHTML = `<option value="">${dataName || '数据'}未加载</option>`;
+            return;
+        }
+        try {
+            const uniqueItems = [...new Set(data.map(item => item[valueField]))].sort();
+            selectElement.innerHTML = ''; 
+            const defaultOption = document.createElement('option');
+            defaultOption.value = "";
+            defaultOption.textContent = defaultText;
+            defaultOption.selected = true;
+            selectElement.appendChild(defaultOption);
+
+            uniqueItems.forEach(itemValue => {
+                const option = document.createElement('option');
+                option.value = itemValue;
+                const itemObject = data.find(d => d[valueField] === itemValue);
+                option.textContent = itemObject && itemObject[textField] ? itemObject[textField] : itemValue;
+                selectElement.appendChild(option);
+            });
+        } catch (error) {
+            console.error(`Error processing data for ${selectElement.id} with ${dataName}:`, error);
+            selectElement.innerHTML = `<option value="">处理${dataName || '数据'}出错</option>`;
+        }
+    }
+
+    populateGenericSelect(raceSelect, RACES_DATA, 'race', 'race', "请选择一个种族", "RACES_DATA");
+    populateGenericSelect(mixedRaceSelect, RACES_DATA, 'race', 'race', "请选择一个混血种族", "RACES_DATA");
+    populateGenericSelect(communitySelect, GROUPS_DATA, '社群', '社群', "请选择一个社群", "GROUPS_DATA");
+    populateGenericSelect(professionSelect, JOBS_DATA, '职业', '职业', "请选择一个职业", "JOBS_DATA");
+
+    if (raceSelect) raceSelect.addEventListener('change', updateRaceTraitsAsSkills);
+    if (mixedRaceSelect) mixedRaceSelect.addEventListener('change', updateRaceTraitsAsSkills);
+    if (communitySelect) communitySelect.addEventListener('change', updateGroupTraitAsSkill);
+    if (professionSelect) professionSelect.addEventListener('change', updateJobTraitsAsSkills);
+    
+    // Initial calls for a fresh form (no import) - only if data is loaded.
+    // populateForm handles these calls after an import.
+    if (typeof RACES_DATA !== 'undefined' && RACES_DATA.length > 0 && raceSelect.value) {
+         updateRaceTraitsAsSkills();
+    }
+    if (typeof GROUPS_DATA !== 'undefined' && GROUPS_DATA.length > 0 && communitySelect.value) {
+        updateGroupTraitAsSkill();
+    }
+    if (typeof JOBS_DATA !== 'undefined' && JOBS_DATA.length > 0 && professionSelect.value) {
+        updateJobTraitsAsSkills();
+    }
+
+    function updateRaceTraitsAsSkills() {
+        if (!raceSelect || typeof RACES_DATA === 'undefined' || !Array.isArray(RACES_DATA) || RACES_DATA.length === 0) {
+            updateSkillInSlot(FixedSkillSlotIds.RACE_1, null);
+            updateSkillInSlot(FixedSkillSlotIds.RACE_2, null);
+            return;
+        }
+
+        const selectedRaceName = raceSelect.value;
+        const selectedMixedRaceName = mixedRaceSelect ? mixedRaceSelect.value : null;
+        
+        let trait1Data = null;
+        let trait2Data = null;
+
+        if (selectedRaceName) {
+            const mainRaceData = RACES_DATA.find(r => r.race === selectedRaceName);
+            if (mainRaceData) {
+                if (mainRaceData.trait1 && mainRaceData.trait1.name) {
+                    trait1Data = {
+                        配置: "永久",
+                        名称: mainRaceData.trait1.name,
+                        领域: "",
+                        等级: "", // Racial traits might not have a numeric level
+                        属性: "种族",
+                        回想: "",
+                        描述: mainRaceData.trait1.description || ""
+                    };
+                }
+
+                let secondFeatureSource = null;
+                let secondFeatureAttribute = "种族"; // Default to main race's second trait
+
+                if (selectedMixedRaceName && selectedMixedRaceName !== "" && selectedMixedRaceName !== selectedRaceName) {
+                    const mixedRaceData = RACES_DATA.find(r => r.race === selectedMixedRaceName);
+                    // Use trait2 from mixed race for the second slot if mixed race is selected and valid
+                    if (mixedRaceData && mixedRaceData.trait2 && mixedRaceData.trait2.name) {
+                        secondFeatureSource = mixedRaceData.trait2;
+                        secondFeatureAttribute = "混血";
+                    } else if (mixedRaceData && mixedRaceData.trait1 && mixedRaceData.trait1.name) {
+                        // Fallback: if mixed race selected but no trait2, use its trait1 for the second slot
+                        // This handles cases where a "mixed" choice is essentially picking another primary race for the second trait
+                        // Ensure it's different from the main race's first trait if possible, or document this behavior.
+                        // For now, let's assume trait2 of mixed is the primary target. If not, then mainRaceData.trait2.
+                        // The original logic was: if mixed, use mixed.trait2. Else use main.trait2.
+                        // So, if mixed is chosen, we prioritize its trait2.
+                         secondFeatureSource = mixedRaceData.trait2; // This might be null if mixedRaceData.trait2 is not valid
+                         if (secondFeatureSource) secondFeatureAttribute = "混血";
+                    }
+                }
+                
+                // If no valid second feature from mixed race, try main race's trait2
+                if (!secondFeatureSource && mainRaceData.trait2 && mainRaceData.trait2.name) {
+                    secondFeatureSource = mainRaceData.trait2;
+                    secondFeatureAttribute = "种族";
+                }
+
+                if (secondFeatureSource) {
+                    trait2Data = {
+                        配置: "永久",
+                        名称: secondFeatureSource.name,
+                        领域: "",
+                        等级: "",
+                        属性: secondFeatureAttribute,
+                        回想: "",
+                        描述: secondFeatureSource.description || ""
+                    };
+                }
+            }
+        }
+        updateSkillInSlot(FixedSkillSlotIds.RACE_1, trait1Data);
+        updateSkillInSlot(FixedSkillSlotIds.RACE_2, trait2Data);
+    }
+
+    function updateGroupTraitAsSkill() {
+        if (!communitySelect || typeof GROUPS_DATA === 'undefined' || !Array.isArray(GROUPS_DATA)) {
+            updateSkillInSlot(FixedSkillSlotIds.GROUP_1, null);
+            return;
+        }
+
+        const selectedGroupName = communitySelect.value;
+        let groupTraitData = null;
+
+        if (selectedGroupName) {
+            const groupData = GROUPS_DATA.find(g => g.社群 === selectedGroupName);
+            if (groupData && groupData.特性名 && groupData.描述) {
+                groupTraitData = {
+                    配置: "永久",
+                    名称: groupData.特性名,
+                    领域: "",
+                    等级: "",
+                    属性: "社群",
+                    回想: "",
+                    描述: groupData.描述
+                };
+            }
+        }
+        updateSkillInSlot(FixedSkillSlotIds.GROUP_1, groupTraitData);
+    }
+
+    function updateJobTraitsAsSkills() {
+        if (!professionSelect || typeof JOBS_DATA === 'undefined' || !Array.isArray(JOBS_DATA)) {
+            updateSkillInSlot(FixedSkillSlotIds.JOB_1, null);
+            updateSkillInSlot(FixedSkillSlotIds.JOB_2, null);
+            return;
+        }
+
+        const selectedJobName = professionSelect.value;
+        let jobTrait1Data = null; // For "希望特性"
+        let jobTrait2Data = null; // For "职业特性名"
+
+        if (selectedJobName) {
+            const jobData = JOBS_DATA.find(j => j.职业 === selectedJobName);
+            if (jobData) {
+                if (jobData.希望特性) { // Assuming "希望特性" is a string description for a skill named "希望特性"
+                    jobTrait1Data = {
+                        配置: "永久",
+                        名称: "希望特性", // Fixed name for this slot type
+                        领域: "",
+                        等级: "",
+                        属性: "职业",
+                        回想: "",
+                        描述: jobData.希望特性
+                    };
+                }
+                if (jobData.职业特性名 && jobData.职业特性描述) {
+                    jobTrait2Data = {
+                        配置: "永久",
+                        名称: jobData.职业特性名,
+                        领域: "",
+                        等级: "",
+                        属性: "职业",
+                        回想: "",
+                        描述: jobData.职业特性描述
+                    };
+                }
+            }
+        }
+        updateSkillInSlot(FixedSkillSlotIds.JOB_1, jobTrait1Data);
+        updateSkillInSlot(FixedSkillSlotIds.JOB_2, jobTrait2Data);
+    }
+});

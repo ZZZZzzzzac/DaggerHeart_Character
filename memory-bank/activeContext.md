@@ -46,3 +46,18 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-13 21:44:47] - 根据用户反馈实现技能描述框高度根据内容自动调整的功能 (修改了 style.css 以设置初始状态，并修改了 script.js 添加了 autoGrowTextarea 功能)。
 * [2025-05-13 21:46:39] - 根据用户反馈调整技能描述框自动高度逻辑：修改 autoGrowTextarea JS 函数，以更精确地控制高度变化，防止过早增加高度 (修改了 script.js)。
 * [2025-05-13 21:52:46] - 修复了“经历”和“道具”删除按钮失效的问题。原因是删除逻辑错误地查找 `<tr>` 元素，已修改为正确查找 `.experience-item` 或 `.item`。 (修改了 character_creator/script.js)
+* [2025-05-13 22:16:33] - 将 `character_creator/data/race.csv` 文件转换为 JSON 格式并保存为 `character_creator/data/races.json`。
+* [2025-05-13 22:28:10] - 将 `character_creator/index.html` 中的“种族”和“混血”输入从文本框更改为 `<select>` 元素。创建了 `character_creator/data/races_data.js` 以解决CORS问题。修改了 `character_creator/script.js` 以从 `RACES_DATA` (源自 `races.json`) 动态填充这些下拉列表，并更新了导入/导出逻辑以适应这些更改。
+* [2025-05-13 22:36:17] - 修改了 `character_creator/script.js`，增加了根据用户选择的“种族”和“混血”下拉列表动态添加/更新种族特性到“技能”部分的功能。特性会按照指定格式（配置:“永久”，属性:“种族”，等级:“”）显示。此更改包括新的辅助函数 `addSkillEntry` 和核心逻辑函数 `updateRaceTraitsAsSkills`，以及相关的事件监听器和对 `populateForm` 的调用。
+* [2025-05-13 22:54:53] - 将`group.csv`和`job.csv`转换为JS数据文件 (`groups_data.js`, `jobs_data.js`)。修改HTML将社群/职业输入改为下拉框。更新`script.js`以填充下拉框，并在选择时将其特性作为永久技能动态添加到技能列表，同时更新导入/导出逻辑。
+* [2025-05-13 23:12:55] - 修复了种族技能未按预期填充的问题。`updateRaceTraitsAsSkills` 函数现在正确地从 `RACES_DATA` 中的 `trait1` 和 `trait2` 属性（而不是 `features` 数组）读取特性数据。
+* [2025-05-13 23:31:48] - 修复了导入JSON时技能（种族、职业、社群特性）会填充两次的bug。通过修改 `character_creator/script.js` 中的 `populateForm` 函数，移除了在从JSON加载技能后对 `updateRaceTraitsAsSkills`, `updateGroupTraitAsSkill`, `updateJobTraitsAsSkills` 的多余调用。对于导入时可能多出空“经历”的问题，确认了 `script.js` 的逻辑是正确的（清空并根据数据重建），若问题依旧，则可能与 `index.html` 静态结构有关。
+* [2025-05-13 23:37:05] - 根据用户反馈，修改了 `character_creator/script.js` 中的导出逻辑：现在导出JSON时，"经历"字段将只包含用户实际输入的条目，不再用空条目补齐到5个。这解决了导出JSON包含不必要空经历的问题，并可能改善导入时的体验。
+* [2025-05-13 23:47:52] - Major refactor of skill management in `character_creator/script.js`:
+    *   Implemented 5 fixed skill slots (2 Race, 1 Group, 2 Job) as per user request. These slots are now persistent UI elements.
+    *   Modified `updateRaceTraitsAsSkills`, `updateGroupTraitAsSkill`, `updateJobTraitsAsSkills` to update these fixed slots directly, instead of adding/removing skill rows.
+    *   Adjusted `populateForm` (JSON import) to:
+        *   Clear and then populate these fixed slots based on imported race/group/job selections.
+        *   Filter skills from the JSON `技能` array to prevent re-adding fixed-type skills as dynamic rows. Only custom/additional skills from JSON are added as dynamic rows.
+    *   Updated `exportButton` logic to correctly gather data from both fixed slots and any additional dynamic skill rows.
+    *   This resolves the bug where changing race/group/job after import would add new skills instead of replacing old ones, and fulfills the requirement for fixed, modifiable slots for these core traits.
