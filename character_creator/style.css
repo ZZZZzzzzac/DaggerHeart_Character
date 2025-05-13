@@ -1,0 +1,497 @@
+body {
+    font-family: sans-serif;
+    line-height: 1.6;
+    margin: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-top: 30px;
+}
+
+form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form > div:not(.form-group-inline-flex):not(.form-group-inline-grid):not(.item-container) { /* Apply default margin only to non-inline groups */
+    margin-bottom: 15px;
+}
+
+label {
+    /* display: block; */ /* Default is inline, let container decide */
+    margin-bottom: 5px;
+    font-weight: bold;
+    margin-right: 5px; /* Add some space between label and input */
+    vertical-align: middle; /* Align labels vertically */
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+    /* width: calc(100% - 22px); */ /* Let container control width */
+    padding: 8px; /* Slightly smaller padding */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    vertical-align: middle; /* Align inputs vertically */
+    margin-right: 10px; /* Space between inputs */
+    margin-bottom: 10px; /* Space below inputs if they wrap */
+}
+
+/* Default width for most inputs */
+input[type="text"],
+input[type="number"] {
+    width: 150px;
+}
+
+
+textarea {
+    width: calc(100% - 22px); /* Textareas usually need full width */
+    min-height: 60px; /* Slightly smaller height */
+    resize: vertical;
+    display: block; /* Ensure textarea takes its own line */
+    margin-top: 5px;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+    vertical-align: middle;
+    width: auto; /* Checkboxes don't need fixed width */
+}
+
+/* --- Inline Group Styles --- */
+.form-group-inline-flex,
+.form-group-inline-grid {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to next line */
+    align-items: center; /* Align items vertically */
+    margin-bottom: 10px;
+    gap: 5px 15px; /* Row gap, Column gap */
+}
+
+.form-group-inline-flex > div,
+.form-group-inline-grid > div {
+    display: flex; /* Make label and input flex items */
+    align-items: center; /* Align label and input */
+    margin-bottom: 5px; /* Space below each pair if wrapping */
+}
+
+
+.form-group-inline-flex label,
+.form-group-inline-grid label {
+     width: auto; /* Allow label width to adjust */
+     margin-bottom: 0; /* Remove bottom margin for inline labels */
+     white-space: nowrap; /* Prevent label text wrapping */
+}
+
+.form-group-inline-flex input[type="text"],
+.form-group-inline-flex input[type="number"],
+.form-group-inline-grid input[type="text"],
+.form-group-inline-grid input[type="number"] {
+    width: 100px; /* Smaller width for inline inputs */
+    margin-right: 0; /* Remove right margin, use gap instead */
+    margin-bottom: 0; /* Remove bottom margin */
+}
+
+/* Story and Appearance Group */
+.story-appearance-group {
+    display: flex;
+    gap: 20px; /* Space between story and appearance sections */
+    margin-bottom: 15px;
+}
+
+.story-group {
+    flex: 1; /* Allow story to take available space */
+}
+
+.story-group textarea {
+    width: 100%; /* Make textarea take full width of its container */
+    min-height: 150px; /* Give it a decent default height */
+}
+
+.appearance-group {
+    flex: 1; /* Allow appearance to take available space */
+    display: flex;
+    flex-direction: column; /* Stack label, input, and image vertically */
+}
+
+.appearance-group label {
+    margin-bottom: 5px;
+}
+
+.appearance-group input[type="file"] {
+    width: 100%; /* Make file input take full width */
+    margin-bottom: 10px;
+}
+
+#appearancePreview {
+    border: 1px solid #ddd;
+    object-fit: cover; /* Or 'contain' depending on desired preview behavior */
+}
+
+.image-preview-container {
+    position: relative; /* For positioning the remove button */
+    display: inline-block; /* To wrap the image and button snugly */
+    /* margin-top: 10px; /* Already on img, but can be here too */
+}
+
+.remove-image-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    line-height: 18px; /* Adjust for vertical centering */
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.remove-image-btn:hover {
+    background-color: rgba(200, 200, 200, 0.9);
+}
+
+
+/* Specific width adjustments for general inline inputs */
+.form-group-inline-flex input[type="number"] { /* More specific selector for numbers in these groups */
+    width: 60px;
+}
+
+/* Specific width adjustments for individual IDs if still needed */
+#age, #strength, #agility, #dexterity, #instinct, #knowledge, #grace,
+#armorValue, #level, #proficiency, #money,
+#weaponDamage1, #armorDefense1, #skillLevel1 {
+    width: 60px; /* Even smaller width for number inputs */
+}
+
+#itemQuantity1 {
+    width: 80px;
+}
+
+/* Styles for "Current / Max" status fields */
+.form-group-inline-flex > div > input[name$="Current"],
+.form-group-inline-flex > div > input[name$="Max"] {
+    width: 50px !important; /* Ensure these are very small, override more general rules */
+    margin-right: 2px !important; /* Minimal space before separator */
+    margin-left: 2px !important;  /* Minimal space after separator */
+}
+
+.status-separator {
+    margin-left: 2px;
+    margin-right: 2px;
+    vertical-align: middle;
+}
+
+
+/* --- Item Container Styles --- */
+.item-container {
+    margin-bottom: 20px; /* Space below item sections */
+}
+
+/* Specific styling for the experiences container to lay out experience items horizontally */
+#experiences.item-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to the next line if space is insufficient */
+    gap: 10px;       /* Spacing between individual experience items */
+}
+
+.experience-item,
+.item {
+    border: 1px solid #eee;
+    padding: 10px; /* Reduced padding */
+    margin-bottom: 10px; /* Reduced margin */
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    display: flex; /* Use flexbox for inline items */
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px 10px; /* Row gap, Column gap */
+}
+
+.experience-item > *, /* Target direct children */
+.item > * { /* Target direct children */
+    margin-bottom: 5px; /* Add some space below items if they wrap */
+}
+
+
+.experience-item label,
+.item label {
+    /* display: inline-block; */ /* Flex handles display */
+    margin-right: 5px;
+    width: auto;
+    font-weight: normal; /* Less emphasis for item labels */
+    margin-bottom: 0;
+}
+
+.experience-item input[type="text"],
+.item input[type="text"] { /* General text inputs in items */
+    width: auto; /* Default auto width */
+    flex-grow: 1; /* Allow inputs to grow */
+    min-width: 100px; /* Minimum width for general text */
+    margin-right: 5px;
+    margin-bottom: 0;
+    padding: 5px;
+}
+
+.experience-item input[name^="expKeyword"] {
+    width: 150px; /* Specific width for keyword */
+    flex-grow: 0; /* Don't allow keyword to grow excessively */
+    min-width: 120px;
+}
+
+.experience-item input[name^="expValue"] {
+    width: 80px;  /* Specific width for adjustment value (assuming it's text for now as per HTML) */
+    flex-grow: 0;
+    min-width: 60px;
+}
+
+.item input[type="number"], /* General number inputs in items */
+.experience-item input[type="number"] { /* If expValue becomes number type */
+    width: 50px; /* Specific width for numbers in items, including expValue */
+    flex-grow: 0;
+    min-width: 40px; /* Adjusted min-width */
+    margin-right: 5px;
+    margin-bottom: 0;
+    padding: 5px;
+}
+
+.item textarea { /* Textareas in items */
+    width: auto; /* Default auto width */
+    flex-grow: 1;
+    min-width: 80px;
+    margin-right: 5px;
+    margin-bottom: 0;
+    padding: 5px;
+}
+
+
+/* Specific widths within general .item (not .experience-item unless overridden) */
+
+/* Weapon Item Specific Styles */
+#weapons .item input[name^="weaponName"] {
+    width: 10em; /* Approx 10 chars */
+    flex-grow: 0;
+    min-width: 8em;
+}
+#weapons .item input[name^="weaponCheck"] {
+    width: 3em; /* Approx 2 chars + padding */
+    flex-grow: 0;
+    min-width: 2.5em;
+}
+#weapons .item input[name^="weaponAttribute"] {
+    width: 3em; /* Approx 2 chars + padding */
+    flex-grow: 0;
+    min-width: 2.5em;
+}
+#weapons .item input[name^="weaponRange"] {
+    width: 4em; /* Approx 3 chars + padding */
+    flex-grow: 0;
+    min-width: 3.5em;
+}
+#weapons .item input[name^="weaponDamage"] {
+    width: 5em; /* Approx 5 digits */
+    flex-grow: 0;
+    min-width: 4em;
+}
+#weapons .item input[name^="weaponTwoHanded"] {
+    width: auto; /* Checkbox default */
+    flex-grow: 0;
+}
+#weapons .item input[name^="weaponTrait"] {
+    flex-grow: 1; /* Trait takes remaining space */
+    min-width: 8em; /* Minimum reasonable width for trait */
+}
+
+/* Item (道具) Specific Styles */
+#items .item input[name^="itemQuantity"] {
+    width: 3.5em; /* Approx 2-3 digits */
+    min-width: 3em;
+    flex-grow: 0;
+}
+
+
+.item input[name^="armorDefense"] {
+    width: 60px;
+    flex-grow: 0; /* Don't grow number inputs */
+}
+
+/* Skill Item Specific Styles */
+#skills .item input[id^="skillConfig"],
+#skills .item input[id^="skillName"],
+#skills .item input[id^="skillDomain"],
+#skills .item input[id^="skillAttribute"],
+#skills .item input[id^="skillRecall"] {
+    width: 70px; /* Short width for these text inputs */
+    min-width: 60px; /* Minimum width */
+    flex-grow: 0; /* Do not allow them to grow */
+}
+
+#skills .item input[id^="skillLevel"] { /* Specifically target skillLevel */
+    width: 60px;  /* Consistent small width for level */
+    min-width: 50px;
+    flex-grow: 0;
+}
+
+#skills .item textarea[id^="skillDescription"] { /* Specific to skill description */
+    width: 100%; /* Take full width within the flex container */
+    min-height: 60px; /* Allow more space for skill description */
+    margin-top: 5px;
+    flex-basis: 100%; /* Force it to a new line if other items are short enough to be on one line */
+    flex-grow: 1; /* Allow it to take up remaining space if parent is tall */
+}
+
+
+.item input[name^="weaponTwoHanded"] {
+     width: auto;
+     flex-grow: 0;
+}
+
+/* General .item textarea rule, skillDescription will override parts of this due to specificity */
+.item textarea[name$="Description"] {
+    width: 100%;
+    min-height: 40px;
+    margin-top: 5px;
+    flex-basis: 100%;
+}
+
+
+/* --- Two Column Layout --- */
+.two-column-layout {
+    display: flex;
+    gap: 20px; /* Space between columns */
+}
+
+.left-column {
+    flex: 2; /* Left column takes up 2 parts of the space */
+    /* min-width: 0; */ /* Prevents flex items from overflowing if content is too wide */
+}
+
+.right-column {
+    flex: 1; /* Right column takes up 1 part of the space */
+    /* min-width: 0; */
+}
+
+/* Ensure h2 margins are consistent within columns */
+.left-column h2, .right-column h2 {
+    margin-top: 0; /* Remove top margin for the first h2 in a column */
+}
+.left-column > h2:first-of-type, .right-column > h2:first-of-type {
+    margin-top: 0;
+}
+
+/* Styles for section headers with add buttons */
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Space below header before items */
+}
+
+.section-header h3 {
+    margin: 0 10px 0 0; /* Remove default h3 margins and add space to the right */
+    padding-bottom: 0; /* Remove padding if any from general h3 */
+    border-bottom: none; /* Remove border if any from general h3 */
+}
+
+.add-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%; /* Make it circular */
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    line-height: 22px; /* Adjust for vertical centering of + */
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 5px; /* Space from the h3 title */
+}
+
+.add-btn:hover {
+    background-color: #0056b3;
+}
+
+.remove-item-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    line-height: 18px; /* Adjust for vertical centering */
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px; /* Space from other item elements */
+    font-weight: bold;
+}
+
+.remove-item-btn:hover {
+    background-color: #c82333;
+}
+
+
+/* Form Actions (Import/Export Buttons) */
+.form-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    justify-content: flex-start; /* Align buttons to the start */
+}
+
+.form-actions button { /* General style for buttons in this container */
+    width: 150px;
+    padding: 10px 15px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    /* margin-top is removed as .form-actions handles top margin */
+}
+
+button[type="button"]#exportJson {
+    background-color: #5cb85c;
+    /* display: block; */ /* Flex handles display */
+    /* width: 150px; */ /* Handled by .form-actions button */
+    /* padding: 10px 15px; */ /* Handled by .form-actions button */
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    /* font-size: 16px; */ /* Handled by .form-actions button */
+    /* margin-top: 20px; */ /* Handled by .form-actions */
+}
+
+button[type="button"]#importJsonBtn {
+    background-color: #007bff;
+}
+
+button[type="button"]#exportJson:hover {
+    background-color: #4cae4c;
+}
+button[type="button"]#importJsonBtn:hover {
+    background-color: #0056b3;
+}
