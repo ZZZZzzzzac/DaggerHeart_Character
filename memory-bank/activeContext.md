@@ -38,3 +38,10 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-13 17:14:11] - 根据用户反馈，为“经历”、“道具”和“技能”的每个动态条目添加了删除按钮，并更新了JavaScript以处理删除逻辑和确保导出功能正确。(修改了 index.html, style.css, script.js)。
 * [2025-05-13 17:19:20] - 根据用户反馈，修改了“经历”部分：1. “关键词”和“调整值”的HTML id/name属性不再包含索引。2. “调整值”输入框改为数字类型 (type="number", min="0", max="99")。3. “调整值”输入框宽度通过CSS设置为50px。影响文件：character_creator/script.js, character_creator/index.html, character_creator/style.css。
 * [2025-05-13 17:20:53] - 根据用户反馈，调整了“技能”部分删除按钮的位置，将其移至“回想”输入框之后、“描述”文本区域之前。影响文件：character_creator/script.js, character_creator/index.html。
+* [2025-05-13 20:51:17] - 实现了在 character_creator 页面中展示图片卡牌并允许拖拽的功能 (修改了 index.html, style.css, script.js)。
+* [2025-05-13 21:17:14] - 将“技能”部分重构为表格布局，表头与输入框对齐 (修改了 index.html, script.js, style.css)。
+* [2025-05-13 21:26:25] - 根据用户反馈调整技能表格：移除表头，缩短非描述输入框的长度 (修改了 index.html, style.css)。
+* [2025-05-13 21:34:19] - 根据用户反馈再次调整技能表格列宽：非描述列使用固定px宽度，描述列自动宽度，table-layout: auto (修改了 style.css)。
+* [2025-05-13 21:38:08] - 根据用户反馈调整技能表格：降低描述输入框高度，使其与其他项平齐 (修改了 style.css)。
+* [2025-05-13 21:44:47] - 根据用户反馈实现技能描述框高度根据内容自动调整的功能 (修改了 style.css 以设置初始状态，并修改了 script.js 添加了 autoGrowTextarea 功能)。
+* [2025-05-13 21:46:39] - 根据用户反馈调整技能描述框自动高度逻辑：修改 autoGrowTextarea JS 函数，以更精确地控制高度变化，防止过早增加高度 (修改了 script.js)。

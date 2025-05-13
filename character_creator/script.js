@@ -10,27 +10,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const experiencesContainer = document.getElementById('experiences');
     const itemsContainer = document.getElementById('items');
-    const skillsContainer = document.getElementById('skills');
+    const skillsContainer = document.getElementById('skillsContainer'); // Changed from 'skills' to 'skillsContainer' for tbody
     const appearanceUpload = document.getElementById('appearanceUpload');
     const appearancePreview = document.getElementById('appearancePreview');
     const removeAppearanceBtn = document.getElementById('removeAppearanceBtn');
 
     let experienceNextId = experiencesContainer.children.length + 1;
     let itemNextId = itemsContainer.children.length + 1;
-    let skillNextId = skillsContainer.children.length + 1;
+    let skillNextId = skillsContainer.children.length + 1; // This should still work as it counts TRs in TBODY
     let appearanceDataUrl = "";
+
+    function autoGrowTextarea(event) {
+        const textarea = event.target;
+        // First, reset the height to a very small value (or 'auto') to correctly calculate scrollHeight for shrinking.
+        // Using '0px' or a small fixed value can be more reliable than 'auto' in some cases.
+        textarea.style.height = '0px';
+        // Then, set the height to scrollHeight to fit the content.
+        // scrollHeight includes padding but not margin or border if box-sizing is content-box.
+        // If box-sizing is border-box, scrollHeight is the height of the content and padding.
+        // Since our CSS uses border-box for inputs/textareas, this should be fine.
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
 
     function addRemoveListener(button) {
         if (button) {
             button.addEventListener('click', function() {
-                this.parentElement.remove();
+                this.closest('tr').remove(); // Changed to remove the closest TR for table structure
                 // No need to re-index or change counts here, export will handle current DOM
             });
         }
     }
 
     // Add remove listeners to initially loaded items
-    document.querySelectorAll('.experience-item .remove-item-btn, .item .remove-item-btn').forEach(btn => {
+    // Adjusted selector to include skill table remove buttons
+    document.querySelectorAll('.experience-item .remove-item-btn, .item .remove-item-btn, .skill-item .remove-item-btn').forEach(btn => {
         addRemoveListener(btn);
     });
 
@@ -93,27 +106,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     addSkillBtn.addEventListener('click', () => {
-        const newItem = document.createElement('div');
-        newItem.classList.add('item');
-        const currentId = skillNextId++;
-        newItem.innerHTML = `
-            <label for="skillConfig${currentId}">配置:</label>
-            <input type="text" id="skillConfig${currentId}" name="skillConfig${currentId}">
-            <label for="skillName${currentId}">名称:</label>
-            <input type="text" id="skillName${currentId}" name="skillName${currentId}">
-            <label for="skillDomain${currentId}">领域:</label>
-            <input type="text" id="skillDomain${currentId}" name="skillDomain${currentId}">
-            <label for="skillLevel${currentId}">等级:</label>
-            <input type="number" id="skillLevel${currentId}" name="skillLevel${currentId}" value="0">
-            <label for="skillAttribute${currentId}">属性:</label>
-            <input type="text" id="skillAttribute${currentId}" name="skillAttribute${currentId}">
-            <label for="skillRecall${currentId}">回想:</label>
-            <input type="text" id="skillRecall${currentId}" name="skillRecall${currentId}">
-            <button type="button" class="remove-item-btn">-</button>
-            <textarea id="skillDescription${currentId}" name="skillDescription${currentId}" placeholder="描述"></textarea>
+        const newRow = document.createElement('tr');
+        newRow.classList.add('skill-item');
+        // const currentId = skillNextId++; // Not using ID/name suffixes for simplicity with table structure
+        newRow.innerHTML = `
+            <td><input type="text" name="skillConfig" placeholder="配置"></td>
+            <td><input type="text" name="skillName" placeholder="名称"></td>
+            <td><input type="text" name="skillDomain" placeholder="领域"></td>
+            <td><input type="number" name="skillLevel" value="0" placeholder="等级"></td>
+            <td><input type="text" name="skillAttribute" placeholder="属性"></td>
+            <td><input type="text" name="skillRecall" placeholder="回想"></td>
+            <td><textarea name="skillDescription" placeholder="描述"></textarea></td>
+            <td><button type="button" class="remove-item-btn">-</button></td>
         `;
-        skillsContainer.appendChild(newItem);
-        addRemoveListener(newItem.querySelector('.remove-item-btn'));
+        skillsContainer.appendChild(newRow);
+        addRemoveListener(newRow.querySelector('.remove-item-btn'));
+
+        const newTextarea = newRow.querySelector('textarea[name="skillDescription"]');
+        if (newTextarea) {
+            newTextarea.addEventListener('input', autoGrowTextarea);
+            // autoGrowTextarea({ target: newTextarea }); // Initial call for empty textarea is usually not strictly needed
+        }
     });
 
     if (importJsonBtn && importFile) {
@@ -261,25 +274,20 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Populate "技能"
         if (data.技能 && Array.isArray(data.技能)) {
-            data.技能.forEach((skill, index) => {
-                if(index === 0 && skillsContainer.children[index]){ // Fill initial item
-                    skillsContainer.children[index].querySelector(`input[name^="skillConfig"]`).value = skill.配置 || "";
-                    skillsContainer.children[index].querySelector(`input[name^="skillName"]`).value = skill.名称 || "";
-                    skillsContainer.children[index].querySelector(`input[name^="skillDomain"]`).value = skill.领域 || "";
-                    skillsContainer.children[index].querySelector(`input[name^="skillLevel"]`).value = skill.等级 || 0;
-                    skillsContainer.children[index].querySelector(`input[name^="skillAttribute"]`).value = skill.属性 || "";
-                    skillsContainer.children[index].querySelector(`input[name^="skillRecall"]`).value = skill.回想 || "";
-                    skillsContainer.children[index].querySelector(`textarea[name^="skillDescription"]`).value = skill.描述 || "";
-                } else {
-                    addSkillBtn.click(); 
-                    const currentSkillItem = skillsContainer.lastElementChild;
-                    currentSkillItem.querySelector(`input[name^="skillConfig"]`).value = skill.配置 || "";
-                    currentSkillItem.querySelector(`input[name^="skillName"]`).value = skill.名称 || "";
-                    currentSkillItem.querySelector(`input[name^="skillDomain"]`).value = skill.领域 || "";
-                    currentSkillItem.querySelector(`input[name^="skillLevel"]`).value = skill.等级 || 0;
-                    currentSkillItem.querySelector(`input[name^="skillAttribute"]`).value = skill.属性 || "";
-                    currentSkillItem.querySelector(`input[name^="skillRecall"]`).value = skill.回想 || "";
-                    currentSkillItem.querySelector(`textarea[name^="skillDescription"]`).value = skill.描述 || "";
+            data.技能.forEach((skill) => { // Removed index, always add new row
+                addSkillBtn.click(); // This creates a new table row with inputs
+                const currentSkillRow = skillsContainer.lastElementChild;
+                if (currentSkillRow && currentSkillRow.cells.length >= 7) {
+                    currentSkillRow.cells[0].querySelector('input[name="skillConfig"]').value = skill.配置 || "";
+                    currentSkillRow.cells[1].querySelector('input[name="skillName"]').value = skill.名称 || "";
+                    currentSkillRow.cells[2].querySelector('input[name="skillDomain"]').value = skill.领域 || "";
+                    currentSkillRow.cells[3].querySelector('input[name="skillLevel"]').value = skill.等级 || 0;
+                    currentSkillRow.cells[4].querySelector('input[name="skillAttribute"]').value = skill.属性 || "";
+                    currentSkillRow.cells[5].querySelector('input[name="skillRecall"]').value = skill.回想 || "";
+                    const skillDescTextarea = currentSkillRow.cells[6].querySelector('textarea[name="skillDescription"]');
+                    skillDescTextarea.value = skill.描述 || "";
+                    // After setting value from import, trigger autoGrow
+                    setTimeout(() => autoGrowTextarea({ target: skillDescTextarea }), 0);
                 }
             });
         }
@@ -386,24 +394,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 技能
         characterData.技能 = [];
-        const currentSkillElements = skillsContainer.querySelectorAll('.item');
-        currentSkillElements.forEach((itemElement) => {
-            const nameInput = itemElement.querySelector(`input[name^="skillName"]`);
-            if (nameInput) {
-                characterData.技能.push({
-                    "配置": itemElement.querySelector(`input[name^="skillConfig"]`)?.value || "",
-                    "名称": nameInput.value || "",
-                    "领域": itemElement.querySelector(`input[name^="skillDomain"]`)?.value || "",
-                    "等级": parseInt(itemElement.querySelector(`input[name^="skillLevel"]`)?.value, 10) || 0,
-                    "属性": itemElement.querySelector(`input[name^="skillAttribute"]`)?.value || "",
-                    "回想": itemElement.querySelector(`input[name^="skillRecall"]`)?.value || "",
-                    "描述": itemElement.querySelector(`textarea[name^="skillDescription"]`)?.value || ""
-                });
+        const currentSkillElements = skillsContainer.querySelectorAll('tr.skill-item');
+        currentSkillElements.forEach((rowElement) => {
+            if (rowElement.cells.length >= 7) { // Ensure row has enough cells
+                const configInput = rowElement.cells[0].querySelector('input[name="skillConfig"]');
+                const nameInput = rowElement.cells[1].querySelector('input[name="skillName"]');
+                const domainInput = rowElement.cells[2].querySelector('input[name="skillDomain"]');
+                const levelInput = rowElement.cells[3].querySelector('input[name="skillLevel"]');
+                const attributeInput = rowElement.cells[4].querySelector('input[name="skillAttribute"]');
+                const recallInput = rowElement.cells[5].querySelector('input[name="skillRecall"]');
+                const descriptionTextarea = rowElement.cells[6].querySelector('textarea[name="skillDescription"]');
+
+                // Only add if at least a name is present, or to match previous behavior of adding if an input exists
+                if (nameInput) { // Or a more robust check like if any field has value
+                    characterData.技能.push({
+                        "配置": configInput?.value || "",
+                        "名称": nameInput?.value || "",
+                        "领域": domainInput?.value || "",
+                        "等级": parseInt(levelInput?.value, 10) || 0,
+                        "属性": attributeInput?.value || "",
+                        "回想": recallInput?.value || "",
+                        "描述": descriptionTextarea?.value || ""
+                    });
+                }
             }
         });
-         if (currentSkillElements.length === 0 && form.querySelector('#skillName1')) { // If all removed but was one initially
-            characterData.技能.push({ "配置": "", "名称": "", "领域": "", "等级": 0, "属性": "", "回想": "", "描述": "" });
-        }
+        // If no skills were added (e.g., all empty or deleted), ensure an empty skill object if template expects it.
+        // The original template implies skills can be an empty array if none are defined.
+        // If the character_template.json implies a skill object must exist, this might need adjustment.
+        // For now, if no skills are found, characterData.技能 will be an empty array, which is fine.
+        // The old fallback for #skillName1 is removed as that ID no longer exists.
 
         // 导出JSON文件
         const jsonDataString = JSON.stringify(characterData, null, 4);
@@ -418,5 +438,13 @@ document.addEventListener('DOMContentLoaded', () => {
         URL.revokeObjectURL(url);
 
         console.log(characterData);
+        });
+    
+        // Attach autoGrow to existing textareas on load
+        document.querySelectorAll('#skillsContainer textarea[name="skillDescription"]').forEach(textarea => {
+            textarea.addEventListener('input', autoGrowTextarea);
+            // Trigger it once in case of pre-filled content from browser cache or initial HTML
+            // Use a slight delay or ensure it's after full layout calculation if needed
+            setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
+        });
     });
-});

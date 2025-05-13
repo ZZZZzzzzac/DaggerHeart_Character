@@ -202,25 +202,20 @@
 
             <div class="right-column">
                 <div class="section-header"><h3>技能</h3><button type="button" class="add-btn" id="addSkillBtn">+</button></div>
-                <div id="skills" class="item-container">
-                    <div class="item">
-                        <label for="skillConfig1">配置:</label>
-                        <input type="text" id="skillConfig1" name="skillConfig1">
-                        <label for="skillName1">名称:</label>
-                        <input type="text" id="skillName1" name="skillName1">
-                        <label for="skillDomain1">领域:</label>
-                        <input type="text" id="skillDomain1" name="skillDomain1">
-                        <label for="skillLevel1">等级:</label>
-                        <input type="number" id="skillLevel1" name="skillLevel1" value="0">
-                        <label for="skillAttribute1">属性:</label>
-                        <input type="text" id="skillAttribute1" name="skillAttribute1">
-                        <label for="skillRecall1">回想:</label>
-                        <input type="text" id="skillRecall1" name="skillRecall1">
-                        <button type="button" class="remove-item-btn">-</button>
-                        <!-- Removed label for skillDescription1 -->
-                        <textarea id="skillDescription1" name="skillDescription1" placeholder="描述"></textarea>
-                    </div>
-                </div>
+                <table id="skillsTable" class="skills-table">
+                    <tbody id="skillsContainer">
+                        <tr class="skill-item">
+                            <td><input type="text" name="skillConfig" placeholder="配置"></td>
+                            <td><input type="text" name="skillName" placeholder="名称"></td>
+                            <td><input type="text" name="skillDomain" placeholder="领域"></td>
+                            <td><input type="text" name="skillLevel" placeholder="等级"></td>
+                            <td><input type="text" name="skillAttribute" placeholder="属性"></td>
+                            <td><input type="text" name="skillRecall" placeholder="回想"></td>
+                            <td><textarea name="skillDescription" placeholder="描述"></textarea></td>
+                            <td><button type="button" class="remove-item-btn">-</button></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div> <!-- End right-column -->
         </div> <!-- End two-column-layout -->
         <div class="form-actions">
