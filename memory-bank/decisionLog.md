@@ -238,3 +238,22 @@ This comprehensive refactor ensures that trait-based skills are managed in their
     *   在 `populateForm` 函数中，当从JSON加载等级后，调用 `updateLevelTierDisplay`。
     *   在 `DOMContentLoaded` 后，调用 `updateLevelTierDisplay` 以显示初始 Tier。
 *   [`character_creator/style.css`](character_creator/style.css): 为 `.tier-display` 类添加了样式，包括左边距和垂直对齐，以确保其在视觉上与等级输入框协调。
+---
+### Decision (Code)
+[2025-05-14 20:59:41] - 将代码中的 Tier 从 T0-T3 更新为 T1-T4。
+
+**Rationale:**
+根据用户请求，需要将游戏中物品和角色等级的 Tier 系统从 T0-T3 调整为 T1-T4。这涉及到修改 JavaScript 代码中计算和显示 Tier 的逻辑，以及在加载装备数据时对 Tier 相关变量名和字符串的引用。[`character_creator/data/equipment_data.js`](character_creator/data/equipment_data.js) 文件已由用户手动更新以包含 T1-T4 的数据。
+
+**Details:**
+*   修改了 [`character_creator/script.js`](character_creator/script.js):
+    *   **`calculateTier(level)` 函数:**
+        *   调整了逻辑，使其根据等级返回 "T1", "T2", "T3", 或 "T4" 字符串。
+        *   例如：`level <= 1` 返回 "T1", `level <= 4` 返回 "T2", `level <= 7` 返回 "T3", `level >= 8` 返回 "T4"。
+    *   **`updateLevelTierDisplay()` 函数:**
+        *   修改为直接使用 `calculateTier` 函数返回的字符串（例如 "T1"）来更新 `levelTierDisplay.textContent`，不再手动添加 "T" 前缀。
+    *   **`filterAndDisplayEquipment(type, weaponSlotType)` 函数:**
+        *   在 `addTierToItems` 的调用中，将所有对 `weapon_t0_...`, `offhand_weapon_t0_...`, `armor_t0` 等变量的引用更新为 `weapon_t1_...`, `offhand_weapon_t1_...`, `armor_t1`。
+        *   相应地，将传递给 `addTierToItems` 的 Tier 字符串参数从 `'T0'` 更新为 `'T1'`。
+        *   对 `t1`, `t2`, `t3` 的引用也相应地增加1，变为 `t2`, `t3`, `t4`。
+        *   添加了对新的 `weapon_t4_...`, `offhand_weapon_t4_...`, `armor_t4` 变量的引用，并将 Tier 字符串参数设置为 `'T4'`。

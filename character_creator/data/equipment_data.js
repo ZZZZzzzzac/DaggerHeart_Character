@@ -1,4 +1,4 @@
-const weapon_t0_physics = [
+const weapon_t1_physics = [
     {
         "名称": "战斧Battleaxe",
         "检定": "力量Strength",
@@ -136,7 +136,7 @@ const weapon_t0_physics = [
     }
 ];
 
-const weapon_t0_magic = [
+const weapon_t1_magic = [
     {
         "名称": "圣斧Hallowed Axe",
         "检定": "力量Strength",
@@ -229,7 +229,7 @@ const weapon_t0_magic = [
     }
 ];
 
-const offhand_weapon_t0 = [
+const offhand_weapon_t1 = [
     {
         "名称": "圆盾Round Shield",
         "检定": "力量Strength",
@@ -295,7 +295,7 @@ const offhand_weapon_t0 = [
     }
 ];
 
-const armor_t0 = [
+const armor_t1 = [
     {
         "名称": "填充布甲Gambeson Armor",
         "防御": "2",
@@ -318,7 +318,7 @@ const armor_t0 = [
     }
 ];
 
-const weapon_t1_physics = [
+const weapon_t2_physics = [
     {
         "名称": "改良战斧Improved Battleaxe",
         "检定": "力量Strength",
@@ -537,7 +537,7 @@ const weapon_t1_physics = [
     }
 ];
 
-const weapon_t1_magic = [
+const weapon_t2_magic = [
     {
         "名称": "改良圣斧Improved Hallowed Axe",
         "检定": "力量Strength",
@@ -711,7 +711,7 @@ const weapon_t1_magic = [
     }
 ];
 
-const offhand_weapon_t1 = [
+const offhand_weapon_t2 = [
     {
         "名称": "改良圆盾Improved Round Shield",
         "检定": "力量Strength",
@@ -804,7 +804,7 @@ const offhand_weapon_t1 = [
     }
 ];
 
-const armor_t1 = [
+const armor_t2 = [
     {
         "名称": "改良填充布甲Improved Gambeson Armor",
         "防御": "3",
@@ -857,7 +857,7 @@ const armor_t1 = [
     }
 ];
 
-const weapon_t2_physics = [
+const weapon_t3_physics = [
     {
         "名称": "高级战斧Advanced Battleaxe",
         "检定": "力量Strength",
@@ -1085,7 +1085,7 @@ const weapon_t2_physics = [
     }
 ];
 
-const weapon_t2_magic = [
+const weapon_t3_magic = [
     {
         "名称": "高级圣斧Advanced Hallowed Axe",
         "检定": "力量Strength",
@@ -1259,7 +1259,7 @@ const weapon_t2_magic = [
     }
 ];
 
-const offhand_weapon_t2 = [
+const offhand_weapon_t3 = [
     {
         "名称": "高级圆盾Advanced Round Shield",
         "检定": "力量Strength",
@@ -1352,7 +1352,7 @@ const offhand_weapon_t2 = [
     }
 ];
 
-const armor_t2 = [
+const armor_t3 = [
     {
         "名称": "高级填充布甲Advanced Gambeson Armor",
         "防御": "4",
@@ -1405,7 +1405,7 @@ const armor_t2 = [
     }
 ];
 
-const weapon_t3_physics = [
+const weapon_t4_physics = [
     {
         "名称": "传奇战斧Legendary Battleaxe",
         "检定": "力量Strength",
@@ -1624,7 +1624,7 @@ const weapon_t3_physics = [
     }
 ];
 
-const weapon_t3_magic = [
+const weapon_t4_magic = [
     {
         "名称": "传奇圣斧Legendary Hallowed Axe",
         "检定": "力量Strength",
@@ -1798,7 +1798,7 @@ const weapon_t3_magic = [
     }
 ];
 
-const offhand_weapon_t3 = [
+const offhand_weapon_t4 = [
     {
         "名称": "传奇圆盾Legendary Round Shield",
         "检定": "力量Strength",
@@ -1891,7 +1891,7 @@ const offhand_weapon_t3 = [
     }
 ];
 
-const armor_t3 = [
+const armor_t4 = [
     {
         "名称": "传奇填充布甲Legendary Gambeson Armor",
         "防御": "6",

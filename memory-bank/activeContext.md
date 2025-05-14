@@ -76,3 +76,5 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-14 17:33:12] - 在 [`character_creator/script.js`](character_creator/script.js) 中添加了装备选择弹窗的显示/隐藏逻辑。点击武器/护甲名称输入框会显示弹窗，点击关闭按钮或弹窗外部会隐藏弹窗。
 * [2025-05-14 17:56:34] - 在 [`character_creator/script.js`](character_creator/script.js) 中实现了装备选择弹窗中装备项的点击处理逻辑：点击装备项后，会将装备数据填充到人物卡对应的输入框，并关闭弹窗。
 * [2025-05-14 19:54:12] - 将武器/护甲的特性字段从 input 改为 textarea，并使其单列一行。更新了HTML结构，添加了CSS样式，并确保JS中的 autoGrowTextarea 功能适用于新的 textarea。(影响文件: [`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-14 20:49:30] - 修复了装备选择弹窗中因变量名错误 (`filteredItems` 应为 `textFilteredItems`) 导致的 `ReferenceError`。(影响文件: [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-14 20:56:05] - 更新了 [`character_creator/script.js`](character_creator/script.js) 中的 Tier 逻辑，将 Tier 从 T0-T3 调整为 T1-T4。这包括修改 `calculateTier` 函数以返回新的 Tier 字符串，并更新 `filterAndDisplayEquipment` 函数中对装备数据（如 `weapon_t0_physics`）的引用及其对应的 Tier 字符串。

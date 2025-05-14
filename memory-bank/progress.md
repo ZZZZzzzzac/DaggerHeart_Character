@@ -43,3 +43,6 @@ This file tracks the project's progress using a task list format.
 * [2025-05-14 17:33:12] - 完成任务：在 [`character_creator/script.js`](character_creator/script.js) 中实现了装备选择弹窗的显示/隐藏逻辑。
 * [2025-05-14 18:00:34] - 完成任务：在 [`character_creator/script.js`](character_creator/script.js) 中实现装备选择弹窗的装备项点击填充功能。
 * [2025-05-14 19:54:27] - 完成任务：将武器/护甲的特性字段改为textarea并单列一行，调整了HTML、CSS和JS。(涉及 [`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-14 20:47:54] - 完成任务：新增两个武器槽（共四个），重命名武器1/2并实现类型筛选（主武器槽不含副手，副武器槽仅含副手，新增槽位可选所有类型）。修改了HTML、JS的导入/导出及弹窗逻辑。(涉及 [`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-14 20:50:04] - 完成任务：修复装备选择弹窗中的 `ReferenceError`。(涉及 [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-14 20:58:57] - 完成任务：将代码中的所有 Tier 从 T0-T3 更新为 T1-T4。这包括修改 [`character_creator/script.js`](character_creator/script.js) 中的 `calculateTier` 函数和 `filterAndDisplayEquipment` 函数中对装备数据的引用。(`character_creator/data/equipment_data.js` 已由用户手动更新)。

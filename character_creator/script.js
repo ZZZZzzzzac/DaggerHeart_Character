@@ -108,6 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auto-grow for weapon and armor trait textareas
     const weaponTrait1Textarea = document.getElementById('weaponTrait1');
     const weaponTrait2Textarea = document.getElementById('weaponTrait2');
+    const weaponTrait3Textarea = document.getElementById('weaponTrait3');
+    const weaponTrait4Textarea = document.getElementById('weaponTrait4');
     const armorTrait1Textarea = document.getElementById('armorTrait1');
 
     if (weaponTrait1Textarea) {
@@ -117,6 +119,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (weaponTrait2Textarea) {
         weaponTrait2Textarea.addEventListener('input', autoGrowTextarea);
         setTimeout(() => autoGrowTextarea({ target: weaponTrait2Textarea }), 0);
+    }
+    if (weaponTrait3Textarea) {
+        weaponTrait3Textarea.addEventListener('input', autoGrowTextarea);
+        setTimeout(() => autoGrowTextarea({ target: weaponTrait3Textarea }), 0);
+    }
+    if (weaponTrait4Textarea) {
+        weaponTrait4Textarea.addEventListener('input', autoGrowTextarea);
+        setTimeout(() => autoGrowTextarea({ target: weaponTrait4Textarea }), 0);
     }
     if (armorTrait1Textarea) {
         armorTrait1Textarea.addEventListener('input', autoGrowTextarea);
@@ -506,6 +516,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(form.weaponTrait2) form.weaponTrait2.value = weapon2.特性 || "";
                     if (form.weaponTrait2) setTimeout(() => autoGrowTextarea({ target: form.weaponTrait2 }), 0);
                 }
+                // Populate Weapon 3
+                if (data.物品.武器.length > 2) {
+                    const weapon3 = data.物品.武器[2];
+                    if(form.weaponName3) form.weaponName3.value = weapon3.名称 || "";
+                    if(form.weaponCheck3) form.weaponCheck3.value = weapon3.检定 || "";
+                    if(form.weaponAttribute3) form.weaponAttribute3.value = weapon3.属性 || "";
+                    if(form.weaponRange3) form.weaponRange3.value = weapon3.范围 || "";
+                    if(form.weaponDamage3) form.weaponDamage3.value = weapon3.伤害 || "";
+                    if (form.weaponTwoHanded3) form.weaponTwoHanded3.value = weapon3.负荷 || "";
+                    if(form.weaponTrait3) form.weaponTrait3.value = weapon3.特性 || "";
+                    if (form.weaponTrait3) setTimeout(() => autoGrowTextarea({ target: form.weaponTrait3 }), 0);
+                }
+                // Populate Weapon 4
+                if (data.物品.武器.length > 3) {
+                    const weapon4 = data.物品.武器[3];
+                    if(form.weaponName4) form.weaponName4.value = weapon4.名称 || "";
+                    if(form.weaponCheck4) form.weaponCheck4.value = weapon4.检定 || "";
+                    if(form.weaponAttribute4) form.weaponAttribute4.value = weapon4.属性 || "";
+                    if(form.weaponRange4) form.weaponRange4.value = weapon4.范围 || "";
+                    if(form.weaponDamage4) form.weaponDamage4.value = weapon4.伤害 || "";
+                    if (form.weaponTwoHanded4) form.weaponTwoHanded4.value = weapon4.负荷 || "";
+                    if(form.weaponTrait4) form.weaponTrait4.value = weapon4.特性 || "";
+                    if (form.weaponTrait4) setTimeout(() => autoGrowTextarea({ target: form.weaponTrait4 }), 0);
+                }
             }
             if (data.物品.护甲 && data.物品.护甲.length > 0) {
                 const armor = data.物品.护甲[0];
@@ -643,17 +677,41 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         // Export Weapon 2
-        if (form.querySelector('#weaponName2') && formData.get('weaponName2')) { // Check if name exists to consider it non-empty
+        if (form.querySelector('#weaponName2') && formData.get('weaponName2')) {
             characterData.物品.武器.push({
                "名称": formData.get('weaponName2') || "",
                "检定": formData.get('weaponCheck2') || "",
                "属性": formData.get('weaponAttribute2') || "",
                "范围": formData.get('weaponRange2') || "",
-               "伤害": formData.get('weaponDamage2') || "", // Damage is text
+               "伤害": formData.get('weaponDamage2') || "",
                "负荷": formData.get('weaponTwoHanded2') || "",
                "特性": formData.get('weaponTrait2') || ""
            });
        }
+        // Export Weapon 3
+        if (form.querySelector('#weaponName3') && formData.get('weaponName3')) {
+            characterData.物品.武器.push({
+                "名称": formData.get('weaponName3') || "",
+                "检定": formData.get('weaponCheck3') || "",
+                "属性": formData.get('weaponAttribute3') || "",
+                "范围": formData.get('weaponRange3') || "",
+                "伤害": formData.get('weaponDamage3') || "",
+                "负荷": formData.get('weaponTwoHanded3') || "",
+                "特性": formData.get('weaponTrait3') || ""
+            });
+        }
+        // Export Weapon 4
+        if (form.querySelector('#weaponName4') && formData.get('weaponName4')) {
+            characterData.物品.武器.push({
+                "名称": formData.get('weaponName4') || "",
+                "检定": formData.get('weaponCheck4') || "",
+                "属性": formData.get('weaponAttribute4') || "",
+                "范围": formData.get('weaponRange4') || "",
+                "伤害": formData.get('weaponDamage4') || "",
+                "负荷": formData.get('weaponTwoHanded4') || "",
+                "特性": formData.get('weaponTrait4') || ""
+            });
+        }
 
         if (form.querySelector('#armorName1')) {
             characterData.物品.护甲.push({
@@ -938,18 +996,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function calculateTier(level) {
         const lvl = parseInt(level, 10);
-        if (isNaN(lvl)) return 0; // Default to tier 0 if level is not a number
-        if (lvl === 1) return 0;
-        if (lvl >= 2 && lvl <= 4) return 1;
-        if (lvl >= 5 && lvl <= 7) return 2;
-        if (lvl >= 8) return 3;
-        return 0; // Default for any other case (e.g., level < 1)
+        if (isNaN(lvl)) return "T1"; // Default to T1 if level is not a number
+
+        if (lvl <= 1) return "T1"; // Level 1 is T1
+        if (lvl >= 2 && lvl <= 4) return "T2"; // Levels 2-4 are T2
+        if (lvl >= 5 && lvl <= 7) return "T3"; // Levels 5-7 are T3
+        if (lvl >= 8) return "T4"; // Levels 8+ are T4
+        return "T1"; // Default for any other case (e.g., level < 1, though <=1 handles it)
     }
 
     function updateLevelTierDisplay() {
         if (levelInput && levelTierDisplay) {
-            const tier = calculateTier(levelInput.value);
-            levelTierDisplay.textContent = `T${tier}`;
+            const tierString = calculateTier(levelInput.value);
+            levelTierDisplay.textContent = tierString; // calculateTier now returns "T1", "T2", etc.
         }
     }
 
@@ -975,14 +1034,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalCloseButton = document.getElementById('modalCloseButton');
     const modalTitle = document.getElementById('modalTitle');
     const equipmentListContainer = document.getElementById('equipmentListContainer');
+    let currentTargetInput = null; // To store which input triggered the modal
+    let currentOpenModalType = 'weapon'; // 'weapon' or 'armor'
+    let currentOpenWeaponSlotType = 'any'; // 'main', 'auxiliary', 'any'
+
 
     const weaponName1Input = document.getElementById('weaponName1');
     const weaponName2Input = document.getElementById('weaponName2');
+    const weaponName3Input = document.getElementById('weaponName3');
+    const weaponName4Input = document.getElementById('weaponName4');
     const armorName1Input = document.getElementById('armorName1');
 
-    const openModalInputs = [weaponName1Input, weaponName2Input, armorName1Input];
+    // Removed: const openModalInputs = [weaponName1Input, weaponName2Input, armorName1Input];
 
-    function displayEquipment(itemCollections, type) {
+    function displayEquipment(type) { // itemCollections removed, will be handled by filterAndDisplayEquipment
         const fixedHeaderContainer = document.getElementById('fixedHeaderContainer');
         if (!equipmentListContainer || !modalTitle || !fixedHeaderContainer) return;
 
@@ -1040,7 +1105,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Ensure 'Tier' uses 'tier' as key to match item property
                 // '名称' uses '名称' as key, which matches the property in equipment_data.js
                 filterInput.dataset.filterKey = (headerText === 'Tier') ? 'tier' : headerText;
-                filterInput.addEventListener('input', () => filterAndDisplayEquipment(type)); // Listener to trigger filtering
+                filterInput.addEventListener('input', () => {
+                    // Pass the correct weaponSlotType when filtering
+                    const typeToFilter = currentOpenModalType;
+                    const slotTypeToFilter = (typeToFilter === 'weapon') ? currentOpenWeaponSlotType : 'any';
+                    filterAndDisplayEquipment(typeToFilter, slotTypeToFilter);
+                });
                 th.appendChild(document.createElement('br')); // Add a line break for layout
                 th.appendChild(filterInput);
             }
@@ -1057,9 +1127,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Data rows will be populated by filterAndDisplayEquipment
         dataTable.appendChild(tbody);
         equipmentListContainer.appendChild(dataTable);
+        // equipmentModal.style.display = 'block'; // Displaying modal is now handled by individual input listeners
     }
 
-    function filterAndDisplayEquipment(type) {
+    function filterAndDisplayEquipment(type, weaponSlotType = 'any') { // Added weaponSlotType
         const fixedHeaderContainer = document.getElementById('fixedHeaderContainer');
         const equipmentListContainer = document.getElementById('equipmentListContainer');
         if (!fixedHeaderContainer || !equipmentListContainer) {
@@ -1086,9 +1157,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if (type === 'weapon') {
-            addTierToItems(weapon_t0_physics, 'T0', 'weapon_t0_physics');
-            addTierToItems(weapon_t0_magic, 'T0', 'weapon_t0_magic');
-            addTierToItems(offhand_weapon_t0, 'T0', 'offhand_weapon_t0');
             addTierToItems(weapon_t1_physics, 'T1', 'weapon_t1_physics');
             addTierToItems(weapon_t1_magic, 'T1', 'weapon_t1_magic');
             addTierToItems(offhand_weapon_t1, 'T1', 'offhand_weapon_t1');
@@ -1098,19 +1166,41 @@ document.addEventListener('DOMContentLoaded', () => {
             addTierToItems(weapon_t3_physics, 'T3', 'weapon_t3_physics');
             addTierToItems(weapon_t3_magic, 'T3', 'weapon_t3_magic');
             addTierToItems(offhand_weapon_t3, 'T3', 'offhand_weapon_t3');
+            addTierToItems(weapon_t4_physics, 'T4', 'weapon_t4_physics');
+            addTierToItems(weapon_t4_magic, 'T4', 'weapon_t4_magic');
+            addTierToItems(offhand_weapon_t4, 'T4', 'offhand_weapon_t4');
         } else if (type === 'armor') {
-            addTierToItems(armor_t0, 'T0', 'armor_t0');
             addTierToItems(armor_t1, 'T1', 'armor_t1');
             addTierToItems(armor_t2, 'T2', 'armor_t2');
             addTierToItems(armor_t3, 'T3', 'armor_t3');
+            addTierToItems(armor_t4, 'T4', 'armor_t4');
             // Assuming shield data might be part of these or needs similar handling
-            // addTierToItems(shield_t0, 'T0', 'shield_t0');
             // addTierToItems(shield_t1, 'T1', 'shield_t1');
             // addTierToItems(shield_t2, 'T2', 'shield_t2');
             // addTierToItems(shield_t3, 'T3', 'shield_t3');
+            // addTierToItems(shield_t4, 'T4', 'shield_t4');
         }
         
-        const filteredItems = rawDataCollectionsWithTier.filter(item => {
+        let slotFilteredData = rawDataCollectionsWithTier;
+        if (type === 'weapon') {
+            if (weaponSlotType === 'main') {
+                // For 'main' slots, filter out items where '负荷' is '副手'
+                slotFilteredData = rawDataCollectionsWithTier.filter(item => item.负荷 !== '副手');
+            } else if (weaponSlotType === 'auxiliary') {
+                // For 'auxiliary' slots, only include items where '负荷' is '副手'
+                slotFilteredData = rawDataCollectionsWithTier.filter(item => item.负荷 === '副手');
+            }
+            // If weaponSlotType is 'any', no filtering based on '负荷' is done here,
+            // slotFilteredData remains as is, containing all weapon types for the tier.
+        }
+        
+        // Ensure slotFilteredData is an array before trying to filter it further
+        if (!Array.isArray(slotFilteredData)) {
+            console.error("slotFilteredData is not an array. Initial data might be missing for the current tier/type.", slotFilteredData);
+            slotFilteredData = []; // Default to empty array to prevent further errors
+        }
+
+        const textFilteredItems = slotFilteredData.filter(item => {
             for (const key in filters) {
                 const itemValue = item[key] ? String(item[key]).toLowerCase() : "";
                 if (!itemValue.includes(filters[key])) {
@@ -1133,7 +1223,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         tbody.innerHTML = ''; // Clear previous rows
 
-        filteredItems.forEach(item => {
+        textFilteredItems.forEach(item => {
             const tr = document.createElement('tr');
             tr.classList.add('equipment-item-row');
             tr.dataset.equipmentData = JSON.stringify(item);
@@ -1166,61 +1256,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    openModalInputs.forEach(input => {
-        if (input) {
-            input.addEventListener('click', () => {
-                if (equipmentModal) {
-                    equipmentModal.dataset.targetInputId = input.id;
-                    let dataToShow = [];
-                    let type = '';
-
-                    if (input.id === 'weaponName1' || input.id === 'weaponName2') {
-                        type = 'weapon';
-                        // Collect all weapon data arrays
-                        // Ensure these variables are available from equipment_data.js
-                        if (typeof weapon_t0_physics !== 'undefined') dataToShow.push(weapon_t0_physics);
-                        if (typeof weapon_t0_magic !== 'undefined') dataToShow.push(weapon_t0_magic);
-                        if (typeof offhand_weapon_t0 !== 'undefined') dataToShow.push(offhand_weapon_t0);
-                        if (typeof weapon_t1_physics !== 'undefined') dataToShow.push(weapon_t1_physics);
-                        if (typeof weapon_t1_magic !== 'undefined') dataToShow.push(weapon_t1_magic);
-                        if (typeof offhand_weapon_t1 !== 'undefined') dataToShow.push(offhand_weapon_t1);
-                        if (typeof weapon_t2_physics !== 'undefined') dataToShow.push(weapon_t2_physics);
-                        if (typeof weapon_t2_magic !== 'undefined') dataToShow.push(weapon_t2_magic);
-                        if (typeof offhand_weapon_t2 !== 'undefined') dataToShow.push(offhand_weapon_t2);
-                        if (typeof weapon_t3_physics !== 'undefined') dataToShow.push(weapon_t3_physics);
-                        if (typeof weapon_t3_magic !== 'undefined') dataToShow.push(weapon_t3_magic);
-                        if (typeof offhand_weapon_t3 !== 'undefined') dataToShow.push(offhand_weapon_t3);
-                    } else if (input.id === 'armorName1') {
-                        type = 'armor';
-                        // Collect all armor data arrays
-                        if (typeof armor_t0 !== 'undefined') dataToShow.push(armor_t0);
-                        if (typeof armor_t1 !== 'undefined') dataToShow.push(armor_t1);
-                        if (typeof armor_t2 !== 'undefined') dataToShow.push(armor_t2);
-                        if (typeof armor_t3 !== 'undefined') dataToShow.push(armor_t3);
-                        if (typeof shield_t0 !== 'undefined') dataToShow.push(shield_t0);
-                        if (typeof shield_t1 !== 'undefined') dataToShow.push(shield_t1);
-                        if (typeof shield_t2 !== 'undefined') dataToShow.push(shield_t2);
-                        if (typeof shield_t3 !== 'undefined') dataToShow.push(shield_t3);
-                    }
-                    
-                    // displayEquipment sets up the headers (with filters) and an empty data table structure
-                    // The 'dataToShow' here is primarily to inform displayEquipment about the structure if needed,
-                    // but the actual row rendering is now handled by filterAndDisplayEquipment.
-                    // For simplicity, displayEquipment can be made to not require itemCollections for its current role.
-                    // However, to minimize changes to displayEquipment's signature for now, we pass an empty array
-                    // or a representative sample if it were strictly needed for header/column setup.
-                    // Since displayEquipment now hardcodes headers, an empty array is fine.
-                    displayEquipment([], type);
-                    
-                    // filterAndDisplayEquipment then populates the data table based on (initially empty) filters
-                    filterAndDisplayEquipment(type);
-                    
-                    equipmentModal.style.display = 'block';
-                }
+    // Setup triggers for opening the modal
+    const setupModalTrigger = (inputElement, modalType, weaponSlotType = 'any') => {
+        if (inputElement) {
+            inputElement.addEventListener('click', () => {
+                currentTargetInput = inputElement; // Store the actual input element
+                equipmentModal.dataset.targetInputId = inputElement.id; // Store the ID for populating form
+                currentOpenModalType = modalType;
+                currentOpenWeaponSlotType = weaponSlotType;
+                displayEquipment(currentOpenModalType);
+                filterAndDisplayEquipment(currentOpenModalType, currentOpenWeaponSlotType);
+                equipmentModal.style.display = 'block';
             });
         }
-    });
+    };
 
+    setupModalTrigger(weaponName1Input, 'weapon', 'main');
+    setupModalTrigger(weaponName2Input, 'weapon', 'auxiliary');
+    setupModalTrigger(weaponName3Input, 'weapon', 'any');
+    setupModalTrigger(weaponName4Input, 'weapon', 'any');
+    setupModalTrigger(armorName1Input, 'armor', 'any');
+
+    // Close modal logic
     if (modalCloseButton && equipmentModal) {
         modalCloseButton.addEventListener('click', () => {
             equipmentModal.style.display = 'none';
@@ -1233,11 +1290,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 equipmentModal.style.display = 'none';
             }
         });
-if (equipmentListContainer && equipmentModal) {
+    }
+
+    // Click listener for items within the modal's equipment list
+    if (equipmentListContainer && equipmentModal) {
         equipmentListContainer.addEventListener('click', (event) => {
             const clickedItemRow = event.target.closest('tr.equipment-item-row');
             if (!clickedItemRow) {
-                return; // Clicked outside an item row
+                return;
             }
 
             const equipmentDataString = clickedItemRow.dataset.equipmentData;
@@ -1253,33 +1313,39 @@ if (equipmentListContainer && equipmentModal) {
                 console.error('Failed to parse equipment data:', e);
                 return;
             }
-
-            const targetInputId = equipmentModal.dataset.targetInputId;
-            if (!targetInputId) {
-                console.error('Target input ID not found on modal.');
+            
+            // Use currentTargetInput (which is the actual input element)
+            if (!currentTargetInput) {
+                console.error('Target input (currentTargetInput) not set.');
                 return;
             }
+            const targetInputId = currentTargetInput.id;
 
-            const form = document.getElementById('characterForm'); // Ensure form is accessible
 
             if (targetInputId.startsWith('weaponName')) {
-                const weaponIndex = targetInputId.charAt(targetInputId.length - 1); // '1' or '2'
+                const weaponIndex = targetInputId.charAt(targetInputId.length - 1);
                 if (form[`weaponName${weaponIndex}`]) form[`weaponName${weaponIndex}`].value = equipmentData.名称 || '';
                 if (form[`weaponCheck${weaponIndex}`]) form[`weaponCheck${weaponIndex}`].value = equipmentData.检定 || '';
                 if (form[`weaponAttribute${weaponIndex}`]) form[`weaponAttribute${weaponIndex}`].value = equipmentData.属性 || '';
                 if (form[`weaponRange${weaponIndex}`]) form[`weaponRange${weaponIndex}`].value = equipmentData.范围 || '';
                 if (form[`weaponDamage${weaponIndex}`]) form[`weaponDamage${weaponIndex}`].value = equipmentData.伤害 || '';
-                if (form[`weaponTwoHanded${weaponIndex}`]) form[`weaponTwoHanded${weaponIndex}`].value = equipmentData.负荷 || ''; // Corresponds to '负荷'
-                if (form[`weaponTrait${weaponIndex}`]) form[`weaponTrait${weaponIndex}`].value = equipmentData.特性 || '';
+                if (form[`weaponTwoHanded${weaponIndex}`]) form[`weaponTwoHanded${weaponIndex}`].value = equipmentData.负荷 || '';
+                const traitTextarea = document.getElementById(`weaponTrait${weaponIndex}`);
+                if (traitTextarea) {
+                    traitTextarea.value = equipmentData.特性 || '';
+                    setTimeout(() => autoGrowTextarea({ target: traitTextarea }), 0);
+                }
             } else if (targetInputId.startsWith('armorName')) {
-                const armorIndex = targetInputId.charAt(targetInputId.length - 1); // '1'
+                const armorIndex = targetInputId.charAt(targetInputId.length - 1);
                 if (form[`armorName${armorIndex}`]) form[`armorName${armorIndex}`].value = equipmentData.名称 || '';
                 if (form[`armorDefense${armorIndex}`]) form[`armorDefense${armorIndex}`].value = equipmentData.防御 || '';
-                if (form[`armorTrait${armorIndex}`]) form[`armorTrait${armorIndex}`].value = equipmentData.特性 || '';
+                const traitTextarea = document.getElementById(`armorTrait${armorIndex}`);
+                if (traitTextarea) {
+                    traitTextarea.value = equipmentData.特性 || '';
+                    setTimeout(() => autoGrowTextarea({ target: traitTextarea }), 0);
+                }
             }
-
             equipmentModal.style.display = 'none';
         });
-    }
     }
 });
