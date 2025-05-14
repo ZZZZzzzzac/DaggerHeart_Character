@@ -28,12 +28,11 @@ form {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-form > div:not(.form-group-inline-flex):not(.form-group-inline-grid):not(.item-container) { /* Apply default margin only to non-inline groups */
+form > div:not(.form-group-inline-flex):not(.item-container) { /* Apply default margin only to non-inline groups */
     margin-bottom: 15px;
 }
 
 label {
-    /* display: block; */ /* Default is inline, let container decide */
     margin-bottom: 5px;
     font-weight: bold;
     margin-right: 5px; /* Add some space between label and input */
@@ -43,7 +42,6 @@ label {
 input[type="text"],
 input[type="number"],
 textarea {
-    /* width: calc(100% - 22px); */ /* Let container control width */
     padding: 8px; /* Slightly smaller padding */
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -75,8 +73,42 @@ input[type="checkbox"] {
 }
 
 /* --- Inline Group Styles --- */
-.form-group-inline-flex,
-.form-group-inline-grid {
+.form-group-row {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap if needed, though ideally they fit on one line */
+    align-items: center; /* Align items vertically within the row */
+    margin-bottom: 10px; /* Space below each row */
+    gap: 10px 15px; /* Row gap (if wrapping), Column gap between items */
+}
+
+.form-group-row > div { /* Each item (label + input pair) in the row */
+    display: flex;
+    align-items: center; /* Align label and input within the pair */
+    margin-bottom: 0; /* No margin below individual items, row handles spacing */
+}
+
+.form-group-row label {
+    width: auto;
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.form-group-row input[type="text"],
+.form-group-row input[type="number"],
+.form-group-row select {
+    width: 120px; /* Default width for inputs/selects in these rows */
+    margin-right: 0;
+    margin-bottom: 0;
+    padding: 6px;
+    box-sizing: border-box;
+}
+
+.form-group-row input[type="number"] {
+    width: 80px; /* Slightly smaller for numbers */
+}
+
+
+.form-group-inline-flex {
     display: flex;
     flex-wrap: wrap; /* Allow items to wrap to next line */
     align-items: center; /* Align items vertically */
@@ -84,25 +116,21 @@ input[type="checkbox"] {
     gap: 5px 15px; /* Row gap, Column gap */
 }
 
-.form-group-inline-flex > div,
-.form-group-inline-grid > div {
+.form-group-inline-flex > div {
     display: flex; /* Make label and input flex items */
     align-items: center; /* Align label and input */
     margin-bottom: 5px; /* Space below each pair if wrapping */
 }
 
 
-.form-group-inline-flex label,
-.form-group-inline-grid label {
+.form-group-inline-flex label {
      width: auto; /* Allow label width to adjust */
      margin-bottom: 0; /* Remove bottom margin for inline labels */
      white-space: nowrap; /* Prevent label text wrapping */
 }
 
 .form-group-inline-flex input[type="text"],
-.form-group-inline-flex input[type="number"],
-.form-group-inline-grid input[type="text"],
-.form-group-inline-grid input[type="number"] {
+.form-group-inline-flex input[type="number"] {
     width: 100px; /* Smaller width for inline inputs */
     margin-right: 0; /* Remove right margin, use gap instead */
     margin-bottom: 0; /* Remove bottom margin */
@@ -147,7 +175,6 @@ input[type="checkbox"] {
 .image-preview-container {
     position: relative; /* For positioning the remove button */
     display: inline-block; /* To wrap the image and button snugly */
-    /* margin-top: 10px; /* Already on img, but can be here too */
 }
 
 .remove-image-btn {
@@ -236,7 +263,6 @@ input[type="checkbox"] {
 
 .experience-item label,
 .item label {
-    /* display: inline-block; */ /* Flex handles display */
     margin-right: 5px;
     width: auto;
     font-weight: normal; /* Less emphasis for item labels */
@@ -289,9 +315,6 @@ input[type="checkbox"] {
 
 /* New Weapons Section Layout */
 .weapons-section {
-    /* display: flex; No longer needed as section-header is removed */
-    /* align-items: flex-start; */
-    /* gap: 10px; */
     margin-bottom: 0px;
 }
 
@@ -299,21 +322,15 @@ input[type="checkbox"] {
     display: flex;
     flex-direction: column; /* Stack weapon1 and weapon2 vertically */
     gap: 0px; /* Space between weapon1 and weapon2 boxes */
-    /* flex-grow: 1; No longer needed if .weapons-section is not flex */
 }
 
 .weapon-item-container {
-    /* border: 1px solid #ddd; */ /* Removed border */
     padding: 0px 0; /* Reduced padding, only top/bottom for separation between weapon1/2 */
-    /* border-radius: 0px; */ /* Removed border-radius */
-    /* background-color: #f9f9f9; */ /* Removed background */
     margin-bottom: 0px; /* Add a small margin below each weapon line */
 }
 
 .weapon-item-container .item {
-    /* .item is already display: flex; align-items: center; from general .item style */
     flex-wrap: nowrap; /* Prevent wrapping to ensure single line */
-    /* overflow-x: auto; /* Add scroll if content overflows - consider if this is desired or if widths should strictly fit */
     gap: 0px 0px; /* Reduced column gap for tighter packing, row gap 0 */
 }
 
@@ -389,7 +406,6 @@ input[type="checkbox"] {
 }
 .weapon-item-container .item input[name^="weaponTrait"] {
     width: 50px;
-    /* flex-grow: 1; */ /* Removed to control width precisely */
 }
 
 /* Item (道具) Specific Styles */
@@ -405,8 +421,6 @@ input[type="checkbox"] {
     flex-grow: 0; /* Don't grow number inputs */
 }
 
-/* Removed old #skills .item styles as skills are now in a table */
-
 /* --- Skills Table Styles --- */
 .skills-table {
     width: 100%;
@@ -415,7 +429,6 @@ input[type="checkbox"] {
     table-layout: auto; /* This is correct for auto description width */
 }
 
-/* .skills-table th, removed th styling */
 .skills-table td {
     border: 1px solid #ddd;
     padding: 4px; /* Reduced padding for a tighter look */
@@ -423,8 +436,6 @@ input[type="checkbox"] {
     vertical-align: top;
     word-wrap: break-word;
 }
-
-/* Removed .skills-table th background and font-weight */
 
 .skills-table td input[type="text"],
 .skills-table td input[type="number"],
@@ -482,10 +493,6 @@ input[type="checkbox"] {
     width: auto; /* Auto width based on content, or set fixed if preferred */
     min-width: 20px; /* Ensure it's not too small */
 }
-.item input[name^="weaponTwoHanded"] {
-     width: auto;
-     flex-grow: 0;
-}
 
 /* General .item textarea rule, skillDescription will override parts of this due to specificity */
 .item textarea[name$="Description"] {
@@ -504,12 +511,10 @@ input[type="checkbox"] {
 
 .left-column {
     flex: 1; /* Left column takes up 2 parts of the space */
-    /* min-width: 0; */ /* Prevents flex items from overflowing if content is too wide */
 }
 
 .right-column {
     flex: 1; /* Right column takes up 1 part of the space */
-    /* min-width: 0; */
 }
 
 /* Ensure h2 margins are consistent within columns */
@@ -594,16 +599,10 @@ input[type="checkbox"] {
 
 button[type="button"]#exportJson {
     background-color: #5cb85c;
-    /* display: block; */ /* Flex handles display */
-    /* width: 150px; */ /* Handled by .form-actions button */
-    /* padding: 10px 15px; */ /* Handled by .form-actions button */
-    background-color: #5cb85c;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    /* font-size: 16px; */ /* Handled by .form-actions button */
-    /* margin-top: 20px; */ /* Handled by .form-actions */
 }
 
 button[type="button"]#importJsonBtn {

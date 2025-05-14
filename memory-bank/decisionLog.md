@@ -201,3 +201,24 @@ This comprehensive refactor ensures that trait-based skills are managed in their
 *   [`character_creator/index.html`](character_creator/index.html):
     *   在“背景故事”部分，移除了 `<label for="backgroundStory">背景故事:</label>`。
     *   为 `<textarea id="backgroundStory" name="backgroundStory">` 添加了 `placeholder="背景故事"` 属性。
+---
+### Decision (Code)
+[2025-05-14 15:07:06] - 调整角色创建器初始设定部分的布局
+
+**Rationale:**
+根据用户请求，为了优化角色创建器初始信息输入的布局，将相关字段重新组织为三行，并将“等级”字段从“状态”部分提前至第一行，以符合用户期望的逻辑顺序和视觉分组。
+
+**Details:**
+*   [`character_creator/index.html`](character_creator/index.html):
+    *   修改了ID为 `characterForm` 的表单内，原用于包裹角色名、年龄等基本信息的 `div` (原class `form-group-inline-flex`)。
+    *   将其替换为三个独立的 `div`，每个 `div` 拥有新class `form-group-row`。
+    *   第一行 `form-group-row` 包含：角色名、年龄、性别、等级。其中“等级”字段 (原位于“状态”部分) 被移动到此处。
+    *   第二行 `form-group-row` 包含：种族、混血、社群。
+    *   第三行 `form-group-row` 包含：职业、子职业、兼职。
+    *   相关的 `<label>` 和 `<input>`/`<select>` 元素被重新组织到这些新的行结构中。
+    *   移除了原“状态”部分中“等级”字段的HTML。
+*   [`character_creator/style.css`](character_creator/style.css):
+    *   添加了新的CSS规则 `.form-group-row`。
+    *   该规则设置 `display: flex` 和 `flex-wrap: wrap` 以允许行内元素横向排列。
+    *   为 `.form-group-row > div`（即每行中的标签和输入框对）设置了 `display: flex` 和 `align-items: center`。
+    *   为 `.form-group-row` 内的 `input[type="text"]`, `input[type="number"]`, 和 `select` 元素设置了默认宽度和间距。
