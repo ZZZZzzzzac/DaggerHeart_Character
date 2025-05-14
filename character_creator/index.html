@@ -64,12 +64,12 @@
                 <div id="experiences" class="item-container">
                     <div class="experience-item">
                         <input type="text" id="expKeyword" name="expKeyword" placeholder="关键词">
-                        <input type="text" id="expValue" name="expValue" placeholder="调整值">
+                        <input type="text" id="expValue" name="expValue" placeholder="调整值" value="2">
                         <button type="button" class="remove-item-btn">-</button>
                     </div>
                     <div class="experience-item">
-                        <input type="text" id="expKeyword" name="expKeyword" placeholder="关键词">
-                        <input type="text" id="expValue" name="expValue" placeholder="调整值">
+                        <input type="text" id="expKeyword2" name="expKeyword" placeholder="关键词">
+                        <input type="text" id="expValue2" name="expValue" placeholder="调整值" value="2">
                         <button type="button" class="remove-item-btn">-</button>
                     </div>
                 </div>
@@ -251,6 +251,7 @@
             <button type="button" id="importJsonBtn">导入JSON</button>
             <input type="file" id="importFile" accept=".json" style="display: none;">
             <button type="button" id="exportJson">导出JSON</button>
+            <button type="button" id="newbieGuideButton">新人引导</button>
         </div>
     </form>
 
@@ -261,7 +262,8 @@
     <script src="data/consumables_data.js"></script>
     <script src="data/equipment_data.js"></script>
     <script src="script.js"></script>
-<!-- Equipment Modal -->
+
+    <!-- Equipment Modal -->
     <div id="equipmentModal" class="modal">
         <div class="modal-content">
             <span id="modalCloseButton" class="modal-close-button">&times;</span>
@@ -271,6 +273,23 @@
             </div>
             <div id="equipmentListContainer" class="equipment-list">
                 <!-- Equipment items will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Newbie Guide Modal -->
+    <div id="newbieGuideModal" class="modal">
+        <div class="modal-content">
+            <span id="newbieGuideModalCloseButton" class="modal-close-button">&times;</span>
+            <h3>新人引导</h3>
+            <div id="newbieGuideQuestionText" class="guide-question-text"></div>
+            <input type="text" id="newbieGuideAnswerInput" class="guide-answer-input" placeholder="请在此输入答案">
+            <select id="newbieGuideDropdownInput" class="guide-answer-input" style="display: none;"></select>
+            <!-- <textarea id="newbieGuideAnswerTextarea" class="guide-answer-input" style="display:none;" placeholder="请在此输入答案"></textarea> -->
+            <!-- Removed newbieGuideAttributesContainer -->
+            <div class="modal-actions">
+                <button type="button" id="newbieGuideNextButton">下一步</button>
+                <button type="button" id="newbieGuideCancelButton">关闭</button>
             </div>
         </div>
     </div>

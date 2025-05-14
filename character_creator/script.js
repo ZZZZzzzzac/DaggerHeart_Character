@@ -37,6 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // let skillNextId = skillsContainer.children.length + 1; // Comment out for now or adjust after fixed slots
     let appearanceDataUrl = "";
 
+    let isNewbieGuideWaitingForEquipment = false;
+    let newbieGuideAdvanceCallback = null;
+
     const ALL_ITEMS_DATA = [...ITEMS_DATA, ...CONSUMABLES_DATA];
 
     function autoGrowTextarea(event) {
@@ -77,6 +80,535 @@ document.addEventListener('DOMContentLoaded', () => {
         initialItemDescriptionTextarea.addEventListener('input', autoGrowTextarea);
         // Trigger auto-grow in case there's pre-filled content (though unlikely for a static empty one)
         setTimeout(() => autoGrowTextarea({ target: initialItemDescriptionTextarea }), 0);
+    }
+// Newbie Guide Modal Elements
+    const newbieGuideButton = document.getElementById('newbieGuideButton');
+    const newbieGuideModal = document.getElementById('newbieGuideModal');
+    const newbieGuideModalCloseButton = document.getElementById('newbieGuideModalCloseButton');
+    const newbieGuideNextButton = document.getElementById('newbieGuideNextButton');
+    const newbieGuideCancelButton = document.getElementById('newbieGuideCancelButton');
+    const newbieGuideQuestionText = document.getElementById('newbieGuideQuestionText');
+    const newbieGuideAnswerInput = document.getElementById('newbieGuideAnswerInput');
+    const newbieGuideDropdownInput = document.getElementById('newbieGuideDropdownInput'); // Added this line
+    // const newbieGuideAnswerTextarea = document.getElementById('newbieGuideAnswerTextarea'); // For future textarea use
+    // const newbieGuideAttributesContainer = document.getElementById('newbieGuideAttributesContainer'); // Removed as per new requirements
+
+    // References to the individual attribute inputs in the modal
+    // const guideAttributeInputs = { // Removed as per new requirements
+    //     guideStrength: document.getElementById('guideStrength'),
+    //     guideAgility: document.getElementById('guideAgility'),
+    //     guideInstinct: document.getElementById('guideInstinct'),
+    //     guideGrace: document.getElementById('guideGrace'),
+    //     guideKnowledge: document.getElementById('guideKnowledge'),
+    //     guideDexterity: document.getElementById('guideDexterity')
+    // };
+
+    const defaultAttributes = [1, 1, 1, 1, 1, 1]; //力量, 敏捷, 本能, 风度, 学识, 灵巧
+    const defaultMainWeapon = {
+        "名称": "阔剑Broadsword", "tier": "T1", "检定": "敏捷Aglity", "属性": "物理",
+        "范围": "近战Melee", "伤害": "d8", "负荷": "单手", "特性": "可靠Reliable: 你的攻击掷骰+1"
+    };
+    const defaultOffHandWeapon = {
+        "名称": "圆盾Round Shield", "tier": "T1", "检定": "力量Strength", "属性": "物理",
+        "范围": "近战Melee", "伤害": "d4", "负荷": "副手", "特性": "保护Protective: 护甲值+1"
+    };
+    const defaultArmor = {
+        "名称": "皮甲", "tier": "T1", "防御": "4", "特性": ""
+    };
+
+    const professionTemplates = {
+        "吟游诗人": { 
+            attributes: [-1,0,0,2,1,1], 
+            weapon: {
+                "名称": "刺剑Rapier",
+                "检定": "风度Presence",
+                "属性": "物理",
+                "范围": "近战Melee",
+                "伤害": "d8",
+                "负荷": "单手",
+                "特性": "迅捷Quick: 标记1个压力以额外攻击一个范围内的目标"
+            },
+            offHandWeapon: {
+                "名称": "小匕首Small Dagger",
+                "检定": "灵巧Finesse",
+                "属性": "物理",
+                "范围": "近战Melee",
+                "伤害": "d8",
+                "负荷": "副手",
+                "特性": "双持Paired: 主武器近战伤害 +2"
+            },
+            armor: {
+                "名称": "填充布甲Gambeson Armor",
+                "防御": "3",
+                "特性": "灵活Flexible: 闪避值+1"
+            }
+        },
+        "德鲁伊":   { 
+            attributes: [0,1,2,-1,0,1], 
+            weapon: {
+                "名称": "短杖Shortstaff",
+                "检定": "本能Instinct",
+                "属性": "魔法",
+                "范围": "近距离Close",
+                "伤害": "d8+1",
+                "负荷": "单手",
+                "特性": ""
+            },
+            offHandWeapon: {
+                "名称": "圆盾Round Shield",
+                "检定": "力量Strength",
+                "属性": "物理",
+                "范围": "近战Melee",
+                "伤害": "d4",
+                "负荷": "副手",
+                "特性": "保护Protective: 护甲值+1"
+            }, 
+            armor: {
+                "名称": "皮甲Leather Armor",
+                "防御": "4",
+                "特性": ""
+            }
+        },
+        "守护者":   { 
+            attributes: [2,1,0,1,0,-1], 
+            weapon: {
+                "名称": "战斧Battleaxe",
+                "检定": "力量Strength",
+                "属性": "物理",
+                "范围": "近战Melee",
+                "伤害": "d10+3",
+                "负荷": "双手",
+                "特性": ""
+            },
+            offHandWeapon: {}, 
+            armor: {
+                "名称": "链甲Chainmail Armor",
+                "防御": "5",
+                "特性": "厚重Heavy: 闪避值-1"
+            }
+        },
+        "游侠":     { 
+            attributes: [0,2,1,-1,0,1], 
+            weapon: {
+                "名称": "短弓Shortbow",
+                "检定": "敏捷Aglity",
+                "属性": "物理",
+                "范围": "远距离Far",
+                "伤害": "d6+3",
+                "负荷": "双手",
+                "特性": ""
+            },
+            offHandWeapon: {}, 
+            armor: {
+                "名称": "皮甲Leather Armor",
+                "防御": "4",
+                "特性": ""
+            }
+        },
+        "盗贼":     { 
+            attributes: [-1,1,0,1,0,2], 
+            weapon: {
+                "名称": "匕首Dagger",
+                "检定": "灵巧Finesse",
+                "属性": "物理",
+                "范围": "近战Melee",
+                "伤害": "d8+1",
+                "负荷": "单手",
+                "特性": ""
+            },
+            offHandWeapon: {
+                "名称": "小匕首Small Dagger",
+                "检定": "灵巧Finesse",
+                "属性": "物理",
+                "范围": "近战Melee",
+                "伤害": "d8",
+                "负荷": "副手",
+                "特性": "双持Paired: 主武器近战伤害 +2"
+            },
+            armor: {
+                "名称": "填充布甲Gambeson Armor",
+                "防御": "3",
+                "特性": "灵活Flexible: 闪避值+1"
+            }
+        },
+        "神使":     { 
+            attributes: [2,0,1,1,-1,0], 
+            weapon: {
+                "名称": "圣斧Hallowed Axe",
+                "检定": "力量Strength",
+                "属性": "魔法",
+                "范围": "近战Melee",
+                "伤害": "d10+1",
+                "负荷": "单手",
+                "特性": ""
+            },
+            offHandWeapon: {
+                "名称": "圆盾Round Shield",
+                "检定": "力量Strength",
+                "属性": "物理",
+                "范围": "近战Melee",
+                "伤害": "d4",
+                "负荷": "副手",
+                "特性": "保护Protective: 护甲值+1"
+            },
+            armor: {
+                "名称": "链甲Chainmail Armor",
+                "防御": "5",
+                "特性": "厚重Heavy: 闪避值-1"
+            }
+        },
+        "术士":     { 
+            attributes: [-1,0,2,1,0,1], 
+            weapon: {
+                "名称": "双手法杖Dualstaff",
+                "检定": "本能Instinct",
+                "属性": "魔法",
+                "范围": "远距离Far",
+                "伤害": "d6+3",
+                "负荷": "双手",
+                "特性": ""
+            },
+            offHandWeapon: {}, 
+            armor: {
+                "名称": "填充布甲Gambeson Armor",
+                "防御": "3",
+                "特性": "灵活Flexible: 闪避值+1"
+            }
+        },
+        "战士":     { 
+            attributes: [1,2,1,-1,0,0], 
+            weapon: {
+                "名称": "长剑Longsword",
+                "检定": "敏捷Aglity",
+                "属性": "物理",
+                "范围": "近战Melee",
+                "伤害": "d8+3",
+                "负荷": "双手",
+                "特性": ""
+            },
+            offHandWeapon: {}, 
+            armor: {
+                "名称": "链甲Chainmail Armor",
+                "防御": "5",
+                "特性": "厚重Heavy: 闪避值-1"
+            }
+        },
+        "法师":     { 
+            attributes: [0,-1,1,1,2,0], 
+            weapon: {
+                "名称": "巨杖Greatstaff",
+                "检定": "知识Knowledge",
+                "属性": "魔法",
+                "范围": "极远Very Far",
+                "伤害": "d6",
+                "负荷": "双手",
+                "特性": "强力Powerful: 额外骰1个伤害骰并去掉其中最小的一个 "
+            },
+            offHandWeapon: {}, 
+            armor: {
+                "名称": "皮甲Leather Armor",
+                "防御": "4",
+                "特性": ""
+            }
+        }
+    };//力量, 敏捷, 本能, 风度, 学识, 灵巧
+
+    const newbieGuideQuestions = [
+        { prompt: "请输入你的角色名字：", targetFieldId: "roleName" },
+        { prompt: "请输入你的角色年龄：", targetFieldId: "age" },
+        { prompt: "请输入你的角色性别：", targetFieldId: "gender" },
+        {
+            prompt: "请选择你的种族：",
+            questionType: "dropdown",
+            targetSelectId: "raceSelect",
+            dataSourceVariable: "RACES_DATA",
+            optionValueField: "race",
+            optionTextField: "race",
+            updateFunction: "updateRaceTraitsAsSkills"
+        },
+        {
+            prompt: "请选择你的混合种族（如果适用）：",
+            questionType: "dropdown",
+            targetSelectId: "mixedRaceSelect",
+            dataSourceVariable: "RACES_DATA",
+            optionValueField: "race",
+            optionTextField: "race",
+            updateFunction: "updateRaceTraitsAsSkills"
+        },
+        {
+            prompt: "请选择你的社群：",
+            questionType: "dropdown",
+            targetSelectId: "communitySelect",
+            dataSourceVariable: "GROUPS_DATA",
+            optionValueField: "社群",
+            optionTextField: "社群",
+            updateFunction: "updateGroupTraitAsSkill"
+        },
+        {
+            prompt: "请选择你的职业：", // 属性和装备将在此步骤后自动填充
+            questionType: "dropdown",
+            targetSelectId: "professionSelect",
+            dataSourceVariable: "JOBS_DATA",
+            optionValueField: "职业",
+            optionTextField: "职业",
+            updateFunction: "updateJobTraitsAsSkills" // This function will be called, then we add our logic
+        },
+        { prompt: "请输入第一个主要经历的关键词：", targetFieldId: "expKeyword" },
+        { prompt: "请输入第二个主要经历的关键词：", targetFieldId: "expKeyword2" },
+        { prompt: "请输入你的角色背景故事：", targetFieldId: "backgroundStory" }
+        // Removed equipment and attribute questions
+    ];
+
+    let currentNewbieQuestionIndex = 0;
+    let newbieUserAnswers = {};
+
+    function displayCurrentNewbieQuestion() {
+        if (currentNewbieQuestionIndex < newbieGuideQuestions.length) {
+            const question = newbieGuideQuestions[currentNewbieQuestionIndex];
+            newbieGuideQuestionText.textContent = question.prompt;
+
+            // Hide all input types initially
+            newbieGuideAnswerInput.style.display = 'none';
+            // newbieGuideAttributesContainer.style.display = 'none'; // Removed
+            if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive check if HTML not yet updated
+                 document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
+            }
+            newbieGuideDropdownInput.style.display = 'none';
+
+            if (question.questionType === "dropdown") {
+                newbieGuideDropdownInput.style.display = 'block';
+                newbieGuideDropdownInput.innerHTML = ''; // Clear existing options
+
+                let dataSource;
+                // Access the global constants directly based on the string name
+                if (question.dataSourceVariable === "RACES_DATA") {
+                    dataSource = typeof RACES_DATA !== 'undefined' ? RACES_DATA : null;
+                } else if (question.dataSourceVariable === "GROUPS_DATA") {
+                    dataSource = typeof GROUPS_DATA !== 'undefined' ? GROUPS_DATA : null;
+                } else if (question.dataSourceVariable === "JOBS_DATA") {
+                    dataSource = typeof JOBS_DATA !== 'undefined' ? JOBS_DATA : null;
+                } else {
+                    dataSource = null;
+                    console.error(`Newbie Guide: Unknown dataSourceVariable: ${question.dataSourceVariable}`);
+                }
+
+                if (dataSource && Array.isArray(dataSource)) {
+                    // Add a default "please select" option
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = "";
+                    defaultOption.textContent = `--- 请选择${question.prompt.replace("请选择你的", "").replace("：", "")} ---`;
+                    newbieGuideDropdownInput.appendChild(defaultOption);
+
+                    dataSource.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item[question.optionValueField];
+                        option.textContent = item[question.optionTextField];
+                        newbieGuideDropdownInput.appendChild(option);
+                    });
+                } else {
+                    console.error(`Newbie Guide: Data source "${question.dataSourceVariable}" not found, not an array, or not accessible directly.`);
+                    // Optionally, display an error or a disabled select
+                }
+                newbieGuideDropdownInput.focus();
+            } else { // Default to text input
+                newbieGuideAnswerInput.style.display = 'block';
+                newbieGuideAnswerInput.value = "";
+                newbieGuideAnswerInput.focus();
+            }
+
+            if (currentNewbieQuestionIndex === newbieGuideQuestions.length - 1) {
+                newbieGuideNextButton.textContent = "完成";
+            } else {
+                newbieGuideNextButton.textContent = "下一步";
+            }
+        }
+    }
+
+    function populateFieldsFromNewbieGuide() {
+        for (const fieldId in newbieUserAnswers) {
+            const element = document.getElementById(fieldId);
+            if (element) {
+                element.value = newbieUserAnswers[fieldId];
+                if (element.id === 'level') { // Example: trigger input for level if it has listeners
+                    element.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            } else {
+                if (!fieldId.includes("_placeholder_")) {
+                    console.warn(`Newbie Guide: Target field with ID '${fieldId}' not found.`);
+                } else {
+                     console.log(`Newbie Guide: Placeholder field '${fieldId}' was answered. Value: ${newbieUserAnswers[fieldId]}. Manual handling needed.`);
+                }
+            }
+        }
+        resetNewbieGuide(); // Reset and hide modal
+    }
+
+    function startNewbieGuide() {
+        currentNewbieQuestionIndex = 0;
+        newbieUserAnswers = {};
+        // newbieGuideAttributesContainer.style.display = 'none'; // Ensure attrs hidden initially // Removed
+        if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive
+            document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
+        }
+        if (newbieGuideDropdownInput) newbieGuideDropdownInput.style.display = 'none'; // Ensure dropdown hidden initially
+        newbieGuideAnswerInput.style.display = 'block';    // Ensure general input shown initially
+        displayCurrentNewbieQuestion();
+        newbieGuideModal.style.display = 'block';
+    }
+    
+    function resetNewbieGuide() {
+        newbieGuideModal.style.display = 'none';
+        currentNewbieQuestionIndex = 0;
+        newbieUserAnswers = {};
+        newbieGuideNextButton.textContent = "下一步";
+        // newbieGuideAttributesContainer.style.display = 'none'; // Removed
+        if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive
+            document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
+        }
+        if (newbieGuideDropdownInput) newbieGuideDropdownInput.style.display = 'none';
+        newbieGuideAnswerInput.style.display = 'block'; // Default to showing general input
+    }
+
+    // Check for newbieGuideAttributesContainer existence for safety, though it should be removed from HTML
+    const newbieGuideAttributesContainerElement = document.getElementById('newbieGuideAttributesContainer');
+
+    if (newbieGuideButton && newbieGuideModal && newbieGuideModalCloseButton && newbieGuideCancelButton && newbieGuideNextButton && newbieGuideQuestionText && newbieGuideAnswerInput && newbieGuideDropdownInput) {
+        newbieGuideButton.addEventListener('click', startNewbieGuide);
+
+        newbieGuideNextButton.addEventListener('click', () => {
+            const question = newbieGuideQuestions[currentNewbieQuestionIndex];
+            if (!question) return; // Should not happen
+
+            // Removed attribute handling block
+            if (question.questionType === "dropdown") {
+                const selectedValue = newbieGuideDropdownInput.value;
+                // Store answer using targetSelectId as key, as it directly maps to the form's select element ID
+                newbieUserAnswers[question.targetSelectId] = selectedValue;
+
+                // Apply to character sheet and call update function
+                const targetSelectElement = document.getElementById(question.targetSelectId);
+                if (targetSelectElement) {
+                    targetSelectElement.value = selectedValue;
+                    // Manually trigger change event for the main form's select,
+                    // so its own event listeners (like updateRaceTraitsAsSkills) fire.
+                    targetSelectElement.dispatchEvent(new Event('change', { bubbles: true }));
+
+                    // The 'change' event on the main form's select elements should trigger their respective
+                    // update functions (updateRaceTraitsAsSkills, updateGroupTraitAsSkill, updateJobTraitsAsSkills)
+                    // as those functions are already set up as event listeners for those select elements.
+                    // Thus, explicitly calling window[question.updateFunction]() here might be redundant
+                    // and could lead to double execution if not handled carefully.
+                    // We rely on the existing event listeners on the main form's select elements.
+                    if (question.updateFunction) {
+                         console.log(`Newbie Guide: Triggered 'change' on ${question.targetSelectId}, which should call ${question.updateFunction}.`);
+                    }
+
+                    // Profession template filling logic
+                    if (question.targetSelectId === "professionSelect") {
+                        const selectedProfessionValue = newbieUserAnswers[question.targetSelectId]; // This is the '职业' name
+                        const template = professionTemplates[selectedProfessionValue];
+
+                        if (template) {
+                            console.log(`Applying template for profession: ${selectedProfessionValue}`);
+                            // Fill attributes
+                            const attributeFields = ["strength", "agility", "instinct", "grace", "knowledge", "dexterity"];
+                            template.attributes.forEach((value, index) => {
+                                const fieldId = attributeFields[index];
+                                const element = document.getElementById(fieldId);
+                                if (element) {
+                                    element.value = value;
+                                } else {
+                                    console.warn(`Newbie Guide Template: Attribute field ${fieldId} not found.`);
+                                }
+                            });
+
+                            // Fill main weapon (slot 1)
+                            if (template.weapon) {
+                                document.getElementById('weaponName1').value = template.weapon.名称 || "";
+                                document.getElementById('weaponCheck1').value = template.weapon.检定 || "";
+                                document.getElementById('weaponAttribute1').value = template.weapon.属性 || "";
+                                document.getElementById('weaponRange1').value = template.weapon.范围 || "";
+                                document.getElementById('weaponDamage1').value = template.weapon.伤害 || "";
+                                document.getElementById('weaponTwoHanded1').value = template.weapon.负荷 || "";
+                                const weaponTrait1Textarea = document.getElementById('weaponTrait1');
+                                if (weaponTrait1Textarea) {
+                                    weaponTrait1Textarea.value = template.weapon.特性 || "";
+                                    autoGrowTextarea({ target: weaponTrait1Textarea });
+                                }
+                            }
+
+                            // Fill off-hand weapon (slot 2 - auxiliary)
+                            if (template.offHandWeapon) {
+                                document.getElementById('weaponName2').value = template.offHandWeapon.名称 || "";
+                                document.getElementById('weaponCheck2').value = template.offHandWeapon.检定 || "";
+                                document.getElementById('weaponAttribute2').value = template.offHandWeapon.属性 || "";
+                                document.getElementById('weaponRange2').value = template.offHandWeapon.范围 || "";
+                                document.getElementById('weaponDamage2').value = template.offHandWeapon.伤害 || "";
+                                document.getElementById('weaponTwoHanded2').value = template.offHandWeapon.负荷 || "";
+                                const weaponTrait2Textarea = document.getElementById('weaponTrait2');
+                                if (weaponTrait2Textarea) {
+                                    weaponTrait2Textarea.value = template.offHandWeapon.特性 || "";
+                                    autoGrowTextarea({ target: weaponTrait2Textarea });
+                                }
+                            } else { // Clear auxiliary weapon slot if template doesn't have one
+                                document.getElementById('weaponName2').value = "";
+                                document.getElementById('weaponCheck2').value = "";
+                                document.getElementById('weaponAttribute2').value = "";
+                                document.getElementById('weaponRange2').value = "";
+                                document.getElementById('weaponDamage2').value = "";
+                                document.getElementById('weaponTwoHanded2').value = "";
+                                const weaponTrait2Textarea = document.getElementById('weaponTrait2');
+                                if (weaponTrait2Textarea) {
+                                    weaponTrait2Textarea.value = "";
+                                    autoGrowTextarea({ target: weaponTrait2Textarea });
+                                }
+                            }
+
+                            // Fill armor (slot 1)
+                            if (template.armor) {
+                                document.getElementById('armorName1').value = template.armor.名称 || "";
+                                document.getElementById('armorDefense1').value = template.armor.防御 || "";
+                                const armorTrait1Textarea = document.getElementById('armorTrait1');
+                                if (armorTrait1Textarea) {
+                                    armorTrait1Textarea.value = template.armor.特性 || "";
+                                    autoGrowTextarea({ target: armorTrait1Textarea });
+                                }
+                            }
+                            // Update Memory Bank: Active Context
+                            const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                            const activeContextUpdate = `\n* [${timestamp}] - Newbie guide auto-filled attributes, T1 main/off-hand weapon, and T1 armor for profession: ${selectedProfessionValue}.`;
+                            // This would ideally use a tool to append, but for now, it's a conceptual note.
+                            console.log("MEMORY BANK UPDATE (activeContext.md):", activeContextUpdate);
+
+                        } else {
+                            console.log(`Newbie Guide: No template found for profession: ${selectedProfessionValue}. Proceeding without auto-fill.`);
+                        }
+                    }
+
+                } else {
+                    console.warn(`Newbie Guide: Target select element with ID '${question.targetSelectId}' not found on the main form.`);
+                }
+            } else { // Default text input
+                newbieUserAnswers[question.targetFieldId] = newbieGuideAnswerInput.value;
+            }
+
+            currentNewbieQuestionIndex++;
+            if (currentNewbieQuestionIndex < newbieGuideQuestions.length) {
+                displayCurrentNewbieQuestion();
+            } else {
+                populateFieldsFromNewbieGuide();
+                // resetNewbieGuide() is called by populateFieldsFromNewbieGuide
+            }
+        });
+
+        newbieGuideModalCloseButton.addEventListener('click', resetNewbieGuide);
+        newbieGuideCancelButton.addEventListener('click', resetNewbieGuide);
+
+        window.addEventListener('click', (event) => {
+            if (event.target === newbieGuideModal) {
+                resetNewbieGuide();
+            }
+        });
     }
 
     if (appearanceUpload && appearancePreview && removeAppearanceBtn) {
@@ -137,8 +669,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const newItem = document.createElement('div');
         newItem.classList.add('experience-item');
         newItem.innerHTML = `
-            <input type="text" id="expKeyword" name="expKeyword" placeholder="关键词">
-            <input type="text" id="expValue" name="expValue" placeholder="调整值">
+            <input type="text" name="expKeyword" placeholder="关键词">
+            <input type="text" name="expValue" placeholder="调整值" value="1">
             <button type="button" class="remove-item-btn">-</button>
         `;
         experiencesContainer.appendChild(newItem);
@@ -251,9 +783,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Initial population for the static item row if it exists
-    const initialItemSelect = itemsContainer.querySelector('.item-name-select');
+    const initialItemSelect = itemsContainer.querySelector('.item-name-select'); // This should get the first static item's select
     if (initialItemSelect) {
-        populateItemSelect(initialItemSelect);
+        populateItemSelect(initialItemSelect); // Populates options
+
+        // Set default item after options are populated, if no value is already set (e.g., by import)
+        // and if it's the specific static select with id="itemName"
+        if (initialItemSelect.id === 'itemName' && !initialItemSelect.value) {
+            const defaultItemNameToSet = "小型生命药水Minor Health Potion";
+            const defaultItemEffectToSet = "立刻回复1d4生命值";
+            
+            let optionExists = false;
+            for (let i = 0; i < initialItemSelect.options.length; i++) {
+                if (initialItemSelect.options[i].value === defaultItemNameToSet) {
+                    optionExists = true;
+                    break;
+                }
+            }
+
+            if (!optionExists) {
+                const itemData = ALL_ITEMS_DATA.find(i => i.名称 === defaultItemNameToSet);
+                if (itemData) {
+                    const newOption = document.createElement('option');
+                    newOption.value = defaultItemNameToSet;
+                    newOption.textContent = defaultItemNameToSet;
+                    initialItemSelect.appendChild(newOption);
+                    optionExists = true;
+                } else {
+                    console.warn(`Default item "${defaultItemNameToSet}" not found in ALL_ITEMS_DATA. Cannot add as an option.`);
+                }
+            }
+
+            if (optionExists) {
+                initialItemSelect.value = defaultItemNameToSet;
+                initialItemSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                
+                // Ensure the description is set correctly, as the change event might be handled generally by populateItemSelect
+                const parentItemDiv = initialItemSelect.closest('.item');
+                if (parentItemDiv) {
+                    const descriptionTextarea = parentItemDiv.querySelector('textarea[name="itemDescription"]'); // Or by ID if static
+                    const quantityInput = parentItemDiv.querySelector('input[name="itemQuantity"]');
+                    
+                    if (descriptionTextarea) {
+                        descriptionTextarea.value = defaultItemEffectToSet;
+                        autoGrowTextarea({ target: descriptionTextarea });
+                    }
+                    if (quantityInput && !quantityInput.value) { // Set quantity if not already set
+                        quantityInput.value = "1";
+                    }
+                }
+            }
+        }
     }
 
 

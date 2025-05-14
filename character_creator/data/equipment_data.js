@@ -298,7 +298,7 @@ const offhand_weapon_t1 = [
 const armor_t1 = [
     {
         "名称": "填充布甲Gambeson Armor",
-        "防御": "2",
+        "防御": "3",
         "特性": "灵活Flexible: 闪避值+1"
     },
     {
@@ -308,12 +308,12 @@ const armor_t1 = [
     },
     {
         "名称": "链甲Chainmail Armor",
-        "防御": "6",
+        "防御": "5",
         "特性": "厚重Heavy: 闪避值-1"
     },
     {
         "名称": "全板甲Full Plate Armor",
-        "防御": "8",
+        "防御": "6",
         "特性": "极重Very Heavy: 闪避值-2，敏捷-1"
     }
 ];

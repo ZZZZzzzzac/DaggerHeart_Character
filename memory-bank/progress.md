@@ -8,14 +8,6 @@ This file tracks the project's progress using a task list format.
 ## Completed Tasks
 
 *
-
-## Current Tasks
-
-*
-
-## Next Steps
-
-*
 * [2025-05-13 15:34:00] - 完成了 character_creator 网页应用的创建，包括 index.html, style.css, 和 script.js。
 * [2025-05-13 17:19:42] - 完成任务：调整“经历”部分字段属性和样式 (移除索引，调整值为数字输入，限制宽度)。
 * [2025-05-13 17:21:03] - 完成任务：调整“技能”部分删除按钮的HTML结构位置。
@@ -33,7 +25,7 @@ This file tracks the project's progress using a task list format.
 * [2025-05-14 14:33:51] - 完成任务：重构“武器”部分，将标签改为占位符，并将“双手”字段从布尔型复选框改为字符串型文本输入。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
 * [2025-05-14 14:43:58] - 完成任务：将“经历”、“护甲”和“道具”部分输入字段的标签改为占位符。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
 * [2025-05-14 14:49:27] - 完成任务：调整“护甲”部分布局，使其标题与输入框在同一行，以匹配“武器”部分的样式。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css)。
-* [2025-05-14 14:53:01] - 完成任务：将“经历”的“调整值”、“护甲”的“防御”和“道具”的“数量”输入框类型更改为 `text`，并更新了 `placeholder` 和导出逻辑。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
+* [2025-05-14 14:53:01] - 完成任务：将“经历”的“调整值”、“护甲”的“防御”和“道具”的“数量”输入框类型更改为 `text`，并更新了相应的 `placeholder` 和导出逻辑。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
 * [2025-05-14 14:57:01] - 完成任务：移除“背景故事”字段的标签，并为其添加 `placeholder`。影响文件：[`character_creator/index.html`](character_creator/index.html)。
 * [2025-05-14 15:06:58] - 完成任务：调整角色创建器初始设定部分的布局，将字段分为三行显示，并将“等级”字段移至第一行。(涉及 [`character_creator/index.html`](character_creator/index.html:15) 和 [`character_creator/style.css`](character_creator/style.css:77))
 * [2025-05-14 16:17:39] - 完成任务：将 `character_creator/data/equipment.csv` 转换为JS数据格式并保存为 `character_creator/data/equipment_data.js`，按武器/护甲和T0-T3等级分类。
@@ -46,3 +38,31 @@ This file tracks the project's progress using a task list format.
 * [2025-05-14 20:47:54] - 完成任务：新增两个武器槽（共四个），重命名武器1/2并实现类型筛选（主武器槽不含副手，副武器槽仅含副手，新增槽位可选所有类型）。修改了HTML、JS的导入/导出及弹窗逻辑。(涉及 [`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js))
 * [2025-05-14 20:50:04] - 完成任务：修复装备选择弹窗中的 `ReferenceError`。(涉及 [`character_creator/script.js`](character_creator/script.js))
 * [2025-05-14 20:58:57] - 完成任务：将代码中的所有 Tier 从 T0-T3 更新为 T1-T4。这包括修改 [`character_creator/script.js`](character_creator/script.js) 中的 `calculateTier` 函数和 `filterAndDisplayEquipment` 函数中对装备数据的引用。(`character_creator/data/equipment_data.js` 已由用户手动更新)。
+* [2025-05-14 22:36:36] - 完成任务：实现“新人引导”功能的初步UI，包括在HTML中添加按钮和模态框结构，并在JS中实现基础的模态框显示/隐藏逻辑。(涉及 [`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-14 22:41:23] - 完成任务：通过在 [`character_creator/style.css`](character_creator/style.css) 中添加 CSS 规则，确保“新人引导”模态框 (`#newbieGuideModal`) 默认隐藏。
+* [2025-05-14 23:38:23] - 完成任务：扩展“新人引导”功能以支持下拉选择，并修复了数据源访问问题。
+    *   更新了 [`character_creator/script.js`](character_creator/script.js) 中的 `newbieGuideQuestions` 定义，为种族、混血、社群、职业添加了 `dropdown` 类型的问题，并修正了 `optionValueField` 和 `optionTextField` 以匹配实际数据结构。
+    *   修改了 [`character_creator/script.js`](character_creator/script.js) 中的 `displayCurrentNewbieQuestion` 函数：
+        *   使其能够正确显示/隐藏下拉输入框 (`#newbieGuideDropdownInput`)。
+        *   动态从全局数据常量（如 `RACES_DATA`）加载数据并填充选项到 `#newbieGuideDropdownInput`，修正了之前通过 `window[]` 访问数据导致的问题。
+    *   扩展了 [`character_creator/script.js`](character_creator/script.js) 中 `newbieGuideNextButton` 的点击事件逻辑，以正确处理 `dropdown` 类型问题的答案：
+        *   获取用户在 `#newbieGuideDropdownInput` 中的选择。
+        *   将选择值存储在 `newbieUserAnswers` 中。
+        *   更新人物卡上对应的 `<select>` 元素的值。
+        *   通过触发对应 `<select>` 元素的 `change` 事件来间接触发其已绑定的更新函数（如 `updateRaceTraitsAsSkills`）。
+    *   在 [`character_creator/index.html`](character_creator/index.html) 的新人引导模态框中添加了 `<select id="newbieGuideDropdownInput"></select>` 元素。
+* [2025-05-14 23:45:07] - 完成任务：更新“新人引导”功能，允许将第二个经历的关键词自动填充到表单中第二个默认经历条目。
+    *   在 [`character_creator/index.html`](character_creator/index.html) 中为第二个经历的关键词输入框分配了唯一ID `expKeyword2` (调整值为 `expValue2`)。
+    *   在 [`character_creator/script.js`](character_creator/script.js) 的 `newbieGuideQuestions` 中更新了第二个经历问题的 `targetFieldId` 为 `expKeyword2`。
+* [2025-05-14 23:50:40] - 完成任务：修改经历条目的默认“调整值”。
+    *   在 [`character_creator/index.html`](character_creator/index.html) 中，将初始两个静态经历条目的“调整值”输入框的 `value` 设置为 "2"。
+    *   在 [`character_creator/script.js`](character_creator/script.js) 中，修改了 `addExperienceBtn` 的事件监听器，使动态添加的新经历条目的“调整值”输入框的 `value` 默认为 "1"。移除了动态添加经历时对 `id` 的设置，因为 `id` 应唯一，而 `name` 属性可用于表单数据收集。
+
+## Current Tasks
+
+*
+
+## Next Steps
+
+*
+* [2025-05-15 01:10:19] - 完成任务：将“新人引导按键”背景颜色修改为红色。在 [`character_creator/style.css`](character_creator/style.css) 中为 `#newbieGuideButton` 添加了 `background-color: red;`。

@@ -7,13 +7,9 @@ This file tracks the project's current status, including recent changes, current
 
 ## Current Focus
 
-*
+* Setting default "调整值" for experience items.
 
 ## Recent Changes
-
-*
-
-## Open Questions/Issues
 
 *
 * [2025-05-13 15:34:10] - 创建了 character_creator 应用 (HTML, CSS, JS) 以根据 character_template.json 生成角色表单并支持JSON导出。
@@ -78,3 +74,15 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-14 19:54:12] - 将武器/护甲的特性字段从 input 改为 textarea，并使其单列一行。更新了HTML结构，添加了CSS样式，并确保JS中的 autoGrowTextarea 功能适用于新的 textarea。(影响文件: [`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))
 * [2025-05-14 20:49:30] - 修复了装备选择弹窗中因变量名错误 (`filteredItems` 应为 `textFilteredItems`) 导致的 `ReferenceError`。(影响文件: [`character_creator/script.js`](character_creator/script.js))
 * [2025-05-14 20:56:05] - 更新了 [`character_creator/script.js`](character_creator/script.js) 中的 Tier 逻辑，将 Tier 从 T0-T3 调整为 T1-T4。这包括修改 `calculateTier` 函数以返回新的 Tier 字符串，并更新 `filterAndDisplayEquipment` 函数中对装备数据（如 `weapon_t0_physics`）的引用及其对应的 Tier 字符串。
+* [2025-05-14 22:36:21] - 实现了“新人引导”功能的初步UI：在 [`character_creator/index.html`](character_creator/index.html) 中添加了“新人引导”按钮，并在 [`character_creator/script.js`](character_creator/script.js) 中实现了点击按钮弹出基础模态对话框的逻辑。该对话框包含标题、占位符文本以及“下一步”和“关闭”按钮。
+* [2025-05-14 22:41:07] - 在 [`character_creator/style.css`](character_creator/style.css) 中为 `#newbieGuideModal` 添加了 CSS 规则，确保其默认隐藏 (`display: none;`) 并包含基本模态框样式。
+* [2025-05-14 23:21:18] - 扩展了“新人引导”功能，支持种族、混血、社群、职业的下拉选择。更新了 [`character_creator/script.js`](character_creator/script.js) 中的 `newbieGuideQuestions` 定义，修改了 `displayCurrentNewbieQuestion` 以处理下拉框的显示和数据填充，并扩展了 `newbieGuideNextButton` 的逻辑以处理下拉框选择、更新主表单对应 `<select>` 并触发其 `change` 事件以调用相关更新函数。同时，在 [`character_creator/index.html`](character_creator/index.html) 的新人引导模态框中添加了 `#newbieGuideDropdownInput` 元素。
+* [2025-05-14 23:26:16] - 修复了“新人引导”中下拉框数据源字段名错误的问题。在 [`character_creator/script.js`](character_creator/script.js) 的 `newbieGuideQuestions` 定义中，将 `RACES_DATA` 的 `optionValueField` 和 `optionTextField` 从 "name" 修改为 "race"；`GROUPS_DATA` 的对应字段修改为 "社群"；`JOBS_DATA` 的对应字段修改为 "职业"。
+* [2025-05-14 23:36:46] - 修改了 [`character_creator/script.js`](character_creator/script.js) 中 `displayCurrentNewbieQuestion` 函数访问数据源的方式，从 `window[question.dataSourceVariable]` 改为直接使用全局常量名（如 `RACES_DATA`），以解决数据源未定义的问题。
+* [2025-05-14 23:43:01] - 更新了“新人引导”功能，以允许将第二个经历的关键词自动填充到表单中第二个默认经历条目。这包括：在 [`character_creator/index.html`](character_creator/index.html) 中为第二个经历的关键词输入框分配了唯一ID `expKeyword2`，并在 [`character_creator/script.js`](character_creator/script.js) 的 `newbieGuideQuestions` 中更新了相应的 `targetFieldId`。
+* [2025-05-14 23:49:18] - 修改了经历条目的默认“调整值”：初始两个经历条目的“调整值”默认为2（通过修改 [`character_creator/index.html`](character_creator/index.html) 实现），新添加的经历条目“调整值”默认为1（通过修改 [`character_creator/script.js`](character_creator/script.js) 的 `addExperienceBtn` 逻辑实现）。
+
+## Open Questions/Issues
+
+*
+* [2025-05-15 01:10:09] - 将“新人引导按键”背景颜色修改为红色。涉及文件：[`character_creator/index.html`](character_creator/index.html) (定位按钮 `id="newbieGuideButton"`), [`character_creator/style.css`](character_creator/style.css) (添加样式 `#newbieGuideButton { background-color: red; }`)。
