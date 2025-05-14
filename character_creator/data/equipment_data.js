@@ -15,7 +15,7 @@ const weapon_t0_physics = [
         "范围": "近战Melee",
         "伤害": "d12+3",
         "负荷": "双手",
-        "特性": "重型Heavy"
+        "特性": "重型Heavy: 敏捷-1"
     },
     {
         "名称": "巨剑Greatsword",
@@ -24,7 +24,7 @@ const weapon_t0_physics = [
         "范围": "近战Melee",
         "伤害": "d10+3",
         "负荷": "双手",
-        "特性": "巨型Massive"
+        "特性": "巨型Massive: 敏捷-1，额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "钉头锤Mace",
@@ -42,7 +42,7 @@ const weapon_t0_physics = [
         "范围": "近战Melee",
         "伤害": "d8",
         "负荷": "单手",
-        "特性": "可靠Reliable"
+        "特性": "可靠Reliable: 你的攻击掷骰+1"
     },
     {
         "名称": "长剑Longsword",
@@ -69,7 +69,7 @@ const weapon_t0_physics = [
         "范围": "近战Melee",
         "伤害": "d8",
         "负荷": "单手",
-        "特性": "迅速Quick"
+        "特性": "迅捷Quick: 标记1个压力以额外攻击一个范围内的目标"
     },
     {
         "名称": "匕首Dagger",
@@ -132,7 +132,7 @@ const weapon_t0_physics = [
         "范围": "极远Very Far",
         "伤害": "d6+3",
         "负荷": "双手",
-        "特性": "繁琐Cumbersome"
+        "特性": "繁琐Cumbersome: 闪避值-1"
     }
 ];
 
@@ -225,7 +225,7 @@ const weapon_t0_magic = [
         "范围": "极远Very Far",
         "伤害": "d6",
         "负荷": "双手",
-        "特性": "强力Powerful"
+        "特性": "强力Powerful: 额外骰1个伤害骰并去掉其中最小的一个 "
     }
 ];
 
@@ -237,7 +237,7 @@ const offhand_weapon_t0 = [
         "范围": "近战Melee",
         "伤害": "d4",
         "负荷": "副手",
-        "特性": "保护Protective+1"
+        "特性": "保护Protective: 护甲值+1"
     },
     {
         "名称": "塔盾Tower Shield",
@@ -255,7 +255,7 @@ const offhand_weapon_t0 = [
         "范围": "近战Melee",
         "伤害": "d8",
         "负荷": "副手",
-        "特性": "双持Paired +2"
+        "特性": "双持Paired: 主武器近战伤害 +2"
     },
     {
         "名称": "短剑Shortsword",
@@ -264,7 +264,7 @@ const offhand_weapon_t0 = [
         "范围": "近战Melee",
         "伤害": "d8",
         "负荷": "副手",
-        "特性": "双持Paired +2"
+        "特性": "双持Paired: 主武器近战伤害 +2"
     },
     {
         "名称": "鞭子Whip",
@@ -273,7 +273,7 @@ const offhand_weapon_t0 = [
         "范围": "邻近Very Close",
         "伤害": "d6",
         "负荷": "副手",
-        "特性": "鞭笞Whipcrack"
+        "特性": "鞭笞Whipcrack: 标记1点压力，将所有近战范围内的敌人击退至近距离"
     },
     {
         "名称": "抓钩Grappler",
@@ -282,7 +282,7 @@ const offhand_weapon_t0 = [
         "范围": "近距离Close",
         "伤害": "d6",
         "负荷": "副手",
-        "特性": "出钩Hook"
+        "特性": "出钩Hook: 进行一次成功的攻击后，你可以将目标拉至你的近战范围内"
     },
     {
         "名称": "手弩Hand Crossbow",
@@ -299,7 +299,7 @@ const armor_t0 = [
     {
         "名称": "填充布甲Gambeson Armor",
         "防御": "2",
-        "特性": "灵活Flexible"
+        "特性": "灵活Flexible: 闪避值+1"
     },
     {
         "名称": "皮甲Leather Armor",
@@ -309,12 +309,12 @@ const armor_t0 = [
     {
         "名称": "链甲Chainmail Armor",
         "防御": "6",
-        "特性": "厚重Heavy"
+        "特性": "厚重Heavy: 闪避值-1"
     },
     {
         "名称": "全板甲Full Plate Armor",
         "防御": "8",
-        "特性": "极重Very Heavy"
+        "特性": "极重Very Heavy: 闪避值-2，敏捷-1"
     }
 ];
 
@@ -335,7 +335,7 @@ const weapon_t1_physics = [
         "范围": "近战Melee",
         "伤害": "d12+6",
         "负荷": "双手",
-        "特性": "重型Heavy"
+        "特性": "重型Heavy: 敏捷-1"
     },
     {
         "名称": "改良巨剑Improved Greatsword",
@@ -344,7 +344,7 @@ const weapon_t1_physics = [
         "范围": "近战Melee",
         "伤害": "d10+6",
         "负荷": "双手",
-        "特性": "巨型Massive"
+        "特性": "巨型Massive: 敏捷-1，额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "改良钉头锤Improved Mace",
@@ -362,7 +362,7 @@ const weapon_t1_physics = [
         "范围": "近战Melee",
         "伤害": "d8+6",
         "负荷": "单手",
-        "特性": "可靠Reliable"
+        "特性": "可靠Reliable: 你的攻击掷骰+1"
     },
     {
         "名称": "改良长剑Improved Longsword",
@@ -389,7 +389,7 @@ const weapon_t1_physics = [
         "范围": "近战Melee",
         "伤害": "d8+3",
         "负荷": "单手",
-        "特性": "迅速Quick"
+        "特性": "迅捷Quick: 标记1个压力以额外攻击一个范围内的目标"
     },
     {
         "名称": "改良匕首Improved Dagger",
@@ -452,7 +452,7 @@ const weapon_t1_physics = [
         "范围": "极远Very Far",
         "伤害": "d6+6",
         "负荷": "双手",
-        "特性": "繁琐Cumbersome"
+        "特性": "繁琐Cumbersome: 闪避值-1"
     },
     {
         "名称": "鎏金弯刀Gilded Falchion",
@@ -461,7 +461,7 @@ const weapon_t1_physics = [
         "范围": "近战Melee",
         "伤害": "d10+6",
         "负荷": "双手",
-        "特性": "强力Powerful"
+        "特性": "强力Powerful: 额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "拳刃Knuckle Blades",
@@ -470,7 +470,7 @@ const weapon_t1_physics = [
         "范围": "近战Melee",
         "伤害": "d8+3",
         "负荷": "单手",
-        "特性": "残暴Brutal"
+        "特性": "残暴Brutal: 伤害骰每掷出一次最大值，就额外掷出一个伤害骰"
     },
     {
         "名称": "乌洛克阔剑Urok Broadsword",
@@ -479,7 +479,7 @@ const weapon_t1_physics = [
         "范围": "近战Melee",
         "伤害": "d10+6",
         "负荷": "双手",
-        "特性": "致命Deadly"
+        "特性": "致命Deadly: 造成严重伤害时，额外造成 1 点生命值"
     },
     {
         "名称": "刃鞭Bladed Whip",
@@ -488,7 +488,7 @@ const weapon_t1_physics = [
         "范围": "邻近Very Close",
         "伤害": "d8+3",
         "负荷": "单手",
-        "特性": "迅速Quick"
+        "特性": "迅捷Quick: 标记1个压力以额外攻击一个范围内的目标"
     },
     {
         "名称": "钢铸戟Steelforged Halberd",
@@ -497,7 +497,7 @@ const weapon_t1_physics = [
         "范围": "邻近Very Close",
         "伤害": "d8+4",
         "负荷": "双手",
-        "特性": "恐惧Scary"
+        "特性": "恐惧Scary: 成功的攻击同时会额外标记1点压力"
     },
     {
         "名称": "战镰War Scythe",
@@ -506,7 +506,7 @@ const weapon_t1_physics = [
         "范围": "邻近Very Close",
         "伤害": "d8+5",
         "负荷": "双手",
-        "特性": "可靠Reliable"
+        "特性": "可靠Reliable: 你的攻击掷骰+1"
     },
     {
         "名称": "巨弓Greatbow",
@@ -515,7 +515,7 @@ const weapon_t1_physics = [
         "范围": "远距离Far",
         "伤害": "d6+6",
         "负荷": "双手",
-        "特性": "强力Powerful"
+        "特性": "强力Powerful: 额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "火铳Blunderbuss",
@@ -524,7 +524,7 @@ const weapon_t1_physics = [
         "范围": "远距离Far",
         "伤害": "d6+6",
         "负荷": "单手",
-        "特性": "装填Reloading"
+        "特性": "装填Reloading: 攻击后骰1d6，如果骰出1，下次攻击前你必须使用一个动作进行装填"
     },
     {
         "名称": "细弦弓Finehair Bow",
@@ -533,7 +533,7 @@ const weapon_t1_physics = [
         "范围": "极远Very Far",
         "伤害": "d6+5",
         "负荷": "双手",
-        "特性": "可靠Reliable"
+        "特性": "可靠Reliable: 你的攻击掷骰+1"
     }
 ];
 
@@ -608,7 +608,7 @@ const weapon_t1_magic = [
         "范围": "远距离Far",
         "伤害": "d6+3",
         "负荷": "双手",
-        "特性": "多面Versatile：本能近战d10+2"
+        "特性": "多用Versatile：本能近战d10+2"
     },
     {
         "名称": "改良魔杖Improved Wand",
@@ -626,7 +626,7 @@ const weapon_t1_magic = [
         "范围": "极远Very Far",
         "伤害": "d6+3",
         "负荷": "双手",
-        "特性": "强力Powerful"
+        "特性": "强力Powerful: 额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "自我之刃Ego Blade",
@@ -635,7 +635,7 @@ const weapon_t1_magic = [
         "范围": "近战Melee",
         "伤害": "d12+4",
         "负荷": "单手",
-        "特性": "傲慢Pompous"
+        "特性": "傲慢Pompous: 0或者更低的风度才可以使用该武器"
     },
     {
         "名称": "施法剑Casting Sword",
@@ -644,7 +644,7 @@ const weapon_t1_magic = [
         "范围": "近战Melee",
         "伤害": "d10+4",
         "负荷": "双手",
-        "特性": "多面Versatile：知识远距离d6+3"
+        "特性": "多用Versatile：知识远距离d6+3"
     },
     {
         "名称": "吞噬匕首Devouring Dagger",
@@ -653,7 +653,7 @@ const weapon_t1_magic = [
         "范围": "近战Melee",
         "伤害": "d8+4",
         "负荷": "单手",
-        "特性": "恐惧Scary"
+        "特性": "恐惧Scary: 成功的攻击同时会额外标记1点压力"
     },
     {
         "名称": "异界之锤Hammer of Exota",
@@ -662,7 +662,7 @@ const weapon_t1_magic = [
         "范围": "近战Melee",
         "伤害": "d8+6",
         "负荷": "双手",
-        "特性": "爆发Eruptive"
+        "特性": "爆发Eruptive: 当你在近战中击中一个生物时，每个邻近的敌人都必须进行反应掷骰（14），否则也会受到一半的伤害"
     },
     {
         "名称": "尤塔里血弓Yutari Bloodbow",
@@ -671,7 +671,7 @@ const weapon_t1_magic = [
         "范围": "远距离Far",
         "伤害": "d6+4",
         "负荷": "双手",
-        "特性": "残暴Brutal"
+        "特性": "残暴Brutal: 伤害骰每掷出一次最大值，就额外掷出一个伤害骰"
     },
     {
         "名称": "长者之弓Elder Bow",
@@ -680,7 +680,7 @@ const weapon_t1_magic = [
         "范围": "远距离Far",
         "伤害": "d6+4",
         "负荷": "双手",
-        "特性": "强力Powerful"
+        "特性": "强力Powerful: 额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "伊利亚斯的权杖Scepter of Elias",
@@ -689,7 +689,7 @@ const weapon_t1_magic = [
         "范围": "远距离Far",
         "伤害": "d6+3",
         "负荷": "单手",
-        "特性": "振奋Invigorating"
+        "特性": "振奋Invigorating: 当你成功攻击时，掷一个 d4。掷出 4 时，清除1点压力"
     },
     {
         "名称": "迷惑魔杖Wand of Enthrallment",
@@ -698,7 +698,7 @@ const weapon_t1_magic = [
         "范围": "远距离Far",
         "伤害": "d6+4",
         "负荷": "单手",
-        "特性": "说服Persuasive"
+        "特性": "说服Persuasive: 在进行风度掷骰前可标记1点压力值以+2"
     },
     {
         "名称": "联结杖Bonded Staff",
@@ -707,7 +707,7 @@ const weapon_t1_magic = [
         "范围": "远距离Far",
         "伤害": "d6+4",
         "负荷": "双手",
-        "特性": "可靠Reliable"
+        "特性": "可靠Reliable: 你的攻击掷骰+1"
     }
 ];
 
@@ -719,7 +719,7 @@ const offhand_weapon_t1 = [
         "范围": "近战Melee",
         "伤害": "d4+2",
         "负荷": "副手",
-        "特性": "保护Protective+2"
+        "特性": "保护Protective: 护甲值+2"
     },
     {
         "名称": "改良塔盾Improved Tower Shield",
@@ -728,7 +728,7 @@ const offhand_weapon_t1 = [
         "范围": "近战Melee",
         "伤害": "d6+2",
         "负荷": "副手",
-        "特性": "壁垒Barrier+4 -2"
+        "特性": "壁垒Barrier: 护甲值+4，闪避值-2"
     },
     {
         "名称": "改良小匕首Improved Small Dagger",
@@ -737,7 +737,7 @@ const offhand_weapon_t1 = [
         "范围": "近战Melee",
         "伤害": "d8+2",
         "负荷": "副手",
-        "特性": "双持Paired +3"
+        "特性": "双持Paired: 主武器近战伤害 +3"
     },
     {
         "名称": "改良短剑Improved Shortsword",
@@ -746,7 +746,7 @@ const offhand_weapon_t1 = [
         "范围": "近战Melee",
         "伤害": "d8+2",
         "负荷": "副手",
-        "特性": "双持Paired+3"
+        "特性": "双持Paired: 主武器近战伤害+3"
     },
     {
         "名称": "改良鞭子Improved Whip",
@@ -755,7 +755,7 @@ const offhand_weapon_t1 = [
         "范围": "邻近Very Close",
         "伤害": "d6+2",
         "负荷": "副手",
-        "特性": "鞭笞Whipcrack"
+        "特性": "鞭笞Whipcrack: 标记1点压力，将所有近战范围内的敌人击退至近距离"
     },
     {
         "名称": "改良抓钩Improved Grappler",
@@ -764,7 +764,7 @@ const offhand_weapon_t1 = [
         "范围": "近距离Close",
         "伤害": "d6+2",
         "负荷": "副手",
-        "特性": "出钩Hook"
+        "特性": "出钩Hook: 进行一次成功的攻击后，你可以将目标拉至你的近战范围内"
     },
     {
         "名称": "改良手弩Improved Hand Crossbow",
@@ -782,7 +782,7 @@ const offhand_weapon_t1 = [
         "范围": "近战Melee",
         "伤害": "d6+2",
         "负荷": "副手",
-        "特性": "两用Double Duty"
+        "特性": "两用Double Duty: 护甲值+2，主武器近战伤害+1"
     },
     {
         "名称": "格挡匕首Parrying Dagger",
@@ -791,7 +791,7 @@ const offhand_weapon_t1 = [
         "范围": "近战Melee",
         "伤害": "d6+2",
         "负荷": "副手",
-        "特性": "格挡Parry"
+        "特性": "格挡Parry: 在对你发起攻击时，掷出该武器的伤害骰子。如果有任何与攻击者匹配的骰子，则在伤害总计之前将其移除"
     },
     {
         "名称": "回力斧Returning Axe",
@@ -808,7 +808,7 @@ const armor_t1 = [
     {
         "名称": "改良填充布甲Improved Gambeson Armor",
         "防御": "3",
-        "特性": "灵活Flexible"
+        "特性": "灵活Flexible: 闪避值+1"
     },
     {
         "名称": "改良皮甲Improved Leather Armor",
@@ -818,42 +818,42 @@ const armor_t1 = [
     {
         "名称": "改良链甲Improved Chainmail Armor",
         "防御": "7",
-        "特性": "厚重Heavy"
+        "特性": "厚重Heavy: 闪避值-1"
     },
     {
         "名称": "改良全板甲Improved Full Plate Armor",
         "防御": "9",
-        "特性": "极重Very Heavy"
+        "特性": "极重Very Heavy: 闪避值-2，敏捷-1"
     },
     {
         "名称": "埃伦德里安链甲Elundrian Chain Armor",
         "防御": "2",
-        "特性": "强化Reinforced"
+        "特性": "强化Reinforced: 增加你的护甲值，增加的数额取决于你拥有的未标记护甲槽的数量"
     },
     {
         "名称": "掠骸护甲Harrowbone Armor",
         "防御": "5",
-        "特性": "抵抗Resistance"
+        "特性": "抵抗Resistance: 标记 2 个护甲槽，使自己能够抵抗即将到来的伤害，而不是通过护甲值来减少伤害"
     },
     {
         "名称": "铁木胸甲Irontree Breastplate Armor",
         "防御": "5",
-        "特性": "坚固Sturdy"
+        "特性": "坚固Sturdy: 在标记最后一个护甲槽之前，掷一个 d6。如果掷出6，则可以使用护甲而无需标记槽位"
     },
     {
         "名称": "符文盾Runetan Shield",
         "防御": "5",
-        "特性": "护卫Warden"
+        "特性": "护卫Warden: 每个护甲槽可额外抵御2d4魔法伤害"
     },
     {
         "名称": "泰瑞斯软甲Tyris Soft Armor",
         "防御": "5",
-        "特性": "安静Quite"
+        "特性": "安静Quite: 任何试图不被人听到的移动动作掷骰 +2"
     },
     {
         "名称": "蔷薇野甲Rosewild Armor",
         "防御": "6",
-        "特性": "希冀Hope"
+        "特性": "希冀Hope: 每当你需要花费希望时，你可以改为标记装甲槽"
     }
 ];
 
@@ -874,7 +874,7 @@ const weapon_t2_physics = [
         "范围": "近战Melee",
         "伤害": "d12+9",
         "负荷": "双手",
-        "特性": "重型Heavy"
+        "特性": "重型Heavy: 敏捷-1"
     },
     {
         "名称": "高级巨剑Advanced Greatsword",
@@ -883,7 +883,7 @@ const weapon_t2_physics = [
         "范围": "近战Melee",
         "伤害": "d10+9",
         "负荷": "双手",
-        "特性": "巨型Massive"
+        "特性": "巨型Massive: 敏捷-1，额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "高级钉头锤Advanced Mace",
@@ -901,7 +901,7 @@ const weapon_t2_physics = [
         "范围": "近战Melee",
         "伤害": "d8+9",
         "负荷": "单手",
-        "特性": "可靠Reliable"
+        "特性": "可靠Reliable: 你的攻击掷骰+1"
     },
     {
         "名称": "高级长剑Advanced Longsword",
@@ -928,7 +928,7 @@ const weapon_t2_physics = [
         "范围": "近战Melee",
         "伤害": "d8+6",
         "负荷": "单手",
-        "特性": "迅速Quick"
+        "特性": "迅捷Quick: 标记1个压力以额外攻击一个范围内的目标"
     },
     {
         "名称": "高级匕首Advanced Dagger",
@@ -991,7 +991,7 @@ const weapon_t2_physics = [
         "范围": "极远Very Far",
         "伤害": "d6+9",
         "负荷": "双手",
-        "特性": "繁琐Cumbersome"
+        "特性": "繁琐Cumbersome: 闪避值-1"
     },
     {
         "名称": "闪蝶之刃Flickerfly Blade",
@@ -1000,7 +1000,7 @@ const weapon_t2_physics = [
         "范围": "近战Melee",
         "伤害": "d8+5",
         "负荷": "单手",
-        "特性": "锐翼Sharpwing"
+        "特性": "锐翼Sharpwing: 将你的敏捷属性值添加到该武器的伤害掷骰中"
     },
     {
         "名称": "勇气之剑Bravesword",
@@ -1009,7 +1009,7 @@ const weapon_t2_physics = [
         "范围": "近战Melee",
         "伤害": "d12+7",
         "负荷": "双手",
-        "特性": "密集Dense"
+        "特性": "密集Dense: 敏捷 -1 ，重伤阈值 +3"
     },
     {
         "名称": "地狱之锤Hell’s Hammer",
@@ -1018,7 +1018,7 @@ const weapon_t2_physics = [
         "范围": "近战Melee",
         "伤害": "d10+7",
         "负荷": "双手",
-        "特性": "毁灭Devastating"
+        "特性": "毁灭Devastating: 在攻击掷骰之前标记压力，在进行伤害掷骰时，把你的伤害骰改为d20"
     },
     {
         "名称": "拉布里斯斧Labrys Axe",
@@ -1036,7 +1036,7 @@ const weapon_t2_physics = [
         "范围": "近战Melee",
         "伤害": "d10+5",
         "负荷": "单手",
-        "特性": "决斗Dueling"
+        "特性": "决斗Dueling: 当近距离内除了当前目标外没有其他敌人或盟友时，攻击掷骰时获得优势"
     },
     {
         "名称": "伸缩军刀Retractable Saber",
@@ -1045,7 +1045,7 @@ const weapon_t2_physics = [
         "范围": "近战Melee",
         "伤害": "d10+7",
         "负荷": "单手",
-        "特性": "伸缩Retractable"
+        "特性": "伸缩Retractable: 刀片可以隐藏在刀柄中以避免被识别为武器"
     },
     {
         "名称": "双连枷Double Flail",
@@ -1054,7 +1054,7 @@ const weapon_t2_physics = [
         "范围": "邻近Very Close",
         "伤害": "d10+8",
         "负荷": "双手",
-        "特性": "强力Powerful"
+        "特性": "强力Powerful: 额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "利爪之刃Talon Blades",
@@ -1063,7 +1063,7 @@ const weapon_t2_physics = [
         "范围": "近距离Close",
         "伤害": "d10+7",
         "负荷": "双手",
-        "特性": "残暴Brutal"
+        "特性": "残暴Brutal: 伤害骰每掷出一次最大值，就额外掷出一个伤害骰"
     },
     {
         "名称": "尖刺弓Spiked Bow",
@@ -1072,7 +1072,7 @@ const weapon_t2_physics = [
         "范围": "极远Very Far",
         "伤害": "d6+7",
         "负荷": "双手",
-        "特性": "多面Versatile：敏捷近战d12+5"
+        "特性": "多用Versatile：敏捷近战d12+5"
     },
     {
         "名称": "黑火药左轮Black Powder Revolver",
@@ -1081,7 +1081,7 @@ const weapon_t2_physics = [
         "范围": "极远Very Far",
         "伤害": "d6+6",
         "负荷": "单手",
-        "特性": "装填Reloading"
+        "特性": "装填Reloading: 攻击后骰1d6，如果骰出1，下次攻击前你必须使用一个动作进行装填"
     }
 ];
 
@@ -1156,7 +1156,7 @@ const weapon_t2_magic = [
         "范围": "远距离Far",
         "伤害": "d6+6",
         "负荷": "双手",
-        "特性": "多面Versatile：本能近战d10+4"
+        "特性": "多用Versatile：本能近战d10+4"
     },
     {
         "名称": "高级魔杖Advanced Wand",
@@ -1174,7 +1174,7 @@ const weapon_t2_magic = [
         "范围": "极远Very Far",
         "伤害": "d6+6",
         "负荷": "双手",
-        "特性": "强力Powerful"
+        "特性": "强力Powerful: 额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "运气之斧Axe of Fortunis",
@@ -1183,7 +1183,7 @@ const weapon_t2_magic = [
         "范围": "近战Melee",
         "伤害": "d10+8",
         "负荷": "双手",
-        "特性": "幸运Lucky"
+        "特性": "幸运Lucky: 花费1点压力重骰一次失败的掷骰，并接受新的结果"
     },
     {
         "名称": "祝福匕首Blessed Anlace",
@@ -1192,7 +1192,7 @@ const weapon_t2_magic = [
         "范围": "近战Melee",
         "伤害": "d10+6",
         "负荷": "单手",
-        "特性": "治愈Healing"
+        "特性": "治愈Healing: 休息时间时，自动恢复1点生命值"
     },
     {
         "名称": "鬼魂之刃Ghostblade",
@@ -1201,7 +1201,7 @@ const weapon_t2_magic = [
         "范围": "近战Melee",
         "伤害": "d10+7",
         "负荷": "单手",
-        "特性": "异界Otherworldy"
+        "特性": "异界Otherworldy: 你可以选择造成物理或者魔法伤害"
     },
     {
         "名称": "符文纹身Body Runes",
@@ -1210,7 +1210,7 @@ const weapon_t2_magic = [
         "范围": "邻近Very Close",
         "伤害": "d20+4",
         "负荷": "单手",
-        "特性": "苦痛Painful"
+        "特性": "苦痛Painful: 每次你使用此武器攻击时，你需标记1点压力"
     },
     {
         "名称": "维多加斯特的吊坠Widogast Pendant",
@@ -1219,7 +1219,7 @@ const weapon_t2_magic = [
         "范围": "近距离Close",
         "伤害": "d10+5",
         "负荷": "单手",
-        "特性": "时间扭曲者Timebender"
+        "特性": "时间扭曲者Timebender: 你可以在攻击掷骰后选择攻击目标"
     },
     {
         "名称": "鎏金弓Gilded Bow",
@@ -1228,7 +1228,7 @@ const weapon_t2_magic = [
         "范围": "远距离Far",
         "伤害": "d6+7",
         "负荷": "双手",
-        "特性": "自省Self-Correcting"
+        "特性": "自省Self-Correcting: 伤害掷骰中的所有1都视为8"
     },
     {
         "名称": "火焰杖Firestaff",
@@ -1237,7 +1237,7 @@ const weapon_t2_magic = [
         "范围": "远距离Far",
         "伤害": "d6+7",
         "负荷": "双手",
-        "特性": "灼烧Burn"
+        "特性": "灼烧Burn: 伤害掷骰中骰出的每个6都对目标标记1点压力"
     },
     {
         "名称": "法师球Mage Orb",
@@ -1246,7 +1246,7 @@ const weapon_t2_magic = [
         "范围": "远距离Far",
         "伤害": "d6+7",
         "负荷": "单手",
-        "特性": "强力Powerful"
+        "特性": "强力Powerful: 额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "伊尔玛里的火枪Ilmari’s Blunderbuss",
@@ -1255,7 +1255,7 @@ const weapon_t2_magic = [
         "范围": "极远Very Far",
         "伤害": "d6+6",
         "负荷": "单手",
-        "特性": "装填Reloading"
+        "特性": "装填Reloading: 攻击后骰1d6，如果骰出1，下次攻击前你必须使用一个动作进行装填"
     }
 ];
 
@@ -1267,7 +1267,7 @@ const offhand_weapon_t2 = [
         "范围": "近战Melee",
         "伤害": "d4+4",
         "负荷": "副手",
-        "特性": "保护Protective+3"
+        "特性": "保护Protective: 护甲值+3"
     },
     {
         "名称": "高级塔盾Advanced Tower Shield",
@@ -1276,7 +1276,7 @@ const offhand_weapon_t2 = [
         "范围": "近战Melee",
         "伤害": "d6+4",
         "负荷": "副手",
-        "特性": "壁垒Barrier+5 -2"
+        "特性": "壁垒Barrier: 护甲值+5，闪避值-2"
     },
     {
         "名称": "高级小匕首Advanced Small Dagger",
@@ -1285,7 +1285,7 @@ const offhand_weapon_t2 = [
         "范围": "近战Melee",
         "伤害": "d8+4",
         "负荷": "副手",
-        "特性": "双持Paired+4"
+        "特性": "双持Paired: 主武器近战伤害+4"
     },
     {
         "名称": "高级短剑Advanced Shortsword",
@@ -1294,7 +1294,7 @@ const offhand_weapon_t2 = [
         "范围": "近战Melee",
         "伤害": "d8+4",
         "负荷": "副手",
-        "特性": "双持Paired+4"
+        "特性": "双持Paired: 主武器近战伤害+4"
     },
     {
         "名称": "高级鞭子Advanced Whip",
@@ -1303,7 +1303,7 @@ const offhand_weapon_t2 = [
         "范围": "邻近Very Close",
         "伤害": "d6+4",
         "负荷": "副手",
-        "特性": "鞭笞Whipcrack"
+        "特性": "鞭笞Whipcrack: 标记1点压力，将所有近战范围内的敌人击退至近距离"
     },
     {
         "名称": "高级抓钩AdvancedGrappler",
@@ -1312,7 +1312,7 @@ const offhand_weapon_t2 = [
         "范围": "近距离Close",
         "伤害": "d6+4",
         "负荷": "副手",
-        "特性": "出钩Hook"
+        "特性": "出钩Hook: 进行一次成功的攻击后，你可以将目标拉至你的近战范围内"
     },
     {
         "名称": "高级手弩AdvancedHand Crossbow",
@@ -1330,7 +1330,7 @@ const offhand_weapon_t2 = [
         "范围": "近战Melee",
         "伤害": "d4+4",
         "负荷": "副手",
-        "特性": "反射Deflecting"
+        "特性": "反射Deflecting: 面对即将到来的攻击时，你可以花费1点护甲槽，将你的护甲值数值添加到你的闪避值中"
     },
     {
         "名称": "强力拳套Powered Gauntlet",
@@ -1339,7 +1339,7 @@ const offhand_weapon_t2 = [
         "范围": "近距离Close",
         "伤害": "d6+4",
         "负荷": "副手",
-        "特性": "充能攻击Charged Attack"
+        "特性": "充能攻击Charged Attack: 标记1点压力，为主要武器的攻击熟练+1"
     },
     {
         "名称": "弹弓Hand Sling",
@@ -1348,7 +1348,7 @@ const offhand_weapon_t2 = [
         "范围": "极远Very Far",
         "伤害": "d6+4",
         "负荷": "副手",
-        "特性": "多面Versatile：灵巧近距离d8+4"
+        "特性": "多用Versatile：灵巧近距离d8+4"
     }
 ];
 
@@ -1356,7 +1356,7 @@ const armor_t2 = [
     {
         "名称": "高级填充布甲Advanced Gambeson Armor",
         "防御": "4",
-        "特性": "灵活Flexible"
+        "特性": "灵活Flexible: 闪避值+1"
     },
     {
         "名称": "高级皮甲Advanced Leather Armor",
@@ -1366,42 +1366,42 @@ const armor_t2 = [
     {
         "名称": "高级链甲Advanced Chainmail Armor",
         "防御": "8",
-        "特性": "厚重Heavy"
+        "特性": "厚重Heavy: 闪避值-1"
     },
     {
         "名称": "高级全板甲Advanced Full Plate Armor",
         "防御": "10",
-        "特性": "极重Very Heavy"
+        "特性": "极重Very Heavy: 闪避值-2，敏捷-1"
     },
     {
         "名称": "贝拉莫伊精致护甲Bellamoi Fine Armor",
         "防御": "6",
-        "特性": "鎏金Gilded"
+        "特性": "鎏金Gilded: 当你标记1点护甲槽时，你可以花费任意数量的希望以减少伤害，每点希望降低等同于你熟练值的伤害数值"
     },
     {
         "名称": "龙鳞护甲Dragonscale Armor",
         "防御": "6",
-        "特性": "坚不可摧Impenetrable"
+        "特性": "坚不可摧Impenetrable: 当你标记1点护甲槽时，你不会因为物理伤害而失去你最后的生命值"
     },
     {
         "名称": "尖刺护甲 Spiked Armor Plating",
         "防御": "6",
-        "特性": "锋利Sharp"
+        "特性": "锋利Sharp: 每当你成功进行近战攻击时，伤害骰加1d4"
     },
     {
         "名称": "剑刃护甲Bladefare Armor",
         "防御": "9",
-        "特性": "物理防御Physical"
+        "特性": "物理防御Physical: 你不能使用此护甲抵消魔法伤害"
     },
     {
         "名称": "莫奈特的斗篷Monett’s Cloak",
         "防御": "9",
-        "特性": "魔法防御Magic"
+        "特性": "魔法防御Magic: 你不能使用此护甲抵消物理伤害"
     },
     {
         "名称": "符文纹身Body Runes",
         "防御": "10",
-        "特性": "苦痛Painful"
+        "特性": "苦痛Painful: 每当你因受到攻击而标记1点或更多的护甲槽时，你需标记1点压力"
     }
 ];
 
@@ -1422,7 +1422,7 @@ const weapon_t3_physics = [
         "范围": "近战Melee",
         "伤害": "d12+12",
         "负荷": "双手",
-        "特性": "重型Heavy"
+        "特性": "重型Heavy: 敏捷-1"
     },
     {
         "名称": "传奇巨剑Legendary Greatsword",
@@ -1431,7 +1431,7 @@ const weapon_t3_physics = [
         "范围": "近战Melee",
         "伤害": "d10+12",
         "负荷": "双手",
-        "特性": "巨型Massive"
+        "特性": "巨型Massive: 敏捷-1，额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "传奇钉头锤Legendary Mace",
@@ -1449,7 +1449,7 @@ const weapon_t3_physics = [
         "范围": "近战Melee",
         "伤害": "d8+12",
         "负荷": "单手",
-        "特性": "可靠Reliable"
+        "特性": "可靠Reliable: 你的攻击掷骰+1"
     },
     {
         "名称": "传奇长剑Legendary Longsword",
@@ -1476,7 +1476,7 @@ const weapon_t3_physics = [
         "范围": "近战Melee",
         "伤害": "d8+9",
         "负荷": "单手",
-        "特性": "迅速Quick"
+        "特性": "迅捷Quick: 标记1个压力以额外攻击一个范围内的目标"
     },
     {
         "名称": "传奇匕首Legendary Dagger",
@@ -1539,7 +1539,7 @@ const weapon_t3_physics = [
         "范围": "极远Very Far",
         "伤害": "d6+12",
         "负荷": "双手",
-        "特性": "繁琐Cumbersome"
+        "特性": "繁琐Cumbersome: 闪避值-1"
     },
     {
         "名称": "双刃剑Double-Slide Sword",
@@ -1548,7 +1548,7 @@ const weapon_t3_physics = [
         "范围": "近战Melee",
         "伤害": "d10+9",
         "负荷": "双手",
-        "特性": "迅速Quick"
+        "特性": "迅捷Quick: 标记1个压力以额外攻击一个范围内的目标"
     },
     {
         "名称": "冲击拳套Impact Gauntlet",
@@ -1557,7 +1557,7 @@ const weapon_t3_physics = [
         "范围": "近战Melee",
         "伤害": "d10+11",
         "负荷": "单手",
-        "特性": "震荡Concussive"
+        "特性": "震荡Concussive: 在一次成功攻击后花费1点希望，将目标击退至远距离"
     },
     {
         "名称": "巨斧Sledge Axe",
@@ -1566,7 +1566,7 @@ const weapon_t3_physics = [
         "范围": "近战Melee",
         "伤害": "d12+13",
         "负荷": "双手",
-        "特性": "破坏Destructive"
+        "特性": "破坏Destructive: 敏捷-1，成功攻击后为所有邻近范围内的敌人标记1点压力"
     },
     {
         "名称": "弧形匕首Curved Dagger",
@@ -1575,7 +1575,7 @@ const weapon_t3_physics = [
         "范围": "近战Melee",
         "伤害": "d8+9",
         "负荷": "单手",
-        "特性": "锯齿Serrated"
+        "特性": "锯齿Serrated: 伤害骰中的1皆视为11点伤害"
     },
     {
         "名称": "延伸长柄武器Extended Polearm",
@@ -1584,7 +1584,7 @@ const weapon_t3_physics = [
         "范围": "邻近Very Close",
         "伤害": "d8+10",
         "负荷": "双手",
-        "特性": "延长Long"
+        "特性": "延长Long: 你能够将范围内所有处于一条直线上的敌人同时作为你的攻击目标"
     },
     {
         "名称": "摆动绳刃Swinging Ropeblade",
@@ -1593,7 +1593,7 @@ const weapon_t3_physics = [
         "范围": "近距离Close",
         "伤害": "d8+9",
         "负荷": "双手",
-        "特性": "捕获Grapping"
+        "特性": "捕获Grapping: 在一次成功攻击后花费1点希望，使目标陷入束缚状态或者将其拉至你的近战范围"
     },
     {
         "名称": "弹跳斧Ricochet Axes",
@@ -1602,7 +1602,7 @@ const weapon_t3_physics = [
         "范围": "远距离Far",
         "伤害": "d6+11",
         "负荷": "双手",
-        "特性": "弹跳Bouncing"
+        "特性": "弹跳Bouncing: 标记任意点压力，可同时攻击范围内等量的敌人"
     },
     {
         "名称": "安塔利弓Aantari Bow",
@@ -1611,7 +1611,7 @@ const weapon_t3_physics = [
         "范围": "远距离Far",
         "伤害": "d6+11",
         "负荷": "双手",
-        "特性": "可靠Reliable"
+        "特性": "可靠Reliable: 你的攻击掷骰+1"
     },
     {
         "名称": "手炮Hand Cannon",
@@ -1620,7 +1620,7 @@ const weapon_t3_physics = [
         "范围": "极远Very Far",
         "伤害": "d6+12",
         "负荷": "单手",
-        "特性": "装填Reloading"
+        "特性": "装填Reloading: 攻击后骰1d6，如果骰出1，下次攻击前你必须使用一个动作进行装填"
     }
 ];
 
@@ -1695,7 +1695,7 @@ const weapon_t3_magic = [
         "范围": "远距离Far",
         "伤害": "d6+9",
         "负荷": "双手",
-        "特性": "多面Versatile：本能近战d10+6"
+        "特性": "多用Versatile：本能近战d10+6"
     },
     {
         "名称": "传奇魔杖Legendary Wand",
@@ -1713,7 +1713,7 @@ const weapon_t3_magic = [
         "范围": "极远Very Far",
         "伤害": "d6+9",
         "负荷": "双手",
-        "特性": "强力Powerful"
+        "特性": "强力Powerful: 额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "光焰剑Sword of Light&Flame",
@@ -1722,7 +1722,7 @@ const weapon_t3_magic = [
         "范围": "近战Melee",
         "伤害": "d10+11",
         "负荷": "双手",
-        "特性": "穿透Penetrating"
+        "特性": "穿透Penetrating: 可以切开坚固的材质"
     },
     {
         "名称": "虹吸拳套Siphoning Gauntlets",
@@ -1731,7 +1731,7 @@ const weapon_t3_magic = [
         "范围": "近战Melee",
         "伤害": "d10+9",
         "负荷": "双手",
-        "特性": "系命Lifestealing"
+        "特性": "系命Lifestealing: 在一次成功攻击后骰1d6，如果骰出6则恢复1点生命或清除1点压力"
     },
     {
         "名称": "迈达斯镰刀Midas Scythe",
@@ -1740,7 +1740,7 @@ const weapon_t3_magic = [
         "范围": "近战Melee",
         "伤害": "d10+9",
         "负荷": "双手",
-        "特性": "贪婪Greedy"
+        "特性": "贪婪Greedy: 你可以花费一把金币，使你的伤害掷骰熟练+1"
     },
     {
         "名称": "漂浮碎刃Floating Bladeshards",
@@ -1749,7 +1749,7 @@ const weapon_t3_magic = [
         "范围": "近距离Close",
         "伤害": "d8+9",
         "负荷": "单手",
-        "特性": "强力Powerful"
+        "特性": "强力Powerful: 额外骰1个伤害骰并去掉其中最小的一个 "
     },
     {
         "名称": "血杖Bloodstaff",
@@ -1758,7 +1758,7 @@ const weapon_t3_magic = [
         "范围": "远距离Far",
         "伤害": "d20+7",
         "负荷": "双手",
-        "特性": "苦痛Painful"
+        "特性": "苦痛Painful: 每次你使用此武器攻击时，你需标记1点压力"
     },
     {
         "名称": "蓟弓Thistlebow",
@@ -1767,7 +1767,7 @@ const weapon_t3_magic = [
         "范围": "远距离Far",
         "伤害": "d6+13",
         "负荷": "双手",
-        "特性": "可靠Reliable"
+        "特性": "可靠Reliable: 你的攻击掷骰+1"
     },
     {
         "名称": "埃塞克之杖Wand of Essek",
@@ -1776,7 +1776,7 @@ const weapon_t3_magic = [
         "范围": "远距离Far",
         "伤害": "d8+13",
         "负荷": "单手",
-        "特性": "时间扭曲者Timebender"
+        "特性": "时间扭曲者Timebender: 你可以在攻击掷骰后选择攻击目标"
     },
     {
         "名称": "魔战士左轮Magus Revolver",
@@ -1785,7 +1785,7 @@ const weapon_t3_magic = [
         "范围": "极远Very Far",
         "伤害": "d6+13",
         "负荷": "单手",
-        "特性": "装填Reloading"
+        "特性": "装填Reloading: 攻击后骰1d6，如果骰出1，下次攻击前你必须使用一个动作进行装填"
     },
     {
         "名称": "融合手套Fusion Gloves",
@@ -1794,7 +1794,7 @@ const weapon_t3_magic = [
         "范围": "极远Very Far",
         "伤害": "d6+9",
         "负荷": "双手",
-        "特性": "绑定Bonded"
+        "特性": "绑定Bonded: 将你的等级数添加到伤害掷骰中"
     }
 ];
 
@@ -1806,7 +1806,7 @@ const offhand_weapon_t3 = [
         "范围": "近战Melee",
         "伤害": "d4+6",
         "负荷": "副手",
-        "特性": "保护Protective+4"
+        "特性": "保护Protective: 护甲值+4"
     },
     {
         "名称": "传奇塔盾Legendary Tower Shield",
@@ -1815,7 +1815,7 @@ const offhand_weapon_t3 = [
         "范围": "近战Melee",
         "伤害": "d6+6",
         "负荷": "副手",
-        "特性": "壁垒Barrier+6 -2"
+        "特性": "壁垒Barrier: 护甲值+6，闪避值-2"
     },
     {
         "名称": "传奇小匕首Legendary Small Dagger",
@@ -1824,7 +1824,7 @@ const offhand_weapon_t3 = [
         "范围": "近战Melee",
         "伤害": "d8+6",
         "负荷": "副手",
-        "特性": "双持Paired+5"
+        "特性": "双持Paired: 主武器近战伤害+5"
     },
     {
         "名称": "传奇短剑Legendary Shortsword",
@@ -1833,7 +1833,7 @@ const offhand_weapon_t3 = [
         "范围": "近战Melee",
         "伤害": "d8+6",
         "负荷": "副手",
-        "特性": "双持Paired+5"
+        "特性": "双持Paired: 主武器近战伤害+5"
     },
     {
         "名称": "传奇鞭子Legendary Whip",
@@ -1842,7 +1842,7 @@ const offhand_weapon_t3 = [
         "范围": "邻近Very Close",
         "伤害": "d6+6",
         "负荷": "副手",
-        "特性": "鞭笞Whipcrack"
+        "特性": "鞭笞Whipcrack: 标记1点压力，将所有近战范围内的敌人击退至近距离"
     },
     {
         "名称": "传奇抓钩Legendary Grappler",
@@ -1851,7 +1851,7 @@ const offhand_weapon_t3 = [
         "范围": "近距离Close",
         "伤害": "d6+6",
         "负荷": "副手",
-        "特性": "出钩Hook"
+        "特性": "出钩Hook: 进行一次成功的攻击后，你可以将目标拉至你的近战范围内"
     },
     {
         "名称": "传奇手弩Legendary Hand Crossbow",
@@ -1869,7 +1869,7 @@ const offhand_weapon_t3 = [
         "范围": "近战Melee",
         "伤害": "d4+6",
         "负荷": "副手",
-        "特性": "庇护Sheltering"
+        "特性": "庇护Sheltering: 你可以使用1个护甲槽以减少你以及你近战范围内的所有盟友的伤害"
     },
     {
         "名称": "拳爪Kunckle Claws",
@@ -1878,7 +1878,7 @@ const offhand_weapon_t3 = [
         "范围": "近战Melee",
         "伤害": "d6+6",
         "负荷": "副手",
-        "特性": "双击Double Up"
+        "特性": "双击Double Up: 当你使用主要武器进行一次攻击后，你可以同时使用此武器对另一名近战范围内的敌人造成伤害"
     },
     {
         "名称": "引物碎片Primer Shard",
@@ -1887,7 +1887,7 @@ const offhand_weapon_t3 = [
         "范围": "邻近Very Close",
         "伤害": "0",
         "负荷": "副手",
-        "特性": "锁定Locked On"
+        "特性": "锁定Locked On: 使用此武器对成功攻击一名敌人后，你的主武器对其的下一次攻击将自动命中"
     }
 ];
 
@@ -1895,7 +1895,7 @@ const armor_t3 = [
     {
         "名称": "传奇填充布甲Legendary Gambeson Armor",
         "防御": "6",
-        "特性": "灵活Flexible"
+        "特性": "灵活Flexible: 闪避值+1"
     },
     {
         "名称": "传奇皮甲Legendary Leather Armor",
@@ -1905,41 +1905,41 @@ const armor_t3 = [
     {
         "名称": "传奇链甲Legendary Chainmail Armor",
         "防御": "10",
-        "特性": "厚重Heavy"
+        "特性": "厚重Heavy: 闪避值-1"
     },
     {
         "名称": "传奇全板甲Legendary Full Plate Armor",
         "防御": "12",
-        "特性": "极重Very Heavy"
+        "特性": "极重Very Heavy: 闪避值-2，敏捷-1"
     },
     {
         "名称": "威能丝甲Dunamis Silkchain",
         "防御": "5",
-        "特性": "时缓Timeslowing"
+        "特性": "时缓Timeslowing: 面对即将到来的攻击时，骰1d4，将其加入到你的闪避值中"
     },
     {
         "名称": "引导护甲Channeling Armor",
         "防御": "7",
-        "特性": "引导Channeling"
+        "特性": "引导Channeling: 当装备此护甲时，所有施法掷骰+1"
     },
     {
         "名称": "织烬护甲Emberwoven Armor",
         "防御": "8",
-        "特性": "燃烧Buring"
+        "特性": "燃烧Buring: 每当有敌人在近战范围内集中你时，他们立即标记1点压力"
     },
     {
         "名称": "全面强化护甲Full Reinforced Armor",
         "防御": "8",
-        "特性": "可变Variable"
+        "特性": "可变Variable: 对于近战范围外发起的攻击，每个范围等级使你的护甲值+1. 邻近+1，近距离+2，远距离+3，极远+4"
     },
     {
         "名称": "诚实蛋白石护甲Veritas Opal Armor",
         "防御": "8",
-        "特性": "求真Truthseeking"
+        "特性": "求真Truthseeking: 当任何人在近距离范围内说谎时，此护甲将会发光"
     },
     {
         "名称": "救世主链甲Savior Chainmail",
         "防御": "15",
-        "特性": "困难Difficult"
+        "特性": "困难Difficult: 所有角色属性-1"
     }
 ];
