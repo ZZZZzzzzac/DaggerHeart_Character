@@ -105,6 +105,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Auto-grow for weapon and armor trait textareas
+    const weaponTrait1Textarea = document.getElementById('weaponTrait1');
+    const weaponTrait2Textarea = document.getElementById('weaponTrait2');
+    const armorTrait1Textarea = document.getElementById('armorTrait1');
+
+    if (weaponTrait1Textarea) {
+        weaponTrait1Textarea.addEventListener('input', autoGrowTextarea);
+        setTimeout(() => autoGrowTextarea({ target: weaponTrait1Textarea }), 0);
+    }
+    if (weaponTrait2Textarea) {
+        weaponTrait2Textarea.addEventListener('input', autoGrowTextarea);
+        setTimeout(() => autoGrowTextarea({ target: weaponTrait2Textarea }), 0);
+    }
+    if (armorTrait1Textarea) {
+        armorTrait1Textarea.addEventListener('input', autoGrowTextarea);
+        setTimeout(() => autoGrowTextarea({ target: armorTrait1Textarea }), 0);
+    }
+
     addExperienceBtn.addEventListener('click', () => {
         const newItem = document.createElement('div');
         newItem.classList.add('experience-item');
@@ -474,6 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(form.weaponDamage1) form.weaponDamage1.value = weapon1.伤害 || ""; // Damage is text
                     if (form.weaponTwoHanded1) form.weaponTwoHanded1.value = weapon1.负荷 || "";
                     if(form.weaponTrait1) form.weaponTrait1.value = weapon1.特性 || "";
+                    if (form.weaponTrait1) setTimeout(() => autoGrowTextarea({ target: form.weaponTrait1 }), 0);
                 }
                 // Populate Weapon 2
                 if (data.物品.武器.length > 1) {
@@ -485,6 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(form.weaponDamage2) form.weaponDamage2.value = weapon2.伤害 || ""; // Damage is text
                     if (form.weaponTwoHanded2) form.weaponTwoHanded2.value = weapon2.负荷 || "";
                     if(form.weaponTrait2) form.weaponTrait2.value = weapon2.特性 || "";
+                    if (form.weaponTrait2) setTimeout(() => autoGrowTextarea({ target: form.weaponTrait2 }), 0);
                 }
             }
             if (data.物品.护甲 && data.物品.护甲.length > 0) {
@@ -492,6 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  if(form.armorName1) form.armorName1.value = armor.名称 || "";
                  if(form.armorDefense1) form.armorDefense1.value = armor.防御 || 0;
                  if(form.armorTrait1) form.armorTrait1.value = armor.特性 || "";
+                 if (form.armorTrait1) setTimeout(() => autoGrowTextarea({ target: form.armorTrait1 }), 0);
             }
 
             if (data.物品.道具 && Array.isArray(data.物品.道具)) {

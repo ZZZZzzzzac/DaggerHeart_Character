@@ -42,3 +42,4 @@ This file tracks the project's progress using a task list format.
 * [2025-05-14 17:31:00] - 完成任务：为装备选择创建了弹窗的 HTML ([`character_creator/index.html`](character_creator/index.html:229)) 和 CSS ([`character_creator/style.css`](character_creator/style.css))。
 * [2025-05-14 17:33:12] - 完成任务：在 [`character_creator/script.js`](character_creator/script.js) 中实现了装备选择弹窗的显示/隐藏逻辑。
 * [2025-05-14 18:00:34] - 完成任务：在 [`character_creator/script.js`](character_creator/script.js) 中实现装备选择弹窗的装备项点击填充功能。
+* [2025-05-14 19:54:27] - 完成任务：将武器/护甲的特性字段改为textarea并单列一行，调整了HTML、CSS和JS。(涉及 [`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))

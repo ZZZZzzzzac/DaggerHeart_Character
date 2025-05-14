@@ -843,3 +843,33 @@ button[type="button"]#importJsonBtn:hover {
 .equipment-item-row:hover {
     background-color: #f0f0f0;
 }
+.weapon-item-container .item-row,
+.armor-item-container .item-row {
+    width: 100%; /* Ensure the row takes full width */
+    margin-top: 5px; /* Add some space above the new row */
+}
+
+.weapon-item-container .item-row textarea,
+.armor-item-container .item-row textarea {
+    width: 100%; /* Textarea takes full width of its container */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    min-height: 20px; /* Adjust as needed */
+    resize: vertical;
+    margin: 0; /* Remove default margins */
+    padding: 6px; /* Consistent padding */
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+}
+
+/* Adjust existing weapon/armor item styles if necessary to accommodate the new row */
+.weapon-item-container .item,
+.armor-item-container .item {
+    flex-wrap: wrap; /* Allow wrapping if content exceeds width */
+}
+
+/* Remove fixed width from original trait input if it was set, as it's now a textarea */
+.weapon-item-container .item input[name^="weaponTrait"],
+.armor-item-container .item input[name^="armorTrait1"] { /* Assuming armorTrait1 was the ID/name */
+    width: auto; /* Or remove the rule if it was specific */
+}
