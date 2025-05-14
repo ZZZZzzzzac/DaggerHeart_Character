@@ -222,3 +222,19 @@ This comprehensive refactor ensures that trait-based skills are managed in their
     *   该规则设置 `display: flex` 和 `flex-wrap: wrap` 以允许行内元素横向排列。
     *   为 `.form-group-row > div`（即每行中的标签和输入框对）设置了 `display: flex` 和 `align-items: center`。
     *   为 `.form-group-row` 内的 `input[type="text"]`, `input[type="number"]`, 和 `select` 元素设置了默认宽度和间距。
+---
+### Decision (Code)
+[2025-05-14 16:29:30] - 在“等级”输入旁边添加 Tier (T0-T3) 的动态显示。
+
+**Rationale:**
+根据用户反馈，为了更直观地展示角色等级对应的 Tier（用于装备或其他游戏机制），需要在等级输入框旁边实时显示计算出的 Tier 值。Tier 的计算规则为：等级 1 -> T0, 等级 2-4 -> T1, 等级 5-7 -> T2, 等级 8+ -> T3。
+
+**Details:**
+*   [`character_creator/index.html`](character_creator/index.html): 在 `id="level"` 的输入框后添加了一个 `<span id="levelTierDisplay" class="tier-display"></span>` 用于显示 Tier。
+*   [`character_creator/script.js`](character_creator/script.js):
+    *   添加了 `calculateTier(level)` 函数，根据传入的等级计算 Tier。
+    *   添加了 `updateLevelTierDisplay()` 函数，获取当前等级，调用 `calculateTier`，并更新 `levelTierDisplay` span 的文本内容。
+    *   为 `level` 输入框添加了 `input` 事件监听器，以在等级变化时调用 `updateLevelTierDisplay`。
+    *   在 `populateForm` 函数中，当从JSON加载等级后，调用 `updateLevelTierDisplay`。
+    *   在 `DOMContentLoaded` 后，调用 `updateLevelTierDisplay` 以显示初始 Tier。
+*   [`character_creator/style.css`](character_creator/style.css): 为 `.tier-display` 类添加了样式，包括左边距和垂直对齐，以确保其在视觉上与等级输入框协调。

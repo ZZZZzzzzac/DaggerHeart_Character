@@ -36,3 +36,6 @@ This file tracks the project's progress using a task list format.
 * [2025-05-14 14:53:01] - 完成任务：将“经历”的“调整值”、“护甲”的“防御”和“道具”的“数量”输入框类型更改为 `text`，并更新了 `placeholder` 和导出逻辑。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
 * [2025-05-14 14:57:01] - 完成任务：移除“背景故事”字段的标签，并为其添加 `placeholder`。影响文件：[`character_creator/index.html`](character_creator/index.html)。
 * [2025-05-14 15:06:58] - 完成任务：调整角色创建器初始设定部分的布局，将字段分为三行显示，并将“等级”字段移至第一行。(涉及 [`character_creator/index.html`](character_creator/index.html:15) 和 [`character_creator/style.css`](character_creator/style.css:77))
+* [2025-05-14 16:17:39] - 完成任务：将 `character_creator/data/equipment.csv` 转换为JS数据格式并保存为 `character_creator/data/equipment_data.js`，按武器/护甲和T0-T3等级分类。
+* [2025-05-14 16:29:14] - 完成任务：根据用户反馈，在“等级”字段后添加 Tier (T0-T3) 的动态显示 (涉及 [`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js), [`character_creator/style.css`](character_creator/style.css))。
+* [2025-05-14 16:54:03] - 完成任务：将 `character_creator/data/equipment.csv` 转换为JS数据格式并保存为 `character_creator/data/equipment_data.js`，每个表头（如 `T0主要武器 - 物理`）成为一个独立的 `const` 变量（如 `weapon_t0_physics`），并遵循指定的武器和护甲对象格式。

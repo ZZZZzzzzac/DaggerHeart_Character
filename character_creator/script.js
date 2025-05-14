@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const mixedRaceSelect = document.getElementById('mixedRaceSelect');
     const communitySelect = document.getElementById('communitySelect');
     const professionSelect = document.getElementById('professionSelect');
+    const levelInput = document.getElementById('level');
+    const levelTierDisplay = document.getElementById('levelTierDisplay');
 
     let experienceNextId = experiencesContainer.children.length + 1;
     let itemNextId = itemsContainer.children.length + 1;
@@ -449,6 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
             form.armorMax.value = data.状态.护甲?.最大 || 0;
             form.armorValue.value = data.状态.护甲值 || 0;
             form.level.value = data.状态.等级 || 0;
+            updateLevelTierDisplay(); // Update tier display after setting level from JSON
             form.proficiency.value = data.状态.熟练 || 0;
             form.money.value = data.状态.金钱 || 0;
             form.strength.value = data.状态.力量 || 0;
@@ -467,9 +470,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(form.weaponName1) form.weaponName1.value = weapon1.名称 || "";
                     if(form.weaponCheck1) form.weaponCheck1.value = weapon1.检定 || "";
                     if(form.weaponAttribute1) form.weaponAttribute1.value = weapon1.属性 || "";
-                    if(form.weaponRange1) form.weaponRange1.value = weapon1.距离 || "";
+                    if(form.weaponRange1) form.weaponRange1.value = weapon1.范围 || "";
                     if(form.weaponDamage1) form.weaponDamage1.value = weapon1.伤害 || ""; // Damage is text
-                    if (form.weaponTwoHanded1) form.weaponTwoHanded1.value = weapon1.双手 || "";
+                    if (form.weaponTwoHanded1) form.weaponTwoHanded1.value = weapon1.负荷 || "";
                     if(form.weaponTrait1) form.weaponTrait1.value = weapon1.特性 || "";
                 }
                 // Populate Weapon 2
@@ -478,9 +481,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(form.weaponName2) form.weaponName2.value = weapon2.名称 || "";
                     if(form.weaponCheck2) form.weaponCheck2.value = weapon2.检定 || "";
                     if(form.weaponAttribute2) form.weaponAttribute2.value = weapon2.属性 || "";
-                    if(form.weaponRange2) form.weaponRange2.value = weapon2.距离 || "";
+                    if(form.weaponRange2) form.weaponRange2.value = weapon2.范围 || "";
                     if(form.weaponDamage2) form.weaponDamage2.value = weapon2.伤害 || ""; // Damage is text
-                    if (form.weaponTwoHanded2) form.weaponTwoHanded2.value = weapon2.双手 || "";
+                    if (form.weaponTwoHanded2) form.weaponTwoHanded2.value = weapon2.负荷 || "";
                     if(form.weaponTrait2) form.weaponTrait2.value = weapon2.特性 || "";
                 }
             }
@@ -612,9 +615,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 "名称": formData.get('weaponName1') || "",
                 "检定": formData.get('weaponCheck1') || "",
                 "属性": formData.get('weaponAttribute1') || "",
-                "距离": formData.get('weaponRange1') || "",
+                "范围": formData.get('weaponRange1') || "",
                 "伤害": formData.get('weaponDamage1') || "", // Damage is text
-                "双手": formData.get('weaponTwoHanded1') || "",
+                "负荷": formData.get('weaponTwoHanded1') || "",
                 "特性": formData.get('weaponTrait1') || ""
             });
         }
@@ -624,9 +627,9 @@ document.addEventListener('DOMContentLoaded', () => {
                "名称": formData.get('weaponName2') || "",
                "检定": formData.get('weaponCheck2') || "",
                "属性": formData.get('weaponAttribute2') || "",
-               "距离": formData.get('weaponRange2') || "",
+               "范围": formData.get('weaponRange2') || "",
                "伤害": formData.get('weaponDamage2') || "", // Damage is text
-               "双手": formData.get('weaponTwoHanded2') || "",
+               "负荷": formData.get('weaponTwoHanded2') || "",
                "特性": formData.get('weaponTrait2') || ""
            });
        }
@@ -911,4 +914,38 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSkillInSlot(FixedSkillSlotIds.JOB_1, jobTrait1Data);
         updateSkillInSlot(FixedSkillSlotIds.JOB_2, jobTrait2Data);
     }
+
+    function calculateTier(level) {
+        const lvl = parseInt(level, 10);
+        if (isNaN(lvl)) return 0; // Default to tier 0 if level is not a number
+        if (lvl === 1) return 0;
+        if (lvl >= 2 && lvl <= 4) return 1;
+        if (lvl >= 5 && lvl <= 7) return 2;
+        if (lvl >= 8) return 3;
+        return 0; // Default for any other case (e.g., level < 1)
+    }
+
+    function updateLevelTierDisplay() {
+        if (levelInput && levelTierDisplay) {
+            const tier = calculateTier(levelInput.value);
+            levelTierDisplay.textContent = `T${tier}`;
+        }
+    }
+
+    if (levelInput) {
+        levelInput.addEventListener('input', updateLevelTierDisplay);
+    }
+
+    // // Initial population of dropdowns
+    // populateGenericSelect(raceSelect, RACES_DATA, 'name', 'name', '--选择种族--', '种族');
+    // populateGenericSelect(mixedRaceSelect, RACES_DATA, 'name', 'name', '--选择混血--', '混血');
+    // populateGenericSelect(communitySelect, GROUPS_DATA, '社群', '社群', '--选择社群--', '社群');
+    // populateGenericSelect(professionSelect, JOBS_DATA, '职业', '职业', '--选择职业--', '职业');
+
+
+    // // Initial skill updates based on default dropdown values (likely none selected)
+    // updateRaceTraitsAsSkills();
+    // updateGroupTraitAsSkill();
+    // updateJobTraitsAsSkills();
+    updateLevelTierDisplay(); // Initial tier display on load
 });

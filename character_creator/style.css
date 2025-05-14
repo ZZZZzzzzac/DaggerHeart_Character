@@ -697,3 +697,9 @@ button[type="button"]#importJsonBtn:hover {
     flex-grow: 1; /* Allow trait to take remaining space */
     min-width: 100px;
 }
+/* Tier Display Style */
+.tier-display {
+    margin-left: 5px; /* Add some space to the left of the tier text */
+    font-weight: bold;
+    vertical-align: middle; /* Align with the input box and label */
+}
