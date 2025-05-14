@@ -54,24 +54,19 @@
                 <div class="section-header"><h3>经历</h3><button type="button" class="add-btn" id="addExperienceBtn">+</button></div>
                 <div id="experiences" class="item-container">
                     <div class="experience-item">
-                        <label for="expKeyword">关键词:</label>
-                        <input type="text" id="expKeyword" name="expKeyword">
-                        <label for="expValue">调整值:</label>
-                        <input type="number" id="expValue" name="expValue" min="0" max="99">
+                        <input type="text" id="expKeyword" name="expKeyword" placeholder="关键词">
+                        <input type="text" id="expValue" name="expValue" placeholder="调整值">
                         <button type="button" class="remove-item-btn">-</button>
                     </div>
                     <div class="experience-item">
-                        <label for="expKeyword">关键词:</label>
-                        <input type="text" id="expKeyword" name="expKeyword">
-                        <label for="expValue">调整值:</label>
-                        <input type="number" id="expValue" name="expValue" min="0" max="99">
+                        <input type="text" id="expKeyword" name="expKeyword" placeholder="关键词">
+                        <input type="text" id="expValue" name="expValue" placeholder="调整值">
                         <button type="button" class="remove-item-btn">-</button>
                     </div>
                 </div>
                 <div class="form-group-inline-flex story-appearance-group">
                     <div class="story-group">
-                        <label for="backgroundStory">背景故事:</label>
-                        <textarea id="backgroundStory" name="backgroundStory"></textarea>
+                        <textarea id="backgroundStory" name="backgroundStory" placeholder="背景故事"></textarea>
                     </div>
                     <div class="appearance-group">
                         <!-- Removed label for appearanceUpload -->
@@ -87,9 +82,9 @@
                 <div class="form-group-inline-flex"> <!-- Group status fields -->
                     <div>
                         <label for="hpCurrent">HP:</label>
-                        <input type="number" id="hpCurrent" name="hpCurrent" value="0" title="当前HP">
+                        <input type="number" id="hpCurrent" name="hpCurrent" value="6" title="当前HP">
                         <span class="status-separator">/</span>
-                        <input type="number" id="hpMax" name="hpMax" value="0" title="最大HP">
+                        <input type="number" id="hpMax" name="hpMax" value="6" title="最大HP">
                     </div>
                     <div>
                         <label for="stressCurrent">压力:</label>
@@ -99,15 +94,15 @@
                     </div>
                     <div>
                         <label for="hopeCurrent">希望:</label>
-                        <input type="number" id="hopeCurrent" name="hopeCurrent" value="0" title="当前希望">
+                        <input type="number" id="hopeCurrent" name="hopeCurrent" value="2" title="当前希望">
                         <span class="status-separator">/</span>
-                        <input type="number" id="hopeMax" name="hopeMax" value="0" title="最大希望">
+                        <input type="number" id="hopeMax" name="hopeMax" value="6" title="最大希望">
                     </div>
                     <div>
                         <label for="armorCurrent">护甲:</label>
                         <input type="number" id="armorCurrent" name="armorCurrent" value="0" title="当前护甲">
                         <span class="status-separator">/</span>
-                        <input type="number" id="armorMax" name="armorMax" value="0" title="最大护甲">
+                        <input type="number" id="armorMax" name="armorMax" value="6" title="最大护甲">
                     </div>
                 </div> <!-- End of first form-group-inline-flex for HP, Stress, etc. -->
                 <div class="form-group-inline-flex"> <!-- New group for Armor Value, Level, Proficiency, Money -->
@@ -117,11 +112,11 @@
                     </div>
                     <div>
                         <label for="level">等级:</label>
-                        <input type="number" id="level" name="level" value="0">
+                        <input type="number" id="level" name="level" value="1">
                     </div>
                     <div>
                         <label for="proficiency">熟练:</label>
-                        <input type="number" id="proficiency" name="proficiency" value="0">
+                        <input type="number" id="proficiency" name="proficiency" value="1">
                     </div>
                     <div>
                         <label for="money">金钱:</label>
@@ -185,26 +180,20 @@
                         </div>
                     </div>
                 </div>
-                <h3>护甲</h3>
-                <div id="armors" class="item-container"> <!-- Container for items -->
+                <div id="armors" class="item-container armor-item-container"> <!-- Container for items, added armor-item-container -->
                     <div class="item">
-                        <label for="armorName1">名称:</label>
-                        <input type="text" id="armorName1" name="armorName1">
-                        <label for="armorDefense1">防御:</label>
-                        <input type="number" id="armorDefense1" name="armorDefense1" value="0">
-                        <label for="armorTrait1">特性:</label>
-                        <input type="text" id="armorTrait1" name="armorTrait1">
+                        <h4>护甲</h4> <!-- Moved H3 into item and changed to H4 for consistency -->
+                        <input type="text" id="armorName1" name="armorName1" placeholder="名称">
+                        <input type="text" id="armorDefense1" name="armorDefense1" placeholder="防御">
+                        <input type="text" id="armorTrait1" name="armorTrait1" placeholder="特性">
                     </div>
                 </div>
                 <div class="section-header"><h3>道具</h3><button type="button" class="add-btn" id="addItemBtn">+</button></div>
                 <div id="items" class="item-container">
                     <div class="item">
-                        <label for="itemName1">名称:</label>
-                        <input type="text" id="itemName1" name="itemName1">
-                        <label for="itemQuantity1">数量:</label>
-                        <input type="number" id="itemQuantity1" name="itemQuantity1" value="0">
-                        <label for="itemDescription1">描述:</label>
-                        <input type="text" id="itemDescription1" name="itemDescription1">
+                        <input type="text" id="itemName1" name="itemName1" placeholder="名称">
+                        <input type="text" id="itemQuantity1" name="itemQuantity1" placeholder="数量">
+                        <input type="text" id="itemDescription1" name="itemDescription1" placeholder="描述">
                         <button type="button" class="remove-item-btn">-</button>
                     </div>
                 </div>

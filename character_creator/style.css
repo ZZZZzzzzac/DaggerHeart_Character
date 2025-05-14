@@ -212,14 +212,14 @@ input[type="checkbox"] {
 #experiences.item-container {
     display: flex;
     flex-wrap: wrap; /* Allow items to wrap to the next line if space is insufficient */
-    gap: 10px;       /* Spacing between individual experience items */
+    gap: 2px;       /* Spacing between individual experience items */
 }
 
 .experience-item,
 .item {
     border: 1px solid #eee;
-    padding: 10px; /* Reduced padding */
-    margin-bottom: 10px; /* Reduced margin */
+    padding: 2px; /* Reduced padding */
+    margin-bottom: 2px; /* Reduced margin */
     border-radius: 4px;
     background-color: #f9f9f9;
     display: flex; /* Use flexbox for inline items */
@@ -254,13 +254,13 @@ input[type="checkbox"] {
 }
 
 .experience-item input[name^="expKeyword"] {
-    width: 150px; /* Specific width for keyword */
+    width: auto; /* Specific width for keyword */
     flex-grow: 0; /* Don't allow keyword to grow excessively */
     min-width: 120px;
 }
 
 .experience-item input[name^="expValue"] {
-    width: 80px;  /* Specific width for adjustment value (assuming it's text for now as per HTML) */
+    width: 60px;  /* Specific width for adjustment value (assuming it's text for now as per HTML) */
     flex-grow: 0;
     min-width: 60px;
 }
@@ -374,9 +374,9 @@ input[type="checkbox"] {
     flex-shrink: 0;
 }
 .weapon-item-container .item input[name^="weaponDamage"] {
-    width: 60px;
-    min-width: 40px; /* Explicitly set min-width */
-    flex-basis: 40px; /* Set flex-basis */
+    width: 80px;
+    min-width: 80px; /* Explicitly set min-width */
+    flex-basis: 80px; /* Set flex-basis */
     flex-grow: 0;
     flex-shrink: 0;
 }
@@ -629,4 +629,46 @@ button[type="button"]#importJsonBtn:hover {
 #fixed-skill-job-1,
 #fixed-skill-job-2 {
     background-color: #17595b; /* Light Yellow */
+}
+/* Armor Item Container Specific Styles */
+.armor-item-container .item {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping */
+    align-items: center;
+    gap: 5px; /* Adjust gap as needed */
+    margin-bottom: 5px; /* Space below armor line */
+}
+
+.armor-item-container .item h4 {
+    margin: 0 5px 0 0;
+    padding-bottom: 0;
+    color: #333;
+    font-size: 1em;
+    font-weight: bold;
+    border-bottom: none;
+    align-self: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.armor-item-container .item input[type="text"],
+.armor-item-container .item input[type="number"] {
+    margin-right: 5px;
+    margin-bottom: 0;
+    padding: 4px;
+    flex-shrink: 0; /* Prevent shrinking */
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+/* Specific widths for armor inputs */
+.armor-item-container .item input[name="armorName1"] {
+    width: 120px; /* Adjust as needed */
+}
+.armor-item-container .item input[name="armorDefense1"] {
+    width: 60px; /* Adjust as needed */
+}
+.armor-item-container .item input[name="armorTrait1"] {
+    flex-grow: 1; /* Allow trait to take remaining space */
+    min-width: 100px;
 }

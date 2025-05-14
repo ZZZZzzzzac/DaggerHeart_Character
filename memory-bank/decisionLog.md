@@ -142,3 +142,62 @@ This comprehensive refactor ensures that trait-based skills are managed in their
 *   [`character_creator/script.js`](character_creator/script.js):
     *   在 `populateForm` 函数中，将 `form.weaponTwoHanded1.checked = weapon1.双手 || false;` 修改为 `form.weaponTwoHanded1.value = weapon1.双手 || "";` (同样修改了 `weaponTwoHanded2`)。
     *   在 `exportButton` 事件监听器中，将获取 `weaponTwoHanded1` 值的方式从 `form.querySelector('#weaponTwoHanded1').checked` 修改为 `formData.get('weaponTwoHanded1') || ""` (同样修改了 `weaponTwoHanded2`)。
+---
+### Decision (Code)
+[2025-05-14 14:43:06] - 将“经历”、“护甲”和“道具”部分的标签替换为占位符。
+
+**Rationale:**
+根据用户请求，统一表单输入风格，移除这些部分的字段标签，改用输入框内的占位符文本提示用户。
+
+**Details:**
+*   [`character_creator/index.html`](character_creator/index.html):
+    *   在“经历”部分，为静态的“关键词”和“调整值”输入框移除了 `<label>` 元素，并添加了 `placeholder` 属性。
+    *   在“护甲”部分，为“名称”、“防御”和“特性”输入框移除了 `<label>` 元素，并添加了 `placeholder` 属性。
+    *   在“道具”部分，为静态的“名称”、“数量”和“描述”输入框移除了 `<label>` 元素，并添加了 `placeholder` 属性。
+*   [`character_creator/script.js`](character_creator/script.js):
+    *   在 `addExperienceBtn` 的事件监听器中，动态创建“经历”条目时，移除了“关键词”和“调整值”的 `<label>`，并为 `<input>` 元素添加了 `placeholder`。
+    *   在 `addItemBtn` 的事件监听器中，动态创建“道具”条目时，移除了“名称”、“数量”和“描述”的 `<label>`，并为 `<input>` 元素添加了 `placeholder`。
+---
+### Decision (Code)
+[2025-05-14 14:49:07] - 调整“护甲”部分布局，使其标题与输入框在同一行。
+
+**Rationale:**
+根据用户反馈，为了使“护甲”部分的视觉样式与“武器”部分保持一致，将“护甲”标题（原为H3）移入条目内部（改为H4），并调整HTML结构和CSS样式，以实现单行布局。
+
+**Details:**
+*   [`character_creator/index.html`](character_creator/index.html):
+    *   将原位于 `<div id="armors">` 外部的 `<h3>护甲</h3>` 移至 `<div class="item">` 内部，并更改为 `<h4>护甲</h4>`。
+    *   为 `<div id="armors">` 添加了 `armor-item-container` 类。
+*   [`character_creator/style.css`](character_creator/style.css):
+    *   添加了新的CSS规则，针对 `.armor-item-container .item`、`.armor-item-container .item h4` 以及该容器内的输入框，以实现类似武器部分的单行、紧凑布局。
+    *   为护甲的“名称”、“防御”和“特性”输入框设置了特定的宽度和伸缩行为。
+---
+### Decision (Code)
+[2025-05-14 14:52:39] - 将“经历”的“调整值”、“护甲”的“防御”和“道具”的“数量”输入框类型更改为 text 并更新导出逻辑。
+
+**Rationale:**
+根据用户反馈，为了在这些字段中允许更灵活的文本输入（而不仅仅是数字），将它们的 `type` 属性从 `number` 更改为 `text`。同时，确保 `placeholder` 文本仍然存在，并更新了 JavaScript 中的导出逻辑以反映这些字段现在是字符串类型（移除了 `parseInt`）。
+
+**Details:**
+*   [`character_creator/index.html`](character_creator/index.html):
+    *   “经历”部分静态的“调整值”输入框 `type` 改为 `text`。
+    *   “护甲”部分“防御”输入框 `type` 改为 `text`。
+    *   “道具”部分静态的“数量”输入框 `type` 改为 `text`。
+*   [`character_creator/script.js`](character_creator/script.js):
+    *   在 `addExperienceBtn` 事件监听器中，动态创建的“调整值”输入框 `type` 改为 `text`。
+    *   在 `addItemBtn` 事件监听器中，动态创建的“数量”输入框 `type` 改为 `text`。
+    *   在 `exportButton` 事件监听器的导出逻辑中：
+        *   “经历”的“调整值”不再使用 `parseInt`，直接取 `value` 或空字符串。
+        *   “护甲”的“防御”不再使用 `parseInt`，直接取 `value` 或空字符串。
+        *   “道具”的“数量”不再使用 `parseInt`，直接取 `value` 或空字符串，包括处理空道具列表时的情况。
+---
+### Decision (Code)
+[2025-05-14 14:56:39] - 移除“背景故事”标签并添加占位符。
+
+**Rationale:**
+根据用户反馈，为了进一步统一表单风格，移除了“背景故事”文本区域的 `<label>` 元素，并为其添加了 `placeholder` 属性。
+
+**Details:**
+*   [`character_creator/index.html`](character_creator/index.html):
+    *   在“背景故事”部分，移除了 `<label for="backgroundStory">背景故事:</label>`。
+    *   为 `<textarea id="backgroundStory" name="backgroundStory">` 添加了 `placeholder="背景故事"` 属性。

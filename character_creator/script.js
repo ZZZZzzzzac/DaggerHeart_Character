@@ -97,10 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const newItem = document.createElement('div');
         newItem.classList.add('experience-item');
         newItem.innerHTML = `
-            <label for="expKeyword">关键词:</label>
-            <input type="text" id="expKeyword" name="expKeyword">
-            <label for="expValue">调整值:</label>
-            <input type="number" id="expValue" name="expValue" min="0" max="99">
+            <input type="text" id="expKeyword" name="expKeyword" placeholder="关键词">
+            <input type="text" id="expValue" name="expValue" placeholder="调整值">
             <button type="button" class="remove-item-btn">-</button>
         `;
         experiencesContainer.appendChild(newItem);
@@ -112,12 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
         newItem.classList.add('item');
         const currentId = itemNextId++;
         newItem.innerHTML = `
-            <label for="itemName${currentId}">名称:</label>
-            <input type="text" id="itemName${currentId}" name="itemName${currentId}">
-            <label for="itemQuantity${currentId}">数量:</label>
-            <input type="number" id="itemQuantity${currentId}" name="itemQuantity${currentId}" value="0">
-            <label for="itemDescription${currentId}">描述:</label>
-            <input type="text" id="itemDescription${currentId}" name="itemDescription${currentId}">
+            <input type="text" id="itemName${currentId}" name="itemName${currentId}" placeholder="名称">
+            <input type="text" id="itemQuantity${currentId}" name="itemQuantity${currentId}" placeholder="数量">
+            <input type="text" id="itemDescription${currentId}" name="itemDescription${currentId}" placeholder="描述">
             <button type="button" class="remove-item-btn">-</button>
         `;
         itemsContainer.appendChild(newItem);
@@ -453,7 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (keywordInput && valueInput) { 
                  characterData.设定.经历.push({
                     "关键词": keywordInput.value || "",
-                    "调整值": parseInt(valueInput.value, 10) || 0 
+                    "调整值": valueInput.value || ""
                 });
             }
         });
@@ -512,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (form.querySelector('#armorName1')) {
             characterData.物品.护甲.push({
-                "名称": formData.get('armorName1') || "", "防御": parseInt(formData.get('armorDefense1'), 10) || 0, "特性": formData.get('armorTrait1') || ""
+                "名称": formData.get('armorName1') || "", "防御": formData.get('armorDefense1') || "", "特性": formData.get('armorTrait1') || ""
             });
         }
         characterData.物品.道具 = [];
@@ -524,13 +519,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (nameInput) {
                  characterData.物品.道具.push({
                     "名称": nameInput.value || "",
-                    "数量": parseInt(quantityInput ? quantityInput.value : 0, 10) || 0,
+                    "数量": quantityInput ? quantityInput.value : "",
                     "描述": descriptionInput ? descriptionInput.value : ""
                 });
             }
         });
         if (currentItemElements.length === 0 && form.querySelector('#itemName1')) { 
-             characterData.物品.道具.push({ "名称": "", "数量": 0, "描述": "" });
+             characterData.物品.道具.push({ "名称": "", "数量": "", "描述": "" });
         }
 
         characterData.技能 = [];

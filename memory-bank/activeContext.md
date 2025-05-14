@@ -64,3 +64,7 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-13 23:58:29] - 为“技能”部分中的固定技能槽（种族、社群、职业）在 `character_creator/style.css` 中添加了不同的背景色。
 * [2025-05-14 14:25:32] - 根据用户反馈进一步调整“武器”部分CSS：为“检定”、“属性”、“距离”、“伤害”输入框明确设置了 `width: 30px;`, `min-width: 30px;`, `flex-basis: 30px;` 并确保 `flex-grow: 0; flex-shrink: 0;` 以强制其宽度。影响文件：character_creator/style.css。
 * [2025-05-14 14:33:39] - 重构了“武器”部分的用户界面和数据处理：将输入框标签替换为占位符，并将“双手”字段从复选框更改为文本输入框，以提供更大的灵活性。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
+* [2025-05-14 14:43:52] - 更新了“经历”、“护甲”和“道具”部分，将字段标签替换为输入框内的占位符，以统一表单风格。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
+* [2025-05-14 14:49:18] - 根据用户反馈调整了“护甲”部分的布局，使其标题与输入框在同一行，类似于“武器”部分的样式。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css)。
+* [2025-05-14 14:52:53] - 根据用户反馈，将“经历”的“调整值”、“护甲”的“防御”和“道具”的“数量”输入框类型从 `number` 更改为 `text`，并更新了相应的 `placeholder` 和导出逻辑。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
+* [2025-05-14 14:56:50] - 根据用户反馈，移除了“背景故事”字段的标签，并为其文本区域添加了 `placeholder`。影响文件：[`character_creator/index.html`](character_creator/index.html)。

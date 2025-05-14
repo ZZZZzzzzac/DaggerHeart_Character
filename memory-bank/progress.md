@@ -31,3 +31,7 @@ This file tracks the project's progress using a task list format.
 * [2025-05-13 23:48:30] - 完成任务：重构技能系统以使用5个固定技能槽（种族x2, 社群x1, 职业x2）。修复了导入JSON后更改种族/职业/社群选择时技能重复添加的bug。修改涉及 `character_creator/script.js` 的技能初始化、更新、导入和导出逻辑。
 * [2025-05-14 14:25:53] - 完成任务：根据用户多轮反馈调整“武器”部分。主要包括：1. HTML结构调整以支持两条武器记录。2. 武器伤害字段改为文本类型。3. JS导入/导出逻辑更新以支持两条武器。4. CSS调整以实现武器子标题与输入框平行、移除主标题、移除标签冒号、实现紧凑单行布局、移除“框”样式，并精确控制特定输入框宽度。影响文件：character_creator/index.html, character_creator/style.css, character_creator/script.js。
 * [2025-05-14 14:33:51] - 完成任务：重构“武器”部分，将标签改为占位符，并将“双手”字段从布尔型复选框改为字符串型文本输入。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
+* [2025-05-14 14:43:58] - 完成任务：将“经历”、“护甲”和“道具”部分输入字段的标签改为占位符。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
+* [2025-05-14 14:49:27] - 完成任务：调整“护甲”部分布局，使其标题与输入框在同一行，以匹配“武器”部分的样式。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css)。
+* [2025-05-14 14:53:01] - 完成任务：将“经历”的“调整值”、“护甲”的“防御”和“道具”的“数量”输入框类型更改为 `text`，并更新了 `placeholder` 和导出逻辑。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
+* [2025-05-14 14:57:01] - 完成任务：移除“背景故事”字段的标签，并为其添加 `placeholder`。影响文件：[`character_creator/index.html`](character_creator/index.html)。
