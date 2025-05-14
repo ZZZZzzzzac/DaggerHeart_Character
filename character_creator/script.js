@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // let skillNextId = skillsContainer.children.length + 1; // Comment out for now or adjust after fixed slots
     let appearanceDataUrl = "";
 
+    const ALL_ITEMS_DATA = [...ITEMS_DATA, ...CONSUMABLES_DATA];
+
     function autoGrowTextarea(event) {
         const textarea = event.target;
         textarea.style.height = '0px';
@@ -66,6 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.experience-item .remove-item-btn, .item .remove-item-btn, .skill-item .remove-item-btn').forEach(btn => {
         addRemoveListener(btn);
     });
+
+    // Add autoGrowTextarea to initial static item description textarea
+    const initialItemDescriptionTextarea = itemsContainer.querySelector('.item textarea[name="itemDescription"]');
+    if (initialItemDescriptionTextarea) {
+        initialItemDescriptionTextarea.addEventListener('input', autoGrowTextarea);
+        // Trigger auto-grow in case there's pre-filled content (though unlikely for a static empty one)
+        setTimeout(() => autoGrowTextarea({ target: initialItemDescriptionTextarea }), 0);
+    }
 
     if (appearanceUpload && appearancePreview && removeAppearanceBtn) {
         appearanceUpload.addEventListener('change', function(event) {
@@ -108,16 +118,114 @@ document.addEventListener('DOMContentLoaded', () => {
     addItemBtn.addEventListener('click', () => {
         const newItem = document.createElement('div');
         newItem.classList.add('item');
-        const currentId = itemNextId++;
+        const currentId = itemNextId++; // Keep for unique IDs if needed for other elements
         newItem.innerHTML = `
-            <input type="text" id="itemName${currentId}" name="itemName${currentId}" placeholder="名称">
-            <input type="text" id="itemQuantity${currentId}" name="itemQuantity${currentId}" placeholder="数量">
-            <input type="text" id="itemDescription${currentId}" name="itemDescription${currentId}" placeholder="描述">
+            <select name="itemName" class="item-name-select"></select>
+            <input type="text" name="itemQuantity" placeholder="数量" value="1">
+            <textarea name="itemDescription" placeholder="描述"></textarea>
             <button type="button" class="remove-item-btn">-</button>
         `;
         itemsContainer.appendChild(newItem);
+        const newSelect = newItem.querySelector('.item-name-select');
+        const newDescriptionTextarea = newItem.querySelector('textarea[name="itemDescription"]');
+        if (newDescriptionTextarea) {
+            newDescriptionTextarea.addEventListener('input', autoGrowTextarea);
+        }
+        populateItemSelect(newSelect); // This might pre-fill and should trigger autoGrow if so
         addRemoveListener(newItem.querySelector('.remove-item-btn'));
     });
+
+    function populateItemSelect(selectElement, selectedItemName = "") {
+        console.log('[populateItemSelect] Called with selectElement:', selectElement, 'selectedItemName:', selectedItemName);
+        if (!selectElement) {
+            console.log('[populateItemSelect] selectElement is null or undefined. Returning.');
+            return;
+        }
+        selectElement.innerHTML = '<option value="">--选择道具--</option>'; // Default empty option
+
+        ALL_ITEMS_DATA.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.名称;
+            option.textContent = item.名称;
+            if (item.名称 === selectedItemName) {
+                option.selected = true;
+            }
+            selectElement.appendChild(option);
+        });
+
+        // If a selectedItemName is provided, find its data and pre-fill description and quantity
+        if (selectedItemName) {
+            console.log('[populateItemSelect] selectedItemName provided:', selectedItemName);
+            const itemData = ALL_ITEMS_DATA.find(i => i.名称 === selectedItemName);
+            console.log('[populateItemSelect] Found itemData for selectedItemName:', itemData);
+            const parentItemDiv = selectElement.closest('.item');
+            console.log('[populateItemSelect] parentItemDiv for pre-fill:', parentItemDiv);
+            if (itemData && parentItemDiv) {
+                const descTextarea = parentItemDiv.querySelector('textarea[name="itemDescription"]');
+                const quantityInput = parentItemDiv.querySelector('input[name="itemQuantity"]');
+                console.log('[populateItemSelect] descTextarea:', descTextarea, 'quantityInput:', quantityInput);
+                if (descTextarea) {
+                    descTextarea.value = itemData.效果 || "";
+                    console.log('[populateItemSelect] Set descTextarea value to:', descTextarea.value);
+                    setTimeout(() => autoGrowTextarea({ target: descTextarea }), 0); // Trigger auto-grow
+                }
+                if (quantityInput) {
+                    // Preserve existing quantity if it's already set (e.g. from JSON import), otherwise default to 1
+                    if (!quantityInput.value || quantityInput.value === "0" || quantityInput.value === "") {
+                         quantityInput.value = "1";
+                    }
+                    console.log('[populateItemSelect] Set quantityInput value to:', quantityInput.value);
+                }
+            } else {
+                console.log('[populateItemSelect] itemData or parentItemDiv not found for pre-fill.');
+            }
+        }
+
+        selectElement.addEventListener('change', function(event) {
+            console.log('[populateItemSelect] Change event triggered on selectElement:', event.target);
+            const selectedName = event.target.value;
+            console.log('[populateItemSelect] Selected name in change event:', selectedName);
+            const itemData = ALL_ITEMS_DATA.find(i => i.名称 === selectedName);
+            console.log('[populateItemSelect] Found itemData in change event:', itemData);
+            const parentItemDiv = event.target.closest('.item');
+            console.log('[populateItemSelect] parentItemDiv in change event:', parentItemDiv);
+            if (parentItemDiv) {
+                const descTextarea = parentItemDiv.querySelector('textarea[name="itemDescription"]');
+                const quantityInput = parentItemDiv.querySelector('input[name="itemQuantity"]');
+                console.log('[populateItemSelect] descTextarea in change event:', descTextarea, 'quantityInput in change event:', quantityInput);
+                if (itemData) {
+                    if (descTextarea) {
+                        descTextarea.value = itemData.效果 || "";
+                        console.log('[populateItemSelect] Set descTextarea value in change event to:', descTextarea.value);
+                        setTimeout(() => autoGrowTextarea({ target: descTextarea }), 0); // Trigger auto-grow
+                    }
+                    if (quantityInput) {
+                        quantityInput.value = "1"; // Default to 1 on new selection from dropdown
+                        console.log('[populateItemSelect] Set quantityInput value in change event to:', quantityInput.value);
+                    }
+                } else {
+                    if (descTextarea) {
+                        descTextarea.value = "";
+                        console.log('[populateItemSelect] Cleared descTextarea value in change event.');
+                        setTimeout(() => autoGrowTextarea({ target: descTextarea }), 0); // Trigger auto-grow
+                    }
+                    if (quantityInput) {
+                        quantityInput.value = "1"; // Default to 1 even if item not found (e.g. "--选择道具--")
+                         console.log('[populateItemSelect] Set quantityInput to 1 as itemData not found in change event.');
+                    }
+                }
+            } else {
+                console.log('[populateItemSelect] parentItemDiv not found in change event.');
+            }
+        });
+    }
+
+    // Initial population for the static item row if it exists
+    const initialItemSelect = itemsContainer.querySelector('.item-name-select');
+    if (initialItemSelect) {
+        populateItemSelect(initialItemSelect);
+    }
+
 
     // Helper to create skill row TR element (used by fixed slots and potentially dynamic ones)
     function createSkillRowElement(skillData = {}, isFixedSlot = false, slotId = '') {
@@ -384,17 +492,35 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (data.物品.道具 && Array.isArray(data.物品.道具)) {
-                data.物品.道具.forEach((item, index) => {
-                     if(index === 0 && itemsContainer.children[index]){ 
-                        itemsContainer.children[index].querySelector(`input[name^="itemName"]`).value = item.名称 || "";
-                        itemsContainer.children[index].querySelector(`input[name^="itemQuantity"]`).value = item.数量 || 0;
-                        itemsContainer.children[index].querySelector(`input[name^="itemDescription"]`).value = item.描述 || "";
+                data.物品.道具.forEach((itemData, index) => {
+                    let currentItemDiv;
+                    if (index === 0 && itemsContainer.children[0] && itemsContainer.children[0].classList.contains('item')) {
+                        currentItemDiv = itemsContainer.children[0];
                     } else {
-                        addItemBtn.click(); 
-                        const currentItem = itemsContainer.lastElementChild;
-                        currentItem.querySelector(`input[name^="itemName"]`).value = item.名称 || "";
-                        currentItem.querySelector(`input[name^="itemQuantity"]`).value = item.数量 || 0;
-                        currentItem.querySelector(`input[name^="itemDescription"]`).value = item.描述 || "";
+                        addItemBtn.click(); // This will create a new item div with a select
+                        currentItemDiv = itemsContainer.lastElementChild;
+                    }
+
+                    if (currentItemDiv) {
+                        const nameSelect = currentItemDiv.querySelector('select[name="itemName"]');
+                        const quantityInput = currentItemDiv.querySelector('input[name="itemQuantity"]');
+                        const descriptionTextarea = currentItemDiv.querySelector('textarea[name="itemDescription"]');
+
+                        if (nameSelect) {
+                            populateItemSelect(nameSelect, itemData.名称); // Populate and select
+                        }
+                        if (quantityInput) quantityInput.value = itemData.数量 || "1";
+                        
+                        // populateItemSelect should handle pre-filling the description and auto-growing it.
+                        // If it's not, this is a fallback, but the logic in populateItemSelect is preferred.
+                        if (descriptionTextarea) {
+                             descriptionTextarea.value = itemData.描述 || ""; // Set from JSON first
+                             const selectedFullItem = ALL_ITEMS_DATA.find(i => i.名称 === itemData.名称);
+                             if (selectedFullItem) { // Then override with effect if item is found
+                                 descriptionTextarea.value = selectedFullItem.效果 || "";
+                             }
+                             setTimeout(() => autoGrowTextarea({ target: descriptionTextarea }), 0);
+                        }
                     }
                 });
             }
@@ -510,23 +636,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 "名称": formData.get('armorName1') || "", "防御": formData.get('armorDefense1') || "", "特性": formData.get('armorTrait1') || ""
             });
         }
-        characterData.物品.道具 = [];
+        characterData.物品.道具 = []; // Initialize道具 array
         const currentItemElements = itemsContainer.querySelectorAll('.item');
         currentItemElements.forEach((itemElement) => {
-            const nameInput = itemElement.querySelector(`input[name^="itemName"]`);
-            const quantityInput = itemElement.querySelector(`input[name^="itemQuantity"]`);
-            const descriptionInput = itemElement.querySelector(`input[name^="itemDescription"]`);
-            if (nameInput) {
-                 characterData.物品.道具.push({
-                    "名称": nameInput.value || "",
-                    "数量": quantityInput ? quantityInput.value : "",
-                    "描述": descriptionInput ? descriptionInput.value : ""
+            const itemNameSelect = itemElement.querySelector('select[name="itemName"]');
+            const itemQuantityInput = itemElement.querySelector('input[name="itemQuantity"]');
+            const itemDescriptionTextarea = itemElement.querySelector('textarea[name="itemDescription"]');
+
+            if (itemNameSelect && itemNameSelect.value) { // Only add if an item is selected
+                characterData.物品.道具.push({
+                    "名称": itemNameSelect.value,
+                    "数量": itemQuantityInput ? itemQuantityInput.value : "1",
+                    "描述": itemDescriptionTextarea ? itemDescriptionTextarea.value : ""
                 });
             }
         });
-        if (currentItemElements.length === 0 && form.querySelector('#itemName1')) { 
-             characterData.物品.道具.push({ "名称": "", "数量": "", "描述": "" });
-        }
+        // Removed the logic for adding an empty item if none exist, as new select logic handles defaults.
 
         characterData.技能 = [];
 

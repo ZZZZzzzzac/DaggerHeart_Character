@@ -195,9 +195,9 @@
                 <div class="section-header"><h3>道具</h3><button type="button" class="add-btn" id="addItemBtn">+</button></div>
                 <div id="items" class="item-container">
                     <div class="item">
-                        <input type="text" id="itemName1" name="itemName1" placeholder="名称">
-                        <input type="text" id="itemQuantity1" name="itemQuantity1" placeholder="数量">
-                        <input type="text" id="itemDescription1" name="itemDescription1" placeholder="描述">
+                        <select id="itemName" name="itemName" class="item-name-select"></select>
+                        <input type="text" id="itemQuantity" name="itemQuantity" placeholder="数量" value="1">
+                        <textarea id="itemDescription" name="itemDescription" placeholder="描述"></textarea>
                         <button type="button" class="remove-item-btn">-</button>
                     </div>
                 </div>
@@ -222,6 +222,8 @@
     <script src="data/races_data.js"></script>
     <script src="data/groups_data.js"></script>
     <script src="data/jobs_data.js"></script>
+    <script src="data/items_data.js"></script>
+    <script src="data/consumables_data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

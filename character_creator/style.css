@@ -409,12 +409,33 @@ input[type="checkbox"] {
 }
 
 /* Item (道具) Specific Styles */
+#items .item select[name="itemName"] {
+    width: 15em; /* Approx 10 CJK characters, adjust as needed */
+    min-width: 12em;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-right: 5px;
+}
+
 #items .item input[name^="itemQuantity"] {
     width: 3.5em; /* Approx 2-3 digits */
     min-width: 3em;
     flex-grow: 0;
+    flex-shrink: 0; /* Ensure quantity doesn't shrink */
+    margin-right: 5px;
 }
 
+#items .item textarea[name="itemDescription"] {
+    flex-grow: 1; /* Allow description to take remaining space */
+    width: auto;  /* Let flexbox determine width */
+    min-width: 100px; /* Minimum reasonable width */
+    min-height: 2.2em; /* Enough for a single line of text initially */
+    resize: none;
+    overflow: hidden; /* JS will handle height */
+    padding: 5px;
+    margin-right: 5px; /* Space before remove button */
+    box-sizing: border-box;
+}
 
 .item input[name^="armorDefense"] {
     width: 60px;
@@ -495,13 +516,18 @@ input[type="checkbox"] {
 }
 
 /* General .item textarea rule, skillDescription will override parts of this due to specificity */
+/* This rule might conflict or be redundant with the #items .item textarea[name="itemDescription"] above.
+   Let's comment it out or make it less specific if the above is preferred for item descriptions.
+   For now, assuming the #items specific one takes precedence for item descriptions.
+*/
+/*
 .item textarea[name$="Description"] {
     width: 100%;
     min-height: 40px;
     margin-top: 5px;
     flex-basis: 100%;
 }
-
+*/
 
 /* --- Two Column Layout --- */
 .two-column-layout {
