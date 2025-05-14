@@ -948,4 +948,317 @@ document.addEventListener('DOMContentLoaded', () => {
     // updateGroupTraitAsSkill();
     // updateJobTraitsAsSkills();
     updateLevelTierDisplay(); // Initial tier display on load
+
+    // Equipment Modal Logic
+    const equipmentModal = document.getElementById('equipmentModal');
+    const modalCloseButton = document.getElementById('modalCloseButton');
+    const modalTitle = document.getElementById('modalTitle');
+    const equipmentListContainer = document.getElementById('equipmentListContainer');
+
+    const weaponName1Input = document.getElementById('weaponName1');
+    const weaponName2Input = document.getElementById('weaponName2');
+    const armorName1Input = document.getElementById('armorName1');
+
+    const openModalInputs = [weaponName1Input, weaponName2Input, armorName1Input];
+
+    function displayEquipment(itemCollections, type) {
+        const fixedHeaderContainer = document.getElementById('fixedHeaderContainer');
+        if (!equipmentListContainer || !modalTitle || !fixedHeaderContainer) return;
+
+        // Clear previous items from both containers
+        fixedHeaderContainer.innerHTML = '';
+        equipmentListContainer.innerHTML = '';
+        
+        modalTitle.textContent = type === 'weapon' ? '选择武器' : '选择护甲';
+
+        // Create and append header table to fixedHeaderContainer
+        const headerTable = document.createElement('table');
+        headerTable.classList.add('equipment-modal-table'); // Use same class for consistent styling
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        
+        let headers = [];
+        let columnWidths = [];
+
+        // Define which headers are filterable
+        const filterableWeaponHeaders = ['名称', '检定', '属性', '范围', '伤害', '负荷', '特性', 'Tier'];
+        const filterableArmorHeaders = ['名称', '防御', '特性', 'Tier'];
+
+        if (type === 'weapon') {
+            headers =     ['名称', 'Tier', '检定', '属性', '范围', '伤害', '负荷', '特性'];
+            columnWidths = ['20%',  '8%',  '10%',  '10%',  '12%',  '10%',  '10%',  '20%']; // Sum should be 100%
+        } else if (type === 'armor') {
+            headers =     ['名称', 'Tier', '防御', '特性'];
+            columnWidths = ['34%',  '12%', '20%',  '34%']; // Sum should be 100%
+        }
+
+        headers.forEach((headerText, index) => {
+            const th = document.createElement('th');
+            th.textContent = headerText;
+            if (columnWidths[index]) {
+                th.style.width = columnWidths[index];
+            }
+            
+            let isFilterable = false;
+            if (headerText === '名称') { // Name is always filterable
+                isFilterable = true;
+            } else if (type === 'weapon' && filterableWeaponHeaders.includes(headerText)) {
+                isFilterable = true;
+            } else if (type === 'armor' && filterableArmorHeaders.includes(headerText)) {
+                isFilterable = true;
+            } else if (headerText === 'Tier') {
+                isFilterable = true;
+            }
+
+            if (isFilterable) {
+                const filterInput = document.createElement('input');
+                filterInput.type = 'text';
+                filterInput.placeholder = `筛选 ${headerText}`;
+                filterInput.classList.add('header-filter-input');
+                // Store the header key for easy access during filtering
+                // Ensure 'Tier' uses 'tier' as key to match item property
+                // '名称' uses '名称' as key, which matches the property in equipment_data.js
+                filterInput.dataset.filterKey = (headerText === 'Tier') ? 'tier' : headerText;
+                filterInput.addEventListener('input', () => filterAndDisplayEquipment(type)); // Listener to trigger filtering
+                th.appendChild(document.createElement('br')); // Add a line break for layout
+                th.appendChild(filterInput);
+            }
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        headerTable.appendChild(thead);
+        fixedHeaderContainer.appendChild(headerTable);
+
+        // Create and append data table to equipmentListContainer
+        const dataTable = document.createElement('table');
+        dataTable.classList.add('equipment-modal-table');
+        const tbody = document.createElement('tbody');
+        // Data rows will be populated by filterAndDisplayEquipment
+        dataTable.appendChild(tbody);
+        equipmentListContainer.appendChild(dataTable);
+    }
+
+    function filterAndDisplayEquipment(type) {
+        const fixedHeaderContainer = document.getElementById('fixedHeaderContainer');
+        const equipmentListContainer = document.getElementById('equipmentListContainer');
+        if (!fixedHeaderContainer || !equipmentListContainer) {
+            console.error("Required containers for filtering not found.");
+            return;
+        }
+
+        const filterInputs = fixedHeaderContainer.querySelectorAll('.header-filter-input');
+        const filters = {};
+        filterInputs.forEach(input => {
+            if (input.value.trim() !== '') {
+                filters[input.dataset.filterKey] = input.value.trim().toLowerCase();
+            }
+        });
+
+        let rawDataCollectionsWithTier = [];
+        
+        const addTierToItems = (collection, tierName, varName) => {
+            if (typeof collection !== 'undefined' && Array.isArray(collection)) {
+                collection.forEach(item => {
+                    rawDataCollectionsWithTier.push({ ...item, tier: tierName, sourceVar: varName });
+                });
+            }
+        };
+
+        if (type === 'weapon') {
+            addTierToItems(weapon_t0_physics, 'T0', 'weapon_t0_physics');
+            addTierToItems(weapon_t0_magic, 'T0', 'weapon_t0_magic');
+            addTierToItems(offhand_weapon_t0, 'T0', 'offhand_weapon_t0');
+            addTierToItems(weapon_t1_physics, 'T1', 'weapon_t1_physics');
+            addTierToItems(weapon_t1_magic, 'T1', 'weapon_t1_magic');
+            addTierToItems(offhand_weapon_t1, 'T1', 'offhand_weapon_t1');
+            addTierToItems(weapon_t2_physics, 'T2', 'weapon_t2_physics');
+            addTierToItems(weapon_t2_magic, 'T2', 'weapon_t2_magic');
+            addTierToItems(offhand_weapon_t2, 'T2', 'offhand_weapon_t2');
+            addTierToItems(weapon_t3_physics, 'T3', 'weapon_t3_physics');
+            addTierToItems(weapon_t3_magic, 'T3', 'weapon_t3_magic');
+            addTierToItems(offhand_weapon_t3, 'T3', 'offhand_weapon_t3');
+        } else if (type === 'armor') {
+            addTierToItems(armor_t0, 'T0', 'armor_t0');
+            addTierToItems(armor_t1, 'T1', 'armor_t1');
+            addTierToItems(armor_t2, 'T2', 'armor_t2');
+            addTierToItems(armor_t3, 'T3', 'armor_t3');
+            // Assuming shield data might be part of these or needs similar handling
+            // addTierToItems(shield_t0, 'T0', 'shield_t0');
+            // addTierToItems(shield_t1, 'T1', 'shield_t1');
+            // addTierToItems(shield_t2, 'T2', 'shield_t2');
+            // addTierToItems(shield_t3, 'T3', 'shield_t3');
+        }
+        
+        const filteredItems = rawDataCollectionsWithTier.filter(item => {
+            for (const key in filters) {
+                const itemValue = item[key] ? String(item[key]).toLowerCase() : "";
+                if (!itemValue.includes(filters[key])) {
+                    return false;
+                }
+            }
+            return true;
+        });
+
+        const dataTable = equipmentListContainer.querySelector('table.equipment-modal-table');
+        let tbody = dataTable ? dataTable.querySelector('tbody') : null;
+
+        if (!tbody) {
+            console.error("Could not find tbody in equipmentListContainer for filtering.");
+            // As a fallback, if displayEquipment didn't create the table structure correctly,
+            // we might need to recreate it here, but ideally, displayEquipment handles structure.
+            // For now, just log error and return.
+            return;
+        }
+        
+        tbody.innerHTML = ''; // Clear previous rows
+
+        filteredItems.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.classList.add('equipment-item-row');
+            tr.dataset.equipmentData = JSON.stringify(item);
+
+            let cellsHtml = '';
+            let currentColumnWidths = [];
+            if (type === 'weapon') {
+                currentColumnWidths = ['20%', '8%', '10%', '10%', '12%', '10%', '10%', '20%'];
+                cellsHtml = `
+                    <td style="width: ${currentColumnWidths[0]};">${item.名称 || ''}</td>
+                    <td style="width: ${currentColumnWidths[1]};">${item.tier || ''}</td>
+                    <td style="width: ${currentColumnWidths[2]};">${item.检定 || ''}</td>
+                    <td style="width: ${currentColumnWidths[3]};">${item.属性 || ''}</td>
+                    <td style="width: ${currentColumnWidths[4]};">${item.范围 || ''}</td>
+                    <td style="width: ${currentColumnWidths[5]};">${item.伤害 || ''}</td>
+                    <td style="width: ${currentColumnWidths[6]};">${item.负荷 || ''}</td>
+                    <td style="width: ${currentColumnWidths[7]};">${item.特性 || ''}</td>
+                `;
+            } else if (type === 'armor') {
+                currentColumnWidths = ['34%', '12%', '20%', '34%'];
+                cellsHtml = `
+                    <td style="width: ${currentColumnWidths[0]};">${item.名称 || ''}</td>
+                    <td style="width: ${currentColumnWidths[1]};">${item.tier || ''}</td>
+                    <td style="width: ${currentColumnWidths[2]};">${item.防御 || ''}</td>
+                    <td style="width: ${currentColumnWidths[3]};">${item.特性 || ''}</td>
+                `;
+            }
+            tr.innerHTML = cellsHtml;
+            tbody.appendChild(tr);
+        });
+    }
+
+    openModalInputs.forEach(input => {
+        if (input) {
+            input.addEventListener('click', () => {
+                if (equipmentModal) {
+                    equipmentModal.dataset.targetInputId = input.id;
+                    let dataToShow = [];
+                    let type = '';
+
+                    if (input.id === 'weaponName1' || input.id === 'weaponName2') {
+                        type = 'weapon';
+                        // Collect all weapon data arrays
+                        // Ensure these variables are available from equipment_data.js
+                        if (typeof weapon_t0_physics !== 'undefined') dataToShow.push(weapon_t0_physics);
+                        if (typeof weapon_t0_magic !== 'undefined') dataToShow.push(weapon_t0_magic);
+                        if (typeof offhand_weapon_t0 !== 'undefined') dataToShow.push(offhand_weapon_t0);
+                        if (typeof weapon_t1_physics !== 'undefined') dataToShow.push(weapon_t1_physics);
+                        if (typeof weapon_t1_magic !== 'undefined') dataToShow.push(weapon_t1_magic);
+                        if (typeof offhand_weapon_t1 !== 'undefined') dataToShow.push(offhand_weapon_t1);
+                        if (typeof weapon_t2_physics !== 'undefined') dataToShow.push(weapon_t2_physics);
+                        if (typeof weapon_t2_magic !== 'undefined') dataToShow.push(weapon_t2_magic);
+                        if (typeof offhand_weapon_t2 !== 'undefined') dataToShow.push(offhand_weapon_t2);
+                        if (typeof weapon_t3_physics !== 'undefined') dataToShow.push(weapon_t3_physics);
+                        if (typeof weapon_t3_magic !== 'undefined') dataToShow.push(weapon_t3_magic);
+                        if (typeof offhand_weapon_t3 !== 'undefined') dataToShow.push(offhand_weapon_t3);
+                    } else if (input.id === 'armorName1') {
+                        type = 'armor';
+                        // Collect all armor data arrays
+                        if (typeof armor_t0 !== 'undefined') dataToShow.push(armor_t0);
+                        if (typeof armor_t1 !== 'undefined') dataToShow.push(armor_t1);
+                        if (typeof armor_t2 !== 'undefined') dataToShow.push(armor_t2);
+                        if (typeof armor_t3 !== 'undefined') dataToShow.push(armor_t3);
+                        if (typeof shield_t0 !== 'undefined') dataToShow.push(shield_t0);
+                        if (typeof shield_t1 !== 'undefined') dataToShow.push(shield_t1);
+                        if (typeof shield_t2 !== 'undefined') dataToShow.push(shield_t2);
+                        if (typeof shield_t3 !== 'undefined') dataToShow.push(shield_t3);
+                    }
+                    
+                    // displayEquipment sets up the headers (with filters) and an empty data table structure
+                    // The 'dataToShow' here is primarily to inform displayEquipment about the structure if needed,
+                    // but the actual row rendering is now handled by filterAndDisplayEquipment.
+                    // For simplicity, displayEquipment can be made to not require itemCollections for its current role.
+                    // However, to minimize changes to displayEquipment's signature for now, we pass an empty array
+                    // or a representative sample if it were strictly needed for header/column setup.
+                    // Since displayEquipment now hardcodes headers, an empty array is fine.
+                    displayEquipment([], type);
+                    
+                    // filterAndDisplayEquipment then populates the data table based on (initially empty) filters
+                    filterAndDisplayEquipment(type);
+                    
+                    equipmentModal.style.display = 'block';
+                }
+            });
+        }
+    });
+
+    if (modalCloseButton && equipmentModal) {
+        modalCloseButton.addEventListener('click', () => {
+            equipmentModal.style.display = 'none';
+        });
+    }
+
+    if (equipmentModal) {
+        window.addEventListener('click', (event) => {
+            if (event.target === equipmentModal) {
+                equipmentModal.style.display = 'none';
+            }
+        });
+if (equipmentListContainer && equipmentModal) {
+        equipmentListContainer.addEventListener('click', (event) => {
+            const clickedItemRow = event.target.closest('tr.equipment-item-row');
+            if (!clickedItemRow) {
+                return; // Clicked outside an item row
+            }
+
+            const equipmentDataString = clickedItemRow.dataset.equipmentData;
+            if (!equipmentDataString) {
+                console.error('Equipment data not found on clicked item.');
+                return;
+            }
+
+            let equipmentData;
+            try {
+                equipmentData = JSON.parse(equipmentDataString);
+            } catch (e) {
+                console.error('Failed to parse equipment data:', e);
+                return;
+            }
+
+            const targetInputId = equipmentModal.dataset.targetInputId;
+            if (!targetInputId) {
+                console.error('Target input ID not found on modal.');
+                return;
+            }
+
+            const form = document.getElementById('characterForm'); // Ensure form is accessible
+
+            if (targetInputId.startsWith('weaponName')) {
+                const weaponIndex = targetInputId.charAt(targetInputId.length - 1); // '1' or '2'
+                if (form[`weaponName${weaponIndex}`]) form[`weaponName${weaponIndex}`].value = equipmentData.名称 || '';
+                if (form[`weaponCheck${weaponIndex}`]) form[`weaponCheck${weaponIndex}`].value = equipmentData.检定 || '';
+                if (form[`weaponAttribute${weaponIndex}`]) form[`weaponAttribute${weaponIndex}`].value = equipmentData.属性 || '';
+                if (form[`weaponRange${weaponIndex}`]) form[`weaponRange${weaponIndex}`].value = equipmentData.范围 || '';
+                if (form[`weaponDamage${weaponIndex}`]) form[`weaponDamage${weaponIndex}`].value = equipmentData.伤害 || '';
+                if (form[`weaponTwoHanded${weaponIndex}`]) form[`weaponTwoHanded${weaponIndex}`].value = equipmentData.负荷 || ''; // Corresponds to '负荷'
+                if (form[`weaponTrait${weaponIndex}`]) form[`weaponTrait${weaponIndex}`].value = equipmentData.特性 || '';
+            } else if (targetInputId.startsWith('armorName')) {
+                const armorIndex = targetInputId.charAt(targetInputId.length - 1); // '1'
+                if (form[`armorName${armorIndex}`]) form[`armorName${armorIndex}`].value = equipmentData.名称 || '';
+                if (form[`armorDefense${armorIndex}`]) form[`armorDefense${armorIndex}`].value = equipmentData.防御 || '';
+                if (form[`armorTrait${armorIndex}`]) form[`armorTrait${armorIndex}`].value = equipmentData.特性 || '';
+            }
+
+            equipmentModal.style.display = 'none';
+        });
+    }
+    }
 });

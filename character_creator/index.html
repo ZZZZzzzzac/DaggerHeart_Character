@@ -225,6 +225,20 @@
     <script src="data/jobs_data.js"></script>
     <script src="data/items_data.js"></script>
     <script src="data/consumables_data.js"></script>
+    <script src="data/equipment_data.js"></script>
     <script src="script.js"></script>
+<!-- Equipment Modal -->
+    <div id="equipmentModal" class="modal">
+        <div class="modal-content">
+            <span id="modalCloseButton" class="modal-close-button">&times;</span>
+            <h3 id="modalTitle">选择装备</h3>
+            <div id="fixedHeaderContainer" class="fixed-header-container">
+                <!-- 表头将在这里通过JS动态添加或静态放置 -->
+            </div>
+            <div id="equipmentListContainer" class="equipment-list">
+                <!-- Equipment items will be loaded here -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>

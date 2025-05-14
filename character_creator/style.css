@@ -703,3 +703,143 @@ button[type="button"]#importJsonBtn:hover {
     font-weight: bold;
     vertical-align: middle; /* Align with the input box and label */
 }
+/* Equipment Modal Styles */
+#equipmentModal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px; /* Location of the box */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 5% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%; /* Could be more or less, depending on screen size */
+    max-width: 1200px; /* Maximum width */
+    position: relative;
+    border-radius: 8px;
+}
+
+#modalCloseButton {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+#modalCloseButton:hover,
+#modalCloseButton:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#modalTitle {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Styles for the fixed header container */
+.fixed-header-container {
+    width: 100%;
+    padding-bottom: 10px; /* Space between header and list */
+    /* border-bottom: 1px solid #ccc; /* Optional separator line */
+}
+
+.fixed-header-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.fixed-header-container th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    background-color: #e9e9e9; /* Slightly different background for fixed header */
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.fixed-header-container th .header-filter-input {
+    width: calc(100% - 10px); /* Adjust width to fit within th padding */
+    padding: 4px;
+    margin-top: 4px; /* Space between header text and input */
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+    font-size: 0.9em;
+}
+
+.equipment-list {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+/* Basic styling for individual equipment items (can be expanded later) */
+.equipment-item {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.equipment-item:last-child {
+    border-bottom: none;
+}
+
+.equipment-item:hover {
+    background-color: #f0f0f0;
+}
+/* Styles for the equipment table in the modal */
+.equipment-modal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    table-layout: fixed; /* Ensure fixed layout for column widths */
+}
+
+.equipment-modal-table th,
+.equipment-modal-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-size: 0.9em;
+    word-wrap: break-word; /* Allow content to wrap within fixed width cells */
+}
+
+.equipment-modal-table th {
+    background-color: #f2f2f2; /* This applies to the data table header, not the fixed one */
+    font-weight: bold;
+}
+
+/* Column widths will be set by JavaScript for precision. */
+/* Ensure the fixed header's th style (background) is consistent if it was different */
+.fixed-header-container .equipment-modal-table th {
+     background-color: #e9e9e9; /* From .fixed-header-container th general style */
+}
+
+/* Ensure both tables use fixed layout */
+.fixed-header-container .equipment-modal-table,
+#equipmentListContainer .equipment-modal-table {
+    table-layout: fixed;
+}
+
+.equipment-item-row { /* Class for each data row in the table */
+    cursor: pointer;
+}
+
+.equipment-item-row:hover {
+    background-color: #f0f0f0;
+}

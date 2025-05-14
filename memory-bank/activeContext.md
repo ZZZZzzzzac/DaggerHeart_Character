@@ -7,11 +7,11 @@ This file tracks the project's current status, including recent changes, current
 
 ## Current Focus
 
-*   
+*
 
 ## Recent Changes
 
-*   
+*
 
 ## Open Questions/Issues
 
@@ -72,3 +72,6 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-14 16:17:26] - 将 `character_creator/data/equipment.csv` 转换为JS数据格式，并保存为 `character_creator/data/equipment_data.js`，其中数据按武器/护甲和T0-T3等级分类。
 * [2025-05-14 16:28:54] - 根据用户反馈，在“设定”部分的“等级”字段后添加了 Tier (T0-T3) 的动态显示。修改了 [`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js), 和 [`character_creator/style.css`](character_creator/style.css)。
 * [2025-05-14 16:53:51] - 将 `character_creator/data/equipment.csv` 转换为JS数据格式，并保存为 `character_creator/data/equipment_data.js`，其中数据按武器/护甲和T0-T3等级分类，并为每个类别创建单独的 const 变量。
+* [2025-05-14 17:31:00] - 创建了装备选择弹窗的 HTML 结构 ([`character_creator/index.html`](character_creator/index.html:229)) 和 CSS 样式 ([`character_creator/style.css`](character_creator/style.css))。
+* [2025-05-14 17:33:12] - 在 [`character_creator/script.js`](character_creator/script.js) 中添加了装备选择弹窗的显示/隐藏逻辑。点击武器/护甲名称输入框会显示弹窗，点击关闭按钮或弹窗外部会隐藏弹窗。
+* [2025-05-14 17:56:34] - 在 [`character_creator/script.js`](character_creator/script.js) 中实现了装备选择弹窗中装备项的点击处理逻辑：点击装备项后，会将装备数据填充到人物卡对应的输入框，并关闭弹窗。

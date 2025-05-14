@@ -7,11 +7,11 @@ This file tracks the project's progress using a task list format.
 
 ## Completed Tasks
 
-*   
+*
 
 ## Current Tasks
 
-*   
+*
 
 ## Next Steps
 
@@ -39,3 +39,6 @@ This file tracks the project's progress using a task list format.
 * [2025-05-14 16:17:39] - 完成任务：将 `character_creator/data/equipment.csv` 转换为JS数据格式并保存为 `character_creator/data/equipment_data.js`，按武器/护甲和T0-T3等级分类。
 * [2025-05-14 16:29:14] - 完成任务：根据用户反馈，在“等级”字段后添加 Tier (T0-T3) 的动态显示 (涉及 [`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js), [`character_creator/style.css`](character_creator/style.css))。
 * [2025-05-14 16:54:03] - 完成任务：将 `character_creator/data/equipment.csv` 转换为JS数据格式并保存为 `character_creator/data/equipment_data.js`，每个表头（如 `T0主要武器 - 物理`）成为一个独立的 `const` 变量（如 `weapon_t0_physics`），并遵循指定的武器和护甲对象格式。
+* [2025-05-14 17:31:00] - 完成任务：为装备选择创建了弹窗的 HTML ([`character_creator/index.html`](character_creator/index.html:229)) 和 CSS ([`character_creator/style.css`](character_creator/style.css))。
+* [2025-05-14 17:33:12] - 完成任务：在 [`character_creator/script.js`](character_creator/script.js) 中实现了装备选择弹窗的显示/隐藏逻辑。
+* [2025-05-14 18:00:34] - 完成任务：在 [`character_creator/script.js`](character_creator/script.js) 中实现装备选择弹窗的装备项点击填充功能。
