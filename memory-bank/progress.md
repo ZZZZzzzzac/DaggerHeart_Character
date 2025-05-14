@@ -29,3 +29,5 @@ This file tracks the project's progress using a task list format.
 * [2025-05-13 23:32:19] - 完成任务：修复导入JSON时技能重复填充的bug。修改涉及 `character_creator/script.js`。对于经历多出的问题，已确认脚本逻辑，若问题持续，需检查HTML。
 * [2025-05-13 23:38:06] - 完成任务：根据用户反馈，修改导出逻辑，不再将“经历”补齐到5条，只导出实际存在的经历。修改涉及 `character_creator/script.js`。
 * [2025-05-13 23:48:30] - 完成任务：重构技能系统以使用5个固定技能槽（种族x2, 社群x1, 职业x2）。修复了导入JSON后更改种族/职业/社群选择时技能重复添加的bug。修改涉及 `character_creator/script.js` 的技能初始化、更新、导入和导出逻辑。
+* [2025-05-14 14:25:53] - 完成任务：根据用户多轮反馈调整“武器”部分。主要包括：1. HTML结构调整以支持两条武器记录。2. 武器伤害字段改为文本类型。3. JS导入/导出逻辑更新以支持两条武器。4. CSS调整以实现武器子标题与输入框平行、移除主标题、移除标签冒号、实现紧凑单行布局、移除“框”样式，并精确控制特定输入框宽度。影响文件：character_creator/index.html, character_creator/style.css, character_creator/script.js。
+* [2025-05-14 14:33:51] - 完成任务：重构“武器”部分，将标签改为占位符，并将“双手”字段从布尔型复选框改为字符串型文本输入。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。

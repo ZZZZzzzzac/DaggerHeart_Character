@@ -357,15 +357,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (data.物品) {
-            if (data.物品.武器 && data.物品.武器.length > 0) {
-                const weapon = data.物品.武器[0];
-                if(form.weaponName1) form.weaponName1.value = weapon.名称 || "";
-                if(form.weaponCheck1) form.weaponCheck1.value = weapon.检定 || "";
-                if(form.weaponAttribute1) form.weaponAttribute1.value = weapon.属性 || "";
-                if(form.weaponRange1) form.weaponRange1.value = weapon.距离 || "";
-                if(form.weaponDamage1) form.weaponDamage1.value = weapon.伤害 || 0;
-                if (form.weaponTwoHanded1) form.weaponTwoHanded1.checked = weapon.双手 || false;
-                if(form.weaponTrait1) form.weaponTrait1.value = weapon.特性 || "";
+            if (data.物品.武器 && Array.isArray(data.物品.武器)) {
+                // Populate Weapon 1
+                if (data.物品.武器.length > 0) {
+                    const weapon1 = data.物品.武器[0];
+                    if(form.weaponName1) form.weaponName1.value = weapon1.名称 || "";
+                    if(form.weaponCheck1) form.weaponCheck1.value = weapon1.检定 || "";
+                    if(form.weaponAttribute1) form.weaponAttribute1.value = weapon1.属性 || "";
+                    if(form.weaponRange1) form.weaponRange1.value = weapon1.距离 || "";
+                    if(form.weaponDamage1) form.weaponDamage1.value = weapon1.伤害 || ""; // Damage is text
+                    if (form.weaponTwoHanded1) form.weaponTwoHanded1.value = weapon1.双手 || "";
+                    if(form.weaponTrait1) form.weaponTrait1.value = weapon1.特性 || "";
+                }
+                // Populate Weapon 2
+                if (data.物品.武器.length > 1) {
+                    const weapon2 = data.物品.武器[1];
+                    if(form.weaponName2) form.weaponName2.value = weapon2.名称 || "";
+                    if(form.weaponCheck2) form.weaponCheck2.value = weapon2.检定 || "";
+                    if(form.weaponAttribute2) form.weaponAttribute2.value = weapon2.属性 || "";
+                    if(form.weaponRange2) form.weaponRange2.value = weapon2.距离 || "";
+                    if(form.weaponDamage2) form.weaponDamage2.value = weapon2.伤害 || ""; // Damage is text
+                    if (form.weaponTwoHanded2) form.weaponTwoHanded2.value = weapon2.双手 || "";
+                    if(form.weaponTrait2) form.weaponTrait2.value = weapon2.特性 || "";
+                }
             }
             if (data.物品.护甲 && data.物品.护甲.length > 0) {
                 const armor = data.物品.护甲[0];
@@ -471,14 +485,31 @@ document.addEventListener('DOMContentLoaded', () => {
         characterData.状态.知识 = parseInt(formData.get('knowledge'), 10) || 0;
         characterData.状态.风度 = parseInt(formData.get('grace'), 10) || 0;
 
-        if (form.querySelector('#weaponName1')) {
+        // Export Weapon 1
+        if (form.querySelector('#weaponName1') && formData.get('weaponName1')) { // Check if name exists to consider it non-empty
              characterData.物品.武器.push({
-                "名称": formData.get('weaponName1') || "", "检定": formData.get('weaponCheck1') || "", "属性": formData.get('weaponAttribute1') || "",
-                "距离": formData.get('weaponRange1') || "", "伤害": parseInt(formData.get('weaponDamage1'), 10) || 0,
-                "双手": form.querySelector('#weaponTwoHanded1') ? form.querySelector('#weaponTwoHanded1').checked : false,
+                "名称": formData.get('weaponName1') || "",
+                "检定": formData.get('weaponCheck1') || "",
+                "属性": formData.get('weaponAttribute1') || "",
+                "距离": formData.get('weaponRange1') || "",
+                "伤害": formData.get('weaponDamage1') || "", // Damage is text
+                "双手": formData.get('weaponTwoHanded1') || "",
                 "特性": formData.get('weaponTrait1') || ""
             });
         }
+        // Export Weapon 2
+        if (form.querySelector('#weaponName2') && formData.get('weaponName2')) { // Check if name exists to consider it non-empty
+            characterData.物品.武器.push({
+               "名称": formData.get('weaponName2') || "",
+               "检定": formData.get('weaponCheck2') || "",
+               "属性": formData.get('weaponAttribute2') || "",
+               "距离": formData.get('weaponRange2') || "",
+               "伤害": formData.get('weaponDamage2') || "", // Damage is text
+               "双手": formData.get('weaponTwoHanded2') || "",
+               "特性": formData.get('weaponTrait2') || ""
+           });
+       }
+
         if (form.querySelector('#armorName1')) {
             characterData.物品.护甲.push({
                 "名称": formData.get('armorName1') || "", "防御": parseInt(formData.get('armorDefense1'), 10) || 0, "特性": formData.get('armorTrait1') || ""
@@ -599,10 +630,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    populateGenericSelect(raceSelect, RACES_DATA, 'race', 'race', "请选择一个种族", "RACES_DATA");
-    populateGenericSelect(mixedRaceSelect, RACES_DATA, 'race', 'race', "请选择一个混血种族", "RACES_DATA");
-    populateGenericSelect(communitySelect, GROUPS_DATA, '社群', '社群', "请选择一个社群", "GROUPS_DATA");
-    populateGenericSelect(professionSelect, JOBS_DATA, '职业', '职业', "请选择一个职业", "JOBS_DATA");
+    populateGenericSelect(raceSelect, RACES_DATA, 'race', 'race', "必选", "RACES_DATA");
+    populateGenericSelect(mixedRaceSelect, RACES_DATA, 'race', 'race', "可选", "RACES_DATA");
+    populateGenericSelect(communitySelect, GROUPS_DATA, '社群', '社群', "必选", "GROUPS_DATA");
+    populateGenericSelect(professionSelect, JOBS_DATA, '职业', '职业', "必选", "JOBS_DATA");
 
     if (raceSelect) raceSelect.addEventListener('change', updateRaceTraitsAsSkills);
     if (mixedRaceSelect) mixedRaceSelect.addEventListener('change', updateRaceTraitsAsSkills);

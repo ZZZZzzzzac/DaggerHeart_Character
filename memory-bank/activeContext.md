@@ -62,3 +62,5 @@ This file tracks the project's current status, including recent changes, current
     *   Updated `exportButton` logic to correctly gather data from both fixed slots and any additional dynamic skill rows.
     *   This resolves the bug where changing race/group/job after import would add new skills instead of replacing old ones, and fulfills the requirement for fixed, modifiable slots for these core traits.
 * [2025-05-13 23:58:29] - 为“技能”部分中的固定技能槽（种族、社群、职业）在 `character_creator/style.css` 中添加了不同的背景色。
+* [2025-05-14 14:25:32] - 根据用户反馈进一步调整“武器”部分CSS：为“检定”、“属性”、“距离”、“伤害”输入框明确设置了 `width: 30px;`, `min-width: 30px;`, `flex-basis: 30px;` 并确保 `flex-grow: 0; flex-shrink: 0;` 以强制其宽度。影响文件：character_creator/style.css。
+* [2025-05-14 14:33:39] - 重构了“武器”部分的用户界面和数据处理：将输入框标签替换为占位符，并将“双手”字段从复选框更改为文本输入框，以提供更大的灵活性。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。

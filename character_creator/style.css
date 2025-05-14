@@ -287,39 +287,109 @@ input[type="checkbox"] {
 
 /* Specific widths within general .item (not .experience-item unless overridden) */
 
-/* Weapon Item Specific Styles */
-#weapons .item input[name^="weaponName"] {
-    width: 10em; /* Approx 10 chars */
-    flex-grow: 0;
-    min-width: 8em;
+/* New Weapons Section Layout */
+.weapons-section {
+    /* display: flex; No longer needed as section-header is removed */
+    /* align-items: flex-start; */
+    /* gap: 10px; */
+    margin-bottom: 0px;
 }
-#weapons .item input[name^="weaponCheck"] {
-    width: 3em; /* Approx 2 chars + padding */
-    flex-grow: 0;
-    min-width: 2.5em;
+
+.weapons-layout {
+    display: flex;
+    flex-direction: column; /* Stack weapon1 and weapon2 vertically */
+    gap: 0px; /* Space between weapon1 and weapon2 boxes */
+    /* flex-grow: 1; No longer needed if .weapons-section is not flex */
 }
-#weapons .item input[name^="weaponAttribute"] {
-    width: 3em; /* Approx 2 chars + padding */
-    flex-grow: 0;
-    min-width: 2.5em;
+
+.weapon-item-container {
+    /* border: 1px solid #ddd; */ /* Removed border */
+    padding: 0px 0; /* Reduced padding, only top/bottom for separation between weapon1/2 */
+    /* border-radius: 0px; */ /* Removed border-radius */
+    /* background-color: #f9f9f9; */ /* Removed background */
+    margin-bottom: 0px; /* Add a small margin below each weapon line */
 }
-#weapons .item input[name^="weaponRange"] {
-    width: 4em; /* Approx 3 chars + padding */
-    flex-grow: 0;
-    min-width: 3.5em;
+
+.weapon-item-container .item {
+    /* .item is already display: flex; align-items: center; from general .item style */
+    flex-wrap: nowrap; /* Prevent wrapping to ensure single line */
+    /* overflow-x: auto; /* Add scroll if content overflows - consider if this is desired or if widths should strictly fit */
+    gap: 0px 0px; /* Reduced column gap for tighter packing, row gap 0 */
 }
-#weapons .item input[name^="weaponDamage"] {
-    width: 5em; /* Approx 5 digits */
-    flex-grow: 0;
-    min-width: 4em;
+
+.weapon-item-container .item h4 {
+    margin: 0 5px 0 0; /* Reduced right margin */
+    padding-bottom: 0;
+    color: #333;
+    font-size: 1em;
+    font-weight: bold;
+    border-bottom: none;
+    align-self: center;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
-#weapons .item input[name^="weaponTwoHanded"] {
-    width: auto; /* Checkbox default */
-    flex-grow: 0;
+
+.weapon-item-container .item label {
+    margin-right: 2px; /* Tighter spacing to input */
+    font-weight: normal;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-bottom: 0; /* Align with input baseline */
+    margin-bottom: 0; /* Override general label margin */
 }
-#weapons .item input[name^="weaponTrait"] {
-    flex-grow: 1; /* Trait takes remaining space */
-    min-width: 8em; /* Minimum reasonable width for trait */
+
+/* Weapon Item Specific Styles - Widths for Single Line */
+.weapon-item-container .item input[type="text"],
+.weapon-item-container .item input[type="checkbox"] {
+    margin-right: 2px;
+    margin-bottom: 0;
+    padding: 4px; /* Slightly reduced padding for tighter fit */
+    flex-shrink: 0;
+    border-radius: 3px; /* Slightly smaller radius */
+    font-size: 0.9em; /* Slightly smaller font for more content */
+}
+
+.weapon-item-container .item input[name^="weaponName"] {
+    width: 50px;
+}
+.weapon-item-container .item input[name^="weaponCheck"] {
+    width: 40px;
+    min-width: 40px; /* Explicitly set min-width */
+    flex-basis: 40px; /* Set flex-basis */
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+.weapon-item-container .item input[name^="weaponAttribute"] {
+    width: 40px;
+    min-width: 40px; /* Explicitly set min-width */
+    flex-basis: 40px; /* Set flex-basis */
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+.weapon-item-container .item input[name^="weaponRange"] {
+    width: 50px;
+    min-width: 50px; /* Explicitly set min-width */
+    flex-basis: 50px; /* Set flex-basis */
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+.weapon-item-container .item input[name^="weaponDamage"] {
+    width: 60px;
+    min-width: 40px; /* Explicitly set min-width */
+    flex-basis: 40px; /* Set flex-basis */
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+.weapon-item-container .item input[name^="weaponTwoHanded"] {
+    width: 40px;
+    min-width: 40px; /* Explicitly set min-width */
+    flex-basis: 40px; /* Set flex-basis */
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+.weapon-item-container .item input[name^="weaponTrait"] {
+    width: 50px;
+    /* flex-grow: 1; */ /* Removed to control width precisely */
 }
 
 /* Item (道具) Specific Styles */

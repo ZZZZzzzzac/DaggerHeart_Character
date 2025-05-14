@@ -127,3 +127,18 @@ This comprehensive refactor ensures that trait-based skills are managed in their
 
 **Details:**
 *   Extensive modifications to [`character_creator/script.js`](character_creator/script.js), including new functions (`createSkillRowElement`, `initializeFixedSkillSlots`, `updateSkillInSlot`, `getSkillDataFromRow`) and significant rewrites of `updateRaceTraitsAsSkills`, `updateGroupTraitAsSkill`, `updateJobTraitsAsSkills`, `populateForm`, and the skill export section within `exportButton`'s event listener.
+---
+### Decision (Code)
+[2025-05-14 14:31:18] - 重构“武器”部分：标签改为占位符，“双手”字段类型从布尔值 (checkbox) 改为字符串 (text input)。
+
+**Rationale:**
+根据用户请求，为了使“武器”部分的输入方式与“技能”部分更一致，并提供更灵活的“双手”信息输入（例如，可以填写“单手”、“双手”、“可选”等，而不仅仅是勾选）。
+
+**Details:**
+*   [`character_creator/index.html`](character_creator/index.html):
+    *   移除了武器1和武器2各字段（名称、检定、属性、距离、伤害、双手、特性）的 `<label>` 元素。
+    *   为上述字段的 `<input>` 元素添加了 `placeholder` 属性。
+    *   将 `weaponTwoHanded1` 和 `weaponTwoHanded2` 输入元素的 `type` 从 `checkbox` 修改为 `text`。
+*   [`character_creator/script.js`](character_creator/script.js):
+    *   在 `populateForm` 函数中，将 `form.weaponTwoHanded1.checked = weapon1.双手 || false;` 修改为 `form.weaponTwoHanded1.value = weapon1.双手 || "";` (同样修改了 `weaponTwoHanded2`)。
+    *   在 `exportButton` 事件监听器中，将获取 `weaponTwoHanded1` 值的方式从 `form.querySelector('#weaponTwoHanded1').checked` 修改为 `formData.get('weaponTwoHanded1') || ""` (同样修改了 `weaponTwoHanded2`)。
