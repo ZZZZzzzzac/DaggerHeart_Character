@@ -9,9 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const AllFixedSlotIds = Object.values(FixedSkillSlotIds);
 
     const form = document.getElementById('characterForm');
-    const exportButton = document.getElementById('exportJson');
-    const importJsonBtn = document.getElementById('importJsonBtn');
-    const importFile = document.getElementById('importFile');
+    
+
 
     const addExperienceBtn = document.getElementById('addExperienceBtn');
     const addItemBtn = document.getElementById('addItemBtn');
@@ -20,39 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const experiencesContainer = document.getElementById('experiences');
     const itemsContainer = document.getElementById('items');
     const skillsContainer = document.getElementById('skillsContainer');
-    const appearanceUpload = document.getElementById('appearanceUpload');
-    const appearancePreview = document.getElementById('appearancePreview');
-    const removeAppearanceBtn = document.getElementById('removeAppearanceBtn');
-
-    const raceSelect = document.getElementById('raceSelect');
-    const mixedRaceSelect = document.getElementById('mixedRaceSelect');
-    const communitySelect = document.getElementById('communitySelect');
-    const professionSelect = document.getElementById('professionSelect');
-    const levelInput = document.getElementById('level');
-    const levelTierDisplay = document.getElementById('levelTierDisplay');
-
-    // Weapon and Armor Inputs
-    const weaponName1Input = document.getElementById('weaponName1');
-    const weaponName2Input = document.getElementById('weaponName2');
-    const weaponName3Input = document.getElementById('weaponName3');
-    const weaponName4Input = document.getElementById('weaponName4');
-    const armorName1Input = document.getElementById('armorName1');    
     
-    const weaponTrait1Textarea = document.getElementById('weaponTrait1');
-    const weaponTrait2Textarea = document.getElementById('weaponTrait2');
-    const weaponTrait3Textarea = document.getElementById('weaponTrait3');
-    const weaponTrait4Textarea = document.getElementById('weaponTrait4');
-    const armorTrait1Textarea = document.getElementById('armorTrait1');
 
-    // Newbie Guide Modal Elements
-    const newbieGuideButton = document.getElementById('newbieGuideButton');
-    const newbieGuideModal = document.getElementById('newbieGuideModal');
-    const newbieGuideModalCloseButton = document.getElementById('newbieGuideModalCloseButton');
-    const newbieGuideNextButton = document.getElementById('newbieGuideNextButton');
-    const newbieGuideCancelButton = document.getElementById('newbieGuideCancelButton');
-    const newbieGuideQuestionText = document.getElementById('newbieGuideQuestionText');
-    const newbieGuideAnswerInput = document.getElementById('newbieGuideAnswerInput');
-    const newbieGuideDropdownInput = document.getElementById('newbieGuideDropdownInput'); // Added this line
 
     const ALL_ITEMS_DATA = [...ITEMS_DATA, ...CONSUMABLES_DATA];
 
@@ -101,7 +69,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================== End of Utility Functions =====================
 
 
-    //========================= Display Tier =========================
+    //========================= Setting =========================
+    const raceSelect = document.getElementById('raceSelect');
+    const mixedRaceSelect = document.getElementById('mixedRaceSelect');
+    const communitySelect = document.getElementById('communitySelect');
+    const professionSelect = document.getElementById('professionSelect');
+    const levelInput = document.getElementById('level');
+    const levelTierDisplay = document.getElementById('levelTierDisplay');
+    
     function calculateTier(level) {
         const lvl = parseInt(level, 10);
         if (isNaN(lvl)) return "T1"; // Default to T1 if level is not a number
@@ -122,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         levelInput.addEventListener('input', updateLevelTierDisplay);
     }
     updateLevelTierDisplay(); // Initial tier display on load
-    // ====================== End of Display Tier ======================
+    // ====================== End of Setting ======================
 
     
     // ====================== Race, Jobs, and Community Selects ======================
@@ -156,30 +131,43 @@ document.addEventListener('DOMContentLoaded', () => {
             selectElement.innerHTML = `<option value="">处理${dataName || '数据'}出错</option>`;
         }
     }
-
+    // 初始化下拉选择框
     populateGenericSelect(raceSelect, RACES_DATA, 'race', 'race', "必选", "RACES_DATA");
     populateGenericSelect(mixedRaceSelect, RACES_DATA, 'race', 'race', "可选", "RACES_DATA");
     populateGenericSelect(communitySelect, GROUPS_DATA, '社群', '社群', "必选", "GROUPS_DATA");
     populateGenericSelect(professionSelect, JOBS_DATA, '职业', '职业', "必选", "JOBS_DATA");
-
+    // 通用函数：创建特性对象
+    function createTraitData(name, description, attribute, config = "永久") {
+        return {
+            配置: config,
+            名称: name,
+            领域: "",
+            等级: "",
+            属性: attribute,
+            回想: "",
+            描述: description || ""
+        };
+    }
+    // 添加选择框事件监听
     if (raceSelect) raceSelect.addEventListener('change', updateRaceTraitsAsSkills);
     if (mixedRaceSelect) mixedRaceSelect.addEventListener('change', updateRaceTraitsAsSkills);
     if (communitySelect) communitySelect.addEventListener('change', updateGroupTraitAsSkill);
-    if (professionSelect) professionSelect.addEventListener('change', updateJobTraitsAsSkills);
-    
-    // Initial calls for a fresh form (no import) - only if data is loaded.
-    // populateForm handles these calls after an import.
-    if (typeof RACES_DATA !== 'undefined' && RACES_DATA.length > 0 && raceSelect.value) {
-         updateRaceTraitsAsSkills();
-    }
-    if (typeof GROUPS_DATA !== 'undefined' && GROUPS_DATA.length > 0 && communitySelect.value) {
-        updateGroupTraitAsSkill();
-    }
-    if (typeof JOBS_DATA !== 'undefined' && JOBS_DATA.length > 0 && professionSelect.value) {
-        updateJobTraitsAsSkills();
-    }
-
+    if (professionSelect) professionSelect.addEventListener('change', updateJobTraitsAsSkills);    
+    // 初始调用 - 仅在数据已加载时
+    function initializeTraits() {
+        if (typeof RACES_DATA !== 'undefined' && RACES_DATA.length > 0 && raceSelect.value) {
+            updateRaceTraitsAsSkills();
+        }
+        if (typeof GROUPS_DATA !== 'undefined' && GROUPS_DATA.length > 0 && communitySelect.value) {
+            updateGroupTraitAsSkill();
+        }
+        if (typeof JOBS_DATA !== 'undefined' && JOBS_DATA.length > 0 && professionSelect.value) {
+            updateJobTraitsAsSkills();
+        }
+    }    
+    initializeTraits();
     function updateRaceTraitsAsSkills() {
+        // 检查数据有效性
         if (!raceSelect || typeof RACES_DATA === 'undefined' || !Array.isArray(RACES_DATA) || RACES_DATA.length === 0) {
             updateSkillInSlot(FixedSkillSlotIds.RACE_1, null);
             updateSkillInSlot(FixedSkillSlotIds.RACE_2, null);
@@ -188,63 +176,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const selectedRaceName = raceSelect.value;
         const selectedMixedRaceName = mixedRaceSelect ? mixedRaceSelect.value : null;
+        const hasMixedRace = selectedMixedRaceName && selectedMixedRaceName !== "" && selectedMixedRaceName !== selectedRaceName;
         
         let trait1Data = null;
         let trait2Data = null;
 
         if (selectedRaceName) {
             const mainRaceData = RACES_DATA.find(r => r.race === selectedRaceName);
-            if (mainRaceData) {
-                if (mainRaceData.trait1 && mainRaceData.trait1.name) {
-                    trait1Data = {
-                        配置: "永久",
-                        名称: mainRaceData.trait1.name,
-                        领域: "",
-                        等级: "", // Racial traits might not have a numeric level
-                        属性: "种族",
-                        回想: "",
-                        描述: mainRaceData.trait1.description || ""
-                    };
-                }
+            if (!mainRaceData) return;
+            
+            // 处理主要种族特性
+            if (mainRaceData.trait1 && mainRaceData.trait1.name) {
+                trait1Data = createTraitData(
+                    mainRaceData.trait1.name,
+                    mainRaceData.trait1.description,
+                    "种族"
+                );
+            }
 
-                let secondFeatureSource = null;
-                let secondFeatureAttribute = "种族"; // Default to main race's second trait
-
-                if (selectedMixedRaceName && selectedMixedRaceName !== "" && selectedMixedRaceName !== selectedRaceName) {
-                    const mixedRaceData = RACES_DATA.find(r => r.race === selectedMixedRaceName);
-                    // Use trait2 from mixed race for the second slot if mixed race is selected and valid
-                    if (mixedRaceData && mixedRaceData.trait2 && mixedRaceData.trait2.name) {
-                        secondFeatureSource = mixedRaceData.trait2;
-                        secondFeatureAttribute = "混血";
-                    } else if (mixedRaceData && mixedRaceData.trait1 && mixedRaceData.trait1.name) {
-                         secondFeatureSource = mixedRaceData.trait2; // This might be null if mixedRaceData.trait2 is not valid
-                         if (secondFeatureSource) secondFeatureAttribute = "混血";
-                    }
-                }
-                
-                // If no valid second feature from mixed race, try main race's trait2
-                if (!secondFeatureSource && mainRaceData.trait2 && mainRaceData.trait2.name) {
-                    secondFeatureSource = mainRaceData.trait2;
-                    secondFeatureAttribute = "种族";
-                }
-
-                if (secondFeatureSource) {
-                    trait2Data = {
-                        配置: "永久",
-                        名称: secondFeatureSource.name,
-                        领域: "",
-                        等级: "",
-                        属性: secondFeatureAttribute,
-                        回想: "",
-                        描述: secondFeatureSource.description || ""
-                    };
+            // 处理第二个特性（可能来自混血种族或主要种族）
+            if (hasMixedRace) {
+                const mixedRaceData = RACES_DATA.find(r => r.race === selectedMixedRaceName);
+                if (mixedRaceData && mixedRaceData.trait2 && mixedRaceData.trait2.name) {
+                    trait2Data = createTraitData(
+                        mixedRaceData.trait2.name,
+                        mixedRaceData.trait2.description,
+                        "混血"
+                    );
                 }
             }
+            
+            // 如果没有从混血获取第二特性，尝试使用主要种族的第二特性
+            if (!trait2Data && mainRaceData.trait2 && mainRaceData.trait2.name) {
+                trait2Data = createTraitData(
+                    mainRaceData.trait2.name,
+                    mainRaceData.trait2.description,
+                    "种族"
+                );
+            }
         }
+        
         updateSkillInSlot(FixedSkillSlotIds.RACE_1, trait1Data);
         updateSkillInSlot(FixedSkillSlotIds.RACE_2, trait2Data);
     }
-
     function updateGroupTraitAsSkill() {
         if (!communitySelect || typeof GROUPS_DATA === 'undefined' || !Array.isArray(GROUPS_DATA)) {
             updateSkillInSlot(FixedSkillSlotIds.GROUP_1, null);
@@ -257,20 +231,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedGroupName) {
             const groupData = GROUPS_DATA.find(g => g.社群 === selectedGroupName);
             if (groupData && groupData.特性名 && groupData.描述) {
-                groupTraitData = {
-                    配置: "永久",
-                    名称: groupData.特性名,
-                    领域: "",
-                    等级: "",
-                    属性: "社群",
-                    回想: "",
-                    描述: groupData.描述
-                };
+                groupTraitData = createTraitData(
+                    groupData.特性名,
+                    groupData.描述,
+                    "社群"
+                );
             }
         }
+        
         updateSkillInSlot(FixedSkillSlotIds.GROUP_1, groupTraitData);
     }
-
     function updateJobTraitsAsSkills() {
         if (!professionSelect || typeof JOBS_DATA === 'undefined' || !Array.isArray(JOBS_DATA)) {
             updateSkillInSlot(FixedSkillSlotIds.JOB_1, null);
@@ -279,316 +249,80 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const selectedJobName = professionSelect.value;
-        let jobTrait1Data = null; // For "希望特性"
-        let jobTrait2Data = null; // For "职业特性名"
+        let jobTrait1Data = null; // 希望特性
+        let jobTrait2Data = null; // 职业特性
 
         if (selectedJobName) {
             const jobData = JOBS_DATA.find(j => j.职业 === selectedJobName);
             if (jobData) {
-                if (jobData.希望特性) { // Assuming "希望特性" is a string description for a skill named "希望特性"
-                    jobTrait1Data = {
-                        配置: "永久",
-                        名称: "希望特性", // Fixed name for this slot type
-                        领域: "",
-                        等级: "",
-                        属性: "职业",
-                        回想: "",
-                        描述: jobData.希望特性
-                    };
+                // 希望特性
+                if (jobData.希望特性) {
+                    jobTrait1Data = createTraitData(
+                        "希望特性", 
+                        jobData.希望特性,
+                        "职业"
+                    );
                 }
+                
+                // 职业特性
                 if (jobData.职业特性名 && jobData.职业特性描述) {
-                    jobTrait2Data = {
-                        配置: "永久",
-                        名称: jobData.职业特性名,
-                        领域: "",
-                        等级: "",
-                        属性: "职业",
-                        回想: "",
-                        描述: jobData.职业特性描述
-                    };
+                    jobTrait2Data = createTraitData(
+                        jobData.职业特性名,
+                        jobData.职业特性描述,
+                        "职业"
+                    );
                 }
             }
         }
+        
         updateSkillInSlot(FixedSkillSlotIds.JOB_1, jobTrait1Data);
         updateSkillInSlot(FixedSkillSlotIds.JOB_2, jobTrait2Data);
     }
     // ====================== End of Race, Jobs, and Community Selects ======================
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // ================== newbie guide ==================
-    let currentNewbieQuestionIndex = 0;
-    let newbieUserAnswers = {};
-
-    function displayCurrentNewbieQuestion() {
-        if (currentNewbieQuestionIndex < newbieGuideQuestions.length) {
-            const question = newbieGuideQuestions[currentNewbieQuestionIndex];
-            newbieGuideQuestionText.textContent = question.prompt;
-
-            // Hide all input types initially
-            newbieGuideAnswerInput.style.display = 'none';
-            // newbieGuideAttributesContainer.style.display = 'none'; // Removed
-            if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive check if HTML not yet updated
-                 document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
-            }
-            newbieGuideDropdownInput.style.display = 'none';
-
-            if (question.questionType === "dropdown") {
-                newbieGuideDropdownInput.style.display = 'block';
-                newbieGuideDropdownInput.innerHTML = ''; // Clear existing options
-
-                let dataSource;
-                // Access the global constants directly based on the string name
-                if (question.dataSourceVariable === "RACES_DATA") {
-                    dataSource = typeof RACES_DATA !== 'undefined' ? RACES_DATA : null;
-                } else if (question.dataSourceVariable === "GROUPS_DATA") {
-                    dataSource = typeof GROUPS_DATA !== 'undefined' ? GROUPS_DATA : null;
-                } else if (question.dataSourceVariable === "JOBS_DATA") {
-                    dataSource = typeof JOBS_DATA !== 'undefined' ? JOBS_DATA : null;
-                } else {
-                    dataSource = null;
-                }
-
-                if (dataSource && Array.isArray(dataSource)) {
-                    // Add a default "please select" option
-                    const defaultOption = document.createElement('option');
-                    defaultOption.value = "";
-                    defaultOption.textContent = `--- 请选择${question.prompt.replace("请选择你的", "").replace("：", "")} ---`;
-                    newbieGuideDropdownInput.appendChild(defaultOption);
-
-                    dataSource.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item[question.optionValueField];
-                        option.textContent = item[question.optionTextField];
-                        newbieGuideDropdownInput.appendChild(option);
-                    });
-                } else {
-                    console.error(`Newbie Guide: Data source "${question.dataSourceVariable}" not found, not an array, or not accessible directly.`);
-                    // Optionally, display an error or a disabled select
-                }
-                newbieGuideDropdownInput.focus();
-            } else { // Default to text input
-                newbieGuideAnswerInput.style.display = 'block';
-                newbieGuideAnswerInput.value = "";
-                newbieGuideAnswerInput.focus();
-            }
-
-            if (currentNewbieQuestionIndex === newbieGuideQuestions.length - 1) {
-                newbieGuideNextButton.textContent = "完成";
-            } else {
-                newbieGuideNextButton.textContent = "下一步";
-            }
-        }
-    }
-
-    function populateFieldsFromNewbieGuide() {
-        for (const fieldId in newbieUserAnswers) {
-            const element = document.getElementById(fieldId);
-            if (element) {
-                element.value = newbieUserAnswers[fieldId];
-                if (element.id === 'level') { // Example: trigger input for level if it has listeners
-                    element.dispatchEvent(new Event('input', { bubbles: true }));
-                }
-            } else {
-                if (!fieldId.includes("_placeholder_")) {
-                    console.warn(`Newbie Guide: Target field with ID '${fieldId}' not found.`);
-                } else {
-                     console.log(`Newbie Guide: Placeholder field '${fieldId}' was answered. Value: ${newbieUserAnswers[fieldId]}. Manual handling needed.`);
-                }
-            }
-        }
-        resetNewbieGuide(); // Reset and hide modal
-    }
-
-    function startNewbieGuide() {
-        currentNewbieQuestionIndex = 0;
-        newbieUserAnswers = {};
-        // newbieGuideAttributesContainer.style.display = 'none'; // Ensure attrs hidden initially // Removed
-        if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive
-            document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
-        }
-        if (newbieGuideDropdownInput) newbieGuideDropdownInput.style.display = 'none'; // Ensure dropdown hidden initially
-        newbieGuideAnswerInput.style.display = 'block';    // Ensure general input shown initially
-        displayCurrentNewbieQuestion();
-        newbieGuideModal.style.display = 'block';
-    }
+    // ====================== Experience & Background ======================
+    addExperienceBtn.addEventListener('click', () => {
+        const newItem = document.createElement('div');
+        newItem.classList.add('experience-item');
+        newItem.innerHTML = `
+            <input type="text" name="expKeyword" placeholder="关键词">
+            <input type="text" name="expValue" placeholder="调整值" value="1">
+            <button type="button" class="remove-item-btn">-</button>
+        `;
+        experiencesContainer.appendChild(newItem);
+        addRemoveListener(newItem.querySelector('.remove-item-btn'));
+    });
     
-    function resetNewbieGuide() {
-        newbieGuideModal.style.display = 'none';
-        currentNewbieQuestionIndex = 0;
-        newbieUserAnswers = {};
-        newbieGuideNextButton.textContent = "下一步";
-        // newbieGuideAttributesContainer.style.display = 'none'; // Removed
-        if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive
-            document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
-        }
-        if (newbieGuideDropdownInput) newbieGuideDropdownInput.style.display = 'none';
-        newbieGuideAnswerInput.style.display = 'block'; // Default to showing general input
-    }
+    const appearanceUpload = document.getElementById('appearanceUpload');
+    const appearancePreview = document.getElementById('appearancePreview');
+    const removeAppearanceBtn = document.getElementById('removeAppearanceBtn');
+    // ====================== End of Experience & Background ======================
 
 
-    if (newbieGuideButton && newbieGuideModal && newbieGuideModalCloseButton && newbieGuideCancelButton && newbieGuideNextButton && newbieGuideQuestionText && newbieGuideAnswerInput && newbieGuideDropdownInput) {
-        newbieGuideButton.addEventListener('click', startNewbieGuide);
+    // ====================== Status =======================
 
-        newbieGuideNextButton.addEventListener('click', () => {
-            const question = newbieGuideQuestions[currentNewbieQuestionIndex];
-            if (!question) return; // Should not happen
+    // ====================== End of Status =======================
 
-            // Removed attribute handling block
-            if (question.questionType === "dropdown") {
-                const selectedValue = newbieGuideDropdownInput.value;
-                // Store answer using targetSelectId as key, as it directly maps to the form's select element ID
-                newbieUserAnswers[question.targetSelectId] = selectedValue;
 
-                // Apply to character sheet and call update function
-                const targetSelectElement = document.getElementById(question.targetSelectId);
-                if (targetSelectElement) {
-                    targetSelectElement.value = selectedValue;
-                    // Manually trigger change event for the main form's select,
-                    // so its own event listeners (like updateRaceTraitsAsSkills) fire.
-                    targetSelectElement.dispatchEvent(new Event('change', { bubbles: true }));
+    // ====================== Weapon & Armor & Item ======================
+    const weaponName1Input = document.getElementById('weaponName1');
+    const weaponName2Input = document.getElementById('weaponName2');
+    const weaponName3Input = document.getElementById('weaponName3');
+    const weaponName4Input = document.getElementById('weaponName4');
+    const armorName1Input = document.getElementById('armorName1');    
+    
+    const weaponTrait1Textarea = document.getElementById('weaponTrait1');
+    const weaponTrait2Textarea = document.getElementById('weaponTrait2');
+    const weaponTrait3Textarea = document.getElementById('weaponTrait3');
+    const weaponTrait4Textarea = document.getElementById('weaponTrait4');
+    const armorTrait1Textarea = document.getElementById('armorTrait1');
 
-                    // The 'change' event on the main form's select elements should trigger their respective
-                    // update functions (updateRaceTraitsAsSkills, updateGroupTraitAsSkill, updateJobTraitsAsSkills)
-                    // as those functions are already set up as event listeners for those select elements.
-                    // Thus, explicitly calling window[question.updateFunction]() here might be redundant
-                    // and could lead to double execution if not handled carefully.
-                    // We rely on the existing event listeners on the main form's select elements.
-                    if (question.updateFunction) {
-                         console.log(`Newbie Guide: Triggered 'change' on ${question.targetSelectId}, which should call ${question.updateFunction}.`);
-                    }
-
-                    // Profession template filling logic
-                    if (question.targetSelectId === "professionSelect") {
-                        const selectedProfessionValue = newbieUserAnswers[question.targetSelectId]; // This is the '职业' name
-                        const template = professionTemplates[selectedProfessionValue];
-
-                        if (template) {
-                            console.log(`Applying template for profession: ${selectedProfessionValue}`);
-                            // Fill attributes
-                            const attributeFields = ["strength", "agility", "instinct", "grace", "knowledge", "dexterity"];
-                            template.attributes.forEach((value, index) => {
-                                const fieldId = attributeFields[index];
-                                const element = document.getElementById(fieldId);
-                                if (element) {
-                                    element.value = value;
-                                } else {
-                                    console.warn(`Newbie Guide Template: Attribute field ${fieldId} not found.`);
-                                }
-                            });
-
-                            // Fill main weapon (slot 1)
-                            if (template.weapon) {
-                                weaponName1Input.value = template.weapon.名称 || "";
-                                document.getElementById('weaponCheck1').value = template.weapon.检定 || "";
-                                document.getElementById('weaponAttribute1').value = template.weapon.属性 || "";
-                                document.getElementById('weaponRange1').value = template.weapon.范围 || "";
-                                document.getElementById('weaponDamage1').value = template.weapon.伤害 || "";
-                                document.getElementById('weaponTwoHanded1').value = template.weapon.负荷 || "";
-                            }
-                            // Fill off-hand weapon (slot 2 - auxiliary)
-                            if (template.offHandWeapon) {
-                                weaponName2Input.value = template.offHandWeapon.名称 || "";
-                                document.getElementById('weaponCheck2').value = template.offHandWeapon.检定 || "";
-                                document.getElementById('weaponAttribute2').value = template.offHandWeapon.属性 || "";
-                                document.getElementById('weaponRange2').value = template.offHandWeapon.范围 || "";
-                                document.getElementById('weaponDamage2').value = template.offHandWeapon.伤害 || "";
-                                document.getElementById('weaponTwoHanded2').value = template.offHandWeapon.负荷 || "";
-                            } else { // Clear auxiliary weapon slot if template doesn't have one
-                                weaponName2Input.value = "";
-                                document.getElementById('weaponCheck2').value = "";
-                                document.getElementById('weaponAttribute2').value = "";
-                                document.getElementById('weaponRange2').value = "";
-                                document.getElementById('weaponDamage2').value = "";
-                                document.getElementById('weaponTwoHanded2').value = "";
-                            }
-
-                            // Fill armor (slot 1)
-                            if (template.armor) {
-                                armorName1Input.value = template.armor.名称 || "";
-                                document.getElementById('armorDefense1').value = template.armor.防御 || "";
-                            }
-                            // Update Memory Bank: Active Context
-                            const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
-                            const activeContextUpdate = `\n* [${timestamp}] - Newbie guide auto-filled attributes, T1 main/off-hand weapon, and T1 armor for profession: ${selectedProfessionValue}.`;
-                            // This would ideally use a tool to append, but for now, it's a conceptual note.
-                            console.log("MEMORY BANK UPDATE (activeContext.md):", activeContextUpdate);
-
-                        } else {
-                            console.log(`Newbie Guide: No template found for profession: ${selectedProfessionValue}. Proceeding without auto-fill.`);
-                        }
-                    }
-
-                } else {
-                    console.warn(`Newbie Guide: Target select element with ID '${question.targetSelectId}' not found on the main form.`);
-                }
-            } else { // Default text input
-                newbieUserAnswers[question.targetFieldId] = newbieGuideAnswerInput.value;
-            }
-
-            currentNewbieQuestionIndex++;
-            if (currentNewbieQuestionIndex < newbieGuideQuestions.length) {
-                displayCurrentNewbieQuestion();
-            } else {
-                populateFieldsFromNewbieGuide();
-                // resetNewbieGuide() is called by populateFieldsFromNewbieGuide
-            }
-        });
-
-        newbieGuideModalCloseButton.addEventListener('click', resetNewbieGuide);
-        newbieGuideCancelButton.addEventListener('click', resetNewbieGuide);
-
-        window.addEventListener('click', (event) => {
-            if (event.target === newbieGuideModal) {
-                resetNewbieGuide();
-            }
-        });
-    }
-
-    if (appearanceUpload && appearancePreview && removeAppearanceBtn) {
-        appearanceUpload.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    appearancePreview.src = e.target.result;
-                    appearancePreview.style.display = 'block';
-                    removeAppearanceBtn.style.display = 'inline';
-                    appearanceUpload.style.display = 'none';
-                    appearanceDataUrl = e.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        removeAppearanceBtn.addEventListener('click', function() {
-            appearancePreview.src = "#";
-            appearancePreview.style.display = 'none';
-            removeAppearanceBtn.style.display = 'none';
-            appearanceUpload.style.display = 'inline';
-            appearanceUpload.value = null;
-            appearanceDataUrl = "";
-        });
-    }
-
-    // ====================== End of newbie guide ======================
-
+    const equipmentModal = document.getElementById('equipmentModal');
+    const modalCloseButton = document.getElementById('modalCloseButton');
+    const modalTitle = document.getElementById('modalTitle');
+    const equipmentListContainer = document.getElementById('equipmentListContainer');
+    
     // Auto-grow for weapon and armor trait textareas
     if (weaponTrait1Textarea) {
         weaponTrait1Textarea.addEventListener('input', autoGrowTextarea);
@@ -610,665 +344,9 @@ document.addEventListener('DOMContentLoaded', () => {
         armorTrait1Textarea.addEventListener('input', autoGrowTextarea);
         setTimeout(() => autoGrowTextarea({ target: armorTrait1Textarea }), 0);
     }
-
-    addExperienceBtn.addEventListener('click', () => {
-        const newItem = document.createElement('div');
-        newItem.classList.add('experience-item');
-        newItem.innerHTML = `
-            <input type="text" name="expKeyword" placeholder="关键词">
-            <input type="text" name="expValue" placeholder="调整值" value="1">
-            <button type="button" class="remove-item-btn">-</button>
-        `;
-        experiencesContainer.appendChild(newItem);
-        addRemoveListener(newItem.querySelector('.remove-item-btn'));
-    });
-
-    addItemBtn.addEventListener('click', () => {
-        const newItem = document.createElement('div');
-        newItem.classList.add('item');
-        const currentId = itemNextId++; // Keep for unique IDs if needed for other elements
-        newItem.innerHTML = `
-            <select name="itemName" class="item-name-select"></select>
-            <input type="text" name="itemQuantity" placeholder="数量" value="1">
-            <textarea name="itemDescription" placeholder="描述"></textarea>
-            <button type="button" class="remove-item-btn">-</button>
-        `;
-        itemsContainer.appendChild(newItem);
-        const newSelect = newItem.querySelector('.item-name-select');
-        const newDescriptionTextarea = newItem.querySelector('textarea[name="itemDescription"]');
-        if (newDescriptionTextarea) {
-            newDescriptionTextarea.addEventListener('input', autoGrowTextarea);
-        }
-        populateItemSelect(newSelect); // This might pre-fill and should trigger autoGrow if so
-        addRemoveListener(newItem.querySelector('.remove-item-btn'));
-    });
-
-    function populateItemSelect(selectElement, selectedItemName = "") {
-        if (!selectElement) {
-            return;
-        }
-        selectElement.innerHTML = '<option value="">--选择道具--</option>'; // Default empty option
-
-        ALL_ITEMS_DATA.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.名称;
-            option.textContent = item.名称;
-            if (item.名称 === selectedItemName) {
-                option.selected = true;
-            }
-            selectElement.appendChild(option);
-        });
-
-        // If a selectedItemName is provided, find its data and pre-fill description and quantity
-        if (selectedItemName) {
-            const itemData = ALL_ITEMS_DATA.find(i => i.名称 === selectedItemName);
-            const parentItemDiv = selectElement.closest('.item');
-            if (itemData && parentItemDiv) {
-                const descTextarea = parentItemDiv.querySelector('textarea[name="itemDescription"]');
-                const quantityInput = parentItemDiv.querySelector('input[name="itemQuantity"]');
-                if (descTextarea) {
-                    descTextarea.value = itemData.效果 || "";
-                    setTimeout(() => autoGrowTextarea({ target: descTextarea }), 0); // Trigger auto-grow
-                }
-                if (quantityInput) {
-                    // Preserve existing quantity if it's already set (e.g. from JSON import), otherwise default to 1
-                    if (!quantityInput.value || quantityInput.value === "0" || quantityInput.value === "") {
-                         quantityInput.value = "1";
-                    }
-                }
-            } else {
-                console.log('[populateItemSelect] itemData or parentItemDiv not found for pre-fill.');
-            }
-        }
-
-        selectElement.addEventListener('change', function(event) {
-            const selectedName = event.target.value;
-            const itemData = ALL_ITEMS_DATA.find(i => i.名称 === selectedName);
-            const parentItemDiv = event.target.closest('.item');
-            if (parentItemDiv) {
-                const descTextarea = parentItemDiv.querySelector('textarea[name="itemDescription"]');
-                const quantityInput = parentItemDiv.querySelector('input[name="itemQuantity"]');
-                if (itemData) {
-                    if (descTextarea) {
-                        descTextarea.value = itemData.效果 || "";
-                        setTimeout(() => autoGrowTextarea({ target: descTextarea }), 0); // Trigger auto-grow
-                    }
-                    if (quantityInput) {
-                        quantityInput.value = "1"; // Default to 1 on new selection from dropdown
-                    }
-                } else {
-                    if (descTextarea) {
-                        descTextarea.value = "";
-                        setTimeout(() => autoGrowTextarea({ target: descTextarea }), 0); // Trigger auto-grow
-                    }
-                    if (quantityInput) {
-                        quantityInput.value = "1"; // Default to 1 even if item not found (e.g. "--选择道具--")
-                    }
-                }
-            } else {
-                console.log('[populateItemSelect] parentItemDiv not found in change event.');
-            }
-        });
-    }
-
-    // Initial population for the static item row if it exists
-    const initialItemSelect = itemsContainer.querySelector('.item-name-select'); // This should get the first static item's select
-    if (initialItemSelect) {
-        populateItemSelect(initialItemSelect); // Populates options
-
-        // Set default item after options are populated, if no value is already set (e.g., by import)
-        // and if it's the specific static select with id="itemName"
-        if (initialItemSelect.id === 'itemName' && !initialItemSelect.value) {
-            const defaultItemNameToSet = "小型生命药水Minor Health Potion";
-            const defaultItemEffectToSet = "立刻回复1d4生命值";
-            
-            let optionExists = false;
-            for (let i = 0; i < initialItemSelect.options.length; i++) {
-                if (initialItemSelect.options[i].value === defaultItemNameToSet) {
-                    optionExists = true;
-                    break;
-                }
-            }
-
-            if (!optionExists) {
-                const itemData = ALL_ITEMS_DATA.find(i => i.名称 === defaultItemNameToSet);
-                if (itemData) {
-                    const newOption = document.createElement('option');
-                    newOption.value = defaultItemNameToSet;
-                    newOption.textContent = defaultItemNameToSet;
-                    initialItemSelect.appendChild(newOption);
-                    optionExists = true;
-                } else {
-                    console.warn(`Default item "${defaultItemNameToSet}" not found in ALL_ITEMS_DATA. Cannot add as an option.`);
-                }
-            }
-
-            if (optionExists) {
-                initialItemSelect.value = defaultItemNameToSet;
-                initialItemSelect.dispatchEvent(new Event('change', { bubbles: true }));
-                
-                // Ensure the description is set correctly, as the change event might be handled generally by populateItemSelect
-                const parentItemDiv = initialItemSelect.closest('.item');
-                if (parentItemDiv) {
-                    const descriptionTextarea = parentItemDiv.querySelector('textarea[name="itemDescription"]'); // Or by ID if static
-                    const quantityInput = parentItemDiv.querySelector('input[name="itemQuantity"]');
-                    
-                    if (descriptionTextarea) {
-                        descriptionTextarea.value = defaultItemEffectToSet;
-                        autoGrowTextarea({ target: descriptionTextarea });
-                    }
-                    if (quantityInput && !quantityInput.value) { // Set quantity if not already set
-                        quantityInput.value = "1";
-                    }
-                }
-            }
-        }
-    }
-
-
-    // Helper to create skill row TR element (used by fixed slots and potentially dynamic ones)
-    function createSkillRowElement(skillData = {}, isFixedSlot = false, slotId = '') {
-        const newRow = document.createElement('tr');
-        newRow.classList.add('skill-item');
-        if (isFixedSlot) {
-            newRow.id = slotId;
-            newRow.classList.add('fixed-skill-slot');
-        }
-
-        // Determine default attribute for fixed slots if skillData.属性 is not provided
-        let defaultAttribute = skillData.属性 || '';
-        if (isFixedSlot && !defaultAttribute) {
-            if (slotId.startsWith('fixed-skill-race')) defaultAttribute = "种族";
-            else if (slotId.startsWith('fixed-skill-group')) defaultAttribute = "社群";
-            else if (slotId.startsWith('fixed-skill-job')) defaultAttribute = "职业";
-        }
-        
-        const defaultConfig = skillData.配置 || (isFixedSlot ? '永久' : '');
-        const defaultLevel = skillData.等级 || (isFixedSlot ? '' : '0'); // Fixed slots might not have a numeric level initially
-
-        newRow.innerHTML = `
-            <td><input type="text" name="skillConfig" placeholder="配置" value="${defaultConfig}"></td>
-            <td><input type="text" name="skillName" placeholder="名称" value="${skillData.名称 || ''}"></td>
-            <td><input type="text" name="skillDomain" placeholder="领域" value="${skillData.领域 || ''}"></td>
-            <td><input type="text" name="skillLevel" placeholder="等级" value="${defaultLevel}"></td>
-            <td><input type="text" name="skillAttribute" placeholder="属性" value="${defaultAttribute}"></td>
-            <td><input type="text" name="skillRecall" placeholder="回想" value="${skillData.回想 || ''}"></td>
-            <td><textarea name="skillDescription" placeholder="描述">${skillData.描述 || ''}</textarea></td>
-            <td><button type="button" class="remove-item-btn" style="${isFixedSlot ? 'display:none;' : ''}">-</button></td>
-        `;
-
-        const newTextarea = newRow.querySelector('textarea[name="skillDescription"]');
-        if (newTextarea) {
-            newTextarea.addEventListener('input', autoGrowTextarea);
-        }
-        if (!isFixedSlot) {
-            addRemoveListener(newRow.querySelector('.remove-item-btn'));
-        }
-        return newRow;
-    }
-
-    function initializeFixedSkillSlots() {
-        if (!skillsContainer) return;
-        // This function ensures the 5 fixed slots are present.
-        // It doesn't clear other dynamic skills that might be added later.
-        AllFixedSlotIds.forEach(slotId => {
-            if (!document.getElementById(slotId)) {
-                const slotRow = createSkillRowElement({}, true, slotId);
-                skillsContainer.appendChild(slotRow);
-                const textarea = slotRow.querySelector('textarea[name="skillDescription"]');
-                // Initial auto-grow for textareas in fixed slots
-                if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
-            }
-        });
-    }
-    
-    initializeFixedSkillSlots(); // Create the 5 fixed slots on load
-
-    function updateSkillInSlot(slotId, skillData) {
-        const slotRow = document.getElementById(slotId);
-        if (!slotRow) {
-            console.warn(`Skill slot with ID ${slotId} not found during update.`);
-            return;
-        }
-
-        const inputs = {
-            config: slotRow.querySelector('input[name="skillConfig"]'),
-            name: slotRow.querySelector('input[name="skillName"]'),
-            domain: slotRow.querySelector('input[name="skillDomain"]'),
-            level: slotRow.querySelector('input[name="skillLevel"]'),
-            attribute: slotRow.querySelector('input[name="skillAttribute"]'),
-            recall: slotRow.querySelector('input[name="skillRecall"]'),
-            description: slotRow.querySelector('textarea[name="skillDescription"]')
-        };
-
-        let currentAttributeType = "";
-        if (slotId === FixedSkillSlotIds.RACE_1 || slotId === FixedSkillSlotIds.RACE_2) currentAttributeType = "种族";
-        else if (slotId === FixedSkillSlotIds.GROUP_1) currentAttributeType = "社群";
-        else if (slotId === FixedSkillSlotIds.JOB_1 || slotId === FixedSkillSlotIds.JOB_2) currentAttributeType = "职业";
-
-        if (skillData) {
-            inputs.config.value = skillData.配置 || "永久";
-            inputs.name.value = skillData.名称 || "";
-            inputs.domain.value = skillData.领域 || "";
-            inputs.level.value = skillData.等级 || "";
-            inputs.attribute.value = skillData.属性 || currentAttributeType; // Use skillData.属性 if provided, else default for slot
-            inputs.recall.value = skillData.回想 || "";
-            inputs.description.value = skillData.描述 || "";
-        } else { // Clear the slot, but maintain config and attribute type
-            inputs.config.value = "永久";
-            inputs.name.value = "";
-            inputs.domain.value = "";
-            inputs.level.value = "";
-            inputs.attribute.value = currentAttributeType; // Keep placeholder attribute
-            inputs.recall.value = "";
-            inputs.description.value = "";
-        }
-        // Ensure textarea height is adjusted after update
-        if (inputs.description) {
-             setTimeout(() => autoGrowTextarea({ target: inputs.description }), 0);
-        }
-    }
-
-    // addSkillEntry is now for DYNAMIC, non-fixed skills, added AFTER fixed slots
-    function addSkillEntry(skillData) {
-        const newRow = createSkillRowElement(skillData, false); // isFixedSlot = false
-        skillsContainer.appendChild(newRow);
-        const textarea = newRow.querySelector('textarea[name="skillDescription"]');
-        // Initial auto-grow for dynamically added textareas
-        if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
-        return newRow;
-    }
-
-    addSkillBtn.addEventListener('click', () => {
-        addSkillEntry({
-            配置: "", 名称: "", 领域: "", 等级: "0", 属性: "", 回想: "", 描述: ""
-        });
-    });
-
-    if (importJsonBtn && importFile) {
-        importJsonBtn.addEventListener('click', () => {
-            importFile.click();
-        });
-
-        importFile.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
-                        populateForm(importedData);
-                        importFile.value = null; 
-                    } catch (error) {
-                        console.error("Error parsing JSON file:", error);
-                        alert("导入失败：无效的JSON文件。");
-                    }
-                };
-                reader.readAsText(file);
-            }
-        });
-    }
-
-    function populateForm(data) {
-        if (!data) return;
-        form.reset();
-
-        // Clear dynamic sections, but fixed skill slots are managed by initializeFixedSkillSlots and updateSkillInSlot
-        experiencesContainer.innerHTML = '';
-        experienceNextId = 1;
-        itemsContainer.innerHTML = '';
-        itemNextId = 1;
-        // skillNextId = 1; // Reset for dynamic skills, if any are added
-
-        // Clear fixed skill slots before populating
-        AllFixedSlotIds.forEach(slotId => {
-            updateSkillInSlot(slotId, null);
-        });
-        
-        // Clear any dynamically added skill rows (not the fixed ones)
-        const dynamicSkillRows = skillsContainer.querySelectorAll('tr.skill-item:not(.fixed-skill-slot)');
-        dynamicSkillRows.forEach(row => row.remove());
-        
-        appearancePreview.src = "#";
-        appearancePreview.style.display = 'none';
-        removeAppearanceBtn.style.display = 'none';
-        appearanceUpload.style.display = 'inline';
-        appearanceUpload.value = null;
-        appearanceDataUrl = "";
-
-        if (data.设定) {
-            form.roleName.value = data.设定.角色名 || "";
-            form.age.value = data.设定.年龄 || 0;
-            form.gender.value = data.设定.性别 || "";
-            
-            if (form.raceSelect) form.raceSelect.value = data.设定.种族 || "";
-            if (form.mixedRaceSelect) form.mixedRaceSelect.value = data.设定.混血种族 || "";
-            if (form.communitySelect) form.communitySelect.value = data.设定.社群 || "";
-            if (form.professionSelect) form.professionSelect.value = data.设定.职业 || "";
-
-            // After setting dropdowns from JSON, update the fixed skill slots accordingly
-            updateRaceTraitsAsSkills();
-            updateGroupTraitAsSkill();
-            updateJobTraitsAsSkills();
-            
-            form.subProfession.value = data.设定.子职业 || "";
-            form.partTimeJob.value = data.设定.兼职 || "";
-            form.backgroundStory.value = data.设定.背景故事 || "";
-            
-            if (data.设定.形象 && typeof data.设定.形象 === 'string' && data.设定.形象.startsWith('data:image')) {
-                appearancePreview.src = data.设定.形象;
-                appearancePreview.style.display = 'block';
-                removeAppearanceBtn.style.display = 'inline';
-                appearanceUpload.style.display = 'none';
-                appearanceDataUrl = data.设定.形象;
-            }
-
-            if (data.设定.经历 && Array.isArray(data.设定.经历)) {
-                data.设定.经历.forEach((exp) => {
-                    addExperienceBtn.click();
-                    const currentExpItem = experiencesContainer.lastElementChild;
-                    if (currentExpItem) {
-                        const keywordInput = currentExpItem.querySelector('input[name="expKeyword"]');
-                        const valueInput = currentExpItem.querySelector('input[name="expValue"]');
-                        if (keywordInput) keywordInput.value = exp.关键词 || "";
-                        if (valueInput) valueInput.value = exp.调整值 || "";
-                    }
-                });
-            }
-        }
-
-        if (data.状态) {
-            form.hpCurrent.value = data.状态.HP?.当前 || 0;
-            form.hpMax.value = data.状态.HP?.最大 || 0;
-            form.stressCurrent.value = data.状态.压力?.当前 || 0;
-            form.stressMax.value = data.状态.压力?.最大 || 0;
-            form.hopeCurrent.value = data.状态.希望?.当前 || 0;
-            form.hopeMax.value = data.状态.希望?.最大 || 0;
-            form.armorCurrent.value = data.状态.护甲?.当前 || 0;
-            form.armorMax.value = data.状态.护甲?.最大 || 0;
-            form.armorValue.value = data.状态.护甲值 || 0;
-            form.level.value = data.状态.等级 || 0;
-            updateLevelTierDisplay(); // Update tier display after setting level from JSON
-            form.proficiency.value = data.状态.熟练 || 0;
-            form.money.value = data.状态.金钱 || 0;
-            form.strength.value = data.状态.力量 || 0;
-            form.agility.value = data.状态.敏捷 || 0;
-            form.dexterity.value = data.状态.灵巧 || 0;
-            form.instinct.value = data.状态.本能 || 0;
-            form.knowledge.value = data.状态.知识 || 0;
-            form.grace.value = data.状态.风度 || 0;
-        }
-
-        if (data.物品) {
-            if (data.物品.武器 && Array.isArray(data.物品.武器)) {
-                // 武器导入循环化简
-                for (let i = 1; i <= 4; i++) {
-                    if (data.物品.武器.length >= i) {
-                        const weapon = data.物品.武器[i-1];
-                        
-                        // 使用对象属性名循环来处理所有字段
-                        const weaponFields = ['名称', '检定', '属性', '范围', '伤害', '负荷', '特性'];
-                        const formFields = ['weaponName', 'weaponCheck', 'weaponAttribute', 'weaponRange', 
-                                           'weaponDamage', 'weaponTwoHanded', 'weaponTrait'];
-                        
-                        // 循环处理每个字段
-                        for (let j = 0; j < weaponFields.length; j++) {
-                            const formField = `${formFields[j]}${i}`;
-                            if (form[formField]) {
-                                form[formField].value = weapon[weaponFields[j]] || "";
-                            }
-                        }
-                        
-                        // 特别处理文本区域的自动增长
-                        const traitTextarea = form[`weaponTrait${i}`];
-                        if (traitTextarea) {
-                            setTimeout(() => autoGrowTextarea({ target: traitTextarea }), 0);
-                        }
-                    }
-                }            
-            }
-            if (data.物品.护甲 && data.物品.护甲.length > 0) {
-                const armor = data.物品.护甲[0];
-                 if(form.armorName1) form.armorName1.value = armor.名称 || "";
-                 if(form.armorDefense1) form.armorDefense1.value = armor.防御 || 0;
-                 if(form.armorTrait1) form.armorTrait1.value = armor.特性 || "";
-                 if (form.armorTrait1) setTimeout(() => autoGrowTextarea({ target: form.armorTrait1 }), 0);
-            }
-
-            if (data.物品.道具 && Array.isArray(data.物品.道具)) {
-                data.物品.道具.forEach((itemData, index) => {
-                    let currentItemDiv;
-                    if (index === 0 && itemsContainer.children[0] && itemsContainer.children[0].classList.contains('item')) {
-                        currentItemDiv = itemsContainer.children[0];
-                    } else {
-                        addItemBtn.click(); // This will create a new item div with a select
-                        currentItemDiv = itemsContainer.lastElementChild;
-                    }
-
-                    if (currentItemDiv) {
-                        const nameSelect = currentItemDiv.querySelector('select[name="itemName"]');
-                        const quantityInput = currentItemDiv.querySelector('input[name="itemQuantity"]');
-                        const descriptionTextarea = currentItemDiv.querySelector('textarea[name="itemDescription"]');
-
-                        if (nameSelect) {
-                            populateItemSelect(nameSelect, itemData.名称); // Populate and select
-                        }
-                        if (quantityInput) quantityInput.value = itemData.数量 || "1";
-                        
-                        // populateItemSelect should handle pre-filling the description and auto-growing it.
-                        // If it's not, this is a fallback, but the logic in populateItemSelect is preferred.
-                        if (descriptionTextarea) {
-                             descriptionTextarea.value = itemData.描述 || ""; // Set from JSON first
-                             const selectedFullItem = ALL_ITEMS_DATA.find(i => i.名称 === itemData.名称);
-                             if (selectedFullItem) { // Then override with effect if item is found
-                                 descriptionTextarea.value = selectedFullItem.效果 || "";
-                             }
-                             setTimeout(() => autoGrowTextarea({ target: descriptionTextarea }), 0);
-                        }
-                    }
-                });
-            }
-        }
-        
-        if (data.技能 && Array.isArray(data.技能)) {
-            data.技能.forEach((skill) => {
-                // Only add skills from JSON if they are not meant for the fixed slots
-                // (which are now populated by update...AsSkills calls above)
-                const isFixedTypeAttribute = skill.属性 === "种族" || skill.属性 === "社群" || skill.属性 === "职业" || skill.属性 === "混血";
-                // A more robust check might involve skill names if they are predictable for fixed slots,
-                // e.g. if jobData.希望特性 always results in a skill named "希望特性".
-                // For now, primarily rely on attribute.
-                if (!isFixedTypeAttribute) {
-                    const newSkillRow = addSkillEntry(skill); // This adds a dynamic, removable row
-                    const skillDescTextarea = newSkillRow.querySelector('textarea[name="skillDescription"]');
-                    if (skillDescTextarea) {
-                        setTimeout(() => autoGrowTextarea({ target: skillDescTextarea }), 0);
-                    }
-                }
-            });
-        }
-        
-        // The update...AsSkills() calls were moved up to after dropdowns are set from JSON.
-        // This ensures fixed slots are populated based on the imported character's race/group/job.
-
-        experienceNextId = experiencesContainer.children.length + 1;
-        itemNextId = itemsContainer.children.length + 1;
-        skillNextId = skillsContainer.children.length + 1; 
-    }
-
-
-    exportButton.addEventListener('click', () => {
-        const formData = new FormData(form);
-        const characterData = {
-            "设定": {},
-            "状态": {},
-            "物品": { "武器": [], "护甲": [], "道具": [] },
-            "技能": []
-        };
-
-        characterData.设定.角色名 = formData.get('roleName') || "";
-        characterData.设定.年龄 = parseInt(formData.get('age'), 10) || 0;
-        characterData.设定.性别 = formData.get('gender') || "";
-        
-        characterData.设定.经历 = [];
-        const currentExperienceItems = experiencesContainer.querySelectorAll('.experience-item');
-        currentExperienceItems.forEach((item) => {
-            const keywordInput = item.querySelector('input[name="expKeyword"]');
-            const valueInput = item.querySelector('input[name="expValue"]');
-            if (keywordInput && valueInput) { 
-                 characterData.设定.经历.push({
-                    "关键词": keywordInput.value || "",
-                    "调整值": valueInput.value || ""
-                });
-            }
-        });
-        // while (characterData.设定.经历.length < 5) {  // Removed: Do not pad experiences to 5
-        //     characterData.设定.经历.push({"关键词": "", "调整值": 0});
-        // }
-
-        characterData.设定.背景故事 = formData.get('backgroundStory') || "";
-        characterData.设定.形象 = appearanceDataUrl || "";
-        characterData.设定.种族 = form.raceSelect ? form.raceSelect.value : ""; 
-        characterData.设定.混血种族 = form.mixedRaceSelect ? form.mixedRaceSelect.value : ""; 
-        characterData.设定.社群 = form.communitySelect ? form.communitySelect.value : ""; 
-        characterData.设定.职业 = form.professionSelect ? form.professionSelect.value : ""; 
-        characterData.设定.子职业 = formData.get('subProfession') || "";
-        characterData.设定.兼职 = formData.get('partTimeJob') || "";
-
-        characterData.状态.HP = {"当前": parseInt(formData.get('hpCurrent'), 10) || 0, "最大": parseInt(formData.get('hpMax'), 10) || 0};
-        characterData.状态.压力 = {"当前": parseInt(formData.get('stressCurrent'), 10) || 0, "最大": parseInt(formData.get('stressMax'), 10) || 0};
-        characterData.状态.希望 = {"当前": parseInt(formData.get('hopeCurrent'), 10) || 0, "最大": parseInt(formData.get('hopeMax'), 10) || 0};
-        characterData.状态.护甲 = {"当前": parseInt(formData.get('armorCurrent'), 10) || 0, "最大": parseInt(formData.get('armorMax'), 10) || 0};
-        characterData.状态.护甲值 = parseInt(formData.get('armorValue'), 10) || 0;
-        characterData.状态.等级 = parseInt(formData.get('level'), 10) || 0;
-        characterData.状态.熟练 = parseInt(formData.get('proficiency'), 10) || 0;
-        characterData.状态.金钱 = parseInt(formData.get('money'), 10) || 0;
-        characterData.状态.力量 = parseInt(formData.get('strength'), 10) || 0;
-        characterData.状态.敏捷 = parseInt(formData.get('agility'), 10) || 0;
-        characterData.状态.灵巧 = parseInt(formData.get('dexterity'), 10) || 0;
-        characterData.状态.本能 = parseInt(formData.get('instinct'), 10) || 0;
-        characterData.状态.知识 = parseInt(formData.get('knowledge'), 10) || 0;
-        characterData.状态.风度 = parseInt(formData.get('grace'), 10) || 0;
-
-        // 替换这四个独立的武器导出块
-        for (let i = 1; i <= 4; i++) {
-            const weaponSelector = `#weaponName${i}`;
-            if (form.querySelector(weaponSelector) && formData.get(`weaponName${i}`)) {
-                characterData.物品.武器.push({
-                    "名称": formData.get(`weaponName${i}`) || "",
-                    "检定": formData.get(`weaponCheck${i}`) || "",
-                    "属性": formData.get(`weaponAttribute${i}`) || "",
-                    "范围": formData.get(`weaponRange${i}`) || "",
-                    "伤害": formData.get(`weaponDamage${i}`) || "",
-                    "负荷": formData.get(`weaponTwoHanded${i}`) || "",
-                    "特性": formData.get(`weaponTrait${i}`) || ""
-                });
-            }
-        }
-
-        if (form.querySelector('#armorName1')) {
-            characterData.物品.护甲.push({
-                "名称": formData.get('armorName1') || "", "防御": formData.get('armorDefense1') || "", "特性": formData.get('armorTrait1') || ""
-            });
-        }
-        characterData.物品.道具 = []; // Initialize道具 array
-        const currentItemElements = itemsContainer.querySelectorAll('.item');
-        currentItemElements.forEach((itemElement) => {
-            const itemNameSelect = itemElement.querySelector('select[name="itemName"]');
-            const itemQuantityInput = itemElement.querySelector('input[name="itemQuantity"]');
-            const itemDescriptionTextarea = itemElement.querySelector('textarea[name="itemDescription"]');
-
-            if (itemNameSelect && itemNameSelect.value) { // Only add if an item is selected
-                characterData.物品.道具.push({
-                    "名称": itemNameSelect.value,
-                    "数量": itemQuantityInput ? itemQuantityInput.value : "1",
-                    "描述": itemDescriptionTextarea ? itemDescriptionTextarea.value : ""
-                });
-            }
-        });
-        // Removed the logic for adding an empty item if none exist, as new select logic handles defaults.
-
-        characterData.技能 = [];
-
-        // Helper function to extract skill data from a row element
-        function getSkillDataFromRow(rowElement) {
-            if (!rowElement || rowElement.cells.length < 7) return null;
-
-            const configInput = rowElement.cells[0].querySelector('input[name="skillConfig"]');
-            const nameInput = rowElement.cells[1].querySelector('input[name="skillName"]');
-            const domainInput = rowElement.cells[2].querySelector('input[name="skillDomain"]');
-            const levelInput = rowElement.cells[3].querySelector('input[name="skillLevel"]');
-            const attributeInput = rowElement.cells[4].querySelector('input[name="skillAttribute"]');
-            const recallInput = rowElement.cells[5].querySelector('input[name="skillRecall"]');
-            const descriptionTextarea = rowElement.cells[6].querySelector('textarea[name="skillDescription"]');
-
-            // Only include the skill if it has a name (considered non-empty)
-            if (nameInput && nameInput.value.trim() !== "") {
-                return {
-                    "配置": configInput?.value || "",
-                    "名称": nameInput.value,
-                    "领域": domainInput?.value || "",
-                    "等级": levelInput?.value || "", // Keep level as string, or parse if strictly numeric
-                    "属性": attributeInput?.value || "",
-                    "回想": recallInput?.value || "",
-                    "描述": descriptionTextarea?.value || ""
-                };
-            }
-            return null;
-        }
-
-        // Export fixed skill slots
-        AllFixedSlotIds.forEach(slotId => {
-            const slotRow = document.getElementById(slotId);
-            const skillData = getSkillDataFromRow(slotRow);
-            if (skillData) { // Only add if the slot has a name (is considered filled)
-                characterData.技能.push(skillData);
-            }
-        });
-
-        // Export dynamic (non-fixed) skill slots
-        const dynamicSkillElements = skillsContainer.querySelectorAll('tr.skill-item:not(.fixed-skill-slot)');
-        dynamicSkillElements.forEach((rowElement) => {
-            const skillData = getSkillDataFromRow(rowElement);
-            if (skillData) {
-                characterData.技能.push(skillData);
-            }
-        });
-        
-        const jsonDataString = JSON.stringify(characterData, null, 4);
-        const blob = new Blob([jsonDataString], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${characterData.设定.角色名 || 'character'}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        console.log(characterData);
-        });
-    
-    // give all textareas in the skills container the auto-grow functionality
-    document.querySelectorAll('#skillsContainer textarea[name="skillDescription"]').forEach(textarea => {
-        textarea.addEventListener('input', autoGrowTextarea);
-        setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
-    });
-
-
-
-
-    // Equipment Modal Logic
-    const equipmentModal = document.getElementById('equipmentModal');
-    const modalCloseButton = document.getElementById('modalCloseButton');
-    const modalTitle = document.getElementById('modalTitle');
-    const equipmentListContainer = document.getElementById('equipmentListContainer');
     let currentTargetInput = null; // To store which input triggered the modal
     let currentOpenModalType = 'weapon'; // 'weapon' or 'armor'
     let currentOpenWeaponSlotType = 'any'; // 'main', 'auxiliary', 'any'
-
-
-
 
     function displayEquipment(type) { // itemCollections removed, will be handled by filterAndDisplayEquipment
         const fixedHeaderContainer = document.getElementById('fixedHeaderContainer');
@@ -1561,4 +639,904 @@ document.addEventListener('DOMContentLoaded', () => {
             equipmentModal.style.display = 'none';
         });
     }
+
+    addItemBtn.addEventListener('click', () => {
+        const newItem = document.createElement('div');
+        newItem.classList.add('item');
+        const currentId = itemNextId++; // Keep for unique IDs if needed for other elements
+        newItem.innerHTML = `
+            <select name="itemName" class="item-name-select"></select>
+            <input type="text" name="itemQuantity" placeholder="数量" value="1">
+            <textarea name="itemDescription" placeholder="描述"></textarea>
+            <button type="button" class="remove-item-btn">-</button>
+        `;
+        itemsContainer.appendChild(newItem);
+        const newSelect = newItem.querySelector('.item-name-select');
+        const newDescriptionTextarea = newItem.querySelector('textarea[name="itemDescription"]');
+        if (newDescriptionTextarea) {
+            newDescriptionTextarea.addEventListener('input', autoGrowTextarea);
+        }
+        populateItemSelect(newSelect); // This might pre-fill and should trigger autoGrow if so
+        addRemoveListener(newItem.querySelector('.remove-item-btn'));
+    });
+    // ====================== End of Weapon & Armor & Item ======================
+
+
+    // ====================== Skill ======================
+    // Helper to create skill row TR element (used by fixed slots and potentially dynamic ones)
+    function createSkillRowElement(skillData = {}, isFixedSlot = false, slotId = '') {
+        const newRow = document.createElement('tr');
+        newRow.classList.add('skill-item');
+        if (isFixedSlot) {
+            newRow.id = slotId;
+            newRow.classList.add('fixed-skill-slot');
+        }
+
+        // Determine default attribute for fixed slots if skillData.属性 is not provided
+        let defaultAttribute = skillData.属性 || '';
+        if (isFixedSlot && !defaultAttribute) {
+            if (slotId.startsWith('fixed-skill-race')) defaultAttribute = "种族";
+            else if (slotId.startsWith('fixed-skill-group')) defaultAttribute = "社群";
+            else if (slotId.startsWith('fixed-skill-job')) defaultAttribute = "职业";
+        }
+        
+        const defaultConfig = skillData.配置 || (isFixedSlot ? '永久' : '');
+        const defaultLevel = skillData.等级 || (isFixedSlot ? '' : '0'); // Fixed slots might not have a numeric level initially
+
+        newRow.innerHTML = `
+            <td><input type="text" name="skillConfig" placeholder="配置" value="${defaultConfig}"></td>
+            <td><input type="text" name="skillName" placeholder="名称" value="${skillData.名称 || ''}"></td>
+            <td><input type="text" name="skillDomain" placeholder="领域" value="${skillData.领域 || ''}"></td>
+            <td><input type="text" name="skillLevel" placeholder="等级" value="${defaultLevel}"></td>
+            <td><input type="text" name="skillAttribute" placeholder="属性" value="${defaultAttribute}"></td>
+            <td><input type="text" name="skillRecall" placeholder="回想" value="${skillData.回想 || ''}"></td>
+            <td><textarea name="skillDescription" placeholder="描述">${skillData.描述 || ''}</textarea></td>
+            <td><button type="button" class="remove-item-btn" style="${isFixedSlot ? 'display:none;' : ''}">-</button></td>
+        `;
+
+        const newTextarea = newRow.querySelector('textarea[name="skillDescription"]');
+        if (newTextarea) {
+            newTextarea.addEventListener('input', autoGrowTextarea);
+        }
+        if (!isFixedSlot) {
+            addRemoveListener(newRow.querySelector('.remove-item-btn'));
+        }
+        return newRow;
+    }
+
+    function initializeFixedSkillSlots() {
+        if (!skillsContainer) return;
+        // This function ensures the 5 fixed slots are present.
+        // It doesn't clear other dynamic skills that might be added later.
+        AllFixedSlotIds.forEach(slotId => {
+            if (!document.getElementById(slotId)) {
+                const slotRow = createSkillRowElement({}, true, slotId);
+                skillsContainer.appendChild(slotRow);
+                const textarea = slotRow.querySelector('textarea[name="skillDescription"]');
+                // Initial auto-grow for textareas in fixed slots
+                if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
+            }
+        });
+    }
+    
+    initializeFixedSkillSlots(); // Create the 5 fixed slots on load
+
+    function updateSkillInSlot(slotId, skillData) {
+        const slotRow = document.getElementById(slotId);
+        if (!slotRow) {
+            console.warn(`Skill slot with ID ${slotId} not found during update.`);
+            return;
+        }
+
+        const inputs = {
+            config: slotRow.querySelector('input[name="skillConfig"]'),
+            name: slotRow.querySelector('input[name="skillName"]'),
+            domain: slotRow.querySelector('input[name="skillDomain"]'),
+            level: slotRow.querySelector('input[name="skillLevel"]'),
+            attribute: slotRow.querySelector('input[name="skillAttribute"]'),
+            recall: slotRow.querySelector('input[name="skillRecall"]'),
+            description: slotRow.querySelector('textarea[name="skillDescription"]')
+        };
+
+        let currentAttributeType = "";
+        if (slotId === FixedSkillSlotIds.RACE_1 || slotId === FixedSkillSlotIds.RACE_2) currentAttributeType = "种族";
+        else if (slotId === FixedSkillSlotIds.GROUP_1) currentAttributeType = "社群";
+        else if (slotId === FixedSkillSlotIds.JOB_1 || slotId === FixedSkillSlotIds.JOB_2) currentAttributeType = "职业";
+
+        if (skillData) {
+            inputs.config.value = skillData.配置 || "永久";
+            inputs.name.value = skillData.名称 || "";
+            inputs.domain.value = skillData.领域 || "";
+            inputs.level.value = skillData.等级 || "";
+            inputs.attribute.value = skillData.属性 || currentAttributeType; // Use skillData.属性 if provided, else default for slot
+            inputs.recall.value = skillData.回想 || "";
+            inputs.description.value = skillData.描述 || "";
+        } else { // Clear the slot, but maintain config and attribute type
+            inputs.config.value = "永久";
+            inputs.name.value = "";
+            inputs.domain.value = "";
+            inputs.level.value = "";
+            inputs.attribute.value = currentAttributeType; // Keep placeholder attribute
+            inputs.recall.value = "";
+            inputs.description.value = "";
+        }
+        // Ensure textarea height is adjusted after update
+        if (inputs.description) {
+             setTimeout(() => autoGrowTextarea({ target: inputs.description }), 0);
+        }
+    }
+    // addSkillEntry is now for DYNAMIC, non-fixed skills, added AFTER fixed slots
+    function addSkillEntry(skillData) {
+        const newRow = createSkillRowElement(skillData, false); // isFixedSlot = false
+        skillsContainer.appendChild(newRow);
+        const textarea = newRow.querySelector('textarea[name="skillDescription"]');
+        // Initial auto-grow for dynamically added textareas
+        if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
+        return newRow;
+    }
+    addSkillBtn.addEventListener('click', () => {
+        addSkillEntry({
+            配置: "", 名称: "", 领域: "", 等级: "0", 属性: "", 回想: "", 描述: ""
+        });
+    });
+    // give all textareas in the skills container the auto-grow functionality
+    document.querySelectorAll('#skillsContainer textarea[name="skillDescription"]').forEach(textarea => {
+        textarea.addEventListener('input', autoGrowTextarea);
+        setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
+    });
+    // ====================== End of Skill ======================
+
+
+    // ====================== Import ======================
+    const importJsonBtn = document.getElementById('importJsonBtn');
+    const importFile = document.getElementById('importFile');
+    if (importJsonBtn && importFile) {
+        importJsonBtn.addEventListener('click', () => {
+            importFile.click();
+        });
+
+        importFile.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        populateForm(importedData);
+                        importFile.value = null; 
+                    } catch (error) {
+                        console.error("Error parsing JSON file:", error);
+                        alert("导入失败：无效的JSON文件。");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+    }
+    function populateForm(data) {
+        if (!data) return;
+        form.reset();
+
+        // Clear dynamic sections, but fixed skill slots are managed by initializeFixedSkillSlots and updateSkillInSlot
+        experiencesContainer.innerHTML = '';
+        experienceNextId = 1;
+        itemsContainer.innerHTML = '';
+        itemNextId = 1;
+        // skillNextId = 1; // Reset for dynamic skills, if any are added
+
+        // Clear fixed skill slots before populating
+        AllFixedSlotIds.forEach(slotId => {
+            updateSkillInSlot(slotId, null);
+        });
+        
+        // Clear any dynamically added skill rows (not the fixed ones)
+        const dynamicSkillRows = skillsContainer.querySelectorAll('tr.skill-item:not(.fixed-skill-slot)');
+        dynamicSkillRows.forEach(row => row.remove());
+        
+        appearancePreview.src = "#";
+        appearancePreview.style.display = 'none';
+        removeAppearanceBtn.style.display = 'none';
+        appearanceUpload.style.display = 'inline';
+        appearanceUpload.value = null;
+        appearanceDataUrl = "";
+
+        if (data.设定) {
+            form.roleName.value = data.设定.角色名 || "";
+            form.age.value = data.设定.年龄 || 0;
+            form.gender.value = data.设定.性别 || "";
+            
+            if (form.raceSelect) form.raceSelect.value = data.设定.种族 || "";
+            if (form.mixedRaceSelect) form.mixedRaceSelect.value = data.设定.混血种族 || "";
+            if (form.communitySelect) form.communitySelect.value = data.设定.社群 || "";
+            if (form.professionSelect) form.professionSelect.value = data.设定.职业 || "";
+
+            // After setting dropdowns from JSON, update the fixed skill slots accordingly
+            updateRaceTraitsAsSkills();
+            updateGroupTraitAsSkill();
+            updateJobTraitsAsSkills();
+            
+            form.subProfession.value = data.设定.子职业 || "";
+            form.partTimeJob.value = data.设定.兼职 || "";
+            form.backgroundStory.value = data.设定.背景故事 || "";
+            
+            if (data.设定.形象 && typeof data.设定.形象 === 'string' && data.设定.形象.startsWith('data:image')) {
+                appearancePreview.src = data.设定.形象;
+                appearancePreview.style.display = 'block';
+                removeAppearanceBtn.style.display = 'inline';
+                appearanceUpload.style.display = 'none';
+                appearanceDataUrl = data.设定.形象;
+            }
+
+            if (data.设定.经历 && Array.isArray(data.设定.经历)) {
+                data.设定.经历.forEach((exp) => {
+                    addExperienceBtn.click();
+                    const currentExpItem = experiencesContainer.lastElementChild;
+                    if (currentExpItem) {
+                        const keywordInput = currentExpItem.querySelector('input[name="expKeyword"]');
+                        const valueInput = currentExpItem.querySelector('input[name="expValue"]');
+                        if (keywordInput) keywordInput.value = exp.关键词 || "";
+                        if (valueInput) valueInput.value = exp.调整值 || "";
+                    }
+                });
+            }
+        }
+
+        if (data.状态) {
+            form.hpCurrent.value = data.状态.HP?.当前 || 0;
+            form.hpMax.value = data.状态.HP?.最大 || 0;
+            form.stressCurrent.value = data.状态.压力?.当前 || 0;
+            form.stressMax.value = data.状态.压力?.最大 || 0;
+            form.hopeCurrent.value = data.状态.希望?.当前 || 0;
+            form.hopeMax.value = data.状态.希望?.最大 || 0;
+            form.armorCurrent.value = data.状态.护甲?.当前 || 0;
+            form.armorMax.value = data.状态.护甲?.最大 || 0;
+            form.armorValue.value = data.状态.护甲值 || 0;
+            form.level.value = data.状态.等级 || 0;
+            updateLevelTierDisplay(); // Update tier display after setting level from JSON
+            form.proficiency.value = data.状态.熟练 || 0;
+            form.money.value = data.状态.金钱 || 0;
+            form.strength.value = data.状态.力量 || 0;
+            form.agility.value = data.状态.敏捷 || 0;
+            form.dexterity.value = data.状态.灵巧 || 0;
+            form.instinct.value = data.状态.本能 || 0;
+            form.knowledge.value = data.状态.知识 || 0;
+            form.grace.value = data.状态.风度 || 0;
+        }
+
+        if (data.物品) {
+            if (data.物品.武器 && Array.isArray(data.物品.武器)) {
+                // 武器导入循环化简
+                for (let i = 1; i <= 4; i++) {
+                    if (data.物品.武器.length >= i) {
+                        const weapon = data.物品.武器[i-1];
+                        
+                        // 使用对象属性名循环来处理所有字段
+                        const weaponFields = ['名称', '检定', '属性', '范围', '伤害', '负荷', '特性'];
+                        const formFields = ['weaponName', 'weaponCheck', 'weaponAttribute', 'weaponRange', 
+                                           'weaponDamage', 'weaponTwoHanded', 'weaponTrait'];
+                        
+                        // 循环处理每个字段
+                        for (let j = 0; j < weaponFields.length; j++) {
+                            const formField = `${formFields[j]}${i}`;
+                            if (form[formField]) {
+                                form[formField].value = weapon[weaponFields[j]] || "";
+                            }
+                        }
+                        
+                        // 特别处理文本区域的自动增长
+                        const traitTextarea = form[`weaponTrait${i}`];
+                        if (traitTextarea) {
+                            setTimeout(() => autoGrowTextarea({ target: traitTextarea }), 0);
+                        }
+                    }
+                }            
+            }
+            if (data.物品.护甲 && data.物品.护甲.length > 0) {
+                const armor = data.物品.护甲[0];
+                 if(form.armorName1) form.armorName1.value = armor.名称 || "";
+                 if(form.armorDefense1) form.armorDefense1.value = armor.防御 || 0;
+                 if(form.armorTrait1) form.armorTrait1.value = armor.特性 || "";
+                 if (form.armorTrait1) setTimeout(() => autoGrowTextarea({ target: form.armorTrait1 }), 0);
+            }
+
+            if (data.物品.道具 && Array.isArray(data.物品.道具)) {
+                data.物品.道具.forEach((itemData, index) => {
+                    let currentItemDiv;
+                    if (index === 0 && itemsContainer.children[0] && itemsContainer.children[0].classList.contains('item')) {
+                        currentItemDiv = itemsContainer.children[0];
+                    } else {
+                        addItemBtn.click(); // This will create a new item div with a select
+                        currentItemDiv = itemsContainer.lastElementChild;
+                    }
+
+                    if (currentItemDiv) {
+                        const nameSelect = currentItemDiv.querySelector('select[name="itemName"]');
+                        const quantityInput = currentItemDiv.querySelector('input[name="itemQuantity"]');
+                        const descriptionTextarea = currentItemDiv.querySelector('textarea[name="itemDescription"]');
+
+                        if (nameSelect) {
+                            populateItemSelect(nameSelect, itemData.名称); // Populate and select
+                        }
+                        if (quantityInput) quantityInput.value = itemData.数量 || "1";
+                        
+                        // populateItemSelect should handle pre-filling the description and auto-growing it.
+                        // If it's not, this is a fallback, but the logic in populateItemSelect is preferred.
+                        if (descriptionTextarea) {
+                             descriptionTextarea.value = itemData.描述 || ""; // Set from JSON first
+                             const selectedFullItem = ALL_ITEMS_DATA.find(i => i.名称 === itemData.名称);
+                             if (selectedFullItem) { // Then override with effect if item is found
+                                 descriptionTextarea.value = selectedFullItem.效果 || "";
+                             }
+                             setTimeout(() => autoGrowTextarea({ target: descriptionTextarea }), 0);
+                        }
+                    }
+                });
+            }
+        }
+        
+        if (data.技能 && Array.isArray(data.技能)) {
+            data.技能.forEach((skill) => {
+                // Only add skills from JSON if they are not meant for the fixed slots
+                // (which are now populated by update...AsSkills calls above)
+                const isFixedTypeAttribute = skill.属性 === "种族" || skill.属性 === "社群" || skill.属性 === "职业" || skill.属性 === "混血";
+                // A more robust check might involve skill names if they are predictable for fixed slots,
+                // e.g. if jobData.希望特性 always results in a skill named "希望特性".
+                // For now, primarily rely on attribute.
+                if (!isFixedTypeAttribute) {
+                    const newSkillRow = addSkillEntry(skill); // This adds a dynamic, removable row
+                    const skillDescTextarea = newSkillRow.querySelector('textarea[name="skillDescription"]');
+                    if (skillDescTextarea) {
+                        setTimeout(() => autoGrowTextarea({ target: skillDescTextarea }), 0);
+                    }
+                }
+            });
+        }
+        
+        // The update...AsSkills() calls were moved up to after dropdowns are set from JSON.
+        // This ensures fixed slots are populated based on the imported character's race/group/job.
+
+        experienceNextId = experiencesContainer.children.length + 1;
+        itemNextId = itemsContainer.children.length + 1;
+        skillNextId = skillsContainer.children.length + 1; 
+    }
+    function populateItemSelect(selectElement, selectedItemName = "") {
+        if (!selectElement) {
+            return;
+        }
+        selectElement.innerHTML = '<option value="">--选择道具--</option>'; // Default empty option
+
+        ALL_ITEMS_DATA.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.名称;
+            option.textContent = item.名称;
+            if (item.名称 === selectedItemName) {
+                option.selected = true;
+            }
+            selectElement.appendChild(option);
+        });
+
+        // If a selectedItemName is provided, find its data and pre-fill description and quantity
+        if (selectedItemName) {
+            const itemData = ALL_ITEMS_DATA.find(i => i.名称 === selectedItemName);
+            const parentItemDiv = selectElement.closest('.item');
+            if (itemData && parentItemDiv) {
+                const descTextarea = parentItemDiv.querySelector('textarea[name="itemDescription"]');
+                const quantityInput = parentItemDiv.querySelector('input[name="itemQuantity"]');
+                if (descTextarea) {
+                    descTextarea.value = itemData.效果 || "";
+                    setTimeout(() => autoGrowTextarea({ target: descTextarea }), 0); // Trigger auto-grow
+                }
+                if (quantityInput) {
+                    // Preserve existing quantity if it's already set (e.g. from JSON import), otherwise default to 1
+                    if (!quantityInput.value || quantityInput.value === "0" || quantityInput.value === "") {
+                         quantityInput.value = "1";
+                    }
+                }
+            } else {
+                console.log('[populateItemSelect] itemData or parentItemDiv not found for pre-fill.');
+            }
+        }
+
+        selectElement.addEventListener('change', function(event) {
+            const selectedName = event.target.value;
+            const itemData = ALL_ITEMS_DATA.find(i => i.名称 === selectedName);
+            const parentItemDiv = event.target.closest('.item');
+            if (parentItemDiv) {
+                const descTextarea = parentItemDiv.querySelector('textarea[name="itemDescription"]');
+                const quantityInput = parentItemDiv.querySelector('input[name="itemQuantity"]');
+                if (itemData) {
+                    if (descTextarea) {
+                        descTextarea.value = itemData.效果 || "";
+                        setTimeout(() => autoGrowTextarea({ target: descTextarea }), 0); // Trigger auto-grow
+                    }
+                    if (quantityInput) {
+                        quantityInput.value = "1"; // Default to 1 on new selection from dropdown
+                    }
+                } else {
+                    if (descTextarea) {
+                        descTextarea.value = "";
+                        setTimeout(() => autoGrowTextarea({ target: descTextarea }), 0); // Trigger auto-grow
+                    }
+                    if (quantityInput) {
+                        quantityInput.value = "1"; // Default to 1 even if item not found (e.g. "--选择道具--")
+                    }
+                }
+            } else {
+                console.log('[populateItemSelect] parentItemDiv not found in change event.');
+            }
+        });
+    }
+    // Initial population for the static item row if it exists
+    const initialItemSelect = itemsContainer.querySelector('.item-name-select'); // This should get the first static item's select
+    if (initialItemSelect) {
+        populateItemSelect(initialItemSelect); // Populates options
+
+        // Set default item after options are populated, if no value is already set (e.g., by import)
+        // and if it's the specific static select with id="itemName"
+        if (initialItemSelect.id === 'itemName' && !initialItemSelect.value) {
+            const defaultItemNameToSet = "小型生命药水Minor Health Potion";
+            const defaultItemEffectToSet = "立刻回复1d4生命值";
+            
+            let optionExists = false;
+            for (let i = 0; i < initialItemSelect.options.length; i++) {
+                if (initialItemSelect.options[i].value === defaultItemNameToSet) {
+                    optionExists = true;
+                    break;
+                }
+            }
+
+            if (!optionExists) {
+                const itemData = ALL_ITEMS_DATA.find(i => i.名称 === defaultItemNameToSet);
+                if (itemData) {
+                    const newOption = document.createElement('option');
+                    newOption.value = defaultItemNameToSet;
+                    newOption.textContent = defaultItemNameToSet;
+                    initialItemSelect.appendChild(newOption);
+                    optionExists = true;
+                } else {
+                    console.warn(`Default item "${defaultItemNameToSet}" not found in ALL_ITEMS_DATA. Cannot add as an option.`);
+                }
+            }
+
+            if (optionExists) {
+                initialItemSelect.value = defaultItemNameToSet;
+                initialItemSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                
+                // Ensure the description is set correctly, as the change event might be handled generally by populateItemSelect
+                const parentItemDiv = initialItemSelect.closest('.item');
+                if (parentItemDiv) {
+                    const descriptionTextarea = parentItemDiv.querySelector('textarea[name="itemDescription"]'); // Or by ID if static
+                    const quantityInput = parentItemDiv.querySelector('input[name="itemQuantity"]');
+                    
+                    if (descriptionTextarea) {
+                        descriptionTextarea.value = defaultItemEffectToSet;
+                        autoGrowTextarea({ target: descriptionTextarea });
+                    }
+                    if (quantityInput && !quantityInput.value) { // Set quantity if not already set
+                        quantityInput.value = "1";
+                    }
+                }
+            }
+        }
+    }
+    // ====================== End of Import ======================
+
+
+    // ====================== Export ======================
+    const exportButton = document.getElementById('exportJson');
+    exportButton.addEventListener('click', () => {
+        const formData = new FormData(form);
+        const characterData = {
+            "设定": {},
+            "状态": {},
+            "物品": { "武器": [], "护甲": [], "道具": [] },
+            "技能": []
+        };
+
+        characterData.设定.角色名 = formData.get('roleName') || "";
+        characterData.设定.年龄 = parseInt(formData.get('age'), 10) || 0;
+        characterData.设定.性别 = formData.get('gender') || "";
+        
+        characterData.设定.经历 = [];
+        const currentExperienceItems = experiencesContainer.querySelectorAll('.experience-item');
+        currentExperienceItems.forEach((item) => {
+            const keywordInput = item.querySelector('input[name="expKeyword"]');
+            const valueInput = item.querySelector('input[name="expValue"]');
+            if (keywordInput && valueInput) { 
+                 characterData.设定.经历.push({
+                    "关键词": keywordInput.value || "",
+                    "调整值": valueInput.value || ""
+                });
+            }
+        });
+
+        characterData.设定.背景故事 = formData.get('backgroundStory') || "";
+        characterData.设定.形象 = appearanceDataUrl || "";
+        characterData.设定.种族 = form.raceSelect ? form.raceSelect.value : ""; 
+        characterData.设定.混血种族 = form.mixedRaceSelect ? form.mixedRaceSelect.value : ""; 
+        characterData.设定.社群 = form.communitySelect ? form.communitySelect.value : ""; 
+        characterData.设定.职业 = form.professionSelect ? form.professionSelect.value : ""; 
+        characterData.设定.子职业 = formData.get('subProfession') || "";
+        characterData.设定.兼职 = formData.get('partTimeJob') || "";
+
+        characterData.状态.HP = {"当前": parseInt(formData.get('hpCurrent'), 10) || 0, "最大": parseInt(formData.get('hpMax'), 10) || 0};
+        characterData.状态.压力 = {"当前": parseInt(formData.get('stressCurrent'), 10) || 0, "最大": parseInt(formData.get('stressMax'), 10) || 0};
+        characterData.状态.希望 = {"当前": parseInt(formData.get('hopeCurrent'), 10) || 0, "最大": parseInt(formData.get('hopeMax'), 10) || 0};
+        characterData.状态.护甲 = {"当前": parseInt(formData.get('armorCurrent'), 10) || 0, "最大": parseInt(formData.get('armorMax'), 10) || 0};
+        characterData.状态.护甲值 = parseInt(formData.get('armorValue'), 10) || 0;
+        characterData.状态.等级 = parseInt(formData.get('level'), 10) || 0;
+        characterData.状态.熟练 = parseInt(formData.get('proficiency'), 10) || 0;
+        characterData.状态.金钱 = parseInt(formData.get('money'), 10) || 0;
+        characterData.状态.力量 = parseInt(formData.get('strength'), 10) || 0;
+        characterData.状态.敏捷 = parseInt(formData.get('agility'), 10) || 0;
+        characterData.状态.灵巧 = parseInt(formData.get('dexterity'), 10) || 0;
+        characterData.状态.本能 = parseInt(formData.get('instinct'), 10) || 0;
+        characterData.状态.知识 = parseInt(formData.get('knowledge'), 10) || 0;
+        characterData.状态.风度 = parseInt(formData.get('grace'), 10) || 0;
+
+        // 替换这四个独立的武器导出块
+        for (let i = 1; i <= 4; i++) {
+            const weaponSelector = `#weaponName${i}`;
+            if (form.querySelector(weaponSelector) && formData.get(`weaponName${i}`)) {
+                characterData.物品.武器.push({
+                    "名称": formData.get(`weaponName${i}`) || "",
+                    "检定": formData.get(`weaponCheck${i}`) || "",
+                    "属性": formData.get(`weaponAttribute${i}`) || "",
+                    "范围": formData.get(`weaponRange${i}`) || "",
+                    "伤害": formData.get(`weaponDamage${i}`) || "",
+                    "负荷": formData.get(`weaponTwoHanded${i}`) || "",
+                    "特性": formData.get(`weaponTrait${i}`) || ""
+                });
+            }
+        }
+
+        if (form.querySelector('#armorName1')) {
+            characterData.物品.护甲.push({
+                "名称": formData.get('armorName1') || "", "防御": formData.get('armorDefense1') || "", "特性": formData.get('armorTrait1') || ""
+            });
+        }
+        characterData.物品.道具 = []; // Initialize道具 array
+        const currentItemElements = itemsContainer.querySelectorAll('.item');
+        currentItemElements.forEach((itemElement) => {
+            const itemNameSelect = itemElement.querySelector('select[name="itemName"]');
+            const itemQuantityInput = itemElement.querySelector('input[name="itemQuantity"]');
+            const itemDescriptionTextarea = itemElement.querySelector('textarea[name="itemDescription"]');
+
+            if (itemNameSelect && itemNameSelect.value) { // Only add if an item is selected
+                characterData.物品.道具.push({
+                    "名称": itemNameSelect.value,
+                    "数量": itemQuantityInput ? itemQuantityInput.value : "1",
+                    "描述": itemDescriptionTextarea ? itemDescriptionTextarea.value : ""
+                });
+            }
+        });
+        // Removed the logic for adding an empty item if none exist, as new select logic handles defaults.
+
+        characterData.技能 = [];
+
+        // Helper function to extract skill data from a row element
+        function getSkillDataFromRow(rowElement) {
+            if (!rowElement || rowElement.cells.length < 7) return null;
+
+            const configInput = rowElement.cells[0].querySelector('input[name="skillConfig"]');
+            const nameInput = rowElement.cells[1].querySelector('input[name="skillName"]');
+            const domainInput = rowElement.cells[2].querySelector('input[name="skillDomain"]');
+            const levelInput = rowElement.cells[3].querySelector('input[name="skillLevel"]');
+            const attributeInput = rowElement.cells[4].querySelector('input[name="skillAttribute"]');
+            const recallInput = rowElement.cells[5].querySelector('input[name="skillRecall"]');
+            const descriptionTextarea = rowElement.cells[6].querySelector('textarea[name="skillDescription"]');
+
+            // Only include the skill if it has a name (considered non-empty)
+            if (nameInput && nameInput.value.trim() !== "") {
+                return {
+                    "配置": configInput?.value || "",
+                    "名称": nameInput.value,
+                    "领域": domainInput?.value || "",
+                    "等级": levelInput?.value || "", // Keep level as string, or parse if strictly numeric
+                    "属性": attributeInput?.value || "",
+                    "回想": recallInput?.value || "",
+                    "描述": descriptionTextarea?.value || ""
+                };
+            }
+            return null;
+        }
+
+        // Export fixed skill slots
+        AllFixedSlotIds.forEach(slotId => {
+            const slotRow = document.getElementById(slotId);
+            const skillData = getSkillDataFromRow(slotRow);
+            if (skillData) { // Only add if the slot has a name (is considered filled)
+                characterData.技能.push(skillData);
+            }
+        });
+
+        // Export dynamic (non-fixed) skill slots
+        const dynamicSkillElements = skillsContainer.querySelectorAll('tr.skill-item:not(.fixed-skill-slot)');
+        dynamicSkillElements.forEach((rowElement) => {
+            const skillData = getSkillDataFromRow(rowElement);
+            if (skillData) {
+                characterData.技能.push(skillData);
+            }
+        });
+        
+        const jsonDataString = JSON.stringify(characterData, null, 4);
+        const blob = new Blob([jsonDataString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${characterData.设定.角色名 || 'character'}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        console.log(characterData);
+    });    
+    // ====================== End of Export ======================
+
+
+    // ================== newbie guide ==================
+    const newbieGuideButton = document.getElementById('newbieGuideButton');
+    const newbieGuideModal = document.getElementById('newbieGuideModal');
+    const newbieGuideModalCloseButton = document.getElementById('newbieGuideModalCloseButton');
+    const newbieGuideNextButton = document.getElementById('newbieGuideNextButton');
+    const newbieGuideCancelButton = document.getElementById('newbieGuideCancelButton');
+    const newbieGuideQuestionText = document.getElementById('newbieGuideQuestionText');
+    const newbieGuideAnswerInput = document.getElementById('newbieGuideAnswerInput');
+    const newbieGuideDropdownInput = document.getElementById('newbieGuideDropdownInput'); // Added this line
+
+    let currentNewbieQuestionIndex = 0;
+    let newbieUserAnswers = {};
+
+    function displayCurrentNewbieQuestion() {
+        if (currentNewbieQuestionIndex < newbieGuideQuestions.length) {
+            const question = newbieGuideQuestions[currentNewbieQuestionIndex];
+            newbieGuideQuestionText.textContent = question.prompt;
+
+            // Hide all input types initially
+            newbieGuideAnswerInput.style.display = 'none';
+            // newbieGuideAttributesContainer.style.display = 'none'; // Removed
+            if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive check if HTML not yet updated
+                 document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
+            }
+            newbieGuideDropdownInput.style.display = 'none';
+
+            if (question.questionType === "dropdown") {
+                newbieGuideDropdownInput.style.display = 'block';
+                newbieGuideDropdownInput.innerHTML = ''; // Clear existing options
+
+                let dataSource;
+                // Access the global constants directly based on the string name
+                if (question.dataSourceVariable === "RACES_DATA") {
+                    dataSource = typeof RACES_DATA !== 'undefined' ? RACES_DATA : null;
+                } else if (question.dataSourceVariable === "GROUPS_DATA") {
+                    dataSource = typeof GROUPS_DATA !== 'undefined' ? GROUPS_DATA : null;
+                } else if (question.dataSourceVariable === "JOBS_DATA") {
+                    dataSource = typeof JOBS_DATA !== 'undefined' ? JOBS_DATA : null;
+                } else {
+                    dataSource = null;
+                }
+
+                if (dataSource && Array.isArray(dataSource)) {
+                    // Add a default "please select" option
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = "";
+                    defaultOption.textContent = `--- 请选择${question.prompt.replace("请选择你的", "").replace("：", "")} ---`;
+                    newbieGuideDropdownInput.appendChild(defaultOption);
+
+                    dataSource.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item[question.optionValueField];
+                        option.textContent = item[question.optionTextField];
+                        newbieGuideDropdownInput.appendChild(option);
+                    });
+                } else {
+                    console.error(`Newbie Guide: Data source "${question.dataSourceVariable}" not found, not an array, or not accessible directly.`);
+                    // Optionally, display an error or a disabled select
+                }
+                newbieGuideDropdownInput.focus();
+            } else { // Default to text input
+                newbieGuideAnswerInput.style.display = 'block';
+                newbieGuideAnswerInput.value = "";
+                newbieGuideAnswerInput.focus();
+            }
+
+            if (currentNewbieQuestionIndex === newbieGuideQuestions.length - 1) {
+                newbieGuideNextButton.textContent = "完成";
+            } else {
+                newbieGuideNextButton.textContent = "下一步";
+            }
+        }
+    }
+
+    function populateFieldsFromNewbieGuide() {
+        for (const fieldId in newbieUserAnswers) {
+            const element = document.getElementById(fieldId);
+            if (element) {
+                element.value = newbieUserAnswers[fieldId];
+                if (element.id === 'level') { // Example: trigger input for level if it has listeners
+                    element.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            } else {
+                if (!fieldId.includes("_placeholder_")) {
+                    console.warn(`Newbie Guide: Target field with ID '${fieldId}' not found.`);
+                } else {
+                     console.log(`Newbie Guide: Placeholder field '${fieldId}' was answered. Value: ${newbieUserAnswers[fieldId]}. Manual handling needed.`);
+                }
+            }
+        }
+        resetNewbieGuide(); // Reset and hide modal
+    }
+
+    function startNewbieGuide() {
+        currentNewbieQuestionIndex = 0;
+        newbieUserAnswers = {};
+        // newbieGuideAttributesContainer.style.display = 'none'; // Ensure attrs hidden initially // Removed
+        if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive
+            document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
+        }
+        if (newbieGuideDropdownInput) newbieGuideDropdownInput.style.display = 'none'; // Ensure dropdown hidden initially
+        newbieGuideAnswerInput.style.display = 'block';    // Ensure general input shown initially
+        displayCurrentNewbieQuestion();
+        newbieGuideModal.style.display = 'block';
+    }
+    
+    function resetNewbieGuide() {
+        newbieGuideModal.style.display = 'none';
+        currentNewbieQuestionIndex = 0;
+        newbieUserAnswers = {};
+        newbieGuideNextButton.textContent = "下一步";
+        // newbieGuideAttributesContainer.style.display = 'none'; // Removed
+        if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive
+            document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
+        }
+        if (newbieGuideDropdownInput) newbieGuideDropdownInput.style.display = 'none';
+        newbieGuideAnswerInput.style.display = 'block'; // Default to showing general input
+    }
+
+
+    if (newbieGuideButton && newbieGuideModal && newbieGuideModalCloseButton && newbieGuideCancelButton && newbieGuideNextButton && newbieGuideQuestionText && newbieGuideAnswerInput && newbieGuideDropdownInput) {
+        newbieGuideButton.addEventListener('click', startNewbieGuide);
+
+        newbieGuideNextButton.addEventListener('click', () => {
+            const question = newbieGuideQuestions[currentNewbieQuestionIndex];
+            if (!question) return; // Should not happen
+
+            // Removed attribute handling block
+            if (question.questionType === "dropdown") {
+                const selectedValue = newbieGuideDropdownInput.value;
+                // Store answer using targetSelectId as key, as it directly maps to the form's select element ID
+                newbieUserAnswers[question.targetSelectId] = selectedValue;
+
+                // Apply to character sheet and call update function
+                const targetSelectElement = document.getElementById(question.targetSelectId);
+                if (targetSelectElement) {
+                    targetSelectElement.value = selectedValue;
+                    // Manually trigger change event for the main form's select,
+                    // so its own event listeners (like updateRaceTraitsAsSkills) fire.
+                    targetSelectElement.dispatchEvent(new Event('change', { bubbles: true }));
+
+                    // The 'change' event on the main form's select elements should trigger their respective
+                    // update functions (updateRaceTraitsAsSkills, updateGroupTraitAsSkill, updateJobTraitsAsSkills)
+                    // as those functions are already set up as event listeners for those select elements.
+                    // Thus, explicitly calling window[question.updateFunction]() here might be redundant
+                    // and could lead to double execution if not handled carefully.
+                    // We rely on the existing event listeners on the main form's select elements.
+                    if (question.updateFunction) {
+                         console.log(`Newbie Guide: Triggered 'change' on ${question.targetSelectId}, which should call ${question.updateFunction}.`);
+                    }
+
+                    // Profession template filling logic
+                    if (question.targetSelectId === "professionSelect") {
+                        const selectedProfessionValue = newbieUserAnswers[question.targetSelectId]; // This is the '职业' name
+                        const template = professionTemplates[selectedProfessionValue];
+
+                        if (template) {
+                            console.log(`Applying template for profession: ${selectedProfessionValue}`);
+                            // Fill attributes
+                            const attributeFields = ["strength", "agility", "instinct", "grace", "knowledge", "dexterity"];
+                            template.attributes.forEach((value, index) => {
+                                const fieldId = attributeFields[index];
+                                const element = document.getElementById(fieldId);
+                                if (element) {
+                                    element.value = value;
+                                } else {
+                                    console.warn(`Newbie Guide Template: Attribute field ${fieldId} not found.`);
+                                }
+                            });
+
+                            // Fill main weapon (slot 1)
+                            if (template.weapon) {
+                                weaponName1Input.value = template.weapon.名称 || "";
+                                document.getElementById('weaponCheck1').value = template.weapon.检定 || "";
+                                document.getElementById('weaponAttribute1').value = template.weapon.属性 || "";
+                                document.getElementById('weaponRange1').value = template.weapon.范围 || "";
+                                document.getElementById('weaponDamage1').value = template.weapon.伤害 || "";
+                                document.getElementById('weaponTwoHanded1').value = template.weapon.负荷 || "";
+                            }
+                            // Fill off-hand weapon (slot 2 - auxiliary)
+                            if (template.offHandWeapon) {
+                                weaponName2Input.value = template.offHandWeapon.名称 || "";
+                                document.getElementById('weaponCheck2').value = template.offHandWeapon.检定 || "";
+                                document.getElementById('weaponAttribute2').value = template.offHandWeapon.属性 || "";
+                                document.getElementById('weaponRange2').value = template.offHandWeapon.范围 || "";
+                                document.getElementById('weaponDamage2').value = template.offHandWeapon.伤害 || "";
+                                document.getElementById('weaponTwoHanded2').value = template.offHandWeapon.负荷 || "";
+                            } else { // Clear auxiliary weapon slot if template doesn't have one
+                                weaponName2Input.value = "";
+                                document.getElementById('weaponCheck2').value = "";
+                                document.getElementById('weaponAttribute2').value = "";
+                                document.getElementById('weaponRange2').value = "";
+                                document.getElementById('weaponDamage2').value = "";
+                                document.getElementById('weaponTwoHanded2').value = "";
+                            }
+
+                            // Fill armor (slot 1)
+                            if (template.armor) {
+                                armorName1Input.value = template.armor.名称 || "";
+                                document.getElementById('armorDefense1').value = template.armor.防御 || "";
+                            }
+                            // Update Memory Bank: Active Context
+                            const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                            const activeContextUpdate = `\n* [${timestamp}] - Newbie guide auto-filled attributes, T1 main/off-hand weapon, and T1 armor for profession: ${selectedProfessionValue}.`;
+                            // This would ideally use a tool to append, but for now, it's a conceptual note.
+                            console.log("MEMORY BANK UPDATE (activeContext.md):", activeContextUpdate);
+
+                        } else {
+                            console.log(`Newbie Guide: No template found for profession: ${selectedProfessionValue}. Proceeding without auto-fill.`);
+                        }
+                    }
+
+                } else {
+                    console.warn(`Newbie Guide: Target select element with ID '${question.targetSelectId}' not found on the main form.`);
+                }
+            } else { // Default text input
+                newbieUserAnswers[question.targetFieldId] = newbieGuideAnswerInput.value;
+            }
+
+            currentNewbieQuestionIndex++;
+            if (currentNewbieQuestionIndex < newbieGuideQuestions.length) {
+                displayCurrentNewbieQuestion();
+            } else {
+                populateFieldsFromNewbieGuide();
+                // resetNewbieGuide() is called by populateFieldsFromNewbieGuide
+            }
+        });
+
+        newbieGuideModalCloseButton.addEventListener('click', resetNewbieGuide);
+        newbieGuideCancelButton.addEventListener('click', resetNewbieGuide);
+
+        window.addEventListener('click', (event) => {
+            if (event.target === newbieGuideModal) {
+                resetNewbieGuide();
+            }
+        });
+    }
+
+    if (appearanceUpload && appearancePreview && removeAppearanceBtn) {
+        appearanceUpload.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    appearancePreview.src = e.target.result;
+                    appearancePreview.style.display = 'block';
+                    removeAppearanceBtn.style.display = 'inline';
+                    appearanceUpload.style.display = 'none';
+                    appearanceDataUrl = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        removeAppearanceBtn.addEventListener('click', function() {
+            appearancePreview.src = "#";
+            appearancePreview.style.display = 'none';
+            removeAppearanceBtn.style.display = 'none';
+            appearanceUpload.style.display = 'inline';
+            appearanceUpload.value = null;
+            appearanceDataUrl = "";
+        });
+    }
+    // ====================== End of newbie guide ======================
 });
