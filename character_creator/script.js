@@ -1,72 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const FixedSkillSlotIds = {
-        RACE_1: 'fixed-skill-race-1',
-        RACE_2: 'fixed-skill-race-2',
-        GROUP_1: 'fixed-skill-group-1',
-        JOB_1: 'fixed-skill-job-1',
-        JOB_2: 'fixed-skill-job-2'
-    };
-    const AllFixedSlotIds = Object.values(FixedSkillSlotIds);
+document.addEventListener('DOMContentLoaded', () => {    
+    const form = document.getElementById('characterForm');    
 
-    const form = document.getElementById('characterForm');
     
-
-
-    const addExperienceBtn = document.getElementById('addExperienceBtn');
-    const addItemBtn = document.getElementById('addItemBtn');
-    const addSkillBtn = document.getElementById('addSkillBtn');
-
-    const experiencesContainer = document.getElementById('experiences');
-    const itemsContainer = document.getElementById('items');
-    const skillsContainer = document.getElementById('skillsContainer');
-    
-
-
-    const ALL_ITEMS_DATA = [...ITEMS_DATA, ...CONSUMABLES_DATA];
-
-
-    let experienceNextId = experiencesContainer.children.length + 1;
-    let itemNextId = itemsContainer.children.length + 1;
-    let appearanceDataUrl = "";
-
-    // ===================== Utility Functions =====================
-    function autoGrowTextarea(event) {
-        const textarea = event.target;
-        textarea.style.height = '0px';
-        textarea.style.height = textarea.scrollHeight + 'px';
-    }
-    function addRemoveListener(button) {
-        if (button) {
-            button.addEventListener('click', function(event) {
-                const experienceItem = event.target.closest('.experience-item');
-                if (experienceItem) {
-                    experienceItem.remove();
-                    return;
-                }
-                const itemItem = event.target.closest('.item');
-                if (itemItem) {
-                    itemItem.remove();
-                    return;
-                }
-                const skillItemRow = event.target.closest('tr.skill-item');
-                if (skillItemRow) {
-                    skillItemRow.remove();
-                    return;
-                }
-            });
-        }
-    }
-    document.querySelectorAll('.experience-item .remove-item-btn, .item .remove-item-btn, .skill-item .remove-item-btn').forEach(btn => {
-        addRemoveListener(btn);
-    });
-    // Add autoGrowTextarea to initial static item description textarea
-    const initialItemDescriptionTextarea = itemsContainer.querySelector('.item textarea[name="itemDescription"]');
-    if (initialItemDescriptionTextarea) {
-        initialItemDescriptionTextarea.addEventListener('input', autoGrowTextarea);
-        // Trigger auto-grow in case there's pre-filled content (though unlikely for a static empty one)
-        setTimeout(() => autoGrowTextarea({ target: initialItemDescriptionTextarea }), 0);
-    }
-    // ===================== End of Utility Functions =====================
 
 
     //========================= Setting =========================
@@ -282,6 +217,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ====================== Experience & Background ======================
+    let appearanceDataUrl = "";
+    const experiencesContainer = document.getElementById('experiences');
+    const addExperienceBtn = document.getElementById('addExperienceBtn');
     addExperienceBtn.addEventListener('click', () => {
         const newItem = document.createElement('div');
         newItem.classList.add('experience-item');
@@ -322,6 +260,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalCloseButton = document.getElementById('modalCloseButton');
     const modalTitle = document.getElementById('modalTitle');
     const equipmentListContainer = document.getElementById('equipmentListContainer');
+    
+    const itemsContainer = document.getElementById('items');
+    const addItemBtn = document.getElementById('addItemBtn');
+    const ALL_ITEMS_DATA = [...ITEMS_DATA, ...CONSUMABLES_DATA];
     
     // Auto-grow for weapon and armor trait textareas
     if (weaponTrait1Textarea) {
@@ -546,7 +488,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tbody.appendChild(tr);
         });
     }
-
     // Setup triggers for opening the modal
     const setupModalTrigger = (inputElement, modalType, weaponSlotType = 'any') => {
         if (inputElement) {
@@ -574,7 +515,6 @@ document.addEventListener('DOMContentLoaded', () => {
             equipmentModal.style.display = 'none';
         });
     }
-
     if (equipmentModal) {
         window.addEventListener('click', (event) => {
             if (event.target === equipmentModal) {
@@ -582,7 +522,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
     // Click listener for items within the modal's equipment list
     if (equipmentListContainer && equipmentModal) {
         equipmentListContainer.addEventListener('click', (event) => {
@@ -639,11 +578,9 @@ document.addEventListener('DOMContentLoaded', () => {
             equipmentModal.style.display = 'none';
         });
     }
-
     addItemBtn.addEventListener('click', () => {
         const newItem = document.createElement('div');
         newItem.classList.add('item');
-        const currentId = itemNextId++; // Keep for unique IDs if needed for other elements
         newItem.innerHTML = `
             <select name="itemName" class="item-name-select"></select>
             <input type="text" name="itemQuantity" placeholder="数量" value="1">
@@ -663,6 +600,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ====================== Skill ======================
+    const FixedSkillSlotIds = {
+        RACE_1: 'fixed-skill-race-1',
+        RACE_2: 'fixed-skill-race-2',
+        GROUP_1: 'fixed-skill-group-1',
+        JOB_1: 'fixed-skill-job-1',
+        JOB_2: 'fixed-skill-job-2'
+    };
+    const AllFixedSlotIds = Object.values(FixedSkillSlotIds);
+    const skillsContainer = document.getElementById('skillsContainer');
+    const addSkillBtn = document.getElementById('addSkillBtn');
     // Helper to create skill row TR element (used by fixed slots and potentially dynamic ones)
     function createSkillRowElement(skillData = {}, isFixedSlot = false, slotId = '') {
         const newRow = document.createElement('tr');
@@ -703,7 +650,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return newRow;
     }
-
     function initializeFixedSkillSlots() {
         if (!skillsContainer) return;
         // This function ensures the 5 fixed slots are present.
@@ -717,10 +663,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
             }
         });
-    }
-    
+    }    
     initializeFixedSkillSlots(); // Create the 5 fixed slots on load
-
     function updateSkillInSlot(slotId, skillData) {
         const slotRow = document.getElementById(slotId);
         if (!slotRow) {
@@ -819,9 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Clear dynamic sections, but fixed skill slots are managed by initializeFixedSkillSlots and updateSkillInSlot
         experiencesContainer.innerHTML = '';
-        experienceNextId = 1;
         itemsContainer.innerHTML = '';
-        itemNextId = 1;
         // skillNextId = 1; // Reset for dynamic skills, if any are added
 
         // Clear fixed skill slots before populating
@@ -995,8 +937,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // The update...AsSkills() calls were moved up to after dropdowns are set from JSON.
         // This ensures fixed slots are populated based on the imported character's race/group/job.
 
-        experienceNextId = experiencesContainer.children.length + 1;
-        itemNextId = itemsContainer.children.length + 1;
         skillNextId = skillsContainer.children.length + 1; 
     }
     function populateItemSelect(selectElement, selectedItemName = "") {
@@ -1539,4 +1479,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     // ====================== End of newbie guide ======================
+
+
+    // ===================== Utility Functions =====================
+    function autoGrowTextarea(event) {
+        const textarea = event.target;
+        textarea.style.height = '0px';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+    function addRemoveListener(button) {
+        if (button) {
+            button.addEventListener('click', function(event) {
+                const experienceItem = event.target.closest('.experience-item');
+                if (experienceItem) {
+                    experienceItem.remove();
+                    return;
+                }
+                const itemItem = event.target.closest('.item');
+                if (itemItem) {
+                    itemItem.remove();
+                    return;
+                }
+                const skillItemRow = event.target.closest('tr.skill-item');
+                if (skillItemRow) {
+                    skillItemRow.remove();
+                    return;
+                }
+            });
+        }
+    }
+    document.querySelectorAll('.experience-item .remove-item-btn, .item .remove-item-btn, .skill-item .remove-item-btn').forEach(btn => {
+        addRemoveListener(btn);
+    });
+    // Add autoGrowTextarea to initial static item description textarea
+    const initialItemDescriptionTextarea = itemsContainer.querySelector('.item textarea[name="itemDescription"]');
+    if (initialItemDescriptionTextarea) {
+        initialItemDescriptionTextarea.addEventListener('input', autoGrowTextarea);
+        // Trigger auto-grow in case there's pre-filled content (though unlikely for a static empty one)
+        setTimeout(() => autoGrowTextarea({ target: initialItemDescriptionTextarea }), 0);
+    }
+    // ===================== End of Utility Functions =====================
 });
