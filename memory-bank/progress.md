@@ -57,6 +57,10 @@ This file tracks the project's progress using a task list format.
 * [2025-05-14 23:50:40] - 完成任务：修改经历条目的默认“调整值”。
     *   在 [`character_creator/index.html`](character_creator/index.html) 中，将初始两个静态经历条目的“调整值”输入框的 `value` 设置为 "2"。
     *   在 [`character_creator/script.js`](character_creator/script.js) 中，修改了 `addExperienceBtn` 的事件监听器，使动态添加的新经历条目的“调整值”输入框的 `value` 默认为 "1"。移除了动态添加经历时对 `id` 的设置，因为 `id` 应唯一，而 `name` 属性可用于表单数据收集。
+* [2025-05-15 01:10:19] - 完成任务：将“新人引导按键”背景颜色修改为红色。在 [`character_creator/style.css`](character_creator/style.css) 中为 `#newbieGuideButton` 添加了 `background-color: red;`。
+* [2025-05-15 18:03:43] - 完成任务：扩展 `character_creator/data/template.js` 中的 `newbieGuidePrompts` 对象，添加了针对文本输入问题的提示词。
+* [2025-05-15 18:09:41] - 完成任务：在“新人引导”功能中实现了动态更新提示词文本区域的 `placeholder`。修改了 [`character_creator/script.js`](character_creator/script.js) 以根据用户在文本输入或下拉选择中的选择，从 `newbieGuidePrompts` 对象 ([`character_creator/data/template.js`](character_creator/data/template.js:244)) 获取并显示相应的提示。
+* [2025-05-15 18:15:29] - 完成任务：将“新人引导”弹窗中的用户文本输入从 `<input>` 更改为 `<textarea>`，并应用了 `autoGrowTextarea` 功能使其能随内容自动调整高度。影响文件：[`character_creator/index.html`](character_creator/index.html:289), [`character_creator/script.js`](character_creator/script.js:1250)。
 
 ## Current Tasks
 
@@ -65,4 +69,3 @@ This file tracks the project's progress using a task list format.
 ## Next Steps
 
 *
-* [2025-05-15 01:10:19] - 完成任务：将“新人引导按键”背景颜色修改为红色。在 [`character_creator/style.css`](character_creator/style.css) 中为 `#newbieGuideButton` 添加了 `background-color: red;`。

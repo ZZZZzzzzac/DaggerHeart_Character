@@ -941,3 +941,35 @@ button[type="button"]#importJsonBtn:hover {
 #newbieGuideButton {
     background-color: red;
 }
+/* Newbie Guide Modal Layout */
+.newbie-guide-layout {
+    display: flex;
+    gap: 15px; /* Adjust gap as needed */
+    margin-bottom: 15px; /* Add some space before modal actions */
+}
+
+.newbie-guide-main-content {
+    flex: 1; /* Takes up 50% of the space, or adjust ratio as needed */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between elements in the left column */
+}
+
+#newbieGuidePromptTextarea {
+    flex: 1; /* Takes up 50% of the space */
+    /* The existing inline styles for width/min-height might conflict or be overridden.
+       It's often better to control these via CSS classes for consistency.
+       For now, we'll let inline styles take precedence for width/min-height if not overridden by !important in CSS.
+       The 'width: 90%' inline style will apply to its flex container's width.
+       Let's ensure it takes full width of its flex item container. */
+    width: 100%; /* Override inline style for width to ensure it fills its flex column */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    /* min-height is already set inline, margin-top might be redundant due to parent's gap */
+    margin-top: 0; /* Remove margin-top if parent 'gap' is sufficient */
+}
+
+/* Ensure input elements in the left column take full width */
+.newbie-guide-main-content .guide-answer-input {
+    width: 100%;
+    box-sizing: border-box;
+}

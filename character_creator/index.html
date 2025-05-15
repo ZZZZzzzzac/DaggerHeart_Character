@@ -282,11 +282,16 @@
     <div id="newbieGuideModal" class="modal">
         <div class="modal-content">
             <span id="newbieGuideModalCloseButton" class="modal-close-button">&times;</span>
-            <h3>新人引导</h3>
-            <div id="newbieGuideQuestionText" class="guide-question-text"></div>
-            <input type="text" id="newbieGuideAnswerInput" class="guide-answer-input" placeholder="请在此输入答案">
-            <select id="newbieGuideDropdownInput" class="guide-answer-input" style="display: none;"></select>
-            <!-- <textarea id="newbieGuideAnswerTextarea" class="guide-answer-input" style="display:none;" placeholder="请在此输入答案"></textarea> -->
+            <div class="newbie-guide-layout">
+                <div class="newbie-guide-main-content">
+                    <h3>新人引导</h3>
+                    <div id="newbieGuideQuestionText" class="guide-question-text"></div>
+                    <textarea id="newbieGuideAnswerInput" class="guide-answer-input" placeholder="请在此输入答案"></textarea>
+                    <select id="newbieGuideDropdownInput" class="guide-answer-input" style="display: none;"></select>
+                    <!-- <textarea id="newbieGuideAnswerTextarea" class="guide-answer-input" style="display:none;" placeholder="请在此输入答案"></textarea> -->
+                </div>
+                <textarea id="newbieGuidePromptTextarea" placeholder="根据你的选择，这里会显示相关的提示词..." style="width: 90%; min-height: 80px; margin-top: 10px;" readonly></textarea>
+            </div>
             <!-- Removed newbieGuideAttributesContainer -->
             <div class="modal-actions">
                 <button type="button" id="newbieGuideNextButton">下一步</button>

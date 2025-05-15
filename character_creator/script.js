@@ -122,32 +122,20 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // 处理主要种族特性
             if (mainRaceData.trait1 && mainRaceData.trait1.name) {
-                trait1Data = createTraitData(
-                    mainRaceData.trait1.name,
-                    mainRaceData.trait1.description,
-                    "种族"
-                );
+                trait1Data = createTraitData(mainRaceData.trait1.name,mainRaceData.trait1.description,"种族");
             }
 
             // 处理第二个特性（可能来自混血种族或主要种族）
             if (hasMixedRace) {
                 const mixedRaceData = RACES_DATA.find(r => r.race === selectedMixedRaceName);
                 if (mixedRaceData && mixedRaceData.trait2 && mixedRaceData.trait2.name) {
-                    trait2Data = createTraitData(
-                        mixedRaceData.trait2.name,
-                        mixedRaceData.trait2.description,
-                        "混血"
-                    );
+                    trait2Data = createTraitData(mixedRaceData.trait2.name,mixedRaceData.trait2.description,"混血");
                 }
             }
             
             // 如果没有从混血获取第二特性，尝试使用主要种族的第二特性
             if (!trait2Data && mainRaceData.trait2 && mainRaceData.trait2.name) {
-                trait2Data = createTraitData(
-                    mainRaceData.trait2.name,
-                    mainRaceData.trait2.description,
-                    "种族"
-                );
+                trait2Data = createTraitData(mainRaceData.trait2.name,mainRaceData.trait2.description,"种族");
             }
         }
         
@@ -166,11 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedGroupName) {
             const groupData = GROUPS_DATA.find(g => g.社群 === selectedGroupName);
             if (groupData && groupData.特性名 && groupData.描述) {
-                groupTraitData = createTraitData(
-                    groupData.特性名,
-                    groupData.描述,
-                    "社群"
-                );
+                groupTraitData = createTraitData(groupData.特性名,groupData.描述,"社群");
             }
         }
         
@@ -192,20 +176,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (jobData) {
                 // 希望特性
                 if (jobData.希望特性) {
-                    jobTrait1Data = createTraitData(
-                        "希望特性", 
-                        jobData.希望特性,
-                        "职业"
-                    );
-                }
-                
+                    jobTrait1Data = createTraitData("希望特性",jobData.希望特性,"职业");
+                }                
                 // 职业特性
                 if (jobData.职业特性名 && jobData.职业特性描述) {
-                    jobTrait2Data = createTraitData(
-                        jobData.职业特性名,
-                        jobData.职业特性描述,
-                        "职业"
-                    );
+                    jobTrait2Data = createTraitData(jobData.职业特性名,jobData.职业特性描述,"职业");
                 }
             }
         }
@@ -220,6 +195,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let appearanceDataUrl = "";
     const experiencesContainer = document.getElementById('experiences');
     const addExperienceBtn = document.getElementById('addExperienceBtn');
+    const appearanceUpload = document.getElementById('appearanceUpload');
+    const appearancePreview = document.getElementById('appearancePreview');
+    const removeAppearanceBtn = document.getElementById('removeAppearanceBtn');
     addExperienceBtn.addEventListener('click', () => {
         const newItem = document.createElement('div');
         newItem.classList.add('experience-item');
@@ -230,11 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         experiencesContainer.appendChild(newItem);
         addRemoveListener(newItem.querySelector('.remove-item-btn'));
-    });
-    
-    const appearanceUpload = document.getElementById('appearanceUpload');
-    const appearancePreview = document.getElementById('appearancePreview');
-    const removeAppearanceBtn = document.getElementById('removeAppearanceBtn');
+    });    
     // ====================== End of Experience & Background ======================
 
 
@@ -1221,9 +1195,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const newbieGuideModalCloseButton = document.getElementById('newbieGuideModalCloseButton');
     const newbieGuideNextButton = document.getElementById('newbieGuideNextButton');
     const newbieGuideCancelButton = document.getElementById('newbieGuideCancelButton');
-    const newbieGuideQuestionText = document.getElementById('newbieGuideQuestionText');
-    const newbieGuideAnswerInput = document.getElementById('newbieGuideAnswerInput');
-    const newbieGuideDropdownInput = document.getElementById('newbieGuideDropdownInput'); // Added this line
+    const newbieGuideQuestionText = document.getElementById('newbieGuideQuestionText'); // This will hold the question <p>
+    const newbieGuideAnswerInput = document.getElementById('newbieGuideAnswerInput'); // This is the text input field
+    const newbieGuideDropdownInput = document.getElementById('newbieGuideDropdownInput');
+    const newbieGuidePromptTextarea = document.getElementById('newbieGuidePromptTextarea'); // Added this
 
     let currentNewbieQuestionIndex = 0;
     let newbieUserAnswers = {};
@@ -1231,54 +1206,78 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayCurrentNewbieQuestion() {
         if (currentNewbieQuestionIndex < newbieGuideQuestions.length) {
             const question = newbieGuideQuestions[currentNewbieQuestionIndex];
-            newbieGuideQuestionText.textContent = question.prompt;
+            newbieGuideQuestionText.textContent = question.prompt; // Set the question text
 
-            // Hide all input types initially
+            // Hide all input types initially, textarea is always visible
             newbieGuideAnswerInput.style.display = 'none';
-            // newbieGuideAttributesContainer.style.display = 'none'; // Removed
-            if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive check if HTML not yet updated
-                 document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
-            }
             newbieGuideDropdownInput.style.display = 'none';
+            if (newbieGuidePromptTextarea) newbieGuidePromptTextarea.style.display = 'block';
+
 
             if (question.questionType === "dropdown") {
                 newbieGuideDropdownInput.style.display = 'block';
+                newbieGuideAnswerInput.style.display = 'none'; // Ensure text input is hidden
                 newbieGuideDropdownInput.innerHTML = ''; // Clear existing options
 
                 let dataSource;
-                // Access the global constants directly based on the string name
-                if (question.dataSourceVariable === "RACES_DATA") {
-                    dataSource = typeof RACES_DATA !== 'undefined' ? RACES_DATA : null;
-                } else if (question.dataSourceVariable === "GROUPS_DATA") {
-                    dataSource = typeof GROUPS_DATA !== 'undefined' ? GROUPS_DATA : null;
-                } else if (question.dataSourceVariable === "JOBS_DATA") {
-                    dataSource = typeof JOBS_DATA !== 'undefined' ? JOBS_DATA : null;
-                } else {
-                    dataSource = null;
-                }
+                if (question.dataSourceVariable === "RACES_DATA") dataSource = typeof RACES_DATA !== 'undefined' ? RACES_DATA : null;
+                else if (question.dataSourceVariable === "GROUPS_DATA") dataSource = typeof GROUPS_DATA !== 'undefined' ? GROUPS_DATA : null;
+                else if (question.dataSourceVariable === "JOBS_DATA") dataSource = typeof JOBS_DATA !== 'undefined' ? JOBS_DATA : null;
+                else dataSource = null;
 
                 if (dataSource && Array.isArray(dataSource)) {
-                    // Add a default "please select" option
                     const defaultOption = document.createElement('option');
                     defaultOption.value = "";
-                    defaultOption.textContent = `--- 请选择${question.prompt.replace("请选择你的", "").replace("：", "")} ---`;
+                    defaultOption.textContent = `--- 请选择 ---`;
                     newbieGuideDropdownInput.appendChild(defaultOption);
 
                     dataSource.forEach(item => {
                         const option = document.createElement('option');
                         option.value = item[question.optionValueField];
                         option.textContent = item[question.optionTextField];
+                        // Restore previous selection if exists
+                        if (newbieUserAnswers[question.targetSelectId] === item[question.optionValueField]) {
+                            option.selected = true;
+                        }
                         newbieGuideDropdownInput.appendChild(option);
                     });
                 } else {
-                    console.error(`Newbie Guide: Data source "${question.dataSourceVariable}" not found, not an array, or not accessible directly.`);
-                    // Optionally, display an error or a disabled select
+                    console.error(`Newbie Guide: Data source "${question.dataSourceVariable}" not found or not an array.`);
+                    newbieGuideDropdownInput.innerHTML = '<option value="">数据加载失败</option>';
+                }
+                
+                // Update placeholder based on current selection or default
+                const selectedValue = newbieGuideDropdownInput.value; // Get current value AFTER populating
+                let promptCategoryKey;
+                switch (question.targetSelectId) {
+                    case 'raceSelect': promptCategoryKey = 'race'; break;
+                    case 'mixedRaceSelect': promptCategoryKey = 'mixedRace'; break;
+                    case 'communitySelect': promptCategoryKey = 'community'; break;
+                    case 'professionSelect': promptCategoryKey = 'profession'; break;
+                    default: promptCategoryKey = null;
+                }
+
+                if (newbieGuidePromptTextarea) {
+                    if (promptCategoryKey && newbieGuidePrompts[promptCategoryKey]) {
+                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue] || "请从上方选择一项以查看相关提示...";
+                    } else if (promptCategoryKey === 'mixedRace' && newbieGuidePrompts.race) { // Fallback for mixedRace
+                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race[selectedValue] || "请从上方选择一项以查看相关提示...";
+                    } else {
+                        newbieGuidePromptTextarea.placeholder = "请从上方选择一项以查看相关提示...";
+                    }
                 }
                 newbieGuideDropdownInput.focus();
-            } else { // Default to text input
+
+            } else { // Text input (now a textarea)
                 newbieGuideAnswerInput.style.display = 'block';
-                newbieGuideAnswerInput.value = "";
+                newbieGuideDropdownInput.style.display = 'none'; // Ensure dropdown is hidden
+                newbieGuideAnswerInput.value = newbieUserAnswers[question.targetFieldId] || ''; // Restore previous answer
+                if (newbieGuidePromptTextarea) {
+                    newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.textInput[question.targetFieldId] || question.prompt;
+                }
                 newbieGuideAnswerInput.focus();
+                // Ensure autoGrow is applied when question changes to text input
+                setTimeout(() => autoGrowTextarea({ target: newbieGuideAnswerInput }), 0);
             }
 
             if (currentNewbieQuestionIndex === newbieGuideQuestions.length - 1) {
@@ -1311,13 +1310,31 @@ document.addEventListener('DOMContentLoaded', () => {
     function startNewbieGuide() {
         currentNewbieQuestionIndex = 0;
         newbieUserAnswers = {};
-        // newbieGuideAttributesContainer.style.display = 'none'; // Ensure attrs hidden initially // Removed
-        if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive
+        
+        if (document.getElementById('newbieGuideAttributesContainer')) {
             document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
         }
-        if (newbieGuideDropdownInput) newbieGuideDropdownInput.style.display = 'none'; // Ensure dropdown hidden initially
-        newbieGuideAnswerInput.style.display = 'block';    // Ensure general input shown initially
-        displayCurrentNewbieQuestion();
+        if (newbieGuideDropdownInput) newbieGuideDropdownInput.style.display = 'none';
+        if (newbieGuideAnswerInput) {
+            newbieGuideAnswerInput.style.display = 'block';
+            // Add autoGrow listener if not already added, or ensure it's active
+            newbieGuideAnswerInput.removeEventListener('input', autoGrowTextarea); // Remove if exists to avoid duplicates
+            newbieGuideAnswerInput.addEventListener('input', autoGrowTextarea);
+            setTimeout(() => autoGrowTextarea({ target: newbieGuideAnswerInput }), 0); // Initial grow
+        }
+
+        const initialQuestion = newbieGuideQuestions[0];
+        if (newbieGuidePromptTextarea) {
+            if (initialQuestion && initialQuestion.targetFieldId && newbieGuidePrompts.textInput) {
+                newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.textInput[initialQuestion.targetFieldId] || initialQuestion.prompt;
+            } else if (initialQuestion) {
+                newbieGuidePromptTextarea.placeholder = initialQuestion.prompt;
+            } else {
+                newbieGuidePromptTextarea.placeholder = "根据你的选择，这里会显示相关的提示词...";
+            }
+        }
+        
+        displayCurrentNewbieQuestion(); // This will also call autoGrow for the first question if it's text
         newbieGuideModal.style.display = 'block';
     }
     
@@ -1326,105 +1343,127 @@ document.addEventListener('DOMContentLoaded', () => {
         currentNewbieQuestionIndex = 0;
         newbieUserAnswers = {};
         newbieGuideNextButton.textContent = "下一步";
-        // newbieGuideAttributesContainer.style.display = 'none'; // Removed
-        if (document.getElementById('newbieGuideAttributesContainer')) { // Defensive
+        if (newbieGuidePromptTextarea) {
+            newbieGuidePromptTextarea.placeholder = "根据你的选择，这里会显示相关的提示词...";
+        }
+        if (document.getElementById('newbieGuideAttributesContainer')) {
             document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
         }
         if (newbieGuideDropdownInput) newbieGuideDropdownInput.style.display = 'none';
-        newbieGuideAnswerInput.style.display = 'block'; // Default to showing general input
+        if (newbieGuideAnswerInput) newbieGuideAnswerInput.style.display = 'block';
     }
 
 
-    if (newbieGuideButton && newbieGuideModal && newbieGuideModalCloseButton && newbieGuideCancelButton && newbieGuideNextButton && newbieGuideQuestionText && newbieGuideAnswerInput && newbieGuideDropdownInput) {
+    if (newbieGuideButton && newbieGuideModal && newbieGuideModalCloseButton && newbieGuideCancelButton && newbieGuideNextButton && newbieGuideQuestionText && newbieGuideAnswerInput && newbieGuideDropdownInput && newbieGuidePromptTextarea) {
         newbieGuideButton.addEventListener('click', startNewbieGuide);
+
+        newbieGuideDropdownInput.addEventListener('change', () => {
+            const question = newbieGuideQuestions[currentNewbieQuestionIndex];
+            if (question.questionType === "dropdown") {
+                const selectedValue = newbieGuideDropdownInput.value;
+                let promptCategoryKey;
+                switch (question.targetSelectId) {
+                    case 'raceSelect': promptCategoryKey = 'race'; break;
+                    case 'mixedRaceSelect': promptCategoryKey = 'mixedRace'; break;
+                    case 'communitySelect': promptCategoryKey = 'community'; break;
+                    case 'professionSelect': promptCategoryKey = 'profession'; break;
+                    default: promptCategoryKey = null;
+                }
+
+                if (promptCategoryKey && newbieGuidePrompts[promptCategoryKey]) {
+                    newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue] || "请从上方选择一项以查看相关提示...";
+                } else if (promptCategoryKey === 'mixedRace' && newbieGuidePrompts.race) { // Fallback for mixedRace
+                    newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race[selectedValue] || "请从上方选择一项以查看相关提示...";
+                } else {
+                    newbieGuidePromptTextarea.placeholder = "请从上方选择一项以查看相关提示...";
+                }
+            }
+        });
 
         newbieGuideNextButton.addEventListener('click', () => {
             const question = newbieGuideQuestions[currentNewbieQuestionIndex];
-            if (!question) return; // Should not happen
+            if (!question) return;
 
-            // Removed attribute handling block
             if (question.questionType === "dropdown") {
                 const selectedValue = newbieGuideDropdownInput.value;
-                // Store answer using targetSelectId as key, as it directly maps to the form's select element ID
                 newbieUserAnswers[question.targetSelectId] = selectedValue;
 
-                // Apply to character sheet and call update function
                 const targetSelectElement = document.getElementById(question.targetSelectId);
                 if (targetSelectElement) {
                     targetSelectElement.value = selectedValue;
-                    // Manually trigger change event for the main form's select,
-                    // so its own event listeners (like updateRaceTraitsAsSkills) fire.
                     targetSelectElement.dispatchEvent(new Event('change', { bubbles: true }));
-
-                    // The 'change' event on the main form's select elements should trigger their respective
-                    // update functions (updateRaceTraitsAsSkills, updateGroupTraitAsSkill, updateJobTraitsAsSkills)
-                    // as those functions are already set up as event listeners for those select elements.
-                    // Thus, explicitly calling window[question.updateFunction]() here might be redundant
-                    // and could lead to double execution if not handled carefully.
-                    // We rely on the existing event listeners on the main form's select elements.
+                    
                     if (question.updateFunction) {
                          console.log(`Newbie Guide: Triggered 'change' on ${question.targetSelectId}, which should call ${question.updateFunction}.`);
                     }
 
-                    // Profession template filling logic
                     if (question.targetSelectId === "professionSelect") {
-                        const selectedProfessionValue = newbieUserAnswers[question.targetSelectId]; // This is the '职业' name
+                        const selectedProfessionValue = newbieUserAnswers[question.targetSelectId];
                         const template = professionTemplates[selectedProfessionValue];
-
                         if (template) {
                             console.log(`Applying template for profession: ${selectedProfessionValue}`);
-                            // Fill attributes
-                            const attributeFields = ["strength", "agility", "instinct", "grace", "knowledge", "dexterity"];
+                            const attributeFields = ["strength", "agility", "instinct", "grace", "knowledge", "dexterity"]; // Corrected: presence to grace, finesse to dexterity
                             template.attributes.forEach((value, index) => {
                                 const fieldId = attributeFields[index];
                                 const element = document.getElementById(fieldId);
-                                if (element) {
-                                    element.value = value;
-                                } else {
-                                    console.warn(`Newbie Guide Template: Attribute field ${fieldId} not found.`);
-                                }
+                                if (element) element.value = value;
+                                else console.warn(`Newbie Guide Template: Attribute field ${fieldId} not found.`);
                             });
 
-                            // Fill main weapon (slot 1)
                             if (template.weapon) {
-                                weaponName1Input.value = template.weapon.名称 || "";
-                                document.getElementById('weaponCheck1').value = template.weapon.检定 || "";
-                                document.getElementById('weaponAttribute1').value = template.weapon.属性 || "";
-                                document.getElementById('weaponRange1').value = template.weapon.范围 || "";
-                                document.getElementById('weaponDamage1').value = template.weapon.伤害 || "";
-                                document.getElementById('weaponTwoHanded1').value = template.weapon.负荷 || "";
+                                if(weaponName1Input) weaponName1Input.value = template.weapon.名称 || "";
+                                if(document.getElementById('weaponCheck1')) document.getElementById('weaponCheck1').value = template.weapon.检定 || "";
+                                if(document.getElementById('weaponAttribute1')) document.getElementById('weaponAttribute1').value = template.weapon.属性 || "";
+                                if(document.getElementById('weaponRange1')) document.getElementById('weaponRange1').value = template.weapon.范围 || "";
+                                if(document.getElementById('weaponDamage1')) document.getElementById('weaponDamage1').value = template.weapon.伤害 || "";
+                                if(document.getElementById('weaponTwoHanded1')) document.getElementById('weaponTwoHanded1').value = template.weapon.负荷 || ""; // HTML uses weaponTwoHanded1 for load
+                                if(document.getElementById('weaponTrait1')) document.getElementById('weaponTrait1').value = template.weapon.特性 || "";
+                                if(document.getElementById('weaponTrait1')) autoGrowTextarea({target: document.getElementById('weaponTrait1')});
                             }
-                            // Fill off-hand weapon (slot 2 - auxiliary)
-                            if (template.offHandWeapon) {
-                                weaponName2Input.value = template.offHandWeapon.名称 || "";
-                                document.getElementById('weaponCheck2').value = template.offHandWeapon.检定 || "";
-                                document.getElementById('weaponAttribute2').value = template.offHandWeapon.属性 || "";
-                                document.getElementById('weaponRange2').value = template.offHandWeapon.范围 || "";
-                                document.getElementById('weaponDamage2').value = template.offHandWeapon.伤害 || "";
-                                document.getElementById('weaponTwoHanded2').value = template.offHandWeapon.负荷 || "";
-                            } else { // Clear auxiliary weapon slot if template doesn't have one
-                                weaponName2Input.value = "";
-                                document.getElementById('weaponCheck2').value = "";
-                                document.getElementById('weaponAttribute2').value = "";
-                                document.getElementById('weaponRange2').value = "";
-                                document.getElementById('weaponDamage2').value = "";
-                                document.getElementById('weaponTwoHanded2').value = "";
+                            if (template.offHandWeapon && template.weapon && template.weapon.负荷 === "单手") { // Check main weapon is one-handed
+                                if(weaponName2Input) weaponName2Input.value = template.offHandWeapon.名称 || "";
+                                if(document.getElementById('weaponCheck2')) document.getElementById('weaponCheck2').value = template.offHandWeapon.检定 || "";
+                                if(document.getElementById('weaponAttribute2')) document.getElementById('weaponAttribute2').value = template.offHandWeapon.属性 || "";
+                                if(document.getElementById('weaponRange2')) document.getElementById('weaponRange2').value = template.offHandWeapon.范围 || "";
+                                if(document.getElementById('weaponDamage2')) document.getElementById('weaponDamage2').value = template.offHandWeapon.伤害 || "";
+                                if(document.getElementById('weaponTwoHanded2')) document.getElementById('weaponTwoHanded2').value = template.offHandWeapon.负荷 || ""; // HTML uses weaponTwoHanded2 for load
+                                if(document.getElementById('weaponTrait2')) document.getElementById('weaponTrait2').value = template.offHandWeapon.特性 || "";
+                                if(document.getElementById('weaponTrait2')) autoGrowTextarea({target: document.getElementById('weaponTrait2')});
+                            } else { // Clear slot 2 if main is two-handed or no offhand
+                                if(weaponName2Input) weaponName2Input.value = "";
+                                if(document.getElementById('weaponCheck2')) document.getElementById('weaponCheck2').value = "";
+                                if(document.getElementById('weaponAttribute2')) document.getElementById('weaponAttribute2').value = "";
+                                if(document.getElementById('weaponRange2')) document.getElementById('weaponRange2').value = "";
+                                if(document.getElementById('weaponDamage2')) document.getElementById('weaponDamage2').value = "";
+                                if(document.getElementById('weaponTwoHanded2')) document.getElementById('weaponTwoHanded2').value = "";
+                                if(document.getElementById('weaponTrait2')) document.getElementById('weaponTrait2').value = "";
+                                if(document.getElementById('weaponTrait2')) autoGrowTextarea({target: document.getElementById('weaponTrait2')});
                             }
-
-                            // Fill armor (slot 1)
                             if (template.armor) {
-                                armorName1Input.value = template.armor.名称 || "";
-                                document.getElementById('armorDefense1').value = template.armor.防御 || "";
+                                if(armorName1Input) armorName1Input.value = template.armor.名称 || "";
+                                if(document.getElementById('armorDefense1')) document.getElementById('armorDefense1').value = template.armor.防御 || "";
+                                if(document.getElementById('armorTrait1')) document.getElementById('armorTrait1').value = template.armor.特性 || "";
+                                if(document.getElementById('armorTrait1')) autoGrowTextarea({target: document.getElementById('armorTrait1')});
                             }
-                            // Update Memory Bank: Active Context
-                            const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
-                            const activeContextUpdate = `\n* [${timestamp}] - Newbie guide auto-filled attributes, T1 main/off-hand weapon, and T1 armor for profession: ${selectedProfessionValue}.`;
-                            // This would ideally use a tool to append, but for now, it's a conceptual note.
-                            console.log("MEMORY BANK UPDATE (activeContext.md):", activeContextUpdate);
-
                         } else {
-                            console.log(`Newbie Guide: No template found for profession: ${selectedProfessionValue}. Proceeding without auto-fill.`);
+                            console.log(`Newbie Guide: No template found for profession: ${selectedProfessionValue}.`);
                         }
+                    }
+                    // Update placeholder for dropdown after all actions
+                    let promptCategoryKey;
+                    switch (question.targetSelectId) {
+                        case 'raceSelect': promptCategoryKey = 'race'; break;
+                        case 'mixedRaceSelect': promptCategoryKey = 'mixedRace'; break;
+                        case 'communitySelect': promptCategoryKey = 'community'; break;
+                        case 'professionSelect': promptCategoryKey = 'profession'; break;
+                        default: promptCategoryKey = null;
+                    }
+                    if (promptCategoryKey && newbieGuidePrompts[promptCategoryKey]) {
+                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue] || "请从上方选择一项以查看相关提示...";
+                    } else if (promptCategoryKey === 'mixedRace' && newbieGuidePrompts.race) {
+                         newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race[selectedValue] || "请从上方选择一项以查看相关提示...";
+                    } else {
+                        newbieGuidePromptTextarea.placeholder = "请从上方选择一项以查看相关提示...";
                     }
 
                 } else {
@@ -1432,6 +1471,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } else { // Default text input
                 newbieUserAnswers[question.targetFieldId] = newbieGuideAnswerInput.value;
+                 // Update main form field directly
+                const mainFormField = document.getElementById(question.targetFieldId);
+                if (mainFormField) {
+                    mainFormField.value = newbieGuideAnswerInput.value;
+                }
             }
 
             currentNewbieQuestionIndex++;
@@ -1439,7 +1483,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayCurrentNewbieQuestion();
             } else {
                 populateFieldsFromNewbieGuide();
-                // resetNewbieGuide() is called by populateFieldsFromNewbieGuide
             }
         });
 

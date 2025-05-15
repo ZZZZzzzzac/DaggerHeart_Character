@@ -81,8 +81,12 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-14 23:36:46] - 修改了 [`character_creator/script.js`](character_creator/script.js) 中 `displayCurrentNewbieQuestion` 函数访问数据源的方式，从 `window[question.dataSourceVariable]` 改为直接使用全局常量名（如 `RACES_DATA`），以解决数据源未定义的问题。
 * [2025-05-14 23:43:01] - 更新了“新人引导”功能，以允许将第二个经历的关键词自动填充到表单中第二个默认经历条目。这包括：在 [`character_creator/index.html`](character_creator/index.html) 中为第二个经历的关键词输入框分配了唯一ID `expKeyword2`，并在 [`character_creator/script.js`](character_creator/script.js) 的 `newbieGuideQuestions` 中更新了相应的 `targetFieldId`。
 * [2025-05-14 23:49:18] - 修改了经历条目的默认“调整值”：初始两个经历条目的“调整值”默认为2（通过修改 [`character_creator/index.html`](character_creator/index.html) 实现），新添加的经历条目“调整值”默认为1（通过修改 [`character_creator/script.js`](character_creator/script.js) 的 `addExperienceBtn` 逻辑实现）。
+* [2025-05-15 01:10:09] - 将“新人引导按键”背景颜色修改为红色。涉及文件：[`character_creator/index.html`](character_creator/index.html) (定位按钮 `id="newbieGuideButton"`), [`character_creator/style.css`](character_creator/style.css) (添加样式 `#newbieGuideButton { background-color: red; }`)。
+* [2025-05-15 17:58:53] - 根据用户反馈调整了“新人引导”弹窗布局：将问题/输入区与提示词文本区左右并列显示，并将提示词文本区设为只读。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css)。
+* [2025-05-15 18:03:33] - 扩展了 `character_creator/data/template.js` 中的 `newbieGuidePrompts` 对象，添加了 `textInput` 键，用于存储文本输入问题的提示词。
+* [2025-05-15 18:09:41] - 在“新人引导”功能中实现了动态更新提示词文本区域的 `placeholder`。修改了 [`character_creator/script.js`](character_creator/script.js) 以根据用户在文本输入或下拉选择中的选择，从 `newbieGuidePrompts` 对象 ([`character_creator/data/template.js`](character_creator/data/template.js:244)) 获取并显示相应的提示。
+* [2025-05-15 18:15:29] - 将“新人引导”弹窗中的用户文本输入从 `<input>` 更改为 `<textarea>`，并应用了 `autoGrowTextarea` 功能使其能随内容自动调整高度。影响文件：[`character_creator/index.html`](character_creator/index.html:289), [`character_creator/script.js`](character_creator/script.js:1250)。
 
 ## Open Questions/Issues
 
 *
-* [2025-05-15 01:10:09] - 将“新人引导按键”背景颜色修改为红色。涉及文件：[`character_creator/index.html`](character_creator/index.html) (定位按钮 `id="newbieGuideButton"`), [`character_creator/style.css`](character_creator/style.css) (添加样式 `#newbieGuideButton { background-color: red; }`)。
