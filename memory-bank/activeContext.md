@@ -87,6 +87,7 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-15 18:09:41] - 在“新人引导”功能中实现了动态更新提示词文本区域的 `placeholder`。修改了 [`character_creator/script.js`](character_creator/script.js) 以根据用户在文本输入或下拉选择中的选择，从 `newbieGuidePrompts` 对象 ([`character_creator/data/template.js`](character_creator/data/template.js:244)) 获取并显示相应的提示。
 * [2025-05-15 18:15:29] - 将“新人引导”弹窗中的用户文本输入从 `<input>` 更改为 `<textarea>`，并应用了 `autoGrowTextarea` 功能使其能随内容自动调整高度。影响文件：[`character_creator/index.html`](character_creator/index.html:289), [`character_creator/script.js`](character_creator/script.js:1250)。
 * [2025-05-15 21:21:53] - 调整了“新人引导”弹窗中提示词文本区域 (`#newbieGuidePromptTextarea`) 的样式，将其 `min-height` 增加到 `200px` 以确保提示词完整显示，并移除了HTML中的内联样式。影响文件：[`character_creator/style.css`](character_creator/style.css), [`character_creator/index.html`](character_creator/index.html)。
+* [2025-05-15 21:39:30] - 修改了新手引导弹窗中的 `newbieGuideCancelButton` 按钮：文本改为“上一步”，功能改为返回上一步，样式与“下一步”按钮统一。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js)。
 
 ## Open Questions/Issues
 

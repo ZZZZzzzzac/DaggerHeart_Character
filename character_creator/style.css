@@ -929,13 +929,14 @@ button[type="button"]#importJsonBtn:hover {
     margin-right: 10px;
 }
 
-#newbieGuideModal #newbieGuideCloseButton {
-    padding: 10px 20px;
-    background-color: #f44336;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+#newbieGuideModal #newbieGuideCancelButton { /* Changed from newbieGuideCloseButton to newbieGuideCancelButton */
+    padding: 10px 20px; /* Copied from #newbieGuideNextButton */
+    background-color: #af4c4c; /* Copied from #newbieGuideNextButton */
+    color: white; /* Copied from #newbieGuideNextButton */
+    border: none; /* Copied from #newbieGuideNextButton */
+    border-radius: 4px; /* Copied from #newbieGuideNextButton */
+    cursor: pointer; /* Copied from #newbieGuideNextButton */
+    margin-right: 10px; /* Copied from #newbieGuideNextButton, ensure it has some spacing if next to another button */
 }
 /* Newbie Guide Button Style */
 #newbieGuideButton {

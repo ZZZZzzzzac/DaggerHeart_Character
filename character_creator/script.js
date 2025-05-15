@@ -1487,7 +1487,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         newbieGuideModalCloseButton.addEventListener('click', resetNewbieGuide);
-        newbieGuideCancelButton.addEventListener('click', resetNewbieGuide);
+        newbieGuideCancelButton.addEventListener('click', () => {
+            if (currentNewbieQuestionIndex > 0) {
+                currentNewbieQuestionIndex--;
+                displayCurrentNewbieQuestion();
+            } else {
+                resetNewbieGuide(); // If it's the first question, close the modal
+            }
+        });
 
         window.addEventListener('click', (event) => {
             if (event.target === newbieGuideModal) {
