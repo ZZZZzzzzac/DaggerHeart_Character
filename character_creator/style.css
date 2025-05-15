@@ -892,7 +892,7 @@ button[type="button"]#importJsonBtn:hover {
     padding: 20px;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
-    max-width: 600px; /* Maximum width */
+    max-width: 800px; /* Maximum width */
     border-radius: 8px;
     position: relative;
 }
@@ -963,6 +963,7 @@ button[type="button"]#importJsonBtn:hover {
        The 'width: 90%' inline style will apply to its flex container's width.
        Let's ensure it takes full width of its flex item container. */
     width: 100%; /* Override inline style for width to ensure it fills its flex column */
+    min-height: 300px; /* Ensure sufficient height for prompts */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
     /* min-height is already set inline, margin-top might be redundant due to parent's gap */
     margin-top: 0; /* Remove margin-top if parent 'gap' is sufficient */
