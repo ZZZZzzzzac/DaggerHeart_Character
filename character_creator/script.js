@@ -103,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     initializeTraits();
-
     function updateSubclassOptions() {
         if (!professionSelect || !subclassSelect || typeof JOBS_DATA === 'undefined' || !Array.isArray(JOBS_DATA)) {
             if (subclassSelect) {
@@ -164,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // updateJobTraitsAsSkills(); // Call to update domains display after subclass options change
     }
-
     function updateRaceTraitsAsSkills() {
         // 检查数据有效性
         if (!raceSelect || typeof RACES_DATA === 'undefined' || !Array.isArray(RACES_DATA) || RACES_DATA.length === 0) {
@@ -501,7 +499,6 @@ document.addEventListener('DOMContentLoaded', () => {
         equipmentListContainer.appendChild(dataTable);
         // equipmentModal.style.display = 'block'; // Displaying modal is now handled by individual input listeners
     }
-
     function filterAndDisplayEquipment(type, weaponSlotType = 'any') { // Added weaponSlotType
         const fixedHeaderContainer = document.getElementById('fixedHeaderContainer');
         const equipmentListContainer = document.getElementById('equipmentListContainer');
@@ -631,13 +628,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     };
-
     setupModalTrigger(weaponName1Input, 'weapon', 'main');
     setupModalTrigger(weaponName2Input, 'weapon', 'auxiliary');
     setupModalTrigger(weaponName3Input, 'weapon', 'any');
     setupModalTrigger(weaponName4Input, 'weapon', 'any');
     setupModalTrigger(armorName1Input, 'armor', 'any');
-
     // Close modal logic
     if (modalCloseButton && equipmentModal) {
         modalCloseButton.addEventListener('click', () => {
@@ -1778,7 +1773,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
     if (appearanceUpload && appearancePreview && removeAppearanceBtn) {
         appearanceUpload.addEventListener('change', function(event) {
             const file = event.target.files[0];

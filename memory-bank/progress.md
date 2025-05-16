@@ -77,3 +77,11 @@ This file tracks the project's progress using a task list format.
 ## Next Steps
 
 *
+* [2025-05-16 17:54:49] - 完成任务：将用户提供的“奥术”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件。
+* [2025-05-16 18:00:02] - 完成任务：将用户提供的“利刃”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件。
+* [2025-05-16 18:03:10] - 完成任务：将用户提供的“骸骨”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件。
+* [2025-05-16 18:06:55] - 完成任务：将用户提供的“典籍”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件。
+* [2025-05-16 18:11:15] - 完成任务：将用户提供的“优雅”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件。
+* [2025-05-16 18:16:35] - 完成任务：将用户提供的“午夜”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件。
+* [2025-05-16 18:28:03] - 完成任务：将用户提供的“贤者”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件。
+* [2025-05-16 18:42:04] - 完成任务：将用户提供的“辉耀”领域卡片文本转换为 JSON 对象并写入到新的临时文件 `domain_cards_output.js`。

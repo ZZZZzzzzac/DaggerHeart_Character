@@ -98,3 +98,11 @@ This file tracks the project's current status, including recent changes, current
 ## Open Questions/Issues
 
 *
+* [2025-05-16 17:54:36] - 完成了将用户提供的“奥术”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件中的 `DOMAIN_CARDS` JavaScript 对象。
+* [2025-05-16 17:59:21] - 完成了将用户提供的“利刃”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件中的 `DOMAIN_CARDS` JavaScript 对象。
+* [2025-05-16 18:02:44] - 完成了将用户提供的“骸骨”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件中的 `DOMAIN_CARDS` JavaScript 对象。
+* [2025-05-16 18:06:32] - 完成了将用户提供的“典籍”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件中的 `DOMAIN_CARDS` JavaScript 对象。
+* [2025-05-16 18:10:54] - 完成了将用户提供的“优雅”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件中的 `DOMAIN_CARDS` JavaScript 对象。
+* [2025-05-16 18:16:11] - 完成了将用户提供的“午夜”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件中的 `DOMAIN_CARDS` JavaScript 对象。
+* [2025-05-16 18:27:34] - 完成了将用户提供的“贤者”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件中的 `DOMAIN_CARDS` JavaScript 对象。
+* [2025-05-16 18:41:41] - 完成了将用户提供的“辉耀”领域卡片文本转换为 JSON 对象并写入到新的临时文件 `domain_cards_output.js`。
