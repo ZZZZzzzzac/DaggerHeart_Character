@@ -207,6 +207,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             newRow.classList.add('dynamic-job-feature-row'); // Add class for easy removal
                             // Optionally, disable inputs if these are purely display
                             // newRow.querySelectorAll('input, textarea').forEach(input => input.disabled = true);
+                            
+                            // Hide remove button for these auto-generated job feature rows
+                            const removeBtn = newRow.querySelector('.remove-item-btn');
+                            if (removeBtn) {
+                                removeBtn.style.display = 'none';
+                            }
+                            
                             skillsContainer.appendChild(newRow);
                             const textarea = newRow.querySelector('textarea[name="skillDescription"]');
                             if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
@@ -646,7 +653,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         const defaultConfig = skillData.配置 || (isFixedSlot ? '永久' : '');
-        const defaultLevel = skillData.等级 || (isFixedSlot ? '' : '0'); // Fixed slots might not have a numeric level initially
+        const defaultLevel = skillData.等级 || ''; // Fixed slots might not have a numeric level initially
 
         newRow.innerHTML = `
             <td><input type="text" name="skillConfig" placeholder="配置" value="${defaultConfig}"></td>
@@ -738,7 +745,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     addSkillBtn.addEventListener('click', () => {
         addSkillEntry({
-            配置: "", 名称: "", 领域: "", 等级: "0", 属性: "", 回想: "", 描述: ""
+            配置: "", 名称: "", 领域: "", 等级: "", 属性: "", 回想: "", 描述: ""
         });
     });
     // give all textareas in the skills container the auto-grow functionality
