@@ -7,7 +7,7 @@ This file tracks the project's current status, including recent changes, current
 
 ## Current Focus
 
-* Setting default "调整值" for experience items.
+* [2025-05-16 16:48:41] - 实现动态添加所选子职的“基石”等级特性到 `skillsTable`。
 
 ## Recent Changes
 
@@ -66,7 +66,7 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-14 14:56:50] - 根据用户反馈，移除了“背景故事”字段的标签，并为其文本区域添加了 `placeholder`。影响文件：[`character_creator/index.html`](character_creator/index.html)。
 * [2025-05-14 15:06:49] - 根据用户反馈调整了角色创建器初始设定部分的布局，将字段分为三行显示，并将“等级”字段移至第一行。(修改了 [`character_creator/index.html`](character_creator/index.html:15) 和 [`character_creator/style.css`](character_creator/style.css:77))
 * [2025-05-14 16:17:26] - 将 `character_creator/data/equipment.csv` 转换为JS数据格式，并保存为 `character_creator/data/equipment_data.js`，其中数据按武器/护甲和T0-T3等级分类。
-* [2025-05-14 16:28:54] - 根据用户反馈，在“设定”部分的“等级”字段后添加了 Tier (T0-T3) 的动态显示。修改了 [`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js), 和 [`character_creator/style.css`](character_creator/style.css)。
+* [2025-05-14 16:28:54] - 根据用户反馈，在“等级”字段后添加了 Tier (T0-T3) 的动态显示。修改了 [`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js), 和 [`character_creator/style.css`](character_creator/style.css)。
 * [2025-05-14 16:53:51] - 将 `character_creator/data/equipment.csv` 转换为JS数据格式，并保存为 `character_creator/data/equipment_data.js`，其中数据按武器/护甲和T0-T3等级分类，并为每个类别创建单独的 const 变量。
 * [2025-05-14 17:31:00] - 创建了装备选择弹窗的 HTML 结构 ([`character_creator/index.html`](character_creator/index.html:229)) 和 CSS 样式 ([`character_creator/style.css`](character_creator/style.css))。
 * [2025-05-14 17:33:12] - 在 [`character_creator/script.js`](character_creator/script.js) 中添加了装备选择弹窗的显示/隐藏逻辑。点击武器/护甲名称输入框会显示弹窗，点击关闭按钮或弹窗外部会隐藏弹窗。
@@ -89,6 +89,11 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-15 21:21:53] - 调整了“新人引导”弹窗中提示词文本区域 (`#newbieGuidePromptTextarea`) 的样式，将其 `min-height` 增加到 `200px` 以确保提示词完整显示，并移除了HTML中的内联样式。影响文件：[`character_creator/style.css`](character_creator/style.css), [`character_creator/index.html`](character_creator/index.html)。
 * [2025-05-15 21:39:30] - 修改了新手引导弹窗中的 `newbieGuideCancelButton` 按钮：文本改为“上一步”，功能改为返回上一步，样式与“下一步”按钮统一。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js)。
 * [2025-05-16 10:39:59] - 在角色创建器中，当选择职业时，在技能区域的标题行右侧显示该职业的“领域1”和“领域2”。(修改了 [`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-16 16:15:35] - 实现了角色创建器中子职的动态下拉选择功能。修改了 [`character_creator/index.html`](character_creator/index.html) 将子职输入框改为 `<select>`，并更新了 [`character_creator/script.js`](character_creator/script.js) 以添加 `updateSubclassOptions` 函数，并在职业选择变化及页面加载时填充子职选项，同时调整了导入导出逻辑以兼容新的下拉框。
+* [2025-05-16 16:23:12] - 修改了 character_creator/script.js，将子职的“施法”属性整合到 jobDomainsDisplay 中。主要修改了 updateJobTraitsAsSkills 函数，并为 subclassSelect 添加了事件监听器以在子职更改时更新显示。
+* [2025-05-16 16:32:38] - 修复bug：在 character_creator/script.js 中，当主职业更改后，子职下拉列表未立即刷新。通过在 updateJobTraitsAsSkills 函数中提前调用 updateSubclassOptions 来解决。用户手动应用了此修复。
+* [2025-05-16 16:37:49] - 调整 character_creator/script.js 中的 updateSubclassOptions 函数，移除“选择子职”选项，并确保在主职业更改时正确默认选中子职（优先恢复之前选择，否则选第一个），同时允许用户选择其他子职。此更改由用户在审查期间应用。
+* [2025-05-16 16:48:41] - 修改了 [`character_creator/script.js`](character_creator/script.js:1) 中的 `updateJobTraitsAsSkills` 函数 ([`character_creator/script.js:227-325`](character_creator/script.js:227))，以在选择子职时动态添加其“基石”等级的特性到 `skillsTable`。这包括清除旧的子职特性行，并为新的子职特性行添加 `subclass-keystone-trait-row` 类。
 
 ## Open Questions/Issues
 

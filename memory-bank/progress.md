@@ -64,6 +64,11 @@ This file tracks the project's progress using a task list format.
 * [2025-05-15 21:22:05] - 完成任务：修改了 `#newbieGuidePromptTextarea` 的CSS样式以放大元素，确保提示词完整显示。将其 `min-height` 增加到 `200px` 并移除了HTML中的内联样式。(影响文件: [`character_creator/style.css`](character_creator/style.css), [`character_creator/index.html`](character_creator/index.html))
 * [2025-05-15 21:41:19] - 完成任务：修改了新手引导弹窗中的 `newbieGuideCancelButton` 按钮。将按钮文本从“关闭”修改为“上一步”；将其功能从关闭弹窗修改为返回上一步；并使其样式与“下一步”按钮一致。(影响文件: [`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))
 * [2025-05-16 10:43:32] - 完成任务：实现职业领域显示功能。在选择职业时，在技能表格的标题行右侧（“技能”标题和添加按钮之后）右对齐显示职业的“领域1”和“领域2”。(涉及 [`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-16 16:16:44] - 完成任务：实现了角色创建器中子职的动态下拉选择功能。修改了 [`character_creator/index.html`](character_creator/index.html:55) 将子职输入框从文本输入改为 `<select id="subclassSelect">`。更新了 [`character_creator/script.js`](character_creator/script.js:1) 添加了 `updateSubclassOptions` 函数，该函数根据所选职业从 `JOBS_DATA` 动态填充子职选项。此函数在职业选择更改时和页面初始加载时被调用。同时，调整了 `populateForm` (JSON导入) 和 `exportButton` (JSON导出) 的逻辑以正确处理新的 `subclassSelect` 元素。
+* [2025-05-16 16:25:55] - 完成任务：修改 character_creator/script.js 以将所选子职的“施法”属性整合到 jobDomainsDisplay 元素的显示内容中。
+* [2025-05-16 16:32:56] - 完成任务：修复 character_creator/script.js 中的子职下拉列表刷新bug。当主职业更改后，子职列表现在会立即更新。
+* [2025-05-16 16:38:08] - 完成任务：优化 character_creator/script.js 中子职下拉列表的行为。移除了“选择子职”占位符，并确保在主职业更改时，如果旧的子职选择依然有效则保留，否则默认选择新列表的第一个子职。用户可以正常选择列表中的所有子职。
+* [2025-05-16 16:48:41] - 完成任务：修改 [`character_creator/script.js`](character_creator/script.js:1) 以实现动态添加所选子职的“基石”等级特性到 `skillsTable`。
 
 ## Current Tasks
 

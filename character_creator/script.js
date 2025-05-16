@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mixedRaceSelect = document.getElementById('mixedRaceSelect');
     const communitySelect = document.getElementById('communitySelect');
     const professionSelect = document.getElementById('professionSelect');
+    const subclassSelect = document.getElementById('subclassSelect'); // Added subclassSelect
     const levelInput = document.getElementById('level');
     const levelTierDisplay = document.getElementById('levelTierDisplay');
     
@@ -87,7 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (raceSelect) raceSelect.addEventListener('change', updateRaceTraitsAsSkills);
     if (mixedRaceSelect) mixedRaceSelect.addEventListener('change', updateRaceTraitsAsSkills);
     if (communitySelect) communitySelect.addEventListener('change', updateGroupTraitAsSkill);
-    if (professionSelect) professionSelect.addEventListener('change', updateJobTraitsAsSkills);    
+    if (professionSelect) professionSelect.addEventListener('change', updateJobTraitsAsSkills);
+    if (subclassSelect) subclassSelect.addEventListener('change', updateJobTraitsAsSkills); // Add event listener for subclass change
     // 初始调用 - 仅在数据已加载时
     function initializeTraits() {
         if (typeof RACES_DATA !== 'undefined' && RACES_DATA.length > 0 && raceSelect.value) {
@@ -97,10 +99,72 @@ document.addEventListener('DOMContentLoaded', () => {
             updateGroupTraitAsSkill();
         }
         if (typeof JOBS_DATA !== 'undefined' && JOBS_DATA.length > 0 && professionSelect.value) {
-            updateJobTraitsAsSkills();
+            updateJobTraitsAsSkills(); // This will also handle initial subclass spellcasting if any
         }
-    }    
+    }
     initializeTraits();
+
+    function updateSubclassOptions() {
+        if (!professionSelect || !subclassSelect || typeof JOBS_DATA === 'undefined' || !Array.isArray(JOBS_DATA)) {
+            if (subclassSelect) {
+                subclassSelect.innerHTML = '<option value="">N/A</option>';
+                subclassSelect.disabled = true;
+            }
+            return;
+        }
+
+        const selectedJobName = professionSelect.value;
+
+        const previousSubclassValue = subclassSelect.value;
+        subclassSelect.innerHTML = ''; // Clear existing options
+        let firstSubclassName = null;
+        let previousValueIsValid = false;
+
+        if (selectedJobName) {
+            const jobData = JOBS_DATA.find(j => j.职业 === selectedJobName);
+            if (jobData && jobData.子职 && Array.isArray(jobData.子职) && jobData.子职.length > 0) {
+                jobData.子职.forEach((subclass, index) => {
+                    if (subclass.名称) { // Ensure subclass has a name
+                        if (index === 0) {
+                            firstSubclassName = subclass.名称;
+                        }
+                        const option = document.createElement('option');
+                        option.value = subclass.名称;
+                        option.textContent = subclass.名称;
+                        subclassSelect.appendChild(option);
+                        if (subclass.名称 === previousSubclassValue) {
+                            previousValueIsValid = true;
+                        }
+                    }
+                });
+                subclassSelect.disabled = false;
+                
+                if (previousValueIsValid) {
+                    subclassSelect.value = previousSubclassValue;
+                } else if (firstSubclassName) {
+                    subclassSelect.value = firstSubclassName;
+                } else {
+                    // This case implies no valid subclasses were found, though the outer check should prevent it.
+                    // Fallback to an empty selection if somehow reached.
+                    subclassSelect.value = "";
+                }
+            } else {
+                const option = document.createElement('option');
+                option.value = "";
+                option.textContent = "无可用子职";
+                subclassSelect.appendChild(option);
+                subclassSelect.disabled = true;
+            }
+        } else {
+            const option = document.createElement('option');
+            option.value = "";
+            option.textContent = "请先选择职业";
+            subclassSelect.appendChild(option);
+            subclassSelect.disabled = true;
+        }
+        // updateJobTraitsAsSkills(); // Call to update domains display after subclass options change
+    }
+
     function updateRaceTraitsAsSkills() {
         // 检查数据有效性
         if (!raceSelect || typeof RACES_DATA === 'undefined' || !Array.isArray(RACES_DATA) || RACES_DATA.length === 0) {
@@ -164,20 +228,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const jobDomainsDisplay = document.getElementById('jobDomainsDisplay');
         const skillsContainer = document.getElementById('skillsContainer');
 
-        // Clear previously added dynamic job feature rows
+        // Clear previously added dynamic job feature rows AND subclass keystone trait rows
         if (skillsContainer) {
-            const dynamicRows = skillsContainer.querySelectorAll('.dynamic-job-feature-row');
-            dynamicRows.forEach(row => row.remove());
+            const dynamicJobRows = skillsContainer.querySelectorAll('.dynamic-job-feature-row');
+            dynamicJobRows.forEach(row => row.remove());
+            const dynamicSubclassRows = skillsContainer.querySelectorAll('.subclass-keystone-trait-row');
+            dynamicSubclassRows.forEach(row => row.remove());
         }
 
         if (!professionSelect || typeof JOBS_DATA === 'undefined' || !Array.isArray(JOBS_DATA) || !skillsContainer) {
             updateSkillInSlot(FixedSkillSlotIds.JOB_1, null);
+            // Consider if JOB_2 slot should also be cleared if it exists and is used for job/subclass traits
+            // updateSkillInSlot(FixedSkillSlotIds.JOB_2, null);
             if (jobDomainsDisplay) jobDomainsDisplay.textContent = "";
+            updateSubclassOptions(); // Ensure subclass options are cleared/disabled if no profession data
             return;
         }
 
         const selectedJobName = professionSelect.value;
-        let hopeTraitData = null; // For "希望特性"
+        updateSubclassOptions(); // Update subclass options based on the selected job
+
+        let hopeTraitData = null; // For "希望特性" - typically goes to JOB_1
 
         if (jobDomainsDisplay) jobDomainsDisplay.textContent = "";
 
@@ -195,25 +266,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     features.forEach(feature => {
                         if (feature.名称 && feature.描述) {
                             const featureSkillData = {
-                                配置: "永久", // Or some other default/derived config
+                                配置: "永久",
                                 名称: feature.名称,
-                                领域: "", // Job features might not have a specific domain here
-                                等级: "", // Or a default level if applicable
-                                属性: "职业特性", // Specific attribute type for these
+                                领域: "",
+                                等级: "", // Or feature.等级 if available and relevant
+                                属性: "职业特性",
                                 回想: "",
                                 描述: feature.描述
                             };
-                            const newRow = createSkillRowElement(featureSkillData, false); // isFixedSlot = false
-                            newRow.classList.add('dynamic-job-feature-row'); // Add class for easy removal
-                            // Optionally, disable inputs if these are purely display
-                            // newRow.querySelectorAll('input, textarea').forEach(input => input.disabled = true);
-                            
-                            // Hide remove button for these auto-generated job feature rows
+                            const newRow = createSkillRowElement(featureSkillData, false);
+                            newRow.classList.add('dynamic-job-feature-row');
                             const removeBtn = newRow.querySelector('.remove-item-btn');
-                            if (removeBtn) {
-                                removeBtn.style.display = 'none';
-                            }
-                            
+                            if (removeBtn) removeBtn.style.display = 'none';
                             skillsContainer.appendChild(newRow);
                             const textarea = newRow.querySelector('textarea[name="skillDescription"]');
                             if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
@@ -221,24 +285,63 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                // Update domains display
-                if (jobDomainsDisplay) {
-                    let domainsText = "";
-                    if (jobData.领域1) {
-                        domainsText += `领域: ${jobData.领域1}`;
-                        currentSelectedJobDomains.domain1 = jobData.领域1;
-                    }
-                    if (jobData.领域2) {
-                        if (domainsText) domainsText += " | ";
-                        domainsText += `${jobData.领域2}`;
-                        currentSelectedJobDomains.domain2 = jobData.领域2;
-                    }
-                    jobDomainsDisplay.textContent = domainsText;
+                // Update domains display (Job domains and Subclass spellcasting)
+                let domainsText = "";
+                if (jobData.领域1) {
+                    domainsText += `领域: ${jobData.领域1}`;
+                    currentSelectedJobDomains.domain1 = jobData.领域1;
                 }
+                if (jobData.领域2) {
+                    if (domainsText) domainsText += "+";
+                    domainsText += `${jobData.领域2}`;
+                    currentSelectedJobDomains.domain2 = jobData.领域2;
+                }
+                
+                const selectedSubclassName = subclassSelect ? subclassSelect.value : null;
+                if (selectedSubclassName && jobData.子职) {
+                    const subclassData = jobData.子职.find(sc => sc.名称 === selectedSubclassName);
+                    if (subclassData) {
+                        // Add subclass spellcasting to domains display
+                        if (subclassData.施法 && subclassData.施法.trim() !== "") {
+                            if (domainsText) {
+                                domainsText += ` | 施法: ${subclassData.施法}`;
+                            } else {
+                                domainsText = `施法: ${subclassData.施法}`;
+                            }
+                        }
+
+                        // Handle Subclass "特性" with "等级": "基石" - dynamically added
+                        if (subclassData.特性 && Array.isArray(subclassData.特性)) {
+                            subclassData.特性.forEach(trait => {
+                                if (trait.等级 === "基石" && trait.名称 && trait.描述) {
+                                    const keystoneTraitSkillData = {
+                                        配置: "永久",
+                                        名称: trait.名称,
+                                        领域: "", // Subclass traits typically don't have a domain here
+                                        等级: "基石",
+                                        属性: "子职特性", // Specific attribute type
+                                        回想: "",
+                                        描述: trait.描述
+                                    };
+                                    const newRow = createSkillRowElement(keystoneTraitSkillData, false);
+                                    newRow.classList.add('subclass-keystone-trait-row'); // Specific class
+                                    const removeBtn = newRow.querySelector('.remove-item-btn');
+                                    if (removeBtn) removeBtn.style.display = 'none'; // Hide remove button
+                                    skillsContainer.appendChild(newRow);
+                                    const textarea = newRow.querySelector('textarea[name="skillDescription"]');
+                                    if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
+                                }
+                            });
+                        }
+                    }
+                }
+                if (jobDomainsDisplay) jobDomainsDisplay.textContent = domainsText;
             }
         }
         
         updateSkillInSlot(FixedSkillSlotIds.JOB_1, hopeTraitData);
+        // If there's a JOB_2 slot and a clear second job trait (e.g. from subclass or another primary job trait),
+        // it would be populated here using updateSkillInSlot(FixedSkillSlotIds.JOB_2, secondJobTraitData);
     }
     // ====================== End of Race, Jobs, and Community Selects ======================
 
@@ -1120,8 +1223,10 @@ document.addEventListener('DOMContentLoaded', () => {
         characterData.设定.种族 = form.raceSelect ? form.raceSelect.value : ""; 
         characterData.设定.混血种族 = form.mixedRaceSelect ? form.mixedRaceSelect.value : ""; 
         characterData.设定.社群 = form.communitySelect ? form.communitySelect.value : ""; 
-        characterData.设定.职业 = form.professionSelect ? form.professionSelect.value : ""; 
-        characterData.设定.子职业 = formData.get('subProfession') || "";
+        characterData.设定.职业 = form.professionSelect ? form.professionSelect.value : "";
+        // Ensure we get value from subclassSelect if it exists, otherwise fallback to subProfession (old text input)
+        const subProfessionValue = form.querySelector('#subclassSelect') ? form.querySelector('#subclassSelect').value : formData.get('subProfession');
+        characterData.设定.子职 = subProfessionValue || ""; // Changed from 子职业 to 子职 to match HTML and populateForm
         characterData.设定.兼职 = formData.get('partTimeJob') || "";
 
         characterData.状态.HP = {"当前": parseInt(formData.get('hpCurrent'), 10) || 0, "最大": parseInt(formData.get('hpMax'), 10) || 0};
@@ -1277,41 +1382,108 @@ document.addEventListener('DOMContentLoaded', () => {
                 else dataSource = null;
 
                 if (dataSource && Array.isArray(dataSource)) {
-                    const defaultOption = document.createElement('option');
-                    defaultOption.value = "";
-                    defaultOption.textContent = `--- 请选择 ---`;
-                    newbieGuideDropdownInput.appendChild(defaultOption);
+                    // Removed default "--- 请选择 ---" option for all dropdowns in newbie guide
+                    // newbieGuideDropdownInput.innerHTML = ''; // Clear existing options - already done before this block
 
-                    dataSource.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item[question.optionValueField];
-                        option.textContent = item[question.optionTextField];
-                        // Restore previous selection if exists
-                        if (newbieUserAnswers[question.targetSelectId] === item[question.optionValueField]) {
-                            option.selected = true;
+                    if (question.targetSelectId === "subclassSelect") {
+                        const selectedProfessionName = newbieUserAnswers["professionSelect"];
+                        let firstSubclassValue = null; // To store the value of the first subclass
+                        let previousSelectionRestored = false;
+
+                        if (selectedProfessionName) {
+                            const jobData = JOBS_DATA.find(j => j.职业 === selectedProfessionName);
+                            if (jobData && jobData.子职 && Array.isArray(jobData.子职)) {
+                                if (jobData.子职.length === 0) {
+                                    const noSubclassOption = document.createElement('option');
+                                    noSubclassOption.value = "";
+                                    noSubclassOption.textContent = "该职业无子职";
+                                    noSubclassOption.disabled = true;
+                                    newbieGuideDropdownInput.appendChild(noSubclassOption);
+                                    newbieGuideDropdownInput.value = "";
+                                } else {
+                                    jobData.子职.forEach((subclass, index) => {
+                                        const option = document.createElement('option');
+                                        option.value = subclass[question.optionValueField];
+                                        option.textContent = subclass[question.optionTextField];
+                                        if (index === 0) {
+                                            firstSubclassValue = subclass[question.optionValueField];
+                                        }
+                                        if (newbieUserAnswers[question.targetSelectId] === subclass[question.optionValueField]) {
+                                            option.selected = true;
+                                            previousSelectionRestored = true;
+                                        }
+                                        newbieGuideDropdownInput.appendChild(option);
+                                    });
+                                    // If previous selection was not restored and there's a first subclass, select it
+                                    if (!previousSelectionRestored && firstSubclassValue) {
+                                        newbieGuideDropdownInput.value = firstSubclassValue;
+                                    } else if (!previousSelectionRestored && jobData.子职.length > 0) {
+                                        // Fallback if firstSubclassValue somehow wasn't set but there are options
+                                        newbieGuideDropdownInput.value = jobData.子职[0][question.optionValueField];
+                                    }
+                                }
+                            } else {
+                                const errorOption = document.createElement('option');
+                                errorOption.value = "";
+                                errorOption.textContent = "子职数据错误";
+                                newbieGuideDropdownInput.appendChild(errorOption);
+                            }
+                        } else {
+                            const errorOption = document.createElement('option');
+                            errorOption.value = "";
+                            errorOption.textContent = "请先选择职业";
+                            newbieGuideDropdownInput.appendChild(errorOption);
+                            newbieGuideDropdownInput.disabled = true;
                         }
-                        newbieGuideDropdownInput.appendChild(option);
-                    });
+                    } else {
+                        // For other dropdowns (race, community, profession), add a default "--- 请选择 ---"
+                        const defaultOption = document.createElement('option');
+                        defaultOption.value = "";
+                        defaultOption.textContent = `--- 请选择 ---`;
+                        newbieGuideDropdownInput.appendChild(defaultOption);
+
+                        dataSource.forEach(item => {
+                            const option = document.createElement('option');
+                            option.value = item[question.optionValueField];
+                            option.textContent = item[question.optionTextField];
+                            if (newbieUserAnswers[question.targetSelectId] === item[question.optionValueField]) {
+                                option.selected = true;
+                            }
+                            newbieGuideDropdownInput.appendChild(option);
+                        });
+                    }
                 } else {
                     console.error(`Newbie Guide: Data source "${question.dataSourceVariable}" not found or not an array.`);
                     newbieGuideDropdownInput.innerHTML = '<option value="">数据加载失败</option>';
                 }
                 
                 // Update placeholder based on current selection or default
-                const selectedValue = newbieGuideDropdownInput.value; // Get current value AFTER populating
+                const selectedValue = newbieGuideDropdownInput.value;
                 let promptCategoryKey;
                 switch (question.targetSelectId) {
                     case 'raceSelect': promptCategoryKey = 'race'; break;
                     case 'mixedRaceSelect': promptCategoryKey = 'mixedRace'; break;
                     case 'communitySelect': promptCategoryKey = 'community'; break;
                     case 'professionSelect': promptCategoryKey = 'profession'; break;
+                    case 'subclassSelect': promptCategoryKey = 'subclass'; break; // Added subclass
                     default: promptCategoryKey = null;
                 }
 
                 if (newbieGuidePromptTextarea) {
                     if (promptCategoryKey && newbieGuidePrompts[promptCategoryKey]) {
-                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue] || "请从上方选择一项以查看相关提示...";
-                    } else if (promptCategoryKey === 'mixedRace' && newbieGuidePrompts.race) { // Fallback for mixedRace
+                        // For subclass, if a specific prompt for the selected subclass exists, use it. Otherwise, use the general subclass prompt.
+                        if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[selectedValue]) {
+                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[selectedValue];
+                        } else if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[""]) {
+                             newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[""];
+                        }
+                        else if (newbieGuidePrompts[promptCategoryKey][selectedValue]) {
+                             newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue];
+                        }
+                         else {
+                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][""] || "请从上方选择一项以查看相关提示...";
+                        }
+                    } else if (promptCategoryKey === 'mixedRace' && newbieGuidePrompts.race) {
                         newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race[selectedValue] || "请从上方选择一项以查看相关提示...";
                     } else {
                         newbieGuidePromptTextarea.placeholder = "请从上方选择一项以查看相关提示...";
@@ -1413,12 +1585,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     case 'mixedRaceSelect': promptCategoryKey = 'mixedRace'; break;
                     case 'communitySelect': promptCategoryKey = 'community'; break;
                     case 'professionSelect': promptCategoryKey = 'profession'; break;
+                    case 'subclassSelect': promptCategoryKey = 'subclass'; break; // Added subclass
                     default: promptCategoryKey = null;
                 }
 
                 if (promptCategoryKey && newbieGuidePrompts[promptCategoryKey]) {
-                    newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue] || "请从上方选择一项以查看相关提示...";
-                } else if (promptCategoryKey === 'mixedRace' && newbieGuidePrompts.race) { // Fallback for mixedRace
+                     // For subclass, if a specific prompt for the selected subclass exists, use it. Otherwise, use the general subclass prompt.
+                    if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[selectedValue]) {
+                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[selectedValue];
+                    } else if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[""]) {
+                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[""];
+                    } else if (newbieGuidePrompts[promptCategoryKey][selectedValue]) {
+                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue];
+                    }
+                    else {
+                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][""] || "请从上方选择一项以查看相关提示...";
+                    }
+                } else if (promptCategoryKey === 'mixedRace' && newbieGuidePrompts.race) {
                     newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race[selectedValue] || "请从上方选择一项以查看相关提示...";
                 } else {
                     newbieGuidePromptTextarea.placeholder = "请从上方选择一项以查看相关提示...";
@@ -1429,6 +1612,42 @@ document.addEventListener('DOMContentLoaded', () => {
         newbieGuideNextButton.addEventListener('click', () => {
             const question = newbieGuideQuestions[currentNewbieQuestionIndex];
             if (!question) return;
+
+            // Skip subclass step if no subclasses are available for the selected profession
+            if (question.targetSelectId === "subclassSelect") {
+                const selectedProfessionName = newbieUserAnswers["professionSelect"];
+                if (selectedProfessionName) {
+                    const jobData = JOBS_DATA.find(j => j.职业 === selectedProfessionName);
+                    if (!jobData || !jobData.子职 || jobData.子职.length === 0) {
+                        // If no subclasses, store an empty value and skip to the next question
+                        newbieUserAnswers[question.targetSelectId] = "";
+                        const targetSelectElement = document.getElementById(question.targetSelectId);
+                        if (targetSelectElement) {
+                            targetSelectElement.value = ""; // Clear the main form's subclass select
+                            targetSelectElement.dispatchEvent(new Event('change', { bubbles: true })); // Trigger change for consistency
+                        }
+                        currentNewbieQuestionIndex++;
+                        if (currentNewbieQuestionIndex < newbieGuideQuestions.length) {
+                            displayCurrentNewbieQuestion();
+                        } else {
+                            populateFieldsFromNewbieGuide();
+                        }
+                        return; // Exit early
+                    }
+                } else {
+                    // Profession not selected, should ideally not happen if guide flows correctly
+                    // but as a fallback, treat as skippable
+                    newbieUserAnswers[question.targetSelectId] = "";
+                    currentNewbieQuestionIndex++;
+                     if (currentNewbieQuestionIndex < newbieGuideQuestions.length) {
+                        displayCurrentNewbieQuestion();
+                    } else {
+                        populateFieldsFromNewbieGuide();
+                    }
+                    return;
+                }
+            }
+
 
             if (question.questionType === "dropdown") {
                 const selectedValue = newbieGuideDropdownInput.value;
@@ -1502,10 +1721,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         case 'mixedRaceSelect': promptCategoryKey = 'mixedRace'; break;
                         case 'communitySelect': promptCategoryKey = 'community'; break;
                         case 'professionSelect': promptCategoryKey = 'profession'; break;
+                        case 'subclassSelect': promptCategoryKey = 'subclass'; break; // Added subclass
                         default: promptCategoryKey = null;
                     }
                     if (promptCategoryKey && newbieGuidePrompts[promptCategoryKey]) {
-                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue] || "请从上方选择一项以查看相关提示...";
+                        // For subclass, if a specific prompt for the selected subclass exists, use it. Otherwise, use the general subclass prompt.
+                        if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[selectedValue]) {
+                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[selectedValue];
+                        } else if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[""]) {
+                             newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[""];
+                        } else if (newbieGuidePrompts[promptCategoryKey][selectedValue]) {
+                             newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue];
+                        }
+                        else {
+                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][""] || "请从上方选择一项以查看相关提示...";
+                        }
                     } else if (promptCategoryKey === 'mixedRace' && newbieGuidePrompts.race) {
                          newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race[selectedValue] || "请从上方选择一项以查看相关提示...";
                     } else {

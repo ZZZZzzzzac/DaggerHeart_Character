@@ -235,6 +235,15 @@ const newbieGuideQuestions = [
         optionTextField: "职业",
         updateFunction: "updateJobTraitsAsSkills" // This function will be called, then we add our logic
     },
+    {
+        prompt: "现在，请为您的职业选择一个子职：",
+        questionType: "dropdown",
+        targetSelectId: "subclassSelect", // Main form's subclass select ID
+        dataSourceVariable: "JOBS_DATA", // Subclasses are nested in JOBS_DATA
+        optionValueField: "名称", // Field from subclass object for option value
+        optionTextField: "名称", // Field from subclass object for option text
+        updateFunction: "updateJobTraitsAsSkills" // To update skills/domains based on subclass
+    },
     { prompt: "请输入你的角色背景故事：", targetFieldId: "backgroundStory" },
     { prompt: "请输入第一个主要经历的关键词：", targetFieldId: "expKeyword" },
     { prompt: "请输入第二个主要经历的关键词：", targetFieldId: "expKeyword2" }
@@ -286,6 +295,11 @@ const newbieGuidePrompts = {
         "术士": "    并非所有天生具有魔法天赋的人都会选择磨炼自己的技艺，但那些选择这样做的人可以成为强大的术士。这些魔法操控者的天赋通过家族传承，但并非所有家族都意识到这流淌在血脉中的独特天赋，更不用说选择锻炼它们了。术士的能力范围广泛，从元素控制，到幻象制造，乃至更多，许多术士会根据他们的天赋能力，聚集起来形成一个团体。成为一名强大的术士的过程不是获取力量，而是学会控制和磨炼自己已经拥有的力量。一个被误导或未经教育的术士体内的魔法，确实是一股危险的力量。",
         "战士": "    成为一名战士需要多年——往往是毕生的时间——去训练和致力于暴力与武器的掌握。虽然许多渴望战斗的人只专注于强化力量，但战士们深知敏捷的身体与敏锐思维的重要性，这使得他们成为诸地间最抢手的战斗者之一。许多战士会在军队、佣兵团或甚至是皇家卫队中找到工作，但如果待在不能持续磨练身心和锻炼技艺的职位上，他们的潜力将会被浪费。战士们通常会有自己偏爱的武器，如果试图挡在一名战士与他的武器之间，这无疑是一个严重的错误。",
         "法师": "    通过多年学习获得魔法力量的人被称为法师。无论是通过学院还是个人自学，法师利用各种工具，包括书籍、卷轴或古老的石板，来磨练他们的技艺。通常，法师会将其一生致力于掌握特定的魔法学派，而其他人则试图从广泛的科目中学习。许多法师后来成为他们社区中有智慧和权力的人物，为统治者提供建议，提供药物和治疗，甚至领导战争委员会。虽然这个阶层的所有成员都朝着收集魔法知识的共同目标努力，但法师内部往往存在最多的冲突；因为获取、保留和分享强大秘密的话题是一个激烈的争论点——这已导致了成千上万的死亡。"
+    },
+    subclass: { // Added prompts for subclass selection
+        "": "    子职是你职业的专精方向，它会赋予你独特的特性和能力。请根据你的职业选择一个子职。如果你的职业没有子职，或者你暂时不想选择，可以跳过此步骤。",
+        // Specific subclass prompts can be added here if needed, keyed by subclass name
+        // e.g., "特定子职名称": "关于这个特定子职的提示..."
     },
     textInput: {
         "roleName": "    本引导旨在帮助完全不熟悉规则的萌新建立ta们第一张角色卡, 其中不会涉及任何具体的规则和数值, 而只需要根据你对角色的设想来填写和选择.",

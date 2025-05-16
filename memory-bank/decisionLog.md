@@ -273,3 +273,81 @@ This comprehensive refactor ensures that trait-based skills are managed in their
 *   [`character_creator/index.html`](character_creator/index.html): 将 `<div id="jobDomainsDisplay" class="job-domains-display"></div>` 放置于 `<div class="section-header">` 内部，`h3` 和 `button` 之后。
 *   [`character_creator/style.css`](character_creator/style.css): 为 `.job-domains-display` 添加了 `margin-left: auto; padding-left: 15px; align-self: center;` 等样式。
 *   [`character_creator/script.js`](character_creator/script.js): `updateJobTraitsAsSkills` 函数逻辑保持不变，因为它已准备好填充 `jobDomainsDisplay`。
+---
+### Decision (Code)
+[2025-05-16 16:26:17] - 将子职的“施法”属性整合到 `jobDomainsDisplay`
+
+**Rationale:**
+根据用户请求，需要在 `jobDomainsDisplay` 中追加显示所选子职的“施法”属性。这要求修改 JavaScript 逻辑以在职业和子职选择发生变化时更新此显示。
+
+**Details:**
+*   修改了 [`character_creator/script.js`](character_creator/script.js:1) 文件。
+*   **`updateJobTraitsAsSkills()` 函数 ([`character_creator/script.js:223-329`](character_creator/script.js:223))**:
+    *   在更新完职业的“领域1”和“领域2”之后，添加了新的逻辑。
+    *   获取当前选中的子职名称 (`subclassSelect.value`)。
+    *   如果子职被选中，则在 `JOBS_DATA` ([`character_creator/data/jobs_data.js`](character_creator/data/jobs_data.js:1)) 中查找对应的职业和子职对象。
+    *   如果找到子职对象，并且其 `施法` 属性存在且不为空，则将其值追加到 `jobDomainsDisplay.textContent`，格式为 ` (子职施法: [施法属性值])`。
+*   **事件监听器**:
+    *   为 `subclassSelect` (子职下拉框) 添加了一个 `change` 事件监听器，该监听器会调用 `updateJobTraitsAsSkills()` ([`character_creator/script.js:223-329`](character_creator/script.js:223))。这确保了当用户更改子职选择时，`jobDomainsDisplay` 的内容会相应更新。
+*   **`updateSubclassOptions()` 函数 ([`character_creator/script.js:109-162`](character_creator/script.js:109))**:
+    *   略作修改，以在填充子职选项时添加一个默认的“选择子职”选项，并尝试在职业更改后恢复之前选择的子职（如果新职业的子职列表中仍然存在该选项）。
+*   **`initializeTraits()` 函数 ([`character_creator/script.js:96-106`](character_creator/script.js:96))**:
+    *   确保在页面加载时，如果已选择职业，`updateJobTraitsAsSkills()` ([`character_creator/script.js:223-329`](character_creator/script.js:223)) 会被调用，从而也能处理初始状态下子职施法属性的显示。
+*   **错误修复**:
+    *   之前的 `apply_diff` 操作导致了差异标记被错误地写入文件。通过重新读取文件内容并应用一个新的、干净的 `apply_diff` 操作（包含正确的代码块）解决了此问题。
+---
+### Decision (Code)
+[2025-05-16 16:34:04] - 修复子职下拉列表在主职业更改后不立即刷新的Bug
+
+**Rationale:**
+用户反馈在更改主职业后，子职下拉列表的选项不会自动更新以反映新主职业的可用子职，需要手动与子职下拉框交互才能触发刷新。为了提供更流畅的用户体验，需要在主职业更改时立即更新子职选项。
+
+**Details:**
+*   修改了 [`character_creator/script.js`](character_creator/script.js:1) 文件。
+*   在 `updateJobTraitsAsSkills()` 函数 ([`character_creator/script.js:221-319`](character_creator/script.js:221)) 中，将 `updateSubclassOptions()` 函数 ([`character_creator/script.js:107-160`](character_creator/script.js:107)) 的调用移至该函数较早的位置。具体来说，在获取 `selectedJobName` (所选主职业名称) 之后，但在任何依赖于 `subclassSelect.value` (所选子职名称) 的逻辑（如获取子职的“施法”属性）之前，立即调用 `updateSubclassOptions()`。
+*   这样可以确保在 `updateJobTraitsAsSkills()` 函数 ([`character_creator/script.js:221-319`](character_creator/script.js:221)) 继续执行后续操作（例如显示领域和子职施法属性）之前，`subclassSelect` 下拉列表已经填充了与新主职业匹配的正确子职选项，并且其 `value` 也已相应更新（通常会重置为默认的“选择子职”或之前的有效选项）。
+*   之前在 `updateJobTraitsAsSkills()` 函数 ([`character_creator/script.js:221-319`](character_creator/script.js:221)) 末尾的条件性 `updateSubclassOptions()` 调用已被移除，因为其功能已被前置的调用所覆盖。
+*   此修复由用户在审查期间直接编辑并应用到文件中。
+---
+### Decision (Code)
+[2025-05-16 16:38:37] - 优化子职下拉列表行为：移除占位符并改进默认选择逻辑
+
+**Rationale:**
+根据用户反馈，需要移除子职下拉列表中的“选择子职”占位符选项。同时，当主职业更改导致子职列表刷新时，应智能地设置默认选中的子职：如果之前选中的子职在新列表中仍然有效，则保持该选择；否则，默认选择新列表中的第一个子职。用户必须能够自由选择列表中的任何其他有效子职。
+
+**Details:**
+*   修改了 [`character_creator/script.js`](character_creator/script.js:1) 文件中的 `updateSubclassOptions` 函数 ([`character_creator/script.js:107-166`](character_creator/script.js:107))。
+*   **移除了“选择子职”选项**: 不再显式创建和添加一个空的或带有提示文本（如“选择子职”）的 `<option>` 元素作为下拉列表的第一个条目。
+*   **改进的默认选择逻辑**:
+    1.  在清空并重新填充子职选项之前，保存当前选中的子职值 (`previousSubclassValue`)。
+    2.  遍历新职业对应的子职数据，为每个有效子职创建并添加 `<option>` 元素。
+    3.  在填充过程中，记录第一个有效子职的名称 (`firstSubclassName`)，并检查 `previousSubclassValue` 是否存在于新的子职选项中 (`previousValueIsValid`)。
+    4.  所有选项添加完毕后，决定 `subclassSelect` 的选中值：
+        *   如果 `previousValueIsValid` 为 `true`（即之前选的子职在当前职业下仍然可选），则将 `subclassSelect.value` 设置为 `previousSubclassValue`。
+        *   否则，如果 `firstSubclassName` 不为 `null`（即当前职业至少有一个有效子职），则将 `subclassSelect.value` 设置为 `firstSubclassName`（默认选中第一个）。
+        *   如果既没有有效的先前选择，也没有可供选择的第一个子职（例如，职业没有子职或子职数据不规范），则 `subclassSelect.value` 可能会被设为空字符串（如果 `firstSubclassName` 为 `null`）。
+*   **处理无子职的情况**: 如果选定的主职业没有任何子职，或者没有提供有效的子职数据，则会像以前一样，向 `subclassSelect` 添加一个值为 ""、文本为“无可用子职”的选项，并禁用该下拉框。
+*   此更改由用户在审查期间直接编辑并应用到文件中，解决了之前尝试默认选择第一个子职时导致无法选择其他子职的问题。
+---
+### Decision (Code)
+[2025-05-16 16:48:41] - 实现动态添加子职基石特性到技能表
+
+**Rationale:**
+用户要求在选择职业或子职时，将所选子职的“特性”数组中所有“等级”为“基石”的特性动态添加到 `skillsTable`。这需要修改 `updateJobTraitsAsSkills` 函数 ([`character_creator/script.js:227-325`](character_creator/script.js:227))。
+
+**Details:**
+*   修改了 [`character_creator/script.js`](character_creator/script.js:1) 中的 `updateJobTraitsAsSkills` 函数 ([`character_creator/script.js:227-325`](character_creator/script.js:227))：
+    *   **清除旧特性**: 在函数开始时，除了清除 `.dynamic-job-feature-row`，还清除了所有带有新类名 `subclass-keystone-trait-row` 的行。这确保了在职业或子职更改时，旧的子职基石特性会被移除。
+    *   **获取子职数据**: 在现有逻辑（处理职业希望特性、职业特性、职业领域和子职施法）之后，获取当前选中的子职名称 (`selectedSubclassName`)。
+    *   **遍历子职特性**: 如果找到了有效的子职数据 (`subclassData`) 及其 `特性` 数组：
+        *   遍历 `subclassData.特性`。
+        *   对每个特性，检查 `trait.等级 === "基石"`。
+        *   **创建并添加新行**: 如果是基石特性，则：
+            *   创建一个 `keystoneTraitSkillData` 对象，包含名称、描述、配置（设为"永久"）、属性（设为"子职特性"）、等级（设为"基石"）。
+            *   使用 `createSkillRowElement(keystoneTraitSkillData, false)` ([`character_creator/script.js:722-760`](character_creator/script.js:722)) 创建新的 `<tr>` 元素。
+            *   为新行添加 `subclass-keystone-trait-row` 类。
+            *   隐藏该行的移除按钮 (`.remove-item-btn`)。
+            *   将新行附加到 `skillsContainer` ([`character_creator/index.html:248`](character_creator/index.html:248))。
+            *   如果描述字段是 `textarea`，调用 `autoGrowTextarea` ([`character_creator/script.js:1666-1670`](character_creator/script.js:1666))。
+    *   **事件监听**: `professionSelect` 和 `subclassSelect` 的 `change` 事件监听器已配置为调用 `updateJobTraitsAsSkills` 函数 ([`character_creator/script.js:227-325`](character_creator/script.js:227))，因此当职业或子职更改时，此新逻辑会被触发。
+    *   **初始加载和导入**: `initializeTraits()` ([`character_creator/script.js:94-104`](character_creator/script.js:94)) 和 `populateForm()` ([`character_creator/script.js:868-1049`](character_creator/script.js:868)) 函数通过调用 `updateJobTraitsAsSkills()` ([`character_creator/script.js:227-325`](character_creator/script.js:227)) 来处理初始加载和数据导入时的特性显示，这也将包括新添加的子职基石特性逻辑。
