@@ -740,6 +740,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function updateSkillAvailabilityStyle(skillRowElement) {
+        if (!skillRowElement) return;
+        const configInput = skillRowElement.querySelector('select[name="skillConfig"]');
+        if (!configInput) return;
+
+        const configValue = configInput.value; // No need for trim().toLowerCase() with select
+        skillRowElement.classList.remove('skill-unavailable-temporary', 'skill-unavailable-permanent');
+
+        if (configValue === '宝库') {
+            skillRowElement.classList.add('skill-unavailable-temporary');
+        } else if (configValue === '除外') {
+            skillRowElement.classList.add('skill-unavailable-permanent');
+        }
+    }
+
     // Helper to create skill row TR element (used by fixed slots and potentially dynamic ones)
     function createSkillRowElement(skillData = {}, isFixedSlot = false, slotId = '') {
         const newRow = document.createElement('tr');
@@ -769,7 +784,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <option value="除外"${defaultConfig === '除外' ? ' selected' : ''}>除外</option>
                 </select>
             </td>
-            <td><input type="text" name="skillName" placeholder="名称" value="${skillData.名称 || ''}" class="skill-name-input"></td>
+            <td><input type="text" name="skillName" placeholder="名称(点我)" value="${skillData.名称 || ''}" class="skill-name-input"></td>
             <td><input type="text" name="skillDomain" placeholder="领域" value="${skillData.领域 || ''}"></td>
             <td><input type="text" name="skillLevel" placeholder="等级" value="${defaultLevel}"></td>
             <td><input type="text" name="skillAttribute" placeholder="属性" value="${defaultAttribute}"></td>
@@ -780,7 +795,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const nameInput = newRow.querySelector('input[name="skillName"].skill-name-input');
         if (nameInput) {
-            nameInput.addEventListener('click', () => openDomainCardModal(newRow));
+            nameInput.addEventListener('click', () => {
+                const configSelect = newRow.querySelector('select[name="skillConfig"]');
+                const currentConfigValue = configSelect ? configSelect.value : '';
+                 // Check availability and config before opening modal
+                if (currentConfigValue !== '永久' && !newRow.classList.contains('skill-unavailable-temporary') && !newRow.classList.contains('skill-unavailable-permanent')) {
+                    openDomainCardModal(newRow);
+                }
+            });
         }
 
         const newTextarea = newRow.querySelector('textarea[name="skillDescription"]');
@@ -790,11 +812,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const configInput = newRow.querySelector('select[name="skillConfig"]'); // Changed to select
         if (configInput) {
-            configInput.addEventListener('input', () => updateRemoveButtonVisibility(newRow));
+            configInput.addEventListener('input', () => {
+                updateRemoveButtonVisibility(newRow);
+                updateSkillAvailabilityStyle(newRow); // Add this call
+            });
         }
 
-        // Initial visibility check
+        // Initial visibility and style check
         updateRemoveButtonVisibility(newRow);
+        updateSkillAvailabilityStyle(newRow); // Add this call
 
         if (!isFixedSlot) { // Still add remove listener for non-fixed, but visibility is handled separately
             addRemoveListener(newRow.querySelector('.remove-item-btn'));
@@ -807,14 +833,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // It doesn't clear other dynamic skills that might be added later.
         AllFixedSlotIds.forEach(slotId => {
             if (!document.getElementById(slotId)) {
-                const slotRow = createSkillRowElement({}, true, slotId);
+                const slotRow = createSkillRowElement({ 名称: "" }, true, slotId); // Pass empty name to ensure placeholder is set
+                const nameInputInSlot = slotRow.querySelector('input[name="skillName"]');
+                if (nameInputInSlot) {
+                    nameInputInSlot.placeholder = "名称"; // Explicitly set placeholder for fixed slots
+                }
                 skillsContainer.appendChild(slotRow);
                 const textarea = slotRow.querySelector('textarea[name="skillDescription"]');
                 // Initial auto-grow for textareas in fixed slots
                 if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
             }
         });
-    }    
+    }
     initializeFixedSkillSlots(); // Create the 5 fixed slots on load
     function updateSkillInSlot(slotId, skillData) {
         const slotRow = document.getElementById(slotId);
@@ -860,6 +890,7 @@ document.addEventListener('DOMContentLoaded', () => {
              setTimeout(() => autoGrowTextarea({ target: inputs.description }), 0);
         }
         updateRemoveButtonVisibility(slotRow); // Added
+        updateSkillAvailabilityStyle(slotRow); // Add this call
     }
     // addSkillEntry is now for DYNAMIC, non-fixed skills, added AFTER fixed slots
     function addSkillEntry(skillData) {
@@ -868,12 +899,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const textarea = newRow.querySelector('textarea[name="skillDescription"]');
         // Initial auto-grow for dynamically added textareas
         if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
-        updateRemoveButtonVisibility(newRow); // Added
         return newRow;
     }
     addSkillBtn.addEventListener('click', () => {
         addSkillEntry({
-            配置: "", 名称: "", 领域: "", 等级: "", 属性: "", 回想: "", 描述: ""
+            配置: "激活", 名称: "", 领域: "", 等级: "", 属性: "", 回想: "", 描述: ""
         });
     });
     // give all textareas in the skills container the auto-grow functionality

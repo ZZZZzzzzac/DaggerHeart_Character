@@ -73,6 +73,8 @@ This file tracks the project's progress using a task list format.
 * [2025-05-16 21:06:46] - 完成任务：修复了 [`character_creator/script.js`](character_creator/script.js:1) 中导入JSON时职业/子职技能重复导入以及子职下拉框未正确加载的问题。
 * [2025-05-16 22:15:00] - 完成任务：为技能栏添加领域卡选择功能，包括HTML结构、CSS样式和JS逻辑（弹窗显示、数据过滤、选择填充、永久配置处理、默认配置为“激活”）。(涉及 [`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))
 * [2025-05-16 23:11:00] - 完成任务：在角色创建器的领域卡选择功能中加入了防止用户重复选择同一领域卡的机制。(涉及 [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-17 00:06:00] - 完成任务：根据技能“配置”属性（宝库/除外）更新技能行可用性及视觉样式。(涉及 [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-17 00:34:00] - 完成任务：修改技能逻辑，当配置为“永久”时禁止点击名称框弹窗，并初始化固定技能槽名称输入框placeholder为“名称”。(涉及 [`character_creator/script.js`](character_creator/script.js))
 
 ## Current Tasks
 

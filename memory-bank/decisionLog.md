@@ -421,3 +421,55 @@ This comprehensive refactor ensures that trait-based skills are managed in their
 *   **`selectDomainCard(cardData)` 函数**:
     *   在选择卡片并填充到当前技能槽之前，再次遍历所有其他技能槽。
     *   如果发现 `cardData` 的名称和领域与任何其他已选领域卡匹配，则通过 `alert` 提示用户“领域卡 "[cardData.名称]" 已经被选择，不能重复选择。”并终止选择操作。
+    
+    ---
+    ### Decision (Code)
+    [2025-05-17 00:06:00] - 根据技能“配置”属性更新技能行可用性及视觉样式
+    
+    **Rationale:**
+    用户要求根据技能的“配置”字段（一个下拉选择框）来动态改变技能行的可用性和外观。
+    -   当“配置”为“宝库”时，技能应标记为“暂不可用”，背景变黄，透明度降低，输入框不可交互。
+    -   当“配置”为“除外”时，技能应标记为“绝不可用”，背景变红，透明度更低，文字加删除线，输入框不可交互。
+    -   其他配置（如“激活”、“永久”等）应为正常可用状态。
+    
+    **Details:**
+    *   **CSS ([`character_creator/style.css`](character_creator/style.css:1))**:
+        *   添加了新的 CSS 类 `.skill-unavailable-temporary` 和 `.skill-unavailable-permanent`。
+        *   `.skill-unavailable-temporary`: 设置浅黄色背景 (`#fffde7`)，较低的透明度 (`opacity: 0.7`)。其内部的 `input`, `textarea`, `select` 设置 `pointer-events: none` 和浅灰色背景 (`#f0f0f0`)。
+        *   `.skill-unavailable-permanent`: 设置浅红色背景 (`#ffebee`)，更低的透明度 (`opacity: 0.5`)，文本删除线 (`text-decoration: line-through`)。其内部的 `input`, `textarea`, `select` 设置 `pointer-events: none`，更深的灰色背景 (`#e0e0e0`) 和灰色文本 (`#757575`)。
+    *   **JavaScript ([`character_creator/script.js`](character_creator/script.js:1))**:
+        *   **`updateSkillAvailabilityStyle(skillRowElement)` 函数**:
+            *   新增此辅助函数，接收一个技能行 `<tr>` 元素。
+            *   获取该行内名为 `skillConfig` 的 `<select>` 元素。
+            *   根据 `skillConfig.value`：
+                *   移除行元素上可能存在的 `.skill-unavailable-temporary` 和 `.skill-unavailable-permanent` 类。
+                *   如果值为 "宝库"，添加 `.skill-unavailable-temporary` 类。
+                *   如果值为 "除外"，添加 `.skill-unavailable-permanent` 类。
+        *   **`createSkillRowElement(skillData, isFixedSlot, slotId)` 函数 ([`character_creator/script.js:759-827`](character_creator/script.js:759))**:
+            *   在为 `skillConfig` 的 `<select>` 元素添加 `input` 事件监听器时，除了调用 `updateRemoveButtonVisibility`，也调用 `updateSkillAvailabilityStyle(newRow)`。
+            *   在函数末尾，创建完行元素后，立即调用一次 `updateSkillAvailabilityStyle(newRow)` 以根据初始“配置”值设置样式。
+            *   修改了技能名称输入框的点击事件监听器，以在打开领域卡模态框前检查技能行是否具有 `.skill-unavailable-temporary` 或 `.skill-unavailable-permanent` 类，如果是，则不打开模态框。
+        *   **`updateSkillInSlot(slotId, skillData)` 函数 ([`character_creator/script.js:843-887`](character_creator/script.js:843))**:
+            *   在此函数末尾，当固定技能槽的内容被更新后，调用 `updateSkillAvailabilityStyle(slotRow)`。
+        *   **`addSkillEntry(skillData)` 函数 ([`character_creator/script.js:889-897`](character_creator/script.js:889))**:
+            *   此函数内部调用 `createSkillRowElement`，其中已包含对 `updateSkillAvailabilityStyle` 的调用，因此无需直接修改 `addSkillEntry`。
+            *   修改了 `addSkillBtn` 的事件监听器，确保在通过 `addSkillEntry` 添加新技能时，传递的 `skillData` 中“配置”默认为“激活”，以符合 `createSkillRowElement` 中对新动态技能的默认处理。
+    
+    ---
+    ### Decision (Code)
+    [2025-05-17 00:34:00] - 调整技能交互：配置为“永久”时名称框不弹窗，固定槽位名称placeholder统一
+    
+    **Rationale:**
+    根据用户反馈：
+    1.  当一个技能的“配置”下拉框被设置为“永久”时，点击该技能的“名称”输入框不应再触发领域卡选择弹窗。
+    2.  在 `initializeFixedSkillSlots` 函数中，为所有固定技能槽（种族、社群、职业）的“名称”输入框设置一个统一的 `placeholder="名称"`，而不是依赖于传入的 `skillData` 可能为空的情况。
+    
+    **Details:**
+    *   **JavaScript ([`character_creator/script.js`](character_creator/script.js:1))**:
+        *   **`createSkillRowElement(skillData, isFixedSlot, slotId)` 函数 ([`character_creator/script.js:759-827`](character_creator/script.js:759))**:
+            *   在技能“名称”输入框 (`input[name="skillName"].skill-name-input`) 的 `click` 事件监听器内部，获取该行对应的“配置”下拉框 (`select[name="skillConfig"]`) 的当前值。
+            *   在打开领域卡选择模态框 (`openDomainCardModal(newRow)`) 的条件判断中，增加了对 `currentConfigValue !== '永久'` 的检查。现在，只有当配置不是“永久” *并且* 技能行没有 `skill-unavailable-temporary` 或 `skill-unavailable-permanent` 类时，才会尝试打开模态框。
+        *   **`initializeFixedSkillSlots()` 函数 ([`character_creator/script.js:828-841`](character_creator/script.js:828))**:
+            *   在 `AllFixedSlotIds.forEach` 循环中，当调用 `createSkillRowElement({}, true, slotId)` 为固定槽创建行时，明确传递一个包含 `名称: ""` 的对象 (`{ 名称: "" }`) 作为 `skillData`。这确保了 `createSkillRowElement` 内部 `skillData.名称 || ''` 会得到一个空字符串。
+            *   紧接着，获取新创建的 `slotRow` 中的“名称”输入框 (`input[name="skillName"]`)。
+            *   如果找到了该输入框，则将其 `placeholder` 属性显式设置为 "名称"。
