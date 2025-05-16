@@ -400,3 +400,24 @@ This comprehensive refactor ensures that trait-based skills are managed in their
             3.  **然后设置子职下拉框的值** (`if (form.subclassSelect) form.subclassSelect.value = data.设定.子职业 || "";`)。此时 `subclassSelect` 已有正确的选项，可以正确选中从JSON读取的值。
             4.  最后，在所有相关的下拉框（包括种族、社群、职业和现在已正确设置的子职）的值都从JSON加载完毕后，再调用 `updateRaceTraitsAsSkills()` ([`character_creator/script.js:166-206`](character_creator/script.js:166)), `updateGroupTraitAsSkill()` ([`character_creator/script.js:207-224`](character_creator/script.js:207)), 和 `updateJobTraitsAsSkills()` ([`character_creator/script.js:225-343`](character_creator/script.js:225))。`updateJobTraitsAsSkills` ([`character_creator/script.js:225-343`](character_creator/script.js:225)) 现在可以基于正确选中的子职来生成相应的特性和更新显示。
         *   移除了之前错误的 `form.subProfession.value = data.设定.子职业 || "";` ([`character_creator/script.js:944`](character_creator/script.js:944)) 行，因为它使用的是错误的ID，并且其功能已被新的 `subclassSelect` 设置逻辑取代。
+---
+### Decision (Code)
+[2025-05-16 23:11:00] - 实现领域卡选择去重机制
+
+**Rationale:**
+用户要求在选择领域卡时，防止选择已在其他技能槽中选用的领域卡。
+
+**Details:**
+*   修改了 [`character_creator/script.js`](character_creator/script.js)。
+*   **`openDomainCardModal(skillRow)` 函数**:
+    *   在打开模态框时，收集当前所有其他技能槽中已选择的领域卡的名称和领域。
+    *   将此列表 (`selectedDomainCardNames`) 传递给 `filterAndDisplayDomainCards`。
+*   **`filterAndDisplayDomainCards(characterLevel, jobDomains, selectedDomainCardNames)` 函数**:
+    *   接收 `selectedDomainCardNames` 列表。
+    *   渲染领域卡时，如果卡片名称存在于 `selectedDomainCardNames` 中，则：
+        *   为卡片元素添加 `disabled` CSS 类。
+        *   在卡片名称后附加“(已选择)”文本。
+        *   移除卡片的点击事件，并设置 `cursor: not-allowed`。
+*   **`selectDomainCard(cardData)` 函数**:
+    *   在选择卡片并填充到当前技能槽之前，再次遍历所有其他技能槽。
+    *   如果发现 `cardData` 的名称和领域与任何其他已选领域卡匹配，则通过 `alert` 提示用户“领域卡 "[cardData.名称]" 已经被选择，不能重复选择。”并终止选择操作。

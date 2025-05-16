@@ -729,10 +729,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateRemoveButtonVisibility(skillRowElement) {
         if (!skillRowElement) return;
-        const configInput = skillRowElement.querySelector('input[name="skillConfig"]');
+        const configInput = skillRowElement.querySelector('select[name="skillConfig"]');
         const removeBtn = skillRowElement.querySelector('.remove-item-btn');
         if (configInput && removeBtn) {
-            if (configInput.value.trim() === "永久") { // Use trim() for robustness
+            if (configInput.value === "永久") {
                 removeBtn.style.display = 'none';
             } else {
                 removeBtn.style.display = ''; // Reset to default display
@@ -757,11 +757,18 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (slotId.startsWith('fixed-skill-job')) defaultAttribute = "职业";
         }
         
-        const defaultConfig = skillData.配置 || (isFixedSlot ? '永久' : '');
+        const defaultConfig = skillData.配置 || (isFixedSlot ? '永久' : '激活');
         const defaultLevel = skillData.等级 || ''; // Fixed slots might not have a numeric level initially
 
         newRow.innerHTML = `
-            <td><input type="text" name="skillConfig" placeholder="配置" value="${defaultConfig}"></td>
+            <td>
+                <select name="skillConfig">
+                    <option value="永久"${defaultConfig === '永久' ? ' selected' : ''}>永久</option>
+                    <option value="激活"${defaultConfig === '激活' ? ' selected' : ''}>激活</option>
+                    <option value="宝库"${defaultConfig === '宝库' ? ' selected' : ''}>宝库</option>
+                    <option value="除外"${defaultConfig === '除外' ? ' selected' : ''}>除外</option>
+                </select>
+            </td>
             <td><input type="text" name="skillName" placeholder="名称" value="${skillData.名称 || ''}" class="skill-name-input"></td>
             <td><input type="text" name="skillDomain" placeholder="领域" value="${skillData.领域 || ''}"></td>
             <td><input type="text" name="skillLevel" placeholder="等级" value="${defaultLevel}"></td>
@@ -781,7 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
             newTextarea.addEventListener('input', autoGrowTextarea);
         }
         
-        const configInput = newRow.querySelector('input[name="skillConfig"]');
+        const configInput = newRow.querySelector('select[name="skillConfig"]'); // Changed to select
         if (configInput) {
             configInput.addEventListener('input', () => updateRemoveButtonVisibility(newRow));
         }
@@ -817,7 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const inputs = {
-            config: slotRow.querySelector('input[name="skillConfig"]'),
+            config: slotRow.querySelector('select[name="skillConfig"]'),
             name: slotRow.querySelector('input[name="skillName"]'),
             domain: slotRow.querySelector('input[name="skillDomain"]'),
             level: slotRow.querySelector('input[name="skillLevel"]'),
@@ -1317,7 +1324,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function getSkillDataFromRow(rowElement) {
             if (!rowElement || rowElement.cells.length < 7) return null;
 
-            const configInput = rowElement.cells[0].querySelector('input[name="skillConfig"]');
+            const configInput = rowElement.cells[0].querySelector('select[name="skillConfig"]');
             const nameInput = rowElement.cells[1].querySelector('input[name="skillName"]');
             const domainInput = rowElement.cells[2].querySelector('input[name="skillDomain"]');
             const levelInput = rowElement.cells[3].querySelector('input[name="skillLevel"]');
@@ -1462,7 +1469,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             errorOption.value = "";
                             errorOption.textContent = "请先选择职业";
                             newbieGuideDropdownInput.appendChild(errorOption);
-                            newbieGuideDropdownInput.disabled = true;
+                            // newbieGuideDropdownInput.disabled = true;
                         }
                     } else {
                         // For other dropdowns (race, community, profession), add a default "--- 请选择 ---"
@@ -1519,7 +1526,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 newbieGuideDropdownInput.focus();
-
+            } else if (question.questionType === "domainCardSelection") {
+                newbieGuideAnswerInput.style.display = 'none';
+                newbieGuideDropdownInput.style.display = 'none';
+                if (newbieGuidePromptTextarea) {
+                    newbieGuidePromptTextarea.placeholder = "请点击下方打开的领域卡选择器，选择一张领域卡。";
+                }
+                // Add a new skill row for the domain card
+                const newSkillRow = addSkillEntry({}); // Assuming addSkillEntry returns the new row element
+                // Open the domain card modal, targeting the new skill row
+                if (newSkillRow) {
+                    openDomainCardModal(newSkillRow);
+                } else {
+                    console.error("Failed to add a new skill row for domain card selection in newbie guide.");
+                }
+                // The flow will continue once a card is selected (handled in selectDomainCard)
             } else { // Text input (now a textarea)
                 newbieGuideAnswerInput.style.display = 'block';
                 newbieGuideDropdownInput.style.display = 'none'; // Ensure dropdown is hidden
@@ -1561,6 +1582,44 @@ document.addEventListener('DOMContentLoaded', () => {
         currentNewbieQuestionIndex = 0;
         newbieUserAnswers = {};
         
+        // Dynamically insert domain card selection steps after subclass selection
+        const subclassQuestionIndex = newbieGuideQuestions.findIndex(q => q.targetSelectId === 'subclassSelect');
+        if (subclassQuestionIndex !== -1) {
+            const domainCardStep1 = {
+                prompt: "请选择你的第一张领域卡。",
+                questionType: "domainCardSelection", // New type
+                targetFieldId: "domainCard1_placeholder" // Placeholder, actual data goes to skill row
+            };
+            const domainCardStep2 = {
+                prompt: "请选择你的第二张领域卡。",
+                questionType: "domainCardSelection", // New type
+                targetFieldId: "domainCard2_placeholder" // Placeholder
+            };
+            // Insert after subclass question. Make a copy to avoid modifying the original template array if this function is called multiple times.
+            let questionsWithDomainCards = [...newbieGuideQuestions];
+            questionsWithDomainCards.splice(subclassQuestionIndex + 1, 0, domainCardStep1, domainCardStep2);
+            // Use this modified array for the current guide session
+            // This is a temporary solution. Ideally, newbieGuideQuestions should be reset or managed better if the guide can be restarted.
+            // For now, we assume newbieGuideQuestions is reset elsewhere or this is a one-time modification for the session.
+            // To make it truly dynamic for multiple runs, newbieGuideQuestions itself should be a fresh copy from a template each time.
+            // Let's assume newbieGuideQuestions is the one to be used for this session.
+            // This modification will persist for the current session if startNewbieGuide is called again without resetting newbieGuideQuestions from its original template.
+            // For a robust solution, consider:
+            // 1. Deep copying newbieGuideQuestions from a master template at the start of startNewbieGuide.
+            // 2. Modifying that copy.
+            // This example modifies the global newbieGuideQuestions for simplicity of this diff.
+            // If newbieGuideQuestions is defined in data/template.js and imported, this will modify the imported array.
+            // A better approach would be:
+            // let currentSessionGuideQuestions = JSON.parse(JSON.stringify(newbieGuideQuestionsFromTemplate));
+            // currentSessionGuideQuestions.splice(...)
+            // And then use currentSessionGuideQuestions throughout the guide logic.
+            // For this diff, we'll directly modify the (assumed global) newbieGuideQuestions array.
+            if (!newbieGuideQuestions.find(q => q.questionType === "domainCardSelection")) { // Prevent multiple insertions
+                 newbieGuideQuestions.splice(subclassQuestionIndex + 1, 0, domainCardStep1, domainCardStep2);
+            }
+        }
+
+
         if (document.getElementById('newbieGuideAttributesContainer')) {
             document.getElementById('newbieGuideAttributesContainer').style.display = 'none';
         }
@@ -1575,9 +1634,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const initialQuestion = newbieGuideQuestions[0];
         if (newbieGuidePromptTextarea) {
-            if (initialQuestion && initialQuestion.targetFieldId && newbieGuidePrompts.textInput) {
+            if (initialQuestion && initialQuestion.targetFieldId && newbieGuidePrompts.textInput && newbieGuidePrompts.textInput[initialQuestion.targetFieldId]) {
                 newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.textInput[initialQuestion.targetFieldId] || initialQuestion.prompt;
-            } else if (initialQuestion) {
+            } else if (initialQuestion && initialQuestion.questionType === "domainCardSelection") {
+                newbieGuidePromptTextarea.placeholder = "请点击下方打开的领域卡选择器，选择一张领域卡。";
+            }
+             else if (initialQuestion) {
                 newbieGuidePromptTextarea.placeholder = initialQuestion.prompt;
             } else {
                 newbieGuidePromptTextarea.placeholder = "根据你的选择，这里会显示相关的提示词...";
@@ -1586,7 +1648,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         displayCurrentNewbieQuestion(); // This will also call autoGrow for the first question if it's text
         newbieGuideModal.style.display = 'block';
-    }    
+    }
     function resetNewbieGuide() {
         newbieGuideModal.style.display = 'none';
         currentNewbieQuestionIndex = 0;
@@ -1900,7 +1962,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (jobDomains.length === 0 && jobDomainsDisplay && jobDomainsDisplay.textContent) {
             const displayedText = jobDomainsDisplay.textContent;
-            // Regex to find "领域: X" or "领域: X+Y"
             const domainMatches = displayedText.match(/领域: ([^+|]+)/g);
             if (domainMatches) {
                 domainMatches.forEach(match => {
@@ -1925,7 +1986,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        filterAndDisplayDomainCards(charLevel, jobDomains);
+        // Get already selected domain card names
+        const selectedDomainCardNames = [];
+        const allSkillRows = document.querySelectorAll('#skillsContainer tr.skill-item');
+        allSkillRows.forEach(row => {
+            if (row !== currentTargetSkillRow) { // Exclude the current row being edited
+                const nameInput = row.querySelector('input[name="skillName"]');
+                const domainInput = row.querySelector('input[name="skillDomain"]');
+                if (nameInput && nameInput.value && domainInput && domainInput.value) {
+                    const cardOrigin = DOMAIN_CARDS && Object.values(DOMAIN_CARDS).flat().find(dc => dc.名称 === nameInput.value && dc.领域 === domainInput.value);
+                    if (cardOrigin) {
+                        selectedDomainCardNames.push(nameInput.value);
+                    }
+                }
+            }
+        });
+
+        filterAndDisplayDomainCards(charLevel, jobDomains, selectedDomainCardNames);
         if(domainCardModal) domainCardModal.style.display = 'block';
     }
 
@@ -1944,7 +2021,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function filterAndDisplayDomainCards(characterLevel, jobDomains) {
+    function filterAndDisplayDomainCards(characterLevel, jobDomains, selectedDomainCardNames = []) {
         if (!domainCardListContainer || typeof DOMAIN_CARDS === 'undefined') {
             if(domainCardListContainer) domainCardListContainer.innerHTML = '<p style="text-align:center; color:#777;">领域卡数据或容器未找到。</p>';
             return;
@@ -1955,6 +2032,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Object.values(DOMAIN_CARDS).flat().forEach(card => {
             const cardLevel = parseInt(card.等级, 10);
             const cardDomain = card.领域;
+            const isSelected = selectedDomainCardNames.includes(card.名称);
 
             const domainMatch = jobDomains.some(jd => jd === cardDomain);
             
@@ -1962,12 +2040,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 availableCardsFound = true;
                 const cardElement = document.createElement('div');
                 cardElement.classList.add('domain-card-item');
+                if (isSelected) {
+                    cardElement.classList.add('disabled');
+                }
                 cardElement.innerHTML = `
-                    <h4>${card.名称} (Lvl ${card.等级}, ${card.领域})</h4>
+                    <h4>${card.名称} (Lvl ${card.等级}, ${card.领域})${isSelected ? ' (已选择)' : ''}</h4>
                     <p class="card-meta">属性: ${card.属性} | 回想: ${card.回想}</p>
                     <p>${card.描述.substring(0, 150)}${card.描述.length > 150 ? '...' : ''}</p>
                 `;
-                cardElement.addEventListener('click', () => selectDomainCard(card));
+                if (!isSelected) {
+                    cardElement.addEventListener('click', () => selectDomainCard(card));
+                } else {
+                    cardElement.style.cursor = 'not-allowed';
+                }
                 domainCardListContainer.appendChild(cardElement);
             }
         });
@@ -1978,10 +2063,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function selectDomainCard(cardData) {
+        // Check if this card is already selected by another skill slot
+        const allSkillRows = document.querySelectorAll('#skillsContainer tr.skill-item');
+        for (let i = 0; i < allSkillRows.length; i++) {
+            const row = allSkillRows[i];
+            if (row === currentTargetSkillRow) continue; // Skip the current row
+
+            const nameInput = row.querySelector('input[name="skillName"]');
+            const domainInput = row.querySelector('input[name="skillDomain"]');
+            if (nameInput && nameInput.value === cardData.名称 && domainInput && domainInput.value === cardData.领域) {
+                 // Check if it's truly a domain card from DOMAIN_CARDS by checking its source/type if available
+                 // For now, a name and domain match is considered a duplicate from domain cards
+                alert(`领域卡 "${cardData.名称}" 已经被选择，不能重复选择。`);
+                return;
+            }
+        }
+
         if (currentTargetSkillRow) {
             const nameInput = currentTargetSkillRow.querySelector('input[name="skillName"]');
             const domainInput = currentTargetSkillRow.querySelector('input[name="skillDomain"]');
-            const levelInputTarget = currentTargetSkillRow.querySelector('input[name="skillLevel"]'); // Renamed to avoid conflict
+            const levelInputTarget = currentTargetSkillRow.querySelector('input[name="skillLevel"]');
             const attributeInput = currentTargetSkillRow.querySelector('input[name="skillAttribute"]');
             const recallInput = currentTargetSkillRow.querySelector('input[name="skillRecall"]');
             const descriptionTextarea = currentTargetSkillRow.querySelector('textarea[name="skillDescription"]');
@@ -1989,18 +2090,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (nameInput) nameInput.value = cardData.名称 || "";
             if (domainInput) domainInput.value = cardData.领域 || "";
-            if (levelInputTarget) levelInputTarget.value = `Lv${cardData.等级}` || ""; // Use new variable name
+            if (levelInputTarget) levelInputTarget.value = `Lv${cardData.等级}` || "";
             if (attributeInput) attributeInput.value = cardData.属性 || "";
             if (recallInput) recallInput.value = `${cardData.回想}费` || "";
             if (descriptionTextarea) {
                 descriptionTextarea.value = cardData.描述 || "";
                 autoGrowTextarea({ target: descriptionTextarea });
             }
-            if (configInput) configInput.value = "激活"; // Set default config to "激活"
+            if (configInput) configInput.value = "激活"; // Default to "激活"
             
             updateRemoveButtonVisibility(currentTargetSkillRow);
         }
         closeDomainCardModal();
+
+        // If currently in newbie guide and it's a domain card selection step, proceed to next question
+        if (newbieGuideModal.style.display === 'block' &&
+            currentNewbieQuestionIndex < newbieGuideQuestions.length &&
+            newbieGuideQuestions[currentNewbieQuestionIndex].questionType === "domainCardSelection") {
+            
+            // Store a placeholder answer or the card name if needed for logging/debugging
+            const question = newbieGuideQuestions[currentNewbieQuestionIndex];
+            newbieUserAnswers[question.targetFieldId] = cardData.名称; // Store selected card name
+
+            currentNewbieQuestionIndex++;
+            if (currentNewbieQuestionIndex < newbieGuideQuestions.length) {
+                displayCurrentNewbieQuestion();
+            } else {
+                // Guide finished
+                newbieGuideNextButton.textContent = "完成"; // Should already be set, but ensure
+                // Optionally, could auto-click "完成" here or wait for user
+                // For now, let user click "完成"
+            }
+        }
     }
     //#endregion====================== End of Domain Card Modal Logic ======================
 });

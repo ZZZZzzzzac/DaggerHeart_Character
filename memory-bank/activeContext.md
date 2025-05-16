@@ -8,6 +8,7 @@ This file tracks the project's current status, including recent changes, current
 ## Current Focus
 
 * [2025-05-16 22:15:00] - 完成技能栏领域卡选择功能，并根据反馈调整填充逻辑和默认配置。
+* [2025-05-16 23:11:00] - 在领域卡选择中添加了防止重复选择的机制。
 
 ## Recent Changes
 
