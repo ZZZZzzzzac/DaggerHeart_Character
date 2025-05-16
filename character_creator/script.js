@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('characterForm');
     
-
-
-    //========================= Setting =========================
+    //#region========================= Setting =========================
     const raceSelect = document.getElementById('raceSelect');
     const mixedRaceSelect = document.getElementById('mixedRaceSelect');
     const communitySelect = document.getElementById('communitySelect');
@@ -32,10 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
         levelInput.addEventListener('input', updateLevelTierDisplay);
     }
     updateLevelTierDisplay(); // Initial tier display on load
-    // ====================== End of Setting ======================
+    //#endregion====================== End of Setting ======================
 
     
-    // ====================== Race, Jobs, and Community Selects ======================
+    //#region====================== Race, Jobs, and Community Selects ======================
     let currentSelectedJobDomains = { domain1: null, domain2: null }; // Store current job's domains
     function populateGenericSelect(selectElement, data, valueField, textField, defaultText, dataName) {
         if (!selectElement) {
@@ -337,10 +335,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // If there's a JOB_2 slot and a clear second job trait (e.g. from subclass or another primary job trait),
         // it would be populated here using updateSkillInSlot(FixedSkillSlotIds.JOB_2, secondJobTraitData);
     }
-    // ====================== End of Race, Jobs, and Community Selects ======================
+    //#endregion====================== End of Race, Jobs, and Community Selects ======================
 
 
-    // ====================== Experience & Background ======================
+    //#region====================== Experience & Background ======================
     let appearanceDataUrl = "";
     const experiencesContainer = document.getElementById('experiences');
     const addExperienceBtn = document.getElementById('addExperienceBtn');
@@ -358,15 +356,14 @@ document.addEventListener('DOMContentLoaded', () => {
         experiencesContainer.appendChild(newItem);
         addRemoveListener(newItem.querySelector('.remove-item-btn'));
     });    
-    // ====================== End of Experience & Background ======================
+    //#endregion====================== End of Experience & Background ======================
 
 
-    // ====================== Status =======================
+    //#region====================== Status =======================
+    //#endregion====================== End of Status =======================
 
-    // ====================== End of Status =======================
 
-
-    // ====================== Weapon & Armor & Item ======================
+    //#region====================== Weapon & Armor & Item ======================
     const weaponName1Input = document.getElementById('weaponName1');
     const weaponName2Input = document.getElementById('weaponName2');
     const weaponName3Input = document.getElementById('weaponName3');
@@ -716,10 +713,10 @@ document.addEventListener('DOMContentLoaded', () => {
         populateItemSelect(newSelect); // This might pre-fill and should trigger autoGrow if so
         addRemoveListener(newItem.querySelector('.remove-item-btn'));
     });
-    // ====================== End of Weapon & Armor & Item ======================
+    //#endregion====================== End of Weapon & Armor & Item ======================
 
 
-    // ====================== Skill ======================
+    //#region====================== Skill ======================
     const FixedSkillSlotIds = {
         RACE_1: 'fixed-skill-race-1',
         RACE_2: 'fixed-skill-race-2',
@@ -765,7 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         newRow.innerHTML = `
             <td><input type="text" name="skillConfig" placeholder="配置" value="${defaultConfig}"></td>
-            <td><input type="text" name="skillName" placeholder="名称" value="${skillData.名称 || ''}"></td>
+            <td><input type="text" name="skillName" placeholder="名称" value="${skillData.名称 || ''}" class="skill-name-input"></td>
             <td><input type="text" name="skillDomain" placeholder="领域" value="${skillData.领域 || ''}"></td>
             <td><input type="text" name="skillLevel" placeholder="等级" value="${defaultLevel}"></td>
             <td><input type="text" name="skillAttribute" placeholder="属性" value="${defaultAttribute}"></td>
@@ -773,6 +770,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <td><textarea name="skillDescription" placeholder="描述">${skillData.描述 || ''}</textarea></td>
             <td><button type="button" class="remove-item-btn">-</button></td>
         `;
+
+        const nameInput = newRow.querySelector('input[name="skillName"].skill-name-input');
+        if (nameInput) {
+            nameInput.addEventListener('click', () => openDomainCardModal(newRow));
+        }
 
         const newTextarea = newRow.querySelector('textarea[name="skillDescription"]');
         if (newTextarea) {
@@ -872,10 +874,10 @@ document.addEventListener('DOMContentLoaded', () => {
         textarea.addEventListener('input', autoGrowTextarea);
         setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
     });
-    // ====================== End of Skill ======================
+    //#endregion====================== End of Skill ======================
 
 
-    // ====================== Import ======================
+    //#region====================== Import ======================
     const importJsonBtn = document.getElementById('importJsonBtn');
     const importFile = document.getElementById('importFile');
     if (importJsonBtn && importFile) {
@@ -1214,10 +1216,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-    // ====================== End of Import ======================
+    //#endregion====================== End of Import ======================
 
 
-    // ====================== Export ======================
+    //#region====================== Export ======================
     const exportButton = document.getElementById('exportJson');
     exportButton.addEventListener('click', () => {
         const formData = new FormData(form);
@@ -1369,10 +1371,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log(characterData);
     });    
-    // ====================== End of Export ======================
+    //#endregion====================== End of Export ======================
 
 
-    // ================== newbie guide ==================
+    //#region================== newbie guide ==================
     const newbieGuideButton = document.getElementById('newbieGuideButton');
     const newbieGuideModal = document.getElementById('newbieGuideModal');
     const newbieGuideModalCloseButton = document.getElementById('newbieGuideModalCloseButton');
@@ -1830,10 +1832,10 @@ document.addEventListener('DOMContentLoaded', () => {
             appearanceDataUrl = "";
         });        
     }
-    // ====================== End of newbie guide ======================
+    //#endregion====================== End of newbie guide ======================
 
 
-    // ===================== Utility Functions =====================
+    //#region===================== Utility Functions =====================
     function autoGrowTextarea(event) {
         const textarea = event.target;
         textarea.style.height = '0px';
@@ -1870,5 +1872,135 @@ document.addEventListener('DOMContentLoaded', () => {
         // Trigger auto-grow in case there's pre-filled content (though unlikely for a static empty one)
         setTimeout(() => autoGrowTextarea({ target: initialItemDescriptionTextarea }), 0);
     }
-    // ===================== End of Utility Functions =====================
+    //#endregion===================== End of Utility Functions =====================
+
+
+    //#region====================== Domain Card Modal Logic ======================
+    const domainCardModal = document.getElementById('domainCardModal');
+    const domainCardModalCloseButton = document.getElementById('domainCardModalCloseButton');
+    const domainCardListContainer = document.getElementById('domainCardListContainer');
+    const jobDomainsDisplay = document.getElementById('jobDomainsDisplay'); // Already defined, but ensure it's accessible
+    let currentTargetSkillRow = null;
+
+    function openDomainCardModal(skillRow) {
+        if (!skillRow) return;
+        const configInput = skillRow.querySelector('input[name="skillConfig"]');
+        if (configInput && configInput.value.trim().toLowerCase() === "永久") {
+            return; // Do not open modal if config is "永久"
+        }
+
+        currentTargetSkillRow = skillRow;
+        const charLevel = parseInt(levelInput.value, 10) || 1;
+        
+        let jobDomains = [];
+        if (currentSelectedJobDomains.domain1) jobDomains.push(currentSelectedJobDomains.domain1);
+        if (currentSelectedJobDomains.domain2 && currentSelectedJobDomains.domain1 !== currentSelectedJobDomains.domain2) {
+            jobDomains.push(currentSelectedJobDomains.domain2);
+        }
+        
+        if (jobDomains.length === 0 && jobDomainsDisplay && jobDomainsDisplay.textContent) {
+            const displayedText = jobDomainsDisplay.textContent;
+            // Regex to find "领域: X" or "领域: X+Y"
+            const domainMatches = displayedText.match(/领域: ([^+|]+)/g);
+            if (domainMatches) {
+                domainMatches.forEach(match => {
+                    const parts = match.replace('领域: ', '').split('+');
+                    parts.forEach(part => {
+                        const domain = part.trim();
+                        if (domain && !jobDomains.includes(domain)) {
+                            jobDomains.push(domain);
+                        }
+                    });
+                });
+            }
+        }
+        
+        if (jobDomainsDisplay && jobDomainsDisplay.textContent) {
+            const spellcastingMatch = jobDomainsDisplay.textContent.match(/施法: ([^)]+)/);
+            if (spellcastingMatch && spellcastingMatch[1]) {
+                const spellcastingDomain = spellcastingMatch[1].trim();
+                if (spellcastingDomain && !jobDomains.includes(spellcastingDomain)) {
+                    jobDomains.push(spellcastingDomain);
+                }
+            }
+        }
+
+        filterAndDisplayDomainCards(charLevel, jobDomains);
+        if(domainCardModal) domainCardModal.style.display = 'block';
+    }
+
+    function closeDomainCardModal() {
+        if(domainCardModal) domainCardModal.style.display = 'none';
+        currentTargetSkillRow = null;
+    }
+
+    if (domainCardModalCloseButton) {
+        domainCardModalCloseButton.addEventListener('click', closeDomainCardModal);
+    }
+
+    window.addEventListener('click', (event) => {
+        if (domainCardModal && event.target === domainCardModal) {
+            closeDomainCardModal();
+        }
+    });
+
+    function filterAndDisplayDomainCards(characterLevel, jobDomains) {
+        if (!domainCardListContainer || typeof DOMAIN_CARDS === 'undefined') {
+            if(domainCardListContainer) domainCardListContainer.innerHTML = '<p style="text-align:center; color:#777;">领域卡数据或容器未找到。</p>';
+            return;
+        }
+        domainCardListContainer.innerHTML = '';
+        let availableCardsFound = false;
+
+        Object.values(DOMAIN_CARDS).flat().forEach(card => {
+            const cardLevel = parseInt(card.等级, 10);
+            const cardDomain = card.领域;
+
+            const domainMatch = jobDomains.some(jd => jd === cardDomain);
+            
+            if (domainMatch && cardLevel <= characterLevel) {
+                availableCardsFound = true;
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('domain-card-item');
+                cardElement.innerHTML = `
+                    <h4>${card.名称} (Lvl ${card.等级}, ${card.领域})</h4>
+                    <p class="card-meta">属性: ${card.属性} | 回想: ${card.回想}</p>
+                    <p>${card.描述.substring(0, 150)}${card.描述.length > 150 ? '...' : ''}</p>
+                `;
+                cardElement.addEventListener('click', () => selectDomainCard(card));
+                domainCardListContainer.appendChild(cardElement);
+            }
+        });
+
+        if (!availableCardsFound) {
+            domainCardListContainer.innerHTML = '<p style="text-align:center; color:#777;">没有符合当前职业领域和等级的领域卡。</p>';
+        }
+    }
+
+    function selectDomainCard(cardData) {
+        if (currentTargetSkillRow) {
+            const nameInput = currentTargetSkillRow.querySelector('input[name="skillName"]');
+            const domainInput = currentTargetSkillRow.querySelector('input[name="skillDomain"]');
+            const levelInputTarget = currentTargetSkillRow.querySelector('input[name="skillLevel"]'); // Renamed to avoid conflict
+            const attributeInput = currentTargetSkillRow.querySelector('input[name="skillAttribute"]');
+            const recallInput = currentTargetSkillRow.querySelector('input[name="skillRecall"]');
+            const descriptionTextarea = currentTargetSkillRow.querySelector('textarea[name="skillDescription"]');
+            const configInput = currentTargetSkillRow.querySelector('input[name="skillConfig"]');
+
+            if (nameInput) nameInput.value = cardData.名称 || "";
+            if (domainInput) domainInput.value = cardData.领域 || "";
+            if (levelInputTarget) levelInputTarget.value = `Lv${cardData.等级}` || ""; // Use new variable name
+            if (attributeInput) attributeInput.value = cardData.属性 || "";
+            if (recallInput) recallInput.value = `${cardData.回想}费` || "";
+            if (descriptionTextarea) {
+                descriptionTextarea.value = cardData.描述 || "";
+                autoGrowTextarea({ target: descriptionTextarea });
+            }
+            if (configInput) configInput.value = "激活"; // Set default config to "激活"
+            
+            updateRemoveButtonVisibility(currentTargetSkillRow);
+        }
+        closeDomainCardModal();
+    }
+    //#endregion====================== End of Domain Card Modal Logic ======================
 });
