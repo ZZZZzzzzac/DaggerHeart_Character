@@ -8,6 +8,8 @@ This file tracks the project's current status, including recent changes, current
 ## Current Focus
 
 * [2025-05-16 16:48:41] - 实现动态添加所选子职的“基石”等级特性到 `skillsTable`。
+* [2025-05-16 20:55:36] - 修改技能列表：移除按钮默认显示，当技能“配置”为“永久”时隐藏移除按钮。
+* [2025-05-16 21:06:46] - 修复导入JSON时职业/子职技能重复导入及子职下拉框未正确加载的问题。
 
 ## Recent Changes
 
@@ -94,6 +96,8 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-16 16:32:38] - 修复bug：在 character_creator/script.js 中，当主职业更改后，子职下拉列表未立即刷新。通过在 updateJobTraitsAsSkills 函数中提前调用 updateSubclassOptions 来解决。用户手动应用了此修复。
 * [2025-05-16 16:37:49] - 调整 character_creator/script.js 中的 updateSubclassOptions 函数，移除“选择子职”选项，并确保在主职业更改时正确默认选中子职（优先恢复之前选择，否则选第一个），同时允许用户选择其他子职。此更改由用户在审查期间应用。
 * [2025-05-16 16:48:41] - 修改了 [`character_creator/script.js`](character_creator/script.js:1) 中的 `updateJobTraitsAsSkills` 函数 ([`character_creator/script.js:227-325`](character_creator/script.js:227))，以在选择子职时动态添加其“基石”等级的特性到 `skillsTable`。这包括清除旧的子职特性行，并为新的子职特性行添加 `subclass-keystone-trait-row` 类。
+* [2025-05-16 20:55:36] - 修改了 [`character_creator/script.js`](character_creator/script.js:1) 中技能移除按钮的显示逻辑。注释掉了硬编码隐藏移除按钮的代码，并添加了 `updateRemoveButtonVisibility` 函数，该函数会根据技能的“配置”属性（如果为“永久”）来隐藏或显示移除按钮。此函数已集成到技能行的创建和更新流程中。
+* [2025-05-16 21:06:46] - 修复了在 [`character_creator/script.js`](character_creator/script.js:1) 的 `populateForm` 函数中导入JSON时的两个问题：1. 通过在技能导入循环中添加对“职业特性”和“子职特性”的过滤，防止了这些技能的重复导入。 2. 调整了 `populateForm` 中设置职业、调用 `updateSubclassOptions`、设置子职、然后调用 `updateJobTraitsAsSkills` 的顺序，确保子职下拉框在导入时能正确加载其值。
 
 ## Open Questions/Issues
 

@@ -69,6 +69,8 @@ This file tracks the project's progress using a task list format.
 * [2025-05-16 16:32:56] - 完成任务：修复 character_creator/script.js 中的子职下拉列表刷新bug。当主职业更改后，子职列表现在会立即更新。
 * [2025-05-16 16:38:08] - 完成任务：优化 character_creator/script.js 中子职下拉列表的行为。移除了“选择子职”占位符，并确保在主职业更改时，如果旧的子职选择依然有效则保留，否则默认选择新列表的第一个子职。用户可以正常选择列表中的所有子职。
 * [2025-05-16 16:48:41] - 完成任务：修改 [`character_creator/script.js`](character_creator/script.js:1) 以实现动态添加所选子职的“基石”等级特性到 `skillsTable`。
+* [2025-05-16 20:55:36] - 完成任务：修改 [`character_creator/script.js`](character_creator/script.js:1) 中技能列表移除按钮的逻辑。现在所有技能条目的移除按钮默认显示，仅当技能的“配置”属性为“永久”时才隐藏。
+* [2025-05-16 21:06:46] - 完成任务：修复了 [`character_creator/script.js`](character_creator/script.js:1) 中导入JSON时职业/子职技能重复导入以及子职下拉框未正确加载的问题。
 
 ## Current Tasks
 

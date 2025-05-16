@@ -351,3 +351,52 @@ This comprehensive refactor ensures that trait-based skills are managed in their
             *   如果描述字段是 `textarea`，调用 `autoGrowTextarea` ([`character_creator/script.js:1666-1670`](character_creator/script.js:1666))。
     *   **事件监听**: `professionSelect` 和 `subclassSelect` 的 `change` 事件监听器已配置为调用 `updateJobTraitsAsSkills` 函数 ([`character_creator/script.js:227-325`](character_creator/script.js:227))，因此当职业或子职更改时，此新逻辑会被触发。
     *   **初始加载和导入**: `initializeTraits()` ([`character_creator/script.js:94-104`](character_creator/script.js:94)) 和 `populateForm()` ([`character_creator/script.js:868-1049`](character_creator/script.js:868)) 函数通过调用 `updateJobTraitsAsSkills()` ([`character_creator/script.js:227-325`](character_creator/script.js:227)) 来处理初始加载和数据导入时的特性显示，这也将包括新添加的子职基石特性逻辑。
+
+---
+### Decision (Code)
+[2025-05-16 20:55:36] - 调整技能列表移除按钮的显示逻辑
+
+**Rationale:**
+用户要求技能列表中的所有项目默认都显示移除按钮。仅当某个技能项目的“配置”属性明确设置为“永久”时，其对应的移除按钮才应被隐藏。
+
+**Details:**
+*   修改了 [`character_creator/script.js`](character_creator/script.js:1) 文件。
+*   **`updateRemoveButtonVisibility(skillRowElement)` 函数**:
+    *   新增此辅助函数，接收一个技能行 `<tr>` 元素作为参数。
+    *   它会查找该行内的“配置”输入框 (`input[name="skillConfig"]`) 和移除按钮 (`.remove-item-btn`)。
+    *   如果“配置”输入框的值（去除前后空格后）为 "永久"，则隐藏移除按钮；否则，显示移除按钮（通过将 `display` 设置为空字符串来恢复默认显示）。
+*   **`createSkillRowElement(skillData, isFixedSlot, slotId)` 函数 ([`character_creator/script.js:744-782`](character_creator/script.js:744))**:
+    *   移除了原先在创建固定技能槽时硬编码 `style="display:none;"` 来隐藏移除按钮的逻辑。现在所有移除按钮在创建时都是可见的。
+    *   为每行新创建的“配置”输入框添加了一个 `input` 事件监听器，当其值改变时，会调用 `updateRemoveButtonVisibility` 函数并传入当前行元素，以动态更新移除按钮的可见性。
+    *   在函数末尾，创建完行元素后，立即调用一次 `updateRemoveButtonVisibility` 以根据初始的“配置”值设置移除按钮的正确状态。
+*   **`updateJobTraitsAsSkills()` 函数 ([`character_creator/script.js:225-343`](character_creator/script.js:225))**:
+    *   在动态添加“职业特性”行 (`.dynamic-job-feature-row`) 后，移除了之前硬编码隐藏其移除按钮的逻辑。
+    *   在将这些行添加到 `skillsContainer` 后，调用 `updateRemoveButtonVisibility` 并传入新创建的行。
+    *   同样，在动态添加“子职基石特性”行 (`.subclass-keystone-trait-row`) 后，移除了硬编码隐藏移除按钮的逻辑，并在添加后调用 `updateRemoveButtonVisibility`。
+*   **`updateSkillInSlot(slotId, skillData)` 函数 ([`character_creator/script.js:798-841`](character_creator/script.js:798))**:
+    *   在此函数末尾，当固定技能槽的内容被更新（无论是填充数据还是清空）后，调用 `updateRemoveButtonVisibility` 并传入对应的槽行元素，以确保移除按钮的可见性基于更新后的“配置”值。
+*   **`addSkillEntry(skillData)` 函数 ([`character_creator/script.js:843-850`](character_creator/script.js:843))**:
+    *   在此函数末尾，当通过“添加技能”按钮动态创建新的空白技能行后，调用 `updateRemoveButtonVisibility` 并传入新创建的行，以根据其（通常为空或默认的）“配置”值设置移除按钮的初始状态。
+    
+    ---
+    ### Decision (Code)
+    [2025-05-16 21:06:46] - 修复导入JSON时技能重复及子职加载问题
+    
+    **Rationale:**
+    用户反馈在导入JSON后，存在两个问题：
+    1.  职业和子职相关的特性技能（“职业特性”、“子职特性”）会重复出现。这是因为它们既从JSON的 `技能` 数组中被加载，又在 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904)) 中调用 `updateJobTraitsAsSkills` ([`character_creator/script.js:225-343`](character_creator/script.js:225)) 时被重新生成。
+    2.  子职下拉框在导入后显示为空，没有正确加载JSON中指定的子职。
+    
+    **Details:**
+    *   修改了 [`character_creator/script.js`](character_creator/script.js:1) 文件中的 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904))。
+    *   **防止技能重复导入**:
+        *   在 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904)) 中遍历 `data.技能` 数组时，扩展了原有的 `isFixedTypeAttribute` ([`character_creator/script.js:1067`](character_creator/script.js:1067)) 条件判断。
+        *   新的条件现在还包括检查 `skill.属性 === "职业特性"` 和 `skill.属性 === "子职特性"`。
+        *   如果技能的属性是这些类型之一（或之前已有的固定类型如“种族”、“社群”、“职业”、“混血”），则 `if (!isFixedTypeAttribute)` ([`character_creator/script.js:1071`](character_creator/script.js:1071)) 条件为假，该技能不会通过 `addSkillEntry` ([`character_creator/script.js:856-864`](character_creator/script.js:856)) 作为动态行被添加到技能列表中。这避免了与 `updateJobTraitsAsSkills` ([`character_creator/script.js:225-343`](character_creator/script.js:225)) 函数生成的特性重复。
+    *   **修复子职加载问题**:
+        *   调整了 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904)) 内部设置表单字段和调用更新函数的顺序：
+            1.  设置主职业下拉框的值 (`form.professionSelect.value = data.设定.职业 || "";`)。
+            2.  **立即调用 `updateSubclassOptions()` ([`character_creator/script.js:106-165`](character_creator/script.js:106))**。这会根据刚设置的主职业，填充子职下拉列表 (`subclassSelect`) 的可用选项。
+            3.  **然后设置子职下拉框的值** (`if (form.subclassSelect) form.subclassSelect.value = data.设定.子职业 || "";`)。此时 `subclassSelect` 已有正确的选项，可以正确选中从JSON读取的值。
+            4.  最后，在所有相关的下拉框（包括种族、社群、职业和现在已正确设置的子职）的值都从JSON加载完毕后，再调用 `updateRaceTraitsAsSkills()` ([`character_creator/script.js:166-206`](character_creator/script.js:166)), `updateGroupTraitAsSkill()` ([`character_creator/script.js:207-224`](character_creator/script.js:207)), 和 `updateJobTraitsAsSkills()` ([`character_creator/script.js:225-343`](character_creator/script.js:225))。`updateJobTraitsAsSkills` ([`character_creator/script.js:225-343`](character_creator/script.js:225)) 现在可以基于正确选中的子职来生成相应的特性和更新显示。
+        *   移除了之前错误的 `form.subProfession.value = data.设定.子职业 || "";` ([`character_creator/script.js:944`](character_creator/script.js:944)) 行，因为它使用的是错误的ID，并且其功能已被新的 `subclassSelect` 设置逻辑取代。

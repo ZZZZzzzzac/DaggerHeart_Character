@@ -236,8 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!professionSelect || typeof JOBS_DATA === 'undefined' || !Array.isArray(JOBS_DATA) || !skillsContainer) {
             updateSkillInSlot(FixedSkillSlotIds.JOB_1, null);
-            // Consider if JOB_2 slot should also be cleared if it exists and is used for job/subclass traits
-            // updateSkillInSlot(FixedSkillSlotIds.JOB_2, null);
             if (jobDomainsDisplay) jobDomainsDisplay.textContent = "";
             updateSubclassOptions(); // Ensure subclass options are cleared/disabled if no profession data
             return;
@@ -274,9 +272,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             };
                             const newRow = createSkillRowElement(featureSkillData, false);
                             newRow.classList.add('dynamic-job-feature-row');
-                            const removeBtn = newRow.querySelector('.remove-item-btn');
-                            if (removeBtn) removeBtn.style.display = 'none';
                             skillsContainer.appendChild(newRow);
+                            updateRemoveButtonVisibility(newRow); // Added
                             const textarea = newRow.querySelector('textarea[name="skillDescription"]');
                             if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
                         }
@@ -323,9 +320,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                     };
                                     const newRow = createSkillRowElement(keystoneTraitSkillData, false);
                                     newRow.classList.add('subclass-keystone-trait-row'); // Specific class
-                                    const removeBtn = newRow.querySelector('.remove-item-btn');
-                                    if (removeBtn) removeBtn.style.display = 'none'; // Hide remove button
                                     skillsContainer.appendChild(newRow);
+                                    updateRemoveButtonVisibility(newRow); // Added
                                     const textarea = newRow.querySelector('textarea[name="skillDescription"]');
                                     if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
                                 }
@@ -732,7 +728,21 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const AllFixedSlotIds = Object.values(FixedSkillSlotIds);
     const skillsContainer = document.getElementById('skillsContainer');
-    const addSkillBtn = document.getElementById('addSkillBtn');    
+    const addSkillBtn = document.getElementById('addSkillBtn');
+
+    function updateRemoveButtonVisibility(skillRowElement) {
+        if (!skillRowElement) return;
+        const configInput = skillRowElement.querySelector('input[name="skillConfig"]');
+        const removeBtn = skillRowElement.querySelector('.remove-item-btn');
+        if (configInput && removeBtn) {
+            if (configInput.value.trim() === "永久") { // Use trim() for robustness
+                removeBtn.style.display = 'none';
+            } else {
+                removeBtn.style.display = ''; // Reset to default display
+            }
+        }
+    }
+
     // Helper to create skill row TR element (used by fixed slots and potentially dynamic ones)
     function createSkillRowElement(skillData = {}, isFixedSlot = false, slotId = '') {
         const newRow = document.createElement('tr');
@@ -761,14 +771,23 @@ document.addEventListener('DOMContentLoaded', () => {
             <td><input type="text" name="skillAttribute" placeholder="属性" value="${defaultAttribute}"></td>
             <td><input type="text" name="skillRecall" placeholder="回想" value="${skillData.回想 || ''}"></td>
             <td><textarea name="skillDescription" placeholder="描述">${skillData.描述 || ''}</textarea></td>
-            <td><button type="button" class="remove-item-btn" style="${isFixedSlot ? 'display:none;' : ''}">-</button></td>
+            <td><button type="button" class="remove-item-btn">-</button></td>
         `;
 
         const newTextarea = newRow.querySelector('textarea[name="skillDescription"]');
         if (newTextarea) {
             newTextarea.addEventListener('input', autoGrowTextarea);
         }
-        if (!isFixedSlot) {
+        
+        const configInput = newRow.querySelector('input[name="skillConfig"]');
+        if (configInput) {
+            configInput.addEventListener('input', () => updateRemoveButtonVisibility(newRow));
+        }
+
+        // Initial visibility check
+        updateRemoveButtonVisibility(newRow);
+
+        if (!isFixedSlot) { // Still add remove listener for non-fixed, but visibility is handled separately
             addRemoveListener(newRow.querySelector('.remove-item-btn'));
         }
         return newRow;
@@ -831,6 +850,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inputs.description) {
              setTimeout(() => autoGrowTextarea({ target: inputs.description }), 0);
         }
+        updateRemoveButtonVisibility(slotRow); // Added
     }
     // addSkillEntry is now for DYNAMIC, non-fixed skills, added AFTER fixed slots
     function addSkillEntry(skillData) {
@@ -839,6 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const textarea = newRow.querySelector('textarea[name="skillDescription"]');
         // Initial auto-grow for dynamically added textareas
         if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
+        updateRemoveButtonVisibility(newRow); // Added
         return newRow;
     }
     addSkillBtn.addEventListener('click', () => {
@@ -914,13 +935,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (form.mixedRaceSelect) form.mixedRaceSelect.value = data.设定.混血种族 || "";
             if (form.communitySelect) form.communitySelect.value = data.设定.社群 || "";
             if (form.professionSelect) form.professionSelect.value = data.设定.职业 || "";
+            
+            // Update subclass options first, based on the selected profession
+            updateSubclassOptions();
+            
+            // Now set the subclass value from JSON
+            if (form.subclassSelect) form.subclassSelect.value = data.设定.子职业 || "";
 
-            // After setting dropdowns from JSON, update the fixed skill slots accordingly
+            // After setting ALL dropdowns from JSON (including subclass), update the fixed skill slots and job traits
             updateRaceTraitsAsSkills();
             updateGroupTraitAsSkill();
-            updateJobTraitsAsSkills();
+            updateJobTraitsAsSkills(); // This will now use the correctly set subclass
             
-            form.subProfession.value = data.设定.子职业 || "";
+            // form.subProfession.value = data.设定.子职业 || ""; // This line is redundant if subclassSelect is used
             form.partTimeJob.value = data.设定.兼职 || "";
             form.backgroundStory.value = data.设定.背景故事 || "";
             
@@ -1043,7 +1070,12 @@ document.addEventListener('DOMContentLoaded', () => {
             data.技能.forEach((skill) => {
                 // Only add skills from JSON if they are not meant for the fixed slots
                 // (which are now populated by update...AsSkills calls above)
-                const isFixedTypeAttribute = skill.属性 === "种族" || skill.属性 === "社群" || skill.属性 === "职业" || skill.属性 === "混血";
+                const isFixedTypeAttribute = skill.属性 === "种族" ||
+                                             skill.属性 === "社群" ||
+                                             skill.属性 === "职业" ||
+                                             skill.属性 === "混血" ||
+                                             skill.属性 === "职业特性" || // Added to prevent duplication
+                                             skill.属性 === "子职特性";   // Added to prevent duplication
                 // A more robust check might involve skill names if they are predictable for fixed slots,
                 // e.g. if jobData.希望特性 always results in a skill named "希望特性".
                 // For now, primarily rely on attribute.
