@@ -63,6 +63,7 @@ This file tracks the project's progress using a task list format.
 * [2025-05-15 18:15:29] - 完成任务：将“新人引导”弹窗中的用户文本输入从 `<input>` 更改为 `<textarea>`，并应用了 `autoGrowTextarea` 功能使其能随内容自动调整高度。影响文件：[`character_creator/index.html`](character_creator/index.html:289), [`character_creator/script.js`](character_creator/script.js:1250)。
 * [2025-05-15 21:22:05] - 完成任务：修改了 `#newbieGuidePromptTextarea` 的CSS样式以放大元素，确保提示词完整显示。将其 `min-height` 增加到 `200px` 并移除了HTML中的内联样式。(影响文件: [`character_creator/style.css`](character_creator/style.css), [`character_creator/index.html`](character_creator/index.html))
 * [2025-05-15 21:41:19] - 完成任务：修改了新手引导弹窗中的 `newbieGuideCancelButton` 按钮。将按钮文本从“关闭”修改为“上一步”；将其功能从关闭弹窗修改为返回上一步；并使其样式与“下一步”按钮一致。(影响文件: [`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-16 10:43:32] - 完成任务：实现职业领域显示功能。在选择职业时，在技能表格的标题行右侧（“技能”标题和添加按钮之后）右对齐显示职业的“领域1”和“领域2”。(涉及 [`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))
 
 ## Current Tasks
 

@@ -558,6 +558,25 @@ input[type="checkbox"] {
     margin-bottom: 10px; /* Space below header before items */
 }
 
+.job-domains-display {
+    margin-left: auto; /* Push to the right within the flex container */
+    text-align: right; /* Align text to the right within its own bounds */
+    font-size: 0.9em;
+    color: #555;
+    padding-left: 15px; /* Space from the add button */
+    white-space: nowrap; /* Prevent wrapping if possible */
+    align-self: center; /* Vertically align with h3 and button */
+}
+
+.job-domains-display {
+    margin-left: auto; /* Push to the right within the flex container */
+    text-align: right; /* Align text to the right within its own bounds */
+    font-size: 0.9em;
+    color: #555;
+    padding-left: 15px; /* Space from the add button */
+    white-space: nowrap; /* Prevent wrapping if possible */
+}
+
 .section-header h3 {
     margin: 0 10px 0 0; /* Remove default h3 margins and add space to the right */
     padding-bottom: 0; /* Remove padding if any from general h3 */
@@ -974,4 +993,11 @@ button[type="button"]#importJsonBtn:hover {
 .newbie-guide-main-content .guide-answer-input {
     width: 100%;
     box-sizing: border-box;
+}
+.job-domains-display {
+    text-align: right;
+    margin-top: 10px; /* Add some space above */
+    font-size: 0.9em;
+    color: #555;
+    padding-right: 10px; /* Align with skill table content area */
 }

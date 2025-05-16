@@ -257,3 +257,19 @@ This comprehensive refactor ensures that trait-based skills are managed in their
         *   相应地，将传递给 `addTierToItems` 的 Tier 字符串参数从 `'T0'` 更新为 `'T1'`。
         *   对 `t1`, `t2`, `t3` 的引用也相应地增加1，变为 `t2`, `t3`, `t4`。
         *   添加了对新的 `weapon_t4_...`, `offhand_weapon_t4_...`, `armor_t4` 变量的引用，并将 Tier 字符串参数设置为 `'T4'`。
+---
+### Decision (Code)
+[2025-05-16 10:48:50] - 实现职业领域（领域1、领域2）在技能区域标题行的显示
+
+**Rationale:**
+用户要求在选择职业时，显示该职业的“领域1”和“领域2”。根据用户最新指示，显示位置调整为与“技能”标题和“添加技能”按钮在同一行，并右对齐。
+
+方案选择为：
+1.  在HTML ([`character_creator/index.html`](character_creator/index.html)) 中，将用于显示领域的 `div` (id: `jobDomainsDisplay`) 移入技能部分的 `<div class="section-header">` 内，位于“添加技能”按钮之后。
+2.  在CSS ([`character_creator/style.css`](character_creator/style.css)) 中，调整 `.job-domains-display` 的样式，使用 `margin-left: auto;` 使其在flex容器 (`section-header`) 中右对齐，并调整其他视觉样式如 `padding-left` 和 `align-self`。
+3.  JavaScript ([`character_creator/script.js`](character_creator/script.js)) 中的 `updateJobTraitsAsSkills` 函数（之前已修改）负责获取 `jobDomainsDisplay` 元素，并在职业选择变更时，从 `JOBS_DATA` 获取对应职业的“领域1”和“领域2”，然后更新 `jobDomainsDisplay` div 的 `textContent`。如果职业未选择或无领域数据，则清空该div。
+
+**Details:**
+*   [`character_creator/index.html`](character_creator/index.html): 将 `<div id="jobDomainsDisplay" class="job-domains-display"></div>` 放置于 `<div class="section-header">` 内部，`h3` 和 `button` 之后。
+*   [`character_creator/style.css`](character_creator/style.css): 为 `.job-domains-display` 添加了 `margin-left: auto; padding-left: 15px; align-self: center;` 等样式。
+*   [`character_creator/script.js`](character_creator/script.js): `updateJobTraitsAsSkills` 函数逻辑保持不变，因为它已准备好填充 `jobDomainsDisplay`。

@@ -1,6 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {    
-    const form = document.getElementById('characterForm');    
-
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('characterForm');
     
 
 
@@ -36,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     // ====================== Race, Jobs, and Community Selects ======================
+    let currentSelectedJobDomains = { domain1: null, domain2: null }; // Store current job's domains
     function populateGenericSelect(selectElement, data, valueField, textField, defaultText, dataName) {
         if (!selectElement) {
             return;
@@ -161,9 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSkillInSlot(FixedSkillSlotIds.GROUP_1, groupTraitData);
     }
     function updateJobTraitsAsSkills() {
+        const jobDomainsDisplay = document.getElementById('jobDomainsDisplay'); // Get the display element
+
         if (!professionSelect || typeof JOBS_DATA === 'undefined' || !Array.isArray(JOBS_DATA)) {
             updateSkillInSlot(FixedSkillSlotIds.JOB_1, null);
             updateSkillInSlot(FixedSkillSlotIds.JOB_2, null);
+            if (jobDomainsDisplay) jobDomainsDisplay.textContent = ""; // Clear domains display
             return;
         }
 
@@ -171,16 +174,33 @@ document.addEventListener('DOMContentLoaded', () => {
         let jobTrait1Data = null; // 希望特性
         let jobTrait2Data = null; // 职业特性
 
+        if (jobDomainsDisplay) jobDomainsDisplay.textContent = ""; // Clear previous domains
+
         if (selectedJobName) {
             const jobData = JOBS_DATA.find(j => j.职业 === selectedJobName);
             if (jobData) {
                 // 希望特性
                 if (jobData.希望特性) {
-                    jobTrait1Data = createTraitData("希望特性",jobData.希望特性,"职业");
-                }                
+                    jobTrait1Data = createTraitData("希望特性", jobData.希望特性, "职业");
+                }
                 // 职业特性
                 if (jobData.职业特性名 && jobData.职业特性描述) {
-                    jobTrait2Data = createTraitData(jobData.职业特性名,jobData.职业特性描述,"职业");
+                    jobTrait2Data = createTraitData(jobData.职业特性名, jobData.职业特性描述, "职业");
+                }
+
+                // Update domains display
+                if (jobDomainsDisplay) {
+                    let domainsText = "";
+                    if (jobData.领域1) {
+                        domainsText += `领域: ${jobData.领域1}`;
+                        currentSelectedJobDomains.domain1 = jobData.领域1; // Store the first domain
+                    }
+                    if (jobData.领域2) {
+                        if (domainsText) domainsText += " | "; // Separator
+                        domainsText += `${jobData.领域2}`;
+                        currentSelectedJobDomains.domain2 = jobData.领域2; // Store the second domain
+                    }
+                    jobDomainsDisplay.textContent = domainsText;
                 }
             }
         }
@@ -583,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const AllFixedSlotIds = Object.values(FixedSkillSlotIds);
     const skillsContainer = document.getElementById('skillsContainer');
-    const addSkillBtn = document.getElementById('addSkillBtn');
+    const addSkillBtn = document.getElementById('addSkillBtn');    
     // Helper to create skill row TR element (used by fixed slots and potentially dynamic ones)
     function createSkillRowElement(skillData = {}, isFixedSlot = false, slotId = '') {
         const newRow = document.createElement('tr');
@@ -1287,7 +1307,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-
     function populateFieldsFromNewbieGuide() {
         for (const fieldId in newbieUserAnswers) {
             const element = document.getElementById(fieldId);
@@ -1306,7 +1325,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         resetNewbieGuide(); // Reset and hide modal
     }
-
     function startNewbieGuide() {
         currentNewbieQuestionIndex = 0;
         newbieUserAnswers = {};
@@ -1336,8 +1354,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         displayCurrentNewbieQuestion(); // This will also call autoGrow for the first question if it's text
         newbieGuideModal.style.display = 'block';
-    }
-    
+    }    
     function resetNewbieGuide() {
         newbieGuideModal.style.display = 'none';
         currentNewbieQuestionIndex = 0;
@@ -1352,8 +1369,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (newbieGuideDropdownInput) newbieGuideDropdownInput.style.display = 'none';
         if (newbieGuideAnswerInput) newbieGuideAnswerInput.style.display = 'block';
     }
-
-
     if (newbieGuideButton && newbieGuideModal && newbieGuideModalCloseButton && newbieGuideCancelButton && newbieGuideNextButton && newbieGuideQuestionText && newbieGuideAnswerInput && newbieGuideDropdownInput && newbieGuidePromptTextarea) {
         newbieGuideButton.addEventListener('click', startNewbieGuide);
 
@@ -1526,7 +1541,7 @@ document.addEventListener('DOMContentLoaded', () => {
             appearanceUpload.style.display = 'inline';
             appearanceUpload.value = null;
             appearanceDataUrl = "";
-        });
+        });        
     }
     // ====================== End of newbie guide ======================
 
