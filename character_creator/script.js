@@ -161,31 +161,57 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSkillInSlot(FixedSkillSlotIds.GROUP_1, groupTraitData);
     }
     function updateJobTraitsAsSkills() {
-        const jobDomainsDisplay = document.getElementById('jobDomainsDisplay'); // Get the display element
+        const jobDomainsDisplay = document.getElementById('jobDomainsDisplay');
+        const skillsContainer = document.getElementById('skillsContainer');
 
-        if (!professionSelect || typeof JOBS_DATA === 'undefined' || !Array.isArray(JOBS_DATA)) {
+        // Clear previously added dynamic job feature rows
+        if (skillsContainer) {
+            const dynamicRows = skillsContainer.querySelectorAll('.dynamic-job-feature-row');
+            dynamicRows.forEach(row => row.remove());
+        }
+
+        if (!professionSelect || typeof JOBS_DATA === 'undefined' || !Array.isArray(JOBS_DATA) || !skillsContainer) {
             updateSkillInSlot(FixedSkillSlotIds.JOB_1, null);
-            updateSkillInSlot(FixedSkillSlotIds.JOB_2, null);
-            if (jobDomainsDisplay) jobDomainsDisplay.textContent = ""; // Clear domains display
+            if (jobDomainsDisplay) jobDomainsDisplay.textContent = "";
             return;
         }
 
         const selectedJobName = professionSelect.value;
-        let jobTrait1Data = null; // 希望特性
-        let jobTrait2Data = null; // 职业特性
+        let hopeTraitData = null; // For "希望特性"
 
-        if (jobDomainsDisplay) jobDomainsDisplay.textContent = ""; // Clear previous domains
+        if (jobDomainsDisplay) jobDomainsDisplay.textContent = "";
 
         if (selectedJobName) {
             const jobData = JOBS_DATA.find(j => j.职业 === selectedJobName);
             if (jobData) {
-                // 希望特性
+                // Handle "希望特性" - goes into FixedSkillSlotIds.JOB_1
                 if (jobData.希望特性) {
-                    jobTrait1Data = createTraitData("希望特性", jobData.希望特性, "职业");
+                    hopeTraitData = createTraitData("希望特性", jobData.希望特性, "职业");
                 }
-                // 职业特性
-                if (jobData.职业特性名 && jobData.职业特性描述) {
-                    jobTrait2Data = createTraitData(jobData.职业特性名, jobData.职业特性描述, "职业");
+
+                // Handle "职业特性" - dynamically added
+                if (jobData.职业特性) {
+                    const features = Array.isArray(jobData.职业特性) ? jobData.职业特性 : [jobData.职业特性];
+                    features.forEach(feature => {
+                        if (feature.名称 && feature.描述) {
+                            const featureSkillData = {
+                                配置: "永久", // Or some other default/derived config
+                                名称: feature.名称,
+                                领域: "", // Job features might not have a specific domain here
+                                等级: "", // Or a default level if applicable
+                                属性: "职业特性", // Specific attribute type for these
+                                回想: "",
+                                描述: feature.描述
+                            };
+                            const newRow = createSkillRowElement(featureSkillData, false); // isFixedSlot = false
+                            newRow.classList.add('dynamic-job-feature-row'); // Add class for easy removal
+                            // Optionally, disable inputs if these are purely display
+                            // newRow.querySelectorAll('input, textarea').forEach(input => input.disabled = true);
+                            skillsContainer.appendChild(newRow);
+                            const textarea = newRow.querySelector('textarea[name="skillDescription"]');
+                            if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
+                        }
+                    });
                 }
 
                 // Update domains display
@@ -193,20 +219,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     let domainsText = "";
                     if (jobData.领域1) {
                         domainsText += `领域: ${jobData.领域1}`;
-                        currentSelectedJobDomains.domain1 = jobData.领域1; // Store the first domain
+                        currentSelectedJobDomains.domain1 = jobData.领域1;
                     }
                     if (jobData.领域2) {
-                        if (domainsText) domainsText += " | "; // Separator
+                        if (domainsText) domainsText += " | ";
                         domainsText += `${jobData.领域2}`;
-                        currentSelectedJobDomains.domain2 = jobData.领域2; // Store the second domain
+                        currentSelectedJobDomains.domain2 = jobData.领域2;
                     }
                     jobDomainsDisplay.textContent = domainsText;
                 }
             }
         }
         
-        updateSkillInSlot(FixedSkillSlotIds.JOB_1, jobTrait1Data);
-        updateSkillInSlot(FixedSkillSlotIds.JOB_2, jobTrait2Data);
+        updateSkillInSlot(FixedSkillSlotIds.JOB_1, hopeTraitData);
     }
     // ====================== End of Race, Jobs, and Community Selects ======================
 
@@ -598,8 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
         RACE_1: 'fixed-skill-race-1',
         RACE_2: 'fixed-skill-race-2',
         GROUP_1: 'fixed-skill-group-1',
-        JOB_1: 'fixed-skill-job-1',
-        JOB_2: 'fixed-skill-job-2'
+        JOB_1: 'fixed-skill-job-1'
     };
     const AllFixedSlotIds = Object.values(FixedSkillSlotIds);
     const skillsContainer = document.getElementById('skillsContainer');
@@ -679,7 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentAttributeType = "";
         if (slotId === FixedSkillSlotIds.RACE_1 || slotId === FixedSkillSlotIds.RACE_2) currentAttributeType = "种族";
         else if (slotId === FixedSkillSlotIds.GROUP_1) currentAttributeType = "社群";
-        else if (slotId === FixedSkillSlotIds.JOB_1 || slotId === FixedSkillSlotIds.JOB_2) currentAttributeType = "职业";
+        else if (slotId === FixedSkillSlotIds.JOB_1) currentAttributeType = "职业";
 
         if (skillData) {
             inputs.config.value = skillData.配置 || "永久";

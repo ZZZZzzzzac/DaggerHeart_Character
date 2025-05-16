@@ -661,19 +661,19 @@ button[type="button"]#importJsonBtn:hover {
     background-color: #0056b3;
 }
 /* --- Skill Slot Background Colors --- */
-#fixed-skill-race-1,
+/* #fixed-skill-race-1,
 #fixed-skill-race-2 {
-    background-color: #67989a; /* Light Blue */
+    background-color: #67989a;
 }
 
 #fixed-skill-group-1 {
-    background-color: #458388; /* Light Green */
+    background-color: #458388;
 }
 
 #fixed-skill-job-1,
 #fixed-skill-job-2 {
-    background-color: #17595b; /* Light Yellow */
-}
+    background-color: #17595b;
+} */
 /* Armor Item Container Specific Styles */
 .armor-item-container .item {
     display: flex;
