@@ -11,6 +11,8 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-16 23:11:00] - 在领域卡选择中添加了防止重复选择的机制。
 * [2025-05-17 00:06:00] - 根据技能“配置”属性（宝库/除外）更新技能行可用性及视觉样式。
 * [2025-05-17 00:34:00] - 修改技能逻辑：当配置为“永久”时禁止点击名称框弹窗，并初始化固定技能槽名称输入框placeholder为“名称”。
+* [2025-05-18 00:01:43] - 在角色创建器HTML中添加“受伤阈值”输入字段。
+* [2025-05-18 14:54:10] - 将 "Weapon & Armor & Item" 功能模块从 script.js 提取到 script_weapon_armor_item.js。
 
 ## Recent Changes
 
@@ -101,6 +103,7 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-16 21:06:46] - 修复了在 [`character_creator/script.js`](character_creator/script.js:1) 的 `populateForm` 函数中导入JSON时的两个问题：1. 通过在技能导入循环中添加对“职业特性”和“子职特性”的过滤，防止了这些技能的重复导入。 2. 调整了 `populateForm` 中设置职业、调用 `updateSubclassOptions`、设置子职、然后调用 `updateJobTraitsAsSkills` 的顺序，确保子职下拉框在导入时能正确加载其值。
 * [2025-05-16 22:00:00] - 为技能栏添加领域卡选择功能：修改了 [`character_creator/index.html`](character_creator/index.html) 添加弹窗结构，修改了 [`character_creator/style.css`](character_creator/style.css) 添加弹窗样式，修改了 [`character_creator/script.js`](character_creator/script.js) 实现弹窗显示、数据过滤和选择填充逻辑。
 * [2025-05-16 22:10:00] - 修复领域卡选择功能：确保点击技能名称时，如果配置为“永久”则不弹窗；修正选择领域卡后数据填充到技能栏的逻辑，并将“配置”默认设为“激活”。(修改了 [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-18 00:01:43] - 在 [`character_creator/index.html`](character_creator/index.html) 的金钱部分之后添加了“受伤阈值”输入字段 (majorDamageThreshold, severeDamageThreshold)。
 
 ## Open Questions/Issues
 

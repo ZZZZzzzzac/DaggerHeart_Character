@@ -75,6 +75,8 @@ This file tracks the project's progress using a task list format.
 * [2025-05-16 23:11:00] - 完成任务：在角色创建器的领域卡选择功能中加入了防止用户重复选择同一领域卡的机制。(涉及 [`character_creator/script.js`](character_creator/script.js))
 * [2025-05-17 00:06:00] - 完成任务：根据技能“配置”属性（宝库/除外）更新技能行可用性及视觉样式。(涉及 [`character_creator/style.css`](character_creator/style.css), [`character_creator/script.js`](character_creator/script.js))
 * [2025-05-17 00:34:00] - 完成任务：修改技能逻辑，当配置为“永久”时禁止点击名称框弹窗，并初始化固定技能槽名称输入框placeholder为“名称”。(涉及 [`character_creator/script.js`](character_creator/script.js))
+* [2025-05-18 00:01:43] - 完成任务：在 [`character_creator/index.html`](character_creator/index.html) 的金钱部分之后添加了“受伤阈值”输入字段。
+* [2025-05-18 14:54:10] - 完成任务：将 [`character_creator/script.js`](character_creator/script.js) 中的 "Weapon & Armor & Item" 功能模块提取到新的 [`character_creator/script_weapon_armor_item.js`](character_creator/script_weapon_armor_item.js) 文件中，并更新了 [`character_creator/script.js`](character_creator/script.js) 和 [`character_creator/index.html`](character_creator/index.html) 以集成此新模块。
 
 ## Current Tasks
 

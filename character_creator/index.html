@@ -114,7 +114,7 @@
                         <input type="number" id="hopeMax" name="hopeMax" value="6" title="最大希望">
                     </div>
                     <div>
-                        <label for="armorCurrent">护甲:</label>
+                        <label for="armorCurrent">护甲槽:</label>
                         <input type="number" id="armorCurrent" name="armorCurrent" value="0" title="当前护甲">
                         <span class="status-separator">/</span>
                         <input type="number" id="armorMax" name="armorMax" value="6" title="最大护甲">
@@ -122,16 +122,22 @@
                 </div> <!-- End of first form-group-inline-flex for HP, Stress, etc. -->
                 <div class="form-group-inline-flex"> <!-- New group for Armor Value, Level, Proficiency, Money -->
                     <div>
-                        <label for="armorValue">护甲值:</label>
-                        <input type="number" id="armorValue" name="armorValue" value="0">
-                    </div>
-                    <div>
                         <label for="proficiency">熟练:</label>
                         <input type="number" id="proficiency" name="proficiency" value="1">
                     </div>
                     <div>
                         <label for="money">金钱:</label>
                         <input type="number" id="money" name="money" value="0">
+                    </div>
+                    <div>
+                        <label for="majorDamageThreshold">受伤阈值:</label>
+                        <input type="number" id="majorDamageThreshold" name="majorDamageThreshold" value="0">
+                        <span class="status-separator">/</span>
+                        <input type="number" id="severeDamageThreshold" name="severeDamageThreshold" value="0">
+                    </div>
+                    <div>
+                        <label for="armorValue">护甲值:</label>
+                        <input type="number" id="armorValue" name="armorValue" value="0">
                     </div>
                 </div> <!-- End of group for Armor Value, Level, etc. -->
                 <div class="form-group-inline-flex"> <!-- Group for former attributes -->
@@ -273,6 +279,13 @@
     <script src="data/equipment_data.js"></script>
     <script src="data/template.js"></script>
     <script src="data/domain_card.js"></script>
+    <script src="js/utility.js"></script>
+    <script src="js/race_job_community.js"></script>
+    <script src="js/weapon_armor_item.js"></script>
+    <script src="js/skill.js"></script>
+    <script src="js/json.js"></script>
+    <script src="js/newbie.js"></script>
+    <script src="js/domain_card.js"></script>
     <script src="script.js"></script>
 
     <!-- Equipment Modal -->
