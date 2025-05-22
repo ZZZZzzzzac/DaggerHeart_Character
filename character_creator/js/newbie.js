@@ -251,7 +251,7 @@ function initializeNewbieModule() {
                             }
                             if (template.armor) {
                                 if(armorName1Input) armorName1Input.value = template.armor.名称 || "";
-                                if(document.getElementById('armorDefense1')) document.getElementById('armorDefense1').value = template.armor.防御 || "";
+                                if(document.getElementById('armorDefense1')) document.getElementById('armorDefense1').value = template.armor.护甲值 || "";
                                 if(document.getElementById('armorTrait1')) document.getElementById('armorTrait1').value = template.armor.特性 || "";
                                 if(document.getElementById('armorTrait1')) autoGrowTextarea({target: document.getElementById('armorTrait1')});
                             }

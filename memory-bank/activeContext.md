@@ -67,7 +67,7 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-14 14:33:39] - 重构了“武器”部分的用户界面和数据处理：将输入框标签替换为占位符，并将“双手”字段从复选框更改为文本输入框，以提供更大的灵活性。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
 * [2025-05-14 14:43:52] - 更新了“经历”、“护甲”和“道具”部分，将字段标签替换为输入框内的占位符，以统一表单风格。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
 * [2025-05-14 14:49:18] - 根据用户反馈调整了“护甲”部分的布局，使其标题与输入框在同一行，类似于“武器”部分的样式。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css)。
-* [2025-05-14 14:52:53] - 根据用户反馈，将“经历”的“调整值”、“护甲”的“防御”和“道具”的“数量”输入框类型从 `number` 更改为 `text`，并更新了相应的 `placeholder` 和导出逻辑。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
+* [2025-05-14 14:52:53] - 根据用户反馈，将“经历”的“调整值”、“护甲”的“护甲值”和“道具”的“数量”输入框类型从 `number` 更改为 `text`，并更新了相应的 `placeholder` 和导出逻辑。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
 * [2025-05-14 14:56:50] - 根据用户反馈，移除了“背景故事”字段的标签，并为其文本区域添加了 `placeholder`。影响文件：[`character_creator/index.html`](character_creator/index.html)。
 * [2025-05-14 15:06:49] - 根据用户反馈调整了角色创建器初始设定部分的布局，将字段分为三行显示，并将“等级”字段移至第一行。(修改了 [`character_creator/index.html`](character_creator/index.html:15) 和 [`character_creator/style.css`](character_creator/style.css:77))
 * [2025-05-14 16:17:26] - 将 `character_creator/data/equipment.csv` 转换为JS数据格式，并保存为 `character_creator/data/equipment_data.js`，其中数据按武器/护甲和T0-T3等级分类。

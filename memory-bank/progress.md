@@ -25,7 +25,7 @@ This file tracks the project's progress using a task list format.
 * [2025-05-14 14:33:51] - 完成任务：重构“武器”部分，将标签改为占位符，并将“双手”字段从布尔型复选框改为字符串型文本输入。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
 * [2025-05-14 14:43:58] - 完成任务：将“经历”、“护甲”和“道具”部分输入字段的标签改为占位符。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
 * [2025-05-14 14:49:27] - 完成任务：调整“护甲”部分布局，使其标题与输入框在同一行，以匹配“武器”部分的样式。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/style.css`](character_creator/style.css)。
-* [2025-05-14 14:53:01] - 完成任务：将“经历”的“调整值”、“护甲”的“防御”和“道具”的“数量”输入框类型更改为 `text`，并更新了相应的 `placeholder` 和导出逻辑。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
+* [2025-05-14 14:53:01] - 完成任务：将“经历”的“调整值”、“护甲”的“护甲值”和“道具”的“数量”输入框类型更改为 `text`，并更新了相应的 `placeholder` 和导出逻辑。影响文件：[`character_creator/index.html`](character_creator/index.html), [`character_creator/script.js`](character_creator/script.js)。
 * [2025-05-14 14:57:01] - 完成任务：移除“背景故事”字段的标签，并为其添加 `placeholder`。影响文件：[`character_creator/index.html`](character_creator/index.html)。
 * [2025-05-14 15:06:58] - 完成任务：调整角色创建器初始设定部分的布局，将字段分为三行显示，并将“等级”字段移至第一行。(涉及 [`character_creator/index.html`](character_creator/index.html:15) 和 [`character_creator/style.css`](character_creator/style.css:77))
 * [2025-05-14 16:17:39] - 完成任务：将 `character_creator/data/equipment.csv` 转换为JS数据格式并保存为 `character_creator/data/equipment_data.js`，按武器/护甲和T0-T3等级分类。

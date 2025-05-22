@@ -152,7 +152,7 @@ This comprehensive refactor ensures that trait-based skills are managed in their
 **Details:**
 *   [`character_creator/index.html`](character_creator/index.html):
     *   在“经历”部分，为静态的“关键词”和“调整值”输入框移除了 `<label>` 元素，并添加了 `placeholder` 属性。
-    *   在“护甲”部分，为“名称”、“防御”和“特性”输入框移除了 `<label>` 元素，并添加了 `placeholder` 属性。
+    *   在“护甲”部分，为“名称”、“护甲值”和“特性”输入框移除了 `<label>` 元素，并添加了 `placeholder` 属性。
     *   在“道具”部分，为静态的“名称”、“数量”和“描述”输入框移除了 `<label>` 元素，并添加了 `placeholder` 属性。
 *   [`character_creator/script.js`](character_creator/script.js):
     *   在 `addExperienceBtn` 的事件监听器中，动态创建“经历”条目时，移除了“关键词”和“调整值”的 `<label>`，并为 `<input>` 元素添加了 `placeholder`。

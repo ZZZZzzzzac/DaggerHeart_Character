@@ -65,13 +65,13 @@ function initializeWeaponArmorItemModule() {
 
         // Define which headers are filterable
         const filterableWeaponHeaders = ['名称', '检定', '属性', '范围', '伤害', '负荷', '特性', 'Tier'];
-        const filterableArmorHeaders = ['名称', '防御', '特性', 'Tier'];
+        const filterableArmorHeaders = ['名称', '护甲值', '特性', 'Tier'];
 
         if (type === 'weapon') {
             headers =     ['名称', 'Tier', '检定', '属性', '范围', '伤害', '负荷', '特性'];
             columnWidths = ['20%',  '8%',  '10%',  '10%',  '12%',  '10%',  '10%',  '20%']; // Sum should be 100%
         } else if (type === 'armor') {
-            headers =     ['名称', 'Tier', '防御', '特性'];
+            headers =     ['名称', 'Tier', '护甲值', '特性'];
             columnWidths = ['34%',  '12%', '20%',  '34%']; // Sum should be 100%
         }
 
@@ -233,7 +233,7 @@ function initializeWeaponArmorItemModule() {
                 cellsHtml = `
                     <td style="width: ${currentColumnWidths[0]};">${item.名称 || ''}</td>
                     <td style="width: ${currentColumnWidths[1]};">${item.tier || ''}</td>
-                    <td style="width: ${currentColumnWidths[2]};">${item.防御 || ''}</td>
+                    <td style="width: ${currentColumnWidths[2]};">${item.护甲值 || ''}</td>
                     <td style="width: ${currentColumnWidths[3]};">${item.特性 || ''}</td>
                 `;
             }
@@ -319,7 +319,7 @@ function initializeWeaponArmorItemModule() {
             } else if (targetInputId.startsWith('armorName')) {
                 const armorIndex = targetInputId.charAt(targetInputId.length - 1);
                 if (form[`armorName${armorIndex}`]) form[`armorName${armorIndex}`].value = equipmentData.名称 || '';
-                if (form[`armorDefense${armorIndex}`]) form[`armorDefense${armorIndex}`].value = equipmentData.防御 || '';
+                if (form[`armorDefense${armorIndex}`]) form[`armorDefense${armorIndex}`].value = equipmentData.护甲值 || '';
                 const traitTextarea = document.getElementById(`armorTrait${armorIndex}`);
                 if (traitTextarea) {
                     traitTextarea.value = equipmentData.特性 || '';
