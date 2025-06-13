@@ -408,6 +408,46 @@ input[type="checkbox"] {
     width: 50px;
 }
 
+/* Armor Item Specific Styles - Widths for Single Line */
+.armor-item-container .item {
+    flex-wrap: nowrap; /* Ensure single line for armor as well */
+    gap: 0px 5px; /* Consistent gap */
+}
+
+.armor-item-container .item h4 {
+    margin: 0 5px 0 0;
+    padding-bottom: 0;
+    color: #333;
+    font-size: 1em;
+    font-weight: bold;
+    border-bottom: none;
+    align-self: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.armor-item-container .item input[type="text"] {
+    margin-right: 2px;
+    margin-bottom: 0;
+    padding: 4px;
+    flex-shrink: 0;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+#armorName1 {
+    width: 120px; /* Slightly more space for armor name */
+}
+#armorDefense1 {
+    width: 60px;
+}
+#armorMajorThreshold1 {
+    width: 70px;
+}
+#armorSevereThreshold1 {
+    width: 70px;
+}
+ 
 /* Item (道具) Specific Styles */
 #items .item select[name="itemName"] {
     width: 15em; /* Approx 10 CJK characters, adjust as needed */

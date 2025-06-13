@@ -151,7 +151,9 @@ function initializeJsonModule() {
             if (data.物品.护甲 && data.物品.护甲.length > 0) {
                 const armor = data.物品.护甲[0];
                  if(form.armorName1) form.armorName1.value = armor.名称 || "";
-                 if(form.armorDefense1) form.armorDefense1.value = armor.护甲值 || 0;
+                 if(form.armorDefense1) form.armorDefense1.value = armor.护甲值 || ""; // Changed 0 to "" for consistency with text input
+                 if(form.armorMajorThreshold1) form.armorMajorThreshold1.value = armor.重伤阈值 || "";
+                 if(form.armorSevereThreshold1) form.armorSevereThreshold1.value = armor.致命阈值 || "";
                  if(form.armorTrait1) form.armorTrait1.value = armor.特性 || "";
                  if (form.armorTrait1) setTimeout(() => autoGrowTextarea({ target: form.armorTrait1 }), 0);
             }
@@ -348,7 +350,11 @@ function initializeJsonModule() {
 
         if (form.querySelector('#armorName1')) {
             characterData.物品.护甲.push({
-                "名称": formData.get('armorName1') || "", "护甲值": formData.get('armorDefense1') || "", "特性": formData.get('armorTrait1') || ""
+                "名称": formData.get('armorName1') || "",
+                "护甲值": formData.get('armorDefense1') || "",
+                "重伤阈值": formData.get('armorMajorThreshold1') || "",
+                "致命阈值": formData.get('armorSevereThreshold1') || "",
+                "特性": formData.get('armorTrait1') || ""
             });
         }
         characterData.物品.道具 = []; // Initialize道具 array

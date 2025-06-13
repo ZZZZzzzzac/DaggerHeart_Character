@@ -66,17 +66,17 @@ function initializeWeaponArmorItemModule() {
         // Define which headers are filterable
         // Define which headers are filterable (using new English field names for keys)
         const filterableWeaponKeys = ['name', 'trait', 'physical', 'range', 'damage', 'two_handed', 'desc', 'tier'];
-        const filterableArmorKeys = ['name', 'score', 'desc', 'tier'];
-
+        const filterableArmorKeys = ['name', 'score', 'major_threshold', 'severe_threshold', 'desc', 'tier']; // Added new thresholds
+ 
         // Headers for display (can remain in Chinese)
         if (type === 'weapon') {
             headers =     ['名称', 'Tier', '检定', '属性', '范围', '伤害', '负荷', '特性'];
             columnWidths = ['20%',  '8%',  '10%',  '10%',  '12%',  '10%',  '10%',  '20%'];
         } else if (type === 'armor') {
-            headers =     ['名称', 'Tier', '护甲值', '特性']; // For armor, '护甲值' maps to 'score', '特性' to 'desc'
-            columnWidths = ['34%',  '12%', '20%',  '34%'];
+            headers =     ['名称', 'Tier', '护甲值', '重伤阈值', '致命阈值', '特性']; // Added new threshold headers
+            columnWidths = ['24%',  '8%', '12%',  '12%',  '12%',  '32%']; // Adjusted widths
         }
-
+ 
         const headerToKeyMap = {
             '名称': 'name',
             'Tier': 'tier',
@@ -86,9 +86,11 @@ function initializeWeaponArmorItemModule() {
             '伤害': 'damage',
             '负荷': 'two_handed',
             '特性': 'desc',
-            '护甲值': 'score'
+            '护甲值': 'score',
+            '重伤阈值': 'major_threshold',
+            '致命阈值': 'severe_threshold'
         };
-
+ 
         headers.forEach((headerText, index) => {
             const th = document.createElement('th');
             th.textContent = headerText;
@@ -119,7 +121,7 @@ function initializeWeaponArmorItemModule() {
                     const slotTypeToFilter = (typeToFilter === 'weapon') ? currentOpenWeaponSlotType : 'any';
                     filterAndDisplayEquipment(typeToFilter, slotTypeToFilter);
                 });
-                th.appendChild(document.createElement('br')); // Add a line break for layout
+                // th.appendChild(document.createElement('br')); // Removed line break
                 th.appendChild(filterInput);
             }
             headerRow.appendChild(th);
@@ -222,12 +224,15 @@ function initializeWeaponArmorItemModule() {
                     <td style="width: ${currentColumnWidths[7]};">${item.desc || ''}</td>
                 `;
             } else if (type === 'armor') {
-                currentColumnWidths = ['34%', '12%', '20%', '34%'];
+                currentColumnWidths = ['24%',  '8%', '12%',  '12%',  '12%',  '32%'];
                 cellsHtml = `
                     <td style="width: ${currentColumnWidths[0]};">${item.name || ''}</td>
                     <td style="width: ${currentColumnWidths[1]};">${item.tier || ''}</td>
                     <td style="width: ${currentColumnWidths[2]};">${item.score || ''}</td>
-                    <td style="width: ${currentColumnWidths[3]};">${item.desc || ''}</td>
+                    <td style="width: ${currentColumnWidths[2]};">${item.score || ''}</td>
+                    <td style="width: ${currentColumnWidths[3]};">${item.major_threshold || ''}</td>
+                    <td style="width: ${currentColumnWidths[4]};">${item.severe_threshold || ''}</td>
+                    <td style="width: ${currentColumnWidths[5]};">${item.desc || ''}</td>
                 `;
             }
             tr.innerHTML = cellsHtml;
@@ -322,14 +327,30 @@ function initializeWeaponArmorItemModule() {
                 const armorIndex = targetInputId.charAt(targetInputId.length - 1);
                 if (form[`armorName${armorIndex}`]) form[`armorName${armorIndex}`].value = equipmentData.name || '';
                 if (form[`armorDefense${armorIndex}`]) form[`armorDefense${armorIndex}`].value = equipmentData.score || '';
-                // Also update major and severe damage thresholds if they are part of the main character sheet
-                // Assuming they are not directly on the armor item row, but on the character status section
-                if (document.getElementById('majorDamageThreshold') && equipmentData.major_threshold !== undefined) {
-                    document.getElementById('majorDamageThreshold').value = equipmentData.major_threshold;
+                // Update the new threshold fields for the specific armor item
+                const armorMajorThresholdField = form[`armorMajorThreshold${armorIndex}`];
+                const armorSevereThresholdField = form[`armorSevereThreshold${armorIndex}`];
+
+                if (armorMajorThresholdField) armorMajorThresholdField.value = equipmentData.major_threshold || '';
+                if (armorSevereThresholdField) armorSevereThresholdField.value = equipmentData.severe_threshold || '';
+                
+                // Update character's global damage thresholds by adding character level
+                const characterLevelInput = document.getElementById('level');
+                const characterLevel = characterLevelInput ? parseInt(characterLevelInput.value, 10) || 0 : 0;
+                
+                const baseMajorThreshold = parseInt(equipmentData.major_threshold, 10) || 0;
+                const baseSevereThreshold = parseInt(equipmentData.severe_threshold, 10) || 0;
+
+                const globalMajorThresholdInput = document.getElementById('majorDamageThreshold');
+                const globalSevereThresholdInput = document.getElementById('severeDamageThreshold');
+
+                if (globalMajorThresholdInput) {
+                    globalMajorThresholdInput.value = baseMajorThreshold + characterLevel;
                 }
-                if (document.getElementById('severeDamageThreshold') && equipmentData.severe_threshold !== undefined) {
-                    document.getElementById('severeDamageThreshold').value = equipmentData.severe_threshold;
+                if (globalSevereThresholdInput) {
+                    globalSevereThresholdInput.value = baseSevereThreshold + characterLevel;
                 }
+                
                 const traitTextarea = document.getElementById(`armorTrait${armorIndex}`);
                 if (traitTextarea) {
                     traitTextarea.value = equipmentData.desc || '';
