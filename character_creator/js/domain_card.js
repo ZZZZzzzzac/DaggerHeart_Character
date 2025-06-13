@@ -73,7 +73,7 @@ function openDomainCardModal(skillRow) {
             const nameInput = row.querySelector('input[name="skillName"]');
             const domainInput = row.querySelector('input[name="skillDomain"]');
             if (nameInput && nameInput.value && domainInput && domainInput.value) {
-                const cardOrigin = DOMAIN_CARDS && Object.values(DOMAIN_CARDS).flat().find(dc => dc.名称 === nameInput.value && dc.领域 === domainInput.value);
+                const cardOrigin = DOMAIN_CARDS && DOMAIN_CARDS.find(dc => dc.名称 === nameInput.value && dc.领域 === domainInput.value);
                 if (cardOrigin) {
                     selectedDomainCardNames.push(nameInput.value);
                 }
@@ -98,7 +98,7 @@ function filterAndDisplayDomainCards(characterLevel, jobDomains, selectedDomainC
     domainCardListContainer.innerHTML = '';
     let availableCardsFound = false;
 
-    Object.values(DOMAIN_CARDS).flat().forEach(card => {
+    DOMAIN_CARDS.forEach(card => {
         const cardLevel = parseInt(card.等级, 10);
         const cardDomain = card.领域;
         const isSelected = selectedDomainCardNames.includes(card.名称);

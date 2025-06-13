@@ -39,10 +39,10 @@ function initializeRaceJobCommunityModule() {
         }
     }
     // 初始化下拉选择框
-    populateGenericSelect(raceSelect, RACES_DATA, 'race', 'race', "必选", "RACES_DATA");
-    populateGenericSelect(mixedRaceSelect, RACES_DATA, 'race', 'race', "可选", "RACES_DATA");
-    populateGenericSelect(communitySelect, GROUPS_DATA, '社群', '社群', "必选", "GROUPS_DATA");
-    populateGenericSelect(professionSelect, JOBS_DATA, '职业', '职业', "必选", "JOBS_DATA");
+    populateGenericSelect(raceSelect, RACES_DATA, 'name', 'name', "必选", "RACES_DATA"); // 'race' -> 'name'
+    populateGenericSelect(mixedRaceSelect, RACES_DATA, 'name', 'name', "可选", "RACES_DATA"); // 'race' -> 'name'
+    populateGenericSelect(communitySelect, GROUPS_DATA, 'name', 'name', "必选", "GROUPS_DATA"); // '社群' -> 'name'
+    populateGenericSelect(professionSelect, JOBS_DATA, 'name', 'name', "必选", "JOBS_DATA"); // '职业' -> 'name'
 
     // 添加选择框事件监听
     if (raceSelect) raceSelect.addEventListener('change', updateRaceTraitsAsSkills);
@@ -85,24 +85,40 @@ function updateSubclassOptions() {
     let previousValueIsValid = false;
 
     if (selectedJobName) {
-        const jobData = JOBS_DATA.find(j => j.职业 === selectedJobName);
-        if (jobData && jobData.子职 && Array.isArray(jobData.子职) && jobData.子职.length > 0) {
-            jobData.子职.forEach((subclass, index) => {
-                if (subclass.名称) { // Ensure subclass has a name
-                    if (index === 0) {
-                        firstSubclassName = subclass.名称;
+        const jobData = JOBS_DATA.find(j => j.name === selectedJobName); // j.职业 -> j.name
+        if (jobData) {
+            const subclasses = [];
+            if (jobData.subclass1) subclasses.push({ name: jobData.subclass1, spellcast: jobData.subclass1_spellcast });
+            if (jobData.subclass2) subclasses.push({ name: jobData.subclass2, spellcast: jobData.subclass2_spellcast });
+
+            if (subclasses.length > 0) {
+                subclasses.forEach((subclass, index) => {
+                    if (subclass.name) {
+                        if (index === 0) {
+                            firstSubclassName = subclass.name;
+                        }
+                        const option = document.createElement('option');
+                        option.value = subclass.name;
+                        option.textContent = subclass.name;
+                        // Store spellcasting attribute for later use if needed, e.g., in updateJobTraitsAsSkills
+                        option.dataset.spellcast = subclass.spellcast || "";
+                        subclassSelect.appendChild(option);
+                        if (subclass.name === previousSubclassValue) {
+                            previousValueIsValid = true;
+                        }
                     }
-                    const option = document.createElement('option');
-                    option.value = subclass.名称;
-                    option.textContent = subclass.名称;
-                    subclassSelect.appendChild(option);
-                    if (subclass.名称 === previousSubclassValue) {
-                        previousValueIsValid = true;
-                    }
-                }
-            });
-            subclassSelect.disabled = false;
+                }); // End of forEach
+                subclassSelect.disabled = false;
+            } else { // Added else for if (subclasses.length > 0)
+                const option = document.createElement('option');
+                option.value = "";
+                option.textContent = "无可用子职";
+                subclassSelect.appendChild(option);
+                subclassSelect.disabled = true;
+            } // End of else for if (subclasses.length > 0)
             
+            // This logic should be inside the 'if (jobData)' block but outside 'if (subclasses.length > 0)' if no subclasses means no selection
+            // Or, more simply, if subclasses.length IS 0, firstSubclassName will be null, leading to selection of ""
             if (previousValueIsValid) {
                 subclassSelect.value = previousSubclassValue;
             } else if (firstSubclassName) {
@@ -158,25 +174,25 @@ function updateRaceTraitsAsSkills() {
     let trait2Data = null;
 
     if (selectedRaceName) {
-        const mainRaceData = RACES_DATA.find(r => r.race === selectedRaceName);
+        const mainRaceData = RACES_DATA.find(r => r.name === selectedRaceName); // r.race -> r.name
         if (!mainRaceData) return;
         
         // 处理主要种族特性
-        if (mainRaceData.trait1 && mainRaceData.trait1.name) {
-            trait1Data = createTraitData(mainRaceData.trait1.name,mainRaceData.trait1.description,"种族");
+        if (mainRaceData.trait1_name) { // Use new field trait1_name
+            trait1Data = createTraitData(mainRaceData.trait1_name, mainRaceData.trait1_desc, "种族");
         }
 
         // 处理第二个特性（可能来自混血种族或主要种族）
         if (hasMixedRace) {
-            const mixedRaceData = RACES_DATA.find(r => r.race === selectedMixedRaceName);
-            if (mixedRaceData && mixedRaceData.trait2 && mixedRaceData.trait2.name) {
-                trait2Data = createTraitData(mixedRaceData.trait2.name,mixedRaceData.trait2.description,"混血");
+            const mixedRaceData = RACES_DATA.find(r => r.name === selectedMixedRaceName); // Use r.name
+            if (mixedRaceData && mixedRaceData.trait2_name) { // Use new field trait2_name
+                trait2Data = createTraitData(mixedRaceData.trait2_name, mixedRaceData.trait2_desc, "混血");
             }
         }
         
         // 如果没有从混血获取第二特性，尝试使用主要种族的第二特性
-        if (!trait2Data && mainRaceData.trait2 && mainRaceData.trait2.name) {
-            trait2Data = createTraitData(mainRaceData.trait2.name,mainRaceData.trait2.description,"种族");
+        if (!trait2Data && mainRaceData.trait2_name) { // Use new field trait2_name
+            trait2Data = createTraitData(mainRaceData.trait2_name, mainRaceData.trait2_desc, "种族");
         }
     }
     
@@ -194,9 +210,9 @@ function updateGroupTraitAsSkill() {
     let groupTraitData = null;
 
     if (selectedGroupName) {
-        const groupData = GROUPS_DATA.find(g => g.社群 === selectedGroupName);
-        if (groupData && groupData.特性名 && groupData.描述) {
-            groupTraitData = createTraitData(groupData.特性名,groupData.描述,"社群");
+        const groupData = GROUPS_DATA.find(g => g.name === selectedGroupName); // g.社群 -> g.name
+        if (groupData && groupData.trait_name && groupData.trait_desc) { // 特性名 -> trait_name, 描述 -> trait_desc
+            groupTraitData = createTraitData(groupData.trait_name, groupData.trait_desc, "社群");
         }
     }
     
@@ -230,85 +246,97 @@ function updateJobTraitsAsSkills() {
     if (jobDomainsDisplay) jobDomainsDisplay.textContent = "";
 
     if (selectedJobName) {
-        const jobData = JOBS_DATA.find(j => j.职业 === selectedJobName);
+        const jobData = JOBS_DATA.find(j => j.name === selectedJobName); // j.职业 -> j.name
         if (jobData) {
-            // Handle "希望特性" - goes into FixedSkillSlotIds.JOB_1
-            if (jobData.希望特性) {
-                hopeTraitData = createTraitData("希望特性", jobData.希望特性, "职业");
+            // Handle Hope Trait
+            if (jobData.hope_trait_name && jobData.hope_trait_desc) {
+                hopeTraitData = createTraitData(jobData.hope_trait_name, jobData.hope_trait_desc, "职业");
             }
 
-            // Handle "职业特性" - dynamically added
-            if (jobData.职业特性) {
-                const features = Array.isArray(jobData.职业特性) ? jobData.职业特性 : [jobData.职业特性];
-                features.forEach(feature => {
-                    if (feature.名称 && feature.描述) {
+            // Handle Class Features
+            if (jobData.class_feature && Array.isArray(jobData.class_feature)) {
+                jobData.class_feature.forEach(feature => {
+                    if (feature.name && feature.desc) {
                         const featureSkillData = {
                             配置: "永久",
-                            名称: feature.名称,
+                            名称: feature.name, // feature.名称 -> feature.name
                             领域: "",
-                            等级: "", // Or feature.等级 if available and relevant
+                            等级: "",
                             属性: "职业特性",
                             回想: "",
-                            描述: feature.描述
+                            描述: feature.desc // feature.描述 -> feature.desc
                         };
                         const newRow = createSkillRowElement(featureSkillData, false);
                         newRow.classList.add('dynamic-job-feature-row');
                         skillsContainer.appendChild(newRow);
-                        updateRemoveButtonVisibility(newRow); // Added
+                        updateRemoveButtonVisibility(newRow);
                         const textarea = newRow.querySelector('textarea[name="skillDescription"]');
                         if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
                     }
                 });
             }
 
-            // Update domains display (Job domains and Subclass spellcasting)
+            // Update domains display
             let domainsText = "";
-            if (jobData.领域1) {
-                domainsText += `领域: ${jobData.领域1}`;
-                currentSelectedJobDomains.domain1 = jobData.领域1;
+            if (jobData.domain1) { // jobData.领域1 -> jobData.domain1
+                domainsText += `领域: ${jobData.domain1}`;
+                currentSelectedJobDomains.domain1 = jobData.domain1;
+            } else {
+                currentSelectedJobDomains.domain1 = null;
             }
-            if (jobData.领域2) {
+            if (jobData.domain2) { // jobData.领域2 -> jobData.domain2
                 if (domainsText) domainsText += "+";
-                domainsText += `${jobData.领域2}`;
-                currentSelectedJobDomains.domain2 = jobData.领域2;
+                domainsText += `${jobData.domain2}`;
+                currentSelectedJobDomains.domain2 = jobData.domain2;
+            } else {
+                currentSelectedJobDomains.domain2 = null;
             }
             
             const selectedSubclassName = subclassSelect ? subclassSelect.value : null;
-            if (selectedSubclassName && jobData.子职) {
-                const subclassData = jobData.子职.find(sc => sc.名称 === selectedSubclassName);
-                if (subclassData) {
-                    // Add subclass spellcasting to domains display
-                    if (subclassData.施法 && subclassData.施法.trim() !== "") {
-                        if (domainsText) {
-                            domainsText += ` | 施法: ${subclassData.施法}`;
-                        } else {
-                            domainsText = `施法: ${subclassData.施法}`;
-                        }
-                    }
+            let subclassSpellcast = "";
+            let baseFeatures = [];
 
-                    // Handle Subclass "特性" with "等级": "基石" - dynamically added
-                    if (subclassData.特性 && Array.isArray(subclassData.特性)) {
-                        subclassData.特性.forEach(trait => {
-                            if (trait.等级 === "基石" && trait.名称 && trait.描述) {
-                                const keystoneTraitSkillData = {
-                                    配置: "永久",
-                                    名称: trait.名称,
-                                    领域: "", // Subclass traits typically don't have a domain here
-                                    等级: "基石",
-                                    属性: "子职特性", // Specific attribute type
-                                    回想: "",
-                                    描述: trait.描述
-                                };
-                                const newRow = createSkillRowElement(keystoneTraitSkillData, false);
-                                newRow.classList.add('subclass-keystone-trait-row'); // Specific class
-                                skillsContainer.appendChild(newRow);
-                                updateRemoveButtonVisibility(newRow); // Added
-                                const textarea = newRow.querySelector('textarea[name="skillDescription"]');
-                                if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
-                            }
-                        });
-                    }
+            if (selectedSubclassName) {
+                if (jobData.subclass1 === selectedSubclassName) {
+                    subclassSpellcast = jobData.subclass1_spellcast || "";
+                    baseFeatures = jobData.subclass1_base_feature || [];
+                } else if (jobData.subclass2 === selectedSubclassName) {
+                    subclassSpellcast = jobData.subclass2_spellcast || "";
+                    baseFeatures = jobData.subclass2_base_feature || [];
                 }
+            }
+
+            if (subclassSpellcast && subclassSpellcast.trim() !== "") {
+                if (domainsText) {
+                    domainsText += ` | 施法: ${subclassSpellcast}`;
+                } else {
+                    domainsText = `施法: ${subclassSpellcast}`;
+                }
+            }
+            currentSelectedJobDomains.spellcasting = subclassSpellcast;
+
+
+            // Handle Subclass Base Features (Keystone)
+            if (baseFeatures.length > 0) {
+                baseFeatures.forEach(trait => {
+                    if (trait.name && trait.desc) {
+                        const keystoneTraitSkillData = {
+                            配置: "永久",
+                            名称: trait.name,
+                            领域: "",
+                            等级: "基石", // Level is determined by the array it's in
+                            属性: "子职特性",
+                            回想: "",
+                            描述: trait.desc
+                        };
+                        const newRow = createSkillRowElement(keystoneTraitSkillData, false);
+                        newRow.classList.add('subclass-keystone-trait-row');
+                        skillsContainer.appendChild(newRow);
+                        updateRemoveButtonVisibility(newRow);
+                        const textarea = newRow.querySelector('textarea[name="skillDescription"]');
+                        if (textarea) setTimeout(() => autoGrowTextarea({ target: textarea }), 0);
+                    }
+                });
             }
             if (jobDomainsDisplay) jobDomainsDisplay.textContent = domainsText;
         }

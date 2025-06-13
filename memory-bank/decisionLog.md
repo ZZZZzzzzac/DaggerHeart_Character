@@ -378,28 +378,28 @@ This comprehensive refactor ensures that trait-based skills are managed in their
 *   **`addSkillEntry(skillData)` 函数 ([`character_creator/script.js:843-850`](character_creator/script.js:843))**:
     *   在此函数末尾，当通过“添加技能”按钮动态创建新的空白技能行后，调用 `updateRemoveButtonVisibility` 并传入新创建的行，以根据其（通常为空或默认的）“配置”值设置移除按钮的初始状态。
     
-    ---
-    ### Decision (Code)
-    [2025-05-16 21:06:46] - 修复导入JSON时技能重复及子职加载问题
-    
-    **Rationale:**
-    用户反馈在导入JSON后，存在两个问题：
-    1.  职业和子职相关的特性技能（“职业特性”、“子职特性”）会重复出现。这是因为它们既从JSON的 `技能` 数组中被加载，又在 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904)) 中调用 `updateJobTraitsAsSkills` ([`character_creator/script.js:225-343`](character_creator/script.js:225)) 时被重新生成。
-    2.  子职下拉框在导入后显示为空，没有正确加载JSON中指定的子职。
-    
-    **Details:**
-    *   修改了 [`character_creator/script.js`](character_creator/script.js:1) 文件中的 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904))。
-    *   **防止技能重复导入**:
-        *   在 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904)) 中遍历 `data.技能` 数组时，扩展了原有的 `isFixedTypeAttribute` ([`character_creator/script.js:1067`](character_creator/script.js:1067)) 条件判断。
-        *   新的条件现在还包括检查 `skill.属性 === "职业特性"` 和 `skill.属性 === "子职特性"`。
-        *   如果技能的属性是这些类型之一（或之前已有的固定类型如“种族”、“社群”、“职业”、“混血”），则 `if (!isFixedTypeAttribute)` ([`character_creator/script.js:1071`](character_creator/script.js:1071)) 条件为假，该技能不会通过 `addSkillEntry` ([`character_creator/script.js:856-864`](character_creator/script.js:856)) 作为动态行被添加到技能列表中。这避免了与 `updateJobTraitsAsSkills` ([`character_creator/script.js:225-343`](character_creator/script.js:225)) 函数生成的特性重复。
-    *   **修复子职加载问题**:
-        *   调整了 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904)) 内部设置表单字段和调用更新函数的顺序：
-            1.  设置主职业下拉框的值 (`form.professionSelect.value = data.设定.职业 || "";`)。
-            2.  **立即调用 `updateSubclassOptions()` ([`character_creator/script.js:106-165`](character_creator/script.js:106))**。这会根据刚设置的主职业，填充子职下拉列表 (`subclassSelect`) 的可用选项。
-            3.  **然后设置子职下拉框的值** (`if (form.subclassSelect) form.subclassSelect.value = data.设定.子职业 || "";`)。此时 `subclassSelect` 已有正确的选项，可以正确选中从JSON读取的值。
-            4.  最后，在所有相关的下拉框（包括种族、社群、职业和现在已正确设置的子职）的值都从JSON加载完毕后，再调用 `updateRaceTraitsAsSkills()` ([`character_creator/script.js:166-206`](character_creator/script.js:166)), `updateGroupTraitAsSkill()` ([`character_creator/script.js:207-224`](character_creator/script.js:207)), 和 `updateJobTraitsAsSkills()` ([`character_creator/script.js:225-343`](character_creator/script.js:225))。`updateJobTraitsAsSkills` ([`character_creator/script.js:225-343`](character_creator/script.js:225)) 现在可以基于正确选中的子职来生成相应的特性和更新显示。
-        *   移除了之前错误的 `form.subProfession.value = data.设定.子职业 || "";` ([`character_creator/script.js:944`](character_creator/script.js:944)) 行，因为它使用的是错误的ID，并且其功能已被新的 `subclassSelect` 设置逻辑取代。
+---
+### Decision (Code)
+[2025-05-16 21:06:46] - 修复导入JSON时技能重复及子职加载问题
+
+**Rationale:**
+用户反馈在导入JSON后，存在两个问题：
+1.  职业和子职相关的特性技能（“职业特性”、“子职特性”）会重复出现。这是因为它们既从JSON的 `技能` 数组中被加载，又在 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904)) 中调用 `updateJobTraitsAsSkills` ([`character_creator/script.js:225-343`](character_creator/script.js:225)) 时被重新生成。
+2.  子职下拉框在导入后显示为空，没有正确加载JSON中指定的子职。
+
+**Details:**
+*   修改了 [`character_creator/script.js`](character_creator/script.js:1) 文件中的 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904))。
+*   **防止技能重复导入**:
+    *   在 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904)) 中遍历 `data.技能` 数组时，扩展了原有的 `isFixedTypeAttribute` ([`character_creator/script.js:1067`](character_creator/script.js:1067)) 条件判断。
+    *   新的条件现在还包括检查 `skill.属性 === "职业特性"` 和 `skill.属性 === "子职特性"`。
+    *   如果技能的属性是这些类型之一（或之前已有的固定类型如“种族”、“社群”、“职业”、“混血”），则 `if (!isFixedTypeAttribute)` ([`character_creator/script.js:1071`](character_creator/script.js:1071)) 条件为假，该技能不会通过 `addSkillEntry` ([`character_creator/script.js:856-864`](character_creator/script.js:856)) 作为动态行被添加到技能列表中。这避免了与 `updateJobTraitsAsSkills` ([`character_creator/script.js:225-343`](character_creator/script.js:225)) 函数生成的特性重复。
+*   **修复子职加载问题**:
+    *   调整了 `populateForm` 函数 ([`character_creator/script.js:904-1079`](character_creator/script.js:904)) 内部设置表单字段和调用更新函数的顺序：
+        1.  设置主职业下拉框的值 (`form.professionSelect.value = data.设定.职业 || "";`)。
+        2.  **立即调用 `updateSubclassOptions()` ([`character_creator/script.js:106-165`](character_creator/script.js:106))**。这会根据刚设置的主职业，填充子职下拉列表 (`subclassSelect`) 的可用选项。
+        3.  **然后设置子职下拉框的值** (`if (form.subclassSelect) form.subclassSelect.value = data.设定.子职业 || "";`)。此时 `subclassSelect` 已有正确的选项，可以正确选中从JSON读取的值。
+        4.  最后，在所有相关的下拉框（包括种族、社群、职业和现在已正确设置的子职）的值都从JSON加载完毕后，再调用 `updateRaceTraitsAsSkills()` ([`character_creator/script.js:166-206`](character_creator/script.js:166)), `updateGroupTraitAsSkill()` ([`character_creator/script.js:207-224`](character_creator/script.js:207)), 和 `updateJobTraitsAsSkills()` ([`character_creator/script.js:225-343`](character_creator/script.js:225))。`updateJobTraitsAsSkills` ([`character_creator/script.js:225-343`](character_creator/script.js:225)) 现在可以基于正确选中的子职来生成相应的特性和更新显示。
+    *   移除了之前错误的 `form.subProfession.value = data.设定.子职业 || "";` ([`character_creator/script.js:944`](character_creator/script.js:944)) 行，因为它使用的是错误的ID，并且其功能已被新的 `subclassSelect` 设置逻辑取代。
 ---
 ### Decision (Code)
 [2025-05-16 23:11:00] - 实现领域卡选择去重机制
@@ -422,54 +422,77 @@ This comprehensive refactor ensures that trait-based skills are managed in their
     *   在选择卡片并填充到当前技能槽之前，再次遍历所有其他技能槽。
     *   如果发现 `cardData` 的名称和领域与任何其他已选领域卡匹配，则通过 `alert` 提示用户“领域卡 "[cardData.名称]" 已经被选择，不能重复选择。”并终止选择操作。
     
-    ---
-    ### Decision (Code)
-    [2025-05-17 00:06:00] - 根据技能“配置”属性更新技能行可用性及视觉样式
+---
+### Decision (Code)
+[2025-05-17 00:06:00] - 根据技能“配置”属性更新技能行可用性及视觉样式
+
+**Rationale:**
+用户要求根据技能的“配置”字段（一个下拉选择框）来动态改变技能行的可用性和外观。
+-   当“配置”为“宝库”时，技能应标记为“暂不可用”，背景变黄，透明度降低，输入框不可交互。
+-   当“配置”为“除外”时，技能应标记为“绝不可用”，背景变红，透明度更低，文字加删除线，输入框不可交互。
+-   其他配置（如“激活”、“永久”等）应为正常可用状态。
+
+**Details:**
+*   **CSS ([`character_creator/style.css`](character_creator/style.css:1))**:
+    *   添加了新的 CSS 类 `.skill-unavailable-temporary` 和 `.skill-unavailable-permanent`。
+    *   `.skill-unavailable-temporary`: 设置浅黄色背景 (`#fffde7`)，较低的透明度 (`opacity: 0.7`)。其内部的 `input`, `textarea`, `select` 设置 `pointer-events: none` 和浅灰色背景 (`#f0f0f0`)。
+    *   `.skill-unavailable-permanent`: 设置浅红色背景 (`#ffebee`)，更低的透明度 (`opacity: 0.5`)，文本删除线 (`text-decoration: line-through`)。其内部的 `input`, `textarea`, `select` 设置 `pointer-events: none`，更深的灰色背景 (`#e0e0e0`) 和灰色文本 (`#757575`)。
+*   **JavaScript ([`character_creator/script.js`](character_creator/script.js:1))**:
+    *   **`updateSkillAvailabilityStyle(skillRowElement)` 函数**:
+        *   新增此辅助函数，接收一个技能行 `<tr>` 元素。
+        *   获取该行内名为 `skillConfig` 的 `<select>` 元素。
+        *   根据 `skillConfig.value`：
+            *   移除行元素上可能存在的 `.skill-unavailable-temporary` 和 `.skill-unavailable-permanent` 类。
+            *   如果值为 "宝库"，添加 `.skill-unavailable-temporary` 类。
+            *   如果值为 "除外"，添加 `.skill-unavailable-permanent` 类。
+    *   **`createSkillRowElement(skillData, isFixedSlot, slotId)` 函数 ([`character_creator/script.js:759-827`](character_creator/script.js:759))**:
+        *   在为 `skillConfig` 的 `<select>` 元素添加 `input` 事件监听器时，除了调用 `updateRemoveButtonVisibility`，也调用 `updateSkillAvailabilityStyle(newRow)`。
+        *   在函数末尾，创建完行元素后，立即调用一次 `updateSkillAvailabilityStyle(newRow)` 以根据初始“配置”值设置样式。
+        *   修改了技能名称输入框的点击事件监听器，以在打开领域卡模态框前检查技能行是否具有 `.skill-unavailable-temporary` 或 `.skill-unavailable-permanent` 类，如果是，则不打开模态框。
+    *   **`updateSkillInSlot(slotId, skillData)` 函数 ([`character_creator/script.js:843-887`](character_creator/script.js:843))**:
+        *   在此函数末尾，当固定技能槽的内容被更新后，调用 `updateSkillAvailabilityStyle(slotRow)`。
+    *   **`addSkillEntry(skillData)` 函数 ([`character_creator/script.js:889-897`](character_creator/script.js:889))**:
+        *   此函数内部调用 `createSkillRowElement`，其中已包含对 `updateSkillAvailabilityStyle` 的调用，因此无需直接修改 `addSkillEntry`。
+        *   修改了 `addSkillBtn` 的事件监听器，确保在通过 `addSkillEntry` 添加新技能时，传递的 `skillData` 中“配置”默认为“激活”，以符合 `createSkillRowElement` 中对新动态技能的默认处理。
     
-    **Rationale:**
-    用户要求根据技能的“配置”字段（一个下拉选择框）来动态改变技能行的可用性和外观。
-    -   当“配置”为“宝库”时，技能应标记为“暂不可用”，背景变黄，透明度降低，输入框不可交互。
-    -   当“配置”为“除外”时，技能应标记为“绝不可用”，背景变红，透明度更低，文字加删除线，输入框不可交互。
-    -   其他配置（如“激活”、“永久”等）应为正常可用状态。
-    
-    **Details:**
-    *   **CSS ([`character_creator/style.css`](character_creator/style.css:1))**:
-        *   添加了新的 CSS 类 `.skill-unavailable-temporary` 和 `.skill-unavailable-permanent`。
-        *   `.skill-unavailable-temporary`: 设置浅黄色背景 (`#fffde7`)，较低的透明度 (`opacity: 0.7`)。其内部的 `input`, `textarea`, `select` 设置 `pointer-events: none` 和浅灰色背景 (`#f0f0f0`)。
-        *   `.skill-unavailable-permanent`: 设置浅红色背景 (`#ffebee`)，更低的透明度 (`opacity: 0.5`)，文本删除线 (`text-decoration: line-through`)。其内部的 `input`, `textarea`, `select` 设置 `pointer-events: none`，更深的灰色背景 (`#e0e0e0`) 和灰色文本 (`#757575`)。
-    *   **JavaScript ([`character_creator/script.js`](character_creator/script.js:1))**:
-        *   **`updateSkillAvailabilityStyle(skillRowElement)` 函数**:
-            *   新增此辅助函数，接收一个技能行 `<tr>` 元素。
-            *   获取该行内名为 `skillConfig` 的 `<select>` 元素。
-            *   根据 `skillConfig.value`：
-                *   移除行元素上可能存在的 `.skill-unavailable-temporary` 和 `.skill-unavailable-permanent` 类。
-                *   如果值为 "宝库"，添加 `.skill-unavailable-temporary` 类。
-                *   如果值为 "除外"，添加 `.skill-unavailable-permanent` 类。
-        *   **`createSkillRowElement(skillData, isFixedSlot, slotId)` 函数 ([`character_creator/script.js:759-827`](character_creator/script.js:759))**:
-            *   在为 `skillConfig` 的 `<select>` 元素添加 `input` 事件监听器时，除了调用 `updateRemoveButtonVisibility`，也调用 `updateSkillAvailabilityStyle(newRow)`。
-            *   在函数末尾，创建完行元素后，立即调用一次 `updateSkillAvailabilityStyle(newRow)` 以根据初始“配置”值设置样式。
-            *   修改了技能名称输入框的点击事件监听器，以在打开领域卡模态框前检查技能行是否具有 `.skill-unavailable-temporary` 或 `.skill-unavailable-permanent` 类，如果是，则不打开模态框。
-        *   **`updateSkillInSlot(slotId, skillData)` 函数 ([`character_creator/script.js:843-887`](character_creator/script.js:843))**:
-            *   在此函数末尾，当固定技能槽的内容被更新后，调用 `updateSkillAvailabilityStyle(slotRow)`。
-        *   **`addSkillEntry(skillData)` 函数 ([`character_creator/script.js:889-897`](character_creator/script.js:889))**:
-            *   此函数内部调用 `createSkillRowElement`，其中已包含对 `updateSkillAvailabilityStyle` 的调用，因此无需直接修改 `addSkillEntry`。
-            *   修改了 `addSkillBtn` 的事件监听器，确保在通过 `addSkillEntry` 添加新技能时，传递的 `skillData` 中“配置”默认为“激活”，以符合 `createSkillRowElement` 中对新动态技能的默认处理。
-    
-    ---
-    ### Decision (Code)
-    [2025-05-17 00:34:00] - 调整技能交互：配置为“永久”时名称框不弹窗，固定槽位名称placeholder统一
-    
-    **Rationale:**
-    根据用户反馈：
-    1.  当一个技能的“配置”下拉框被设置为“永久”时，点击该技能的“名称”输入框不应再触发领域卡选择弹窗。
-    2.  在 `initializeFixedSkillSlots` 函数中，为所有固定技能槽（种族、社群、职业）的“名称”输入框设置一个统一的 `placeholder="名称"`，而不是依赖于传入的 `skillData` 可能为空的情况。
-    
-    **Details:**
-    *   **JavaScript ([`character_creator/script.js`](character_creator/script.js:1))**:
-        *   **`createSkillRowElement(skillData, isFixedSlot, slotId)` 函数 ([`character_creator/script.js:759-827`](character_creator/script.js:759))**:
-            *   在技能“名称”输入框 (`input[name="skillName"].skill-name-input`) 的 `click` 事件监听器内部，获取该行对应的“配置”下拉框 (`select[name="skillConfig"]`) 的当前值。
-            *   在打开领域卡选择模态框 (`openDomainCardModal(newRow)`) 的条件判断中，增加了对 `currentConfigValue !== '永久'` 的检查。现在，只有当配置不是“永久” *并且* 技能行没有 `skill-unavailable-temporary` 或 `skill-unavailable-permanent` 类时，才会尝试打开模态框。
-        *   **`initializeFixedSkillSlots()` 函数 ([`character_creator/script.js:828-841`](character_creator/script.js:828))**:
-            *   在 `AllFixedSlotIds.forEach` 循环中，当调用 `createSkillRowElement({}, true, slotId)` 为固定槽创建行时，明确传递一个包含 `名称: ""` 的对象 (`{ 名称: "" }`) 作为 `skillData`。这确保了 `createSkillRowElement` 内部 `skillData.名称 || ''` 会得到一个空字符串。
-            *   紧接着，获取新创建的 `slotRow` 中的“名称”输入框 (`input[name="skillName"]`)。
-            *   如果找到了该输入框，则将其 `placeholder` 属性显式设置为 "名称"。
+---
+### Decision (Code)
+[2025-05-17 00:34:00] - 调整技能交互：配置为“永久”时名称框不弹窗，固定槽位名称placeholder统一
+
+**Rationale:**
+根据用户反馈：
+1.  当一个技能的“配置”下拉框被设置为“永久”时，点击该技能的“名称”输入框不应再触发领域卡选择弹窗。
+2.  在 `initializeFixedSkillSlots` 函数中，为所有固定技能槽（种族、社群、职业）的“名称”输入框设置一个统一的 `placeholder="名称"`，而不是依赖于传入的 `skillData` 可能为空的情况。
+
+**Details:**
+*   **JavaScript ([`character_creator/script.js`](character_creator/script.js:1))**:
+    *   **`createSkillRowElement(skillData, isFixedSlot, slotId)` 函数 ([`character_creator/script.js:759-827`](character_creator/script.js:759))**:
+        *   在技能“名称”输入框 (`input[name="skillName"].skill-name-input`) 的 `click` 事件监听器内部，获取该行对应的“配置”下拉框 (`select[name="skillConfig"]`) 的当前值。
+        *   在打开领域卡选择模态框 (`openDomainCardModal(newRow)`) 的条件判断中，增加了对 `currentConfigValue !== '永久'` 的检查。现在，只有当配置不是“永久” *并且* 技能行没有 `skill-unavailable-temporary` 或 `skill-unavailable-permanent` 类时，才会尝试打开模态框。
+    *   **`initializeFixedSkillSlots()` 函数 ([`character_creator/script.js:828-841`](character_creator/script.js:828))**:
+        *   在 `AllFixedSlotIds.forEach` 循环中，当调用 `createSkillRowElement({}, true, slotId)` 为固定槽创建行时，明确传递一个包含 `名称: ""` 的对象 (`{ 名称: "" }`) 作为 `skillData`。这确保了 `createSkillRowElement` 内部 `skillData.名称 || ''` 会得到一个空字符串。
+        *   紧接着，获取新创建的 `slotRow` 中的“名称”输入框 (`input[name="skillName"]`)。
+        *   如果找到了该输入框，则将其 `placeholder` 属性显式设置为 "名称"。
+---
+### Decision (Code)
+[2025-06-13 16:01:00] - 将项目中的多个数据源迁移到新的规则书JS文件
+
+**Rationale:**
+根据用户一系列指令，将项目中的核心数据源（道具、种族、社群、职业、装备、领域卡）从旧的、结构各异的 `.js` 或 `.csv` 文件迁移到统一格式的、来自规则书的新 `.js` 文件。此举旨在统一数据结构，简化代码逻辑，并确保数据与核心规则书一致。
+
+**Details:**
+*   **数据源替换**:
+    *   **道具/消耗品**: `items_data.js`, `consumables_data.js` -> `Daggerheart_Core_Rulebook_战利品与消耗品表.js` (提供 `LOOT` 常量)。
+    *   **种族**: `races_data.js` -> `Daggerheart_Core_Rulebook_种族.js` (提供 `RACES_DATA` 常量)。
+    *   **社群**: `groups_data.js` -> `Daggerheart_Core_Rulebook_社群.js` (提供 `GROUPS_DATA` 常量，其结构源自新文件)。
+    *   **职业**: `jobs_data.js` -> `Daggerheart_Core_Rulebook_职业.js` (提供 `JOBS_DATA` 常量)。
+    *   **装备**: `equipment_data.js` -> `Daggerheart_Core_Rulebook_主武器表.js` (`PRIMARY_WEAPON`), `_副武器表.js` (`SECONDARY_WEAPON`), `_护甲表.js` (`ARMOR`)。
+    *   **领域卡**: 旧的 `domain_card.js` (可能包含数据) -> `Daggerheart_Core_Rulebook_领域卡.js` (提供 `DOMAIN_CARDS` 常量)。
+*   **HTML 修改**:
+    *   [`character_creator/index.html`](character_creator/index.html): 更新了 `<script>` 标签，移除了对所有旧数据文件的引用，并添加了对所有新数据文件的引用，确保它们在逻辑脚本之前加载。
+*   **JavaScript 逻辑修改**:
+    *   **字段名统一**: 在所有相关的JS文件 (`utility.js`, `json.js`, `race_job_community.js`, `weapon_armor_item.js`, `domain_card.js`, `template.js`) 中，将对旧数据字段（通常是中文键名，如 `名称`, `特性`, `职业`）的引用更新为新数据结构中的英文字段名（如 `name`, `desc`, `trait`, `class_feature`）。
+    *   **数据结构适配**:
+        *   **扁平化处理**: 对于领域卡，逻辑从处理按领域分组的对象改为处理扁平的卡片数组。
+        *   **动态过滤**: 对于装备，`filterAndDisplayEquipment` 函数被重构，不再依赖按Tier和类型预分割的常量，而是从新的主数组 (`PRIMARY_WEAPON`, `ARMOR`, `SECONDARY_WEAPON`) 中根据角色等级动态筛选。
+        *   **子职逻辑重构**: `updateSubclassOptions` 和 `updateJobTraitsAsSkills` 函数被大幅修改，以适应新的职业数据结构，其中子职信息不再是嵌套数组，而是主职业对象的直接属性 (`subclass1`, `subclass2`, `subclass1_base_feature` 等)。

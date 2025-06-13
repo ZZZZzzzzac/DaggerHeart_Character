@@ -64,16 +64,30 @@ function initializeWeaponArmorItemModule() {
         let columnWidths = [];
 
         // Define which headers are filterable
-        const filterableWeaponHeaders = ['名称', '检定', '属性', '范围', '伤害', '负荷', '特性', 'Tier'];
-        const filterableArmorHeaders = ['名称', '护甲值', '特性', 'Tier'];
+        // Define which headers are filterable (using new English field names for keys)
+        const filterableWeaponKeys = ['name', 'trait', 'physical', 'range', 'damage', 'two_handed', 'desc', 'tier'];
+        const filterableArmorKeys = ['name', 'score', 'desc', 'tier'];
 
+        // Headers for display (can remain in Chinese)
         if (type === 'weapon') {
             headers =     ['名称', 'Tier', '检定', '属性', '范围', '伤害', '负荷', '特性'];
-            columnWidths = ['20%',  '8%',  '10%',  '10%',  '12%',  '10%',  '10%',  '20%']; // Sum should be 100%
+            columnWidths = ['20%',  '8%',  '10%',  '10%',  '12%',  '10%',  '10%',  '20%'];
         } else if (type === 'armor') {
-            headers =     ['名称', 'Tier', '护甲值', '特性'];
-            columnWidths = ['34%',  '12%', '20%',  '34%']; // Sum should be 100%
+            headers =     ['名称', 'Tier', '护甲值', '特性']; // For armor, '护甲值' maps to 'score', '特性' to 'desc'
+            columnWidths = ['34%',  '12%', '20%',  '34%'];
         }
+
+        const headerToKeyMap = {
+            '名称': 'name',
+            'Tier': 'tier',
+            '检定': 'trait',
+            '属性': 'physical', // For weapons, this will be derived. For filtering, we might filter on a derived 'type' (physical/magic)
+            '范围': 'range',
+            '伤害': 'damage',
+            '负荷': 'two_handed',
+            '特性': 'desc',
+            '护甲值': 'score'
+        };
 
         headers.forEach((headerText, index) => {
             const th = document.createElement('th');
@@ -82,26 +96,23 @@ function initializeWeaponArmorItemModule() {
                 th.style.width = columnWidths[index];
             }
             
+            const filterKey = headerToKeyMap[headerText];
             let isFilterable = false;
-            if (headerText === '名称') { // Name is always filterable
-                isFilterable = true;
-            } else if (type === 'weapon' && filterableWeaponHeaders.includes(headerText)) {
-                isFilterable = true;
-            } else if (type === 'armor' && filterableArmorHeaders.includes(headerText)) {
-                isFilterable = true;
-            } else if (headerText === 'Tier') {
-                isFilterable = true;
+            if (filterKey) {
+                if (type === 'weapon' && filterableWeaponKeys.includes(filterKey)) {
+                    isFilterable = true;
+                } else if (type === 'armor' && filterableArmorKeys.includes(filterKey)) {
+                    isFilterable = true;
+                }
             }
+
 
             if (isFilterable) {
                 const filterInput = document.createElement('input');
                 filterInput.type = 'text';
                 filterInput.placeholder = `筛选 ${headerText}`;
                 filterInput.classList.add('header-filter-input');
-                // Store the header key for easy access during filtering
-                // Ensure 'Tier' uses 'tier' as key to match item property
-                // '名称' uses '名称' as key, which matches the property in equipment_data.js
-                filterInput.dataset.filterKey = (headerText === 'Tier') ? 'tier' : headerText;
+                filterInput.dataset.filterKey = filterKey; // Use mapped English key
                 filterInput.addEventListener('input', () => {
                     // Pass the correct weaponSlotType when filtering
                     const typeToFilter = currentOpenModalType;
@@ -142,58 +153,40 @@ function initializeWeaponArmorItemModule() {
             }
         });
 
-        let rawDataCollectionsWithTier = [];
-        
-        const addTierToItems = (collection, tierName, varName) => {
-            if (typeof collection !== 'undefined' && Array.isArray(collection)) {
-                collection.forEach(item => {
-                    rawDataCollectionsWithTier.push({ ...item, tier: tierName, sourceVar: varName });
-                });
-            }
-        };
+        let sourceData = [];
+        const levelTier = parseInt(document.getElementById('levelTierDisplay').textContent.replace('T', ''), 10);
 
         if (type === 'weapon') {
-            addTierToItems(weapon_t1_physics, 'T1', 'weapon_t1_physics');
-            addTierToItems(weapon_t1_magic, 'T1', 'weapon_t1_magic');
-            addTierToItems(offhand_weapon_t1, 'T1', 'offhand_weapon_t1');
-            addTierToItems(weapon_t2_physics, 'T2', 'weapon_t2_physics');
-            addTierToItems(weapon_t2_magic, 'T2', 'weapon_t2_magic');
-            addTierToItems(offhand_weapon_t2, 'T2', 'offhand_weapon_t2');
-            addTierToItems(weapon_t3_physics, 'T3', 'weapon_t3_physics');
-            addTierToItems(weapon_t3_magic, 'T3', 'weapon_t3_magic');
-            addTierToItems(offhand_weapon_t3, 'T3', 'offhand_weapon_t3');
-            addTierToItems(weapon_t4_physics, 'T4', 'weapon_t4_physics');
-            addTierToItems(weapon_t4_magic, 'T4', 'weapon_t4_magic');
-            addTierToItems(offhand_weapon_t4, 'T4', 'offhand_weapon_t4');
-        } else if (type === 'armor') {
-            addTierToItems(armor_t1, 'T1', 'armor_t1');
-            addTierToItems(armor_t2, 'T2', 'armor_t2');
-            addTierToItems(armor_t3, 'T3', 'armor_t3');
-            addTierToItems(armor_t4, 'T4', 'armor_t4');
-        }
-        
-        let slotFilteredData = rawDataCollectionsWithTier;
-        if (type === 'weapon') {
+            let combinedWeapons = [];
             if (weaponSlotType === 'main') {
-                // For 'main' slots, filter out items where '负荷' is '副手'
-                slotFilteredData = rawDataCollectionsWithTier.filter(item => item.负荷 !== '副手');
+                combinedWeapons = typeof PRIMARY_WEAPON !== 'undefined' ? [...PRIMARY_WEAPON] : [];
             } else if (weaponSlotType === 'auxiliary') {
-                // For 'auxiliary' slots, only include items where '负荷' is '副手'
-                slotFilteredData = rawDataCollectionsWithTier.filter(item => item.负荷 === '副手');
+                combinedWeapons = typeof SECONDARY_WEAPON !== 'undefined' ? [...SECONDARY_WEAPON] : [];
+            } else { // 'any' for extra slots
+                const primary = typeof PRIMARY_WEAPON !== 'undefined' ? PRIMARY_WEAPON : [];
+                const secondary = typeof SECONDARY_WEAPON !== 'undefined' ? SECONDARY_WEAPON : [];
+                combinedWeapons = [...primary, ...secondary];
             }
+            sourceData = combinedWeapons.filter(item => item.tier === levelTier);
+        } else if (type === 'armor') {
+            sourceData = (typeof ARMOR !== 'undefined' ? ARMOR : []).filter(item => item.tier === levelTier);
         }
         
-        // Ensure slotFilteredData is an array before trying to filter it further
-        if (!Array.isArray(slotFilteredData)) {
-            console.error("slotFilteredData is not an array. Initial data might be missing for the current tier/type.", slotFilteredData);
-            slotFilteredData = []; // Default to empty array to prevent further errors
-        }
-
-        const textFilteredItems = slotFilteredData.filter(item => {
+        const textFilteredItems = sourceData.filter(item => {
             for (const key in filters) {
-                const itemValue = item[key] ? String(item[key]).toLowerCase() : "";
-                if (!itemValue.includes(filters[key])) {
-                    return false;
+                // Handle 'physical' filter for weapons, which is derived
+                if (key === 'physical' && type === 'weapon') {
+                    const itemIsPhysical = item.physical === true;
+                    const itemIsMagical = item.physical === false;
+                    const filterValue = filters[key];
+                    if (filterValue === '物理' && !itemIsPhysical) return false;
+                    if (filterValue === '魔法' && !itemIsMagical) return false;
+                    if (filterValue !== '物理' && filterValue !== '魔法' && !String(item.physical).toLowerCase().includes(filterValue)) return false; // fallback for other text
+                } else {
+                    const itemValue = item[key] ? String(item[key]).toLowerCase() : "";
+                    if (!itemValue.includes(filters[key])) {
+                        return false;
+                    }
                 }
             }
             return true;
@@ -219,22 +212,22 @@ function initializeWeaponArmorItemModule() {
             if (type === 'weapon') {
                 currentColumnWidths = ['20%', '8%', '10%', '10%', '12%', '10%', '10%', '20%'];
                 cellsHtml = `
-                    <td style="width: ${currentColumnWidths[0]};">${item.名称 || ''}</td>
+                    <td style="width: ${currentColumnWidths[0]};">${item.name || ''}</td>
                     <td style="width: ${currentColumnWidths[1]};">${item.tier || ''}</td>
-                    <td style="width: ${currentColumnWidths[2]};">${item.检定 || ''}</td>
-                    <td style="width: ${currentColumnWidths[3]};">${item.属性 || ''}</td>
-                    <td style="width: ${currentColumnWidths[4]};">${item.范围 || ''}</td>
-                    <td style="width: ${currentColumnWidths[5]};">${item.伤害 || ''}</td>
-                    <td style="width: ${currentColumnWidths[6]};">${item.负荷 || ''}</td>
-                    <td style="width: ${currentColumnWidths[7]};">${item.特性 || ''}</td>
+                    <td style="width: ${currentColumnWidths[2]};">${item.trait || ''}</td>
+                    <td style="width: ${currentColumnWidths[3]};">${item.physical === true ? '物理' : (item.physical === false ? '魔法' : (item.physical === undefined && item.two_handed === '副手' ? 'N/A' : ''))}</td>
+                    <td style="width: ${currentColumnWidths[4]};">${item.range || ''}</td>
+                    <td style="width: ${currentColumnWidths[5]};">${item.damage || ''}</td>
+                    <td style="width: ${currentColumnWidths[6]};">${item.two_handed || ''}</td>
+                    <td style="width: ${currentColumnWidths[7]};">${item.desc || ''}</td>
                 `;
             } else if (type === 'armor') {
                 currentColumnWidths = ['34%', '12%', '20%', '34%'];
                 cellsHtml = `
-                    <td style="width: ${currentColumnWidths[0]};">${item.名称 || ''}</td>
+                    <td style="width: ${currentColumnWidths[0]};">${item.name || ''}</td>
                     <td style="width: ${currentColumnWidths[1]};">${item.tier || ''}</td>
-                    <td style="width: ${currentColumnWidths[2]};">${item.护甲值 || ''}</td>
-                    <td style="width: ${currentColumnWidths[3]};">${item.特性 || ''}</td>
+                    <td style="width: ${currentColumnWidths[2]};">${item.score || ''}</td>
+                    <td style="width: ${currentColumnWidths[3]};">${item.desc || ''}</td>
                 `;
             }
             tr.innerHTML = cellsHtml;
@@ -305,24 +298,41 @@ function initializeWeaponArmorItemModule() {
 
             if (targetInputId.startsWith('weaponName')) {
                 const weaponIndex = targetInputId.charAt(targetInputId.length - 1);
-                if (form[`weaponName${weaponIndex}`]) form[`weaponName${weaponIndex}`].value = equipmentData.名称 || '';
-                if (form[`weaponCheck${weaponIndex}`]) form[`weaponCheck${weaponIndex}`].value = equipmentData.检定 || '';
-                if (form[`weaponAttribute${weaponIndex}`]) form[`weaponAttribute${weaponIndex}`].value = equipmentData.属性 || '';
-                if (form[`weaponRange${weaponIndex}`]) form[`weaponRange${weaponIndex}`].value = equipmentData.范围 || '';
-                if (form[`weaponDamage${weaponIndex}`]) form[`weaponDamage${weaponIndex}`].value = equipmentData.伤害 || '';
-                if (form[`weaponTwoHanded${weaponIndex}`]) form[`weaponTwoHanded${weaponIndex}`].value = equipmentData.负荷 || '';
+                if (form[`weaponName${weaponIndex}`]) form[`weaponName${weaponIndex}`].value = equipmentData.name || '';
+                if (form[`weaponCheck${weaponIndex}`]) form[`weaponCheck${weaponIndex}`].value = equipmentData.trait || '';
+                // Determine 'Attribute' based on 'physical' property for primary weapons, or leave blank/N/A for secondary
+                let attributeValue = '';
+                if (equipmentData.physical === true) {
+                    attributeValue = '物理';
+                } else if (equipmentData.physical === false) {
+                    attributeValue = '魔法';
+                } else if (equipmentData.two_handed === '副手') { // Secondary weapons don't have 'physical'
+                    attributeValue = 'N/A';
+                }
+                if (form[`weaponAttribute${weaponIndex}`]) form[`weaponAttribute${weaponIndex}`].value = attributeValue;
+                if (form[`weaponRange${weaponIndex}`]) form[`weaponRange${weaponIndex}`].value = equipmentData.range || '';
+                if (form[`weaponDamage${weaponIndex}`]) form[`weaponDamage${weaponIndex}`].value = equipmentData.damage || '';
+                if (form[`weaponTwoHanded${weaponIndex}`]) form[`weaponTwoHanded${weaponIndex}`].value = equipmentData.two_handed || '';
                 const traitTextarea = document.getElementById(`weaponTrait${weaponIndex}`);
                 if (traitTextarea) {
-                    traitTextarea.value = equipmentData.特性 || '';
+                    traitTextarea.value = equipmentData.desc || '';
                     setTimeout(() => autoGrowTextarea({ target: traitTextarea }), 0);
                 }
             } else if (targetInputId.startsWith('armorName')) {
                 const armorIndex = targetInputId.charAt(targetInputId.length - 1);
-                if (form[`armorName${armorIndex}`]) form[`armorName${armorIndex}`].value = equipmentData.名称 || '';
-                if (form[`armorDefense${armorIndex}`]) form[`armorDefense${armorIndex}`].value = equipmentData.护甲值 || '';
+                if (form[`armorName${armorIndex}`]) form[`armorName${armorIndex}`].value = equipmentData.name || '';
+                if (form[`armorDefense${armorIndex}`]) form[`armorDefense${armorIndex}`].value = equipmentData.score || '';
+                // Also update major and severe damage thresholds if they are part of the main character sheet
+                // Assuming they are not directly on the armor item row, but on the character status section
+                if (document.getElementById('majorDamageThreshold') && equipmentData.major_threshold !== undefined) {
+                    document.getElementById('majorDamageThreshold').value = equipmentData.major_threshold;
+                }
+                if (document.getElementById('severeDamageThreshold') && equipmentData.severe_threshold !== undefined) {
+                    document.getElementById('severeDamageThreshold').value = equipmentData.severe_threshold;
+                }
                 const traitTextarea = document.getElementById(`armorTrait${armorIndex}`);
                 if (traitTextarea) {
-                    traitTextarea.value = equipmentData.特性 || '';
+                    traitTextarea.value = equipmentData.desc || '';
                     setTimeout(() => autoGrowTextarea({ target: traitTextarea }), 0);
                 }
             }

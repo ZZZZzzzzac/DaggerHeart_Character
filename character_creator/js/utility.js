@@ -1,5 +1,6 @@
 const form = document.getElementById('characterForm');
-const ALL_ITEMS_DATA = [...ITEMS_DATA, ...CONSUMABLES_DATA];
+// const ALL_ITEMS_DATA = [...ITEMS_DATA, ...CONSUMABLES_DATA]; // 旧的合并方式，如果 ITEMS_DATA 和 CONSUMABLES_DATA 不再使用，可以移除
+const ALL_ITEMS_DATA = [...(LOOT.items || []), ...(LOOT.consumables || [])];
 const itemsContainer = document.getElementById('items');
 const FixedSkillSlotIds = {
     RACE_1: 'fixed-skill-race-1',

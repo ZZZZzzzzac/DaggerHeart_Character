@@ -11,9 +11,6 @@ function initializeNewbieModule() {
     const newbieGuideDropdownInput = document.getElementById('newbieGuideDropdownInput');
     const newbieGuidePromptTextarea = document.getElementById('newbieGuidePromptTextarea'); // Added this
 
-
-
-
     function populateFieldsFromNewbieGuide() {
         for (const fieldId in newbieUserAnswers) {
             const element = document.getElementById(fieldId);
@@ -49,25 +46,9 @@ function initializeNewbieModule() {
                 questionType: "domainCardSelection", // New type
                 targetFieldId: "domainCard2_placeholder" // Placeholder
             };
-            // Insert after subclass question. Make a copy to avoid modifying the original template array if this function is called multiple times.
             let questionsWithDomainCards = [...newbieGuideQuestions];
             questionsWithDomainCards.splice(subclassQuestionIndex + 1, 0, domainCardStep1, domainCardStep2);
-            // Use this modified array for the current guide session
-            // This is a temporary solution. Ideally, newbieGuideQuestions should be reset or managed better if the guide can be restarted.
-            // For now, we assume newbieGuideQuestions is reset elsewhere or this is a one-time modification for the session.
-            // To make it truly dynamic for multiple runs, newbieGuideQuestions itself should be a fresh copy from a template each time.
-            // Let's assume newbieGuideQuestions is the one to be used for this session.
-            // This modification will persist for the current session if startNewbieGuide is called again without resetting newbieGuideQuestions from its original template.
-            // For a robust solution, consider:
-            // 1. Deep copying newbieGuideQuestions from a master template at the start of startNewbieGuide.
-            // 2. Modifying that copy.
-            // This example modifies the global newbieGuideQuestions for simplicity of this diff.
-            // If newbieGuideQuestions is defined in data/template.js and imported, this will modify the imported array.
-            // A better approach would be:
-            // let currentSessionGuideQuestions = JSON.parse(JSON.stringify(newbieGuideQuestionsFromTemplate));
-            // currentSessionGuideQuestions.splice(...)
-            // And then use currentSessionGuideQuestions throughout the guide logic.
-            // For this diff, we'll directly modify the (assumed global) newbieGuideQuestions array.
+
             if (!newbieGuideQuestions.find(q => q.questionType === "domainCardSelection")) { // Prevent multiple insertions
                  newbieGuideQuestions.splice(subclassQuestionIndex + 1, 0, domainCardStep1, domainCardStep2);
             }
@@ -121,38 +102,76 @@ function initializeNewbieModule() {
         newbieGuideButton.addEventListener('click', startNewbieGuide);
 
         newbieGuideDropdownInput.addEventListener('change', () => {
-            const question = newbieGuideQuestions[currentNewbieQuestionIndex];
-            if (question.questionType === "dropdown") {
-                const selectedValue = newbieGuideDropdownInput.value;
-                let promptCategoryKey;
-                switch (question.targetSelectId) {
-                    case 'raceSelect': promptCategoryKey = 'race'; break;
-                    case 'mixedRaceSelect': promptCategoryKey = 'mixedRace'; break;
-                    case 'communitySelect': promptCategoryKey = 'community'; break;
-                    case 'professionSelect': promptCategoryKey = 'profession'; break;
-                    case 'subclassSelect': promptCategoryKey = 'subclass'; break; // Added subclass
-                    default: promptCategoryKey = null;
-                }
-
-                if (promptCategoryKey && newbieGuidePrompts[promptCategoryKey]) {
-                     // For subclass, if a specific prompt for the selected subclass exists, use it. Otherwise, use the general subclass prompt.
-                    if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[selectedValue]) {
-                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[selectedValue];
-                    } else if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[""]) {
-                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[""];
-                    } else if (newbieGuidePrompts[promptCategoryKey][selectedValue]) {
-                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue];
-                    }
-                    else {
-                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][""] || "请从上方选择一项以查看相关提示...";
-                    }
-                } else if (promptCategoryKey === 'mixedRace' && newbieGuidePrompts.race) {
-                    newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race[selectedValue] || "请从上方选择一项以查看相关提示...";
-                } else {
-                    newbieGuidePromptTextarea.placeholder = "请从上方选择一项以查看相关提示...";
-                }
+        const question = newbieGuideQuestions[currentNewbieQuestionIndex];
+        if (question.questionType === "dropdown") {
+            const selectedValue = newbieGuideDropdownInput.value;
+            let promptCategoryKey;
+            let dataSource;
+            switch (question.targetSelectId) {
+                case 'raceSelect':
+                    promptCategoryKey = 'race';
+                    dataSource = typeof RACES_DATA !== 'undefined' ? RACES_DATA : null;
+                    break;
+                case 'mixedRaceSelect':
+                    promptCategoryKey = 'mixedRace';
+                    dataSource = typeof RACES_DATA !== 'undefined' ? RACES_DATA : null; // Assuming mixed race uses RACES_DATA
+                    break;
+                case 'communitySelect':
+                    promptCategoryKey = 'community';
+                    dataSource = typeof GROUPS_DATA !== 'undefined' ? GROUPS_DATA : null;
+                    break;
+                case 'professionSelect':
+                    promptCategoryKey = 'profession';
+                    dataSource = typeof JOBS_DATA !== 'undefined' ? JOBS_DATA : null;
+                    break;
+                case 'subclassSelect':
+                    promptCategoryKey = 'subclass';
+                    // Subclass prompts are handled differently, often from newbieGuidePrompts.subclass
+                    break;
+                default: promptCategoryKey = null;
             }
-        });
+
+            if (promptCategoryKey === 'race' || promptCategoryKey === 'community' || promptCategoryKey === 'profession') {
+                if (dataSource && selectedValue) {
+                    const selectedItem = dataSource.find(item => item.name === selectedValue);
+                    if (selectedItem && selectedItem.desc) {
+                        newbieGuidePromptTextarea.placeholder = selectedItem.desc;
+                    } else {
+                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey] && newbieGuidePrompts[promptCategoryKey][""] ? newbieGuidePrompts[promptCategoryKey][""] : "请从上方选择一项以查看相关提示...";
+                    }
+                } else if (selectedValue === "") { // Handle case where "--- 请选择 ---" is selected
+                     newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey] && newbieGuidePrompts[promptCategoryKey][""] ? newbieGuidePrompts[promptCategoryKey][""] : "请从上方选择一项以查看相关提示...";
+                }
+                else {
+                    newbieGuidePromptTextarea.placeholder = "数据加载失败或未选择，请重试。";
+                }
+            } else if (promptCategoryKey === 'mixedRace') {
+                if (dataSource && selectedValue) { // RACES_DATA for mixedRace
+                    const selectedItem = dataSource.find(item => item.name === selectedValue);
+                    if (selectedItem && selectedItem.desc) {
+                        newbieGuidePromptTextarea.placeholder = selectedItem.desc;
+                    } else {
+                         newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race && newbieGuidePrompts.race[""] ? newbieGuidePrompts.race[""] : "请从上方选择一项以查看相关提示...";
+                    }
+                } else if (selectedValue === "") {
+                    newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race && newbieGuidePrompts.race[""] ? newbieGuidePrompts.race[""] : "请从上方选择一项以查看相关提示...";
+                }
+                else {
+                    newbieGuidePromptTextarea.placeholder = "数据加载失败或未选择，请重试。";
+                }
+            } else if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass) {
+                if (newbieGuidePrompts.subclass[selectedValue]) {
+                    newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[selectedValue];
+                } else if (newbieGuidePrompts.subclass[""]) {
+                    newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[""];
+                } else {
+                    newbieGuidePromptTextarea.placeholder = "请选择一个子职以查看提示。";
+                }
+            } else {
+                newbieGuidePromptTextarea.placeholder = "请从上方选择一项以查看相关提示...";
+            }
+        }
+    });
 
         newbieGuideNextButton.addEventListener('click', () => {
             const question = newbieGuideQuestions[currentNewbieQuestionIndex];
@@ -162,8 +181,9 @@ function initializeNewbieModule() {
             if (question.targetSelectId === "subclassSelect") {
                 const selectedProfessionName = newbieUserAnswers["professionSelect"];
                 if (selectedProfessionName) {
-                    const jobData = JOBS_DATA.find(j => j.职业 === selectedProfessionName);
-                    if (!jobData || !jobData.子职 || jobData.子职.length === 0) {
+                    const jobData = JOBS_DATA.find(j => j.name === selectedProfessionName); // Use .name
+                    // Check if neither subclass1 nor subclass2 exists or are empty strings
+                    if (!jobData || (!jobData.subclass1 && !jobData.subclass2)) {
                         // If no subclasses, store an empty value and skip to the next question
                         newbieUserAnswers[question.targetSelectId] = "";
                         const targetSelectElement = document.getElementById(question.targetSelectId);
@@ -262,27 +282,62 @@ function initializeNewbieModule() {
                     // Update placeholder for dropdown after all actions
                     let promptCategoryKey;
                     switch (question.targetSelectId) {
-                        case 'raceSelect': promptCategoryKey = 'race'; break;
-                        case 'mixedRaceSelect': promptCategoryKey = 'mixedRace'; break;
-                        case 'communitySelect': promptCategoryKey = 'community'; break;
-                        case 'professionSelect': promptCategoryKey = 'profession'; break;
-                        case 'subclassSelect': promptCategoryKey = 'subclass'; break; // Added subclass
+                        case 'raceSelect':
+                            promptCategoryKey = 'race';
+                            dataSource = typeof RACES_DATA !== 'undefined' ? RACES_DATA : null;
+                            break;
+                        case 'mixedRaceSelect':
+                            promptCategoryKey = 'mixedRace';
+                            dataSource = typeof RACES_DATA !== 'undefined' ? RACES_DATA : null;
+                            break;
+                        case 'communitySelect':
+                            promptCategoryKey = 'community';
+                            dataSource = typeof GROUPS_DATA !== 'undefined' ? GROUPS_DATA : null;
+                            break;
+                        case 'professionSelect':
+                            promptCategoryKey = 'profession';
+                            dataSource = typeof JOBS_DATA !== 'undefined' ? JOBS_DATA : null;
+                            break;
+                        case 'subclassSelect':
+                            promptCategoryKey = 'subclass';
+                            break;
                         default: promptCategoryKey = null;
                     }
-                    if (promptCategoryKey && newbieGuidePrompts[promptCategoryKey]) {
-                        // For subclass, if a specific prompt for the selected subclass exists, use it. Otherwise, use the general subclass prompt.
-                        if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[selectedValue]) {
+
+                    if (promptCategoryKey === 'race' || promptCategoryKey === 'community' || promptCategoryKey === 'profession') {
+                        if (dataSource && selectedValue) {
+                            const selectedItem = dataSource.find(item => item.name === selectedValue);
+                            if (selectedItem && selectedItem.desc) {
+                                newbieGuidePromptTextarea.placeholder = selectedItem.desc;
+                            } else {
+                                newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey] && newbieGuidePrompts[promptCategoryKey][""] ? newbieGuidePrompts[promptCategoryKey][""] : "请从上方选择一项以查看相关提示...";
+                            }
+                        } else if (selectedValue === "") {
+                             newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey] && newbieGuidePrompts[promptCategoryKey][""] ? newbieGuidePrompts[promptCategoryKey][""] : "请从上方选择一项以查看相关提示...";
+                        } else {
+                            newbieGuidePromptTextarea.placeholder = "数据加载失败或未选择，请重试。";
+                        }
+                    } else if (promptCategoryKey === 'mixedRace') {
+                        if (dataSource && selectedValue) { // RACES_DATA for mixedRace
+                            const selectedItem = dataSource.find(item => item.name === selectedValue);
+                            if (selectedItem && selectedItem.desc) {
+                                newbieGuidePromptTextarea.placeholder = selectedItem.desc;
+                            } else {
+                                newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race && newbieGuidePrompts.race[""] ? newbieGuidePrompts.race[""] : "请从上方选择一项以查看相关提示...";
+                            }
+                        } else if (selectedValue === "") {
+                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race && newbieGuidePrompts.race[""] ? newbieGuidePrompts.race[""] : "请从上方选择一项以查看相关提示...";
+                        } else {
+                            newbieGuidePromptTextarea.placeholder = "数据加载失败或未选择，请重试。";
+                        }
+                    } else if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass) {
+                        if (newbieGuidePrompts.subclass[selectedValue]) {
                             newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[selectedValue];
-                        } else if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[""]) {
-                             newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[""];
-                        } else if (newbieGuidePrompts[promptCategoryKey][selectedValue]) {
-                             newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue];
+                        } else if (newbieGuidePrompts.subclass[""]) {
+                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[""];
+                        } else {
+                            newbieGuidePromptTextarea.placeholder = "请选择一个子职以查看提示。";
                         }
-                        else {
-                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][""] || "请从上方选择一项以查看相关提示...";
-                        }
-                    } else if (promptCategoryKey === 'mixedRace' && newbieGuidePrompts.race) {
-                         newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race[selectedValue] || "请从上方选择一项以查看相关提示...";
                     } else {
                         newbieGuidePromptTextarea.placeholder = "请从上方选择一项以查看相关提示...";
                     }
@@ -384,9 +439,13 @@ function displayCurrentNewbieQuestion() {
                     let previousSelectionRestored = false;
 
                     if (selectedProfessionName) {
-                        const jobData = JOBS_DATA.find(j => j.职业 === selectedProfessionName);
-                        if (jobData && jobData.子职 && Array.isArray(jobData.子职)) {
-                            if (jobData.子职.length === 0) {
+                        const jobData = JOBS_DATA.find(j => j.name === selectedProfessionName); // Use .name
+                        if (jobData) {
+                            const subclasses = [];
+                            if (jobData.subclass1) subclasses.push(jobData.subclass1);
+                            if (jobData.subclass2) subclasses.push(jobData.subclass2);
+
+                            if (subclasses.length === 0) {
                                 const noSubclassOption = document.createElement('option');
                                 noSubclassOption.value = "";
                                 noSubclassOption.textContent = "该职业无子职";
@@ -394,14 +453,14 @@ function displayCurrentNewbieQuestion() {
                                 newbieGuideDropdownInput.appendChild(noSubclassOption);
                                 newbieGuideDropdownInput.value = "";
                             } else {
-                                jobData.子职.forEach((subclass, index) => {
+                                subclasses.forEach((subclassName, index) => {
                                     const option = document.createElement('option');
-                                    option.value = subclass[question.optionValueField];
-                                    option.textContent = subclass[question.optionTextField];
+                                    option.value = subclassName;
+                                    option.textContent = subclassName;
                                     if (index === 0) {
-                                        firstSubclassValue = subclass[question.optionValueField];
+                                        firstSubclassValue = subclassName;
                                     }
-                                    if (newbieUserAnswers[question.targetSelectId] === subclass[question.optionValueField]) {
+                                    if (newbieUserAnswers[question.targetSelectId] === subclassName) {
                                         option.selected = true;
                                         previousSelectionRestored = true;
                                     }
@@ -410,15 +469,12 @@ function displayCurrentNewbieQuestion() {
                                 // If previous selection was not restored and there's a first subclass, select it
                                 if (!previousSelectionRestored && firstSubclassValue) {
                                     newbieGuideDropdownInput.value = firstSubclassValue;
-                                } else if (!previousSelectionRestored && jobData.子职.length > 0) {
-                                    // Fallback if firstSubclassValue somehow wasn't set but there are options
-                                    newbieGuideDropdownInput.value = jobData.子职[0][question.optionValueField];
                                 }
                             }
                         } else {
                             const errorOption = document.createElement('option');
                             errorOption.value = "";
-                            errorOption.textContent = "子职数据错误";
+                            errorOption.textContent = "职业数据未找到"; // More specific error
                             newbieGuideDropdownInput.appendChild(errorOption);
                         }
                     } else {
@@ -454,32 +510,78 @@ function displayCurrentNewbieQuestion() {
             const selectedValue = newbieGuideDropdownInput.value;
             let promptCategoryKey;
             switch (question.targetSelectId) {
-                case 'raceSelect': promptCategoryKey = 'race'; break;
-                case 'mixedRaceSelect': promptCategoryKey = 'mixedRace'; break;
-                case 'communitySelect': promptCategoryKey = 'community'; break;
-                case 'professionSelect': promptCategoryKey = 'profession'; break;
-                case 'subclassSelect': promptCategoryKey = 'subclass'; break; // Added subclass
+                case 'raceSelect':
+                    promptCategoryKey = 'race';
+                    dataSource = typeof RACES_DATA !== 'undefined' ? RACES_DATA : null;
+                    break;
+                case 'mixedRaceSelect':
+                    promptCategoryKey = 'mixedRace';
+                    dataSource = typeof RACES_DATA !== 'undefined' ? RACES_DATA : null;
+                    break;
+                case 'communitySelect':
+                    promptCategoryKey = 'community';
+                    dataSource = typeof GROUPS_DATA !== 'undefined' ? GROUPS_DATA : null;
+                    break;
+                case 'professionSelect':
+                    promptCategoryKey = 'profession';
+                    dataSource = typeof JOBS_DATA !== 'undefined' ? JOBS_DATA : null;
+                    break;
+                case 'subclassSelect':
+                    promptCategoryKey = 'subclass';
+                    break;
                 default: promptCategoryKey = null;
             }
 
             if (newbieGuidePromptTextarea) {
-                if (promptCategoryKey && newbieGuidePrompts[promptCategoryKey]) {
-                    // For subclass, if a specific prompt for the selected subclass exists, use it. Otherwise, use the general subclass prompt.
-                    if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[selectedValue]) {
+                if (promptCategoryKey === 'race' || promptCategoryKey === 'community' || promptCategoryKey === 'profession') {
+                    if (dataSource && selectedValue) {
+                        const selectedItem = dataSource.find(item => item.name === selectedValue);
+                        if (selectedItem && selectedItem.desc) {
+                            newbieGuidePromptTextarea.placeholder = selectedItem.desc;
+                        } else {
+                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey] && newbieGuidePrompts[promptCategoryKey][""] ? newbieGuidePrompts[promptCategoryKey][""] : "请从上方选择一项以查看相关提示...";
+                        }
+                    } else if (selectedValue === "" || !selectedValue) { // Handle "--- 请选择 ---" or initially no selection
+                         newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey] && newbieGuidePrompts[promptCategoryKey][""] ? newbieGuidePrompts[promptCategoryKey][""] : "请从上方选择一项以查看相关提示...";
+                    } else {
+                        newbieGuidePromptTextarea.placeholder = "数据加载失败或未选择，请重试。";
+                    }
+                } else if (promptCategoryKey === 'mixedRace') {
+                     if (dataSource && selectedValue) { // RACES_DATA for mixedRace
+                        const selectedItem = dataSource.find(item => item.name === selectedValue);
+                        if (selectedItem && selectedItem.desc) {
+                            newbieGuidePromptTextarea.placeholder = selectedItem.desc;
+                        } else {
+                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race && newbieGuidePrompts.race[""] ? newbieGuidePrompts.race[""] : "请从上方选择一项以查看相关提示...";
+                        }
+                    } else if (selectedValue === "" || !selectedValue) {
+                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race && newbieGuidePrompts.race[""] ? newbieGuidePrompts.race[""] : "请从上方选择一项以查看相关提示...";
+                    } else {
+                        newbieGuidePromptTextarea.placeholder = "数据加载失败或未选择，请重试。";
+                    }
+                } else if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass) {
+                    if (newbieGuidePrompts.subclass[selectedValue]) {
                         newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[selectedValue];
-                    } else if (promptCategoryKey === 'subclass' && newbieGuidePrompts.subclass[""]) {
-                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[""];
+                    } else if (newbieGuidePrompts.subclass[""]) {
+                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.subclass[""];
+                    } else {
+                        newbieGuidePromptTextarea.placeholder = "请选择一个子职以查看提示。";
                     }
-                    else if (newbieGuidePrompts[promptCategoryKey][selectedValue]) {
-                            newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][selectedValue];
-                    }
-                        else {
-                        newbieGuidePromptTextarea.placeholder = newbieGuidePrompts[promptCategoryKey][""] || "请从上方选择一项以查看相关提示...";
-                    }
-                } else if (promptCategoryKey === 'mixedRace' && newbieGuidePrompts.race) {
-                    newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.race[selectedValue] || "请从上方选择一项以查看相关提示...";
                 } else {
-                    newbieGuidePromptTextarea.placeholder = "请从上方选择一项以查看相关提示...";
+                    // This case handles when the question is not a dropdown or promptCategoryKey is null
+                    // For text inputs, the prompt is set in the 'else' block of the main 'if (question.questionType === "dropdown")'
+                    // So, if it's not a dropdown, this specific 'else' might not be strictly necessary
+                    // unless there's a dropdown type without a matching promptCategoryKey.
+                    // For safety, keep a generic prompt.
+                    if (question.questionType !== "dropdown" && question.targetFieldId && newbieGuidePrompts.textInput && newbieGuidePrompts.textInput[question.targetFieldId]) {
+                         newbieGuidePromptTextarea.placeholder = newbieGuidePrompts.textInput[question.targetFieldId] || question.prompt;
+                    } else if (question.questionType !== "dropdown") {
+                        newbieGuidePromptTextarea.placeholder = question.prompt;
+                    }
+                    // If it IS a dropdown but somehow missed above, then the generic prompt.
+                    else if (question.questionType === "dropdown") {
+                         newbieGuidePromptTextarea.placeholder = "请从上方选择一项以查看相关提示...";
+                    }
                 }
             }
             newbieGuideDropdownInput.focus();

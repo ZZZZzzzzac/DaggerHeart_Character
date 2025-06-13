@@ -172,17 +172,17 @@ function initializeJsonModule() {
                         const descriptionTextarea = currentItemDiv.querySelector('textarea[name="itemDescription"]');
 
                         if (nameSelect) {
-                            populateItemSelect(nameSelect, itemData.名称); // Populate and select
+                            populateItemSelect(nameSelect, itemData.name); // Populate and select
                         }
                         if (quantityInput) quantityInput.value = itemData.数量 || "1";
                         
                         // populateItemSelect should handle pre-filling the description and auto-growing it.
                         // If it's not, this is a fallback, but the logic in populateItemSelect is preferred.
                         if (descriptionTextarea) {
-                             descriptionTextarea.value = itemData.描述 || ""; // Set from JSON first
-                             const selectedFullItem = ALL_ITEMS_DATA.find(i => i.名称 === itemData.名称);
+                             descriptionTextarea.value = itemData.desc || ""; // Set from JSON first
+                             const selectedFullItem = ALL_ITEMS_DATA.find(i => i.name === itemData.name);
                              if (selectedFullItem) { // Then override with effect if item is found
-                                 descriptionTextarea.value = selectedFullItem.效果 || "";
+                                 descriptionTextarea.value = selectedFullItem.desc || "";
                              }
                              setTimeout(() => autoGrowTextarea({ target: descriptionTextarea }), 0);
                         }
@@ -228,7 +228,7 @@ function initializeJsonModule() {
         // Set default item after options are populated, if no value is already set (e.g., by import)
         // and if it's the specific static select with id="itemName"
         if (initialItemSelect.id === 'itemName' && !initialItemSelect.value) {
-            const defaultItemNameToSet = "小型生命药水Minor Health Potion";
+            const defaultItemNameToSet = "小型生命药水";
             const defaultItemEffectToSet = "立刻回复1d4生命值";
             
             let optionExists = false;
@@ -240,7 +240,7 @@ function initializeJsonModule() {
             }
 
             if (!optionExists) {
-                const itemData = ALL_ITEMS_DATA.find(i => i.名称 === defaultItemNameToSet);
+                const itemData = ALL_ITEMS_DATA.find(i => i.name === defaultItemNameToSet);
                 if (itemData) {
                     const newOption = document.createElement('option');
                     newOption.value = defaultItemNameToSet;
@@ -440,9 +440,9 @@ function populateItemSelect(selectElement, selectedItemName = "") {
 
     ALL_ITEMS_DATA.forEach(item => {
         const option = document.createElement('option');
-        option.value = item.名称;
-        option.textContent = item.名称;
-        if (item.名称 === selectedItemName) {
+        option.value = item.name;
+        option.textContent = item.name;
+        if (item.name === selectedItemName) {
             option.selected = true;
         }
         selectElement.appendChild(option);
@@ -450,13 +450,13 @@ function populateItemSelect(selectElement, selectedItemName = "") {
 
     // If a selectedItemName is provided, find its data and pre-fill description and quantity
     if (selectedItemName) {
-        const itemData = ALL_ITEMS_DATA.find(i => i.名称 === selectedItemName);
+        const itemData = ALL_ITEMS_DATA.find(i => i.name === selectedItemName);
         const parentItemDiv = selectElement.closest('.item');
         if (itemData && parentItemDiv) {
             const descTextarea = parentItemDiv.querySelector('textarea[name="itemDescription"]');
             const quantityInput = parentItemDiv.querySelector('input[name="itemQuantity"]');
             if (descTextarea) {
-                descTextarea.value = itemData.效果 || "";
+                descTextarea.value = itemData.desc || "";
                 setTimeout(() => autoGrowTextarea({ target: descTextarea }), 0); // Trigger auto-grow
             }
             if (quantityInput) {
@@ -472,7 +472,7 @@ function populateItemSelect(selectElement, selectedItemName = "") {
 
     selectElement.addEventListener('change', function(event) {
         const selectedName = event.target.value;
-        const itemData = ALL_ITEMS_DATA.find(i => i.名称 === selectedName);
+        const itemData = ALL_ITEMS_DATA.find(i => i.name === selectedName);
         const parentItemDiv = event.target.closest('.item');
         if (parentItemDiv) {
             const descTextarea = parentItemDiv.querySelector('textarea[name="itemDescription"]');
