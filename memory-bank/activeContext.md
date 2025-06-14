@@ -18,6 +18,7 @@ This file tracks the project's current status, including recent changes, current
 
 ## Recent Changes
 
+* [2025-06-14 11:01:32] - Summarized older entries in `decisionLog.md` to improve readability, retaining the last three full entries.
 *
 * [2025-05-13 15:34:10] - 创建了 character_creator 应用 (HTML, CSS, JS) 以根据 character_template.json 生成角色表单并支持JSON导出。
 * ... (previous entries from before 2025-06-13 remain) ...
