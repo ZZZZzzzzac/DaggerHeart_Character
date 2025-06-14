@@ -75,11 +75,15 @@ body {
   justify-content: left;
 }
 
-
 /* General debug mode style for ALL textboxes */
 .base-textbox.debug-mode {
     border: 1px solid red !important; /* Use !important to ensure override */
     background-color: rgba(255, 0, 0, 0.1);
+}
+
+/* Debug mode for checkbox */
+.custom-checkbox-wrapper.debug-mode .styled-checkbox {
+    border: 1px dashed blue;
 }
 
 /* Base style for checkbox wrappers */
@@ -88,9 +92,6 @@ body {
     display: flex;
     align-items: center;
 }
-
-
-
 
 /* Custom Checkbox Styles */
 .hidden-checkbox {
@@ -112,25 +113,5 @@ body {
     background-repeat: no-repeat;
     background-position: center;
     border: none; /* Remove border when checked if image is sufficient */
-}
-
-.coords-display {
-    position: absolute;
-    bottom: -30px; /* Position below the container */
-    left: 0;
-    z-index: 1001;
-    margin-left: 5px;
-    font-size: 10px;
-    color: #333;
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 0px 0px;
-    border-radius: 0px;
-}
-
-
-
-/* Debug mode for checkbox */
-.custom-checkbox-wrapper.debug-mode .styled-checkbox {
-    border: 1px dashed blue;
 }
 
