@@ -1,0 +1,238 @@
+/* Debug mode for checkbox */
+.custom-checkbox-wrapper.debug-mode .styled-checkbox {
+    border: 1px dashed blue;
+}
+
+/* Base style for checkbox wrappers */
+
+/* Hide the actual checkbox but keep it accessible */
+.hidden-checkbox {
+    display: none;
+}
+
+/* Base style for all custom checkboxes */
+.base-checkbox {
+    position: relative; /* Position is now relative to the flex container */
+    display: inline-block;
+    cursor: pointer;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    /* Default unchecked image can be set here if needed, or in specific classes */
+}
+
+/* --- Specific Checkbox Styles --- */
+
+/* Armor Slot */
+.armor-slot-checkbox {
+    width: 21px;
+    height: 21px;
+    background-image: url('official_like_sheet/armor_slot.png');
+}
+.armor-slot-checkbox.state-checked {
+    background-image: url('official_like_sheet/armor_slot_full.png');
+}
+
+.armor-slot-checkbox.state-dashed {
+    background-image: url('official_like_sheet/armor_slot_dash.png');
+}
+
+#armor-slots-container {
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    width: 75px; /* 3 items * (21px width + 2px gap) */
+    gap: 2px;
+    padding: 2px;
+    border: none; /* Green debug border */
+}
+
+/* HP Slot */
+.hp-slot-checkbox {
+    width: 27px;
+    height: 27px;
+    background-image: url('official_like_sheet/hp_slot.png');
+}
+.hp-slot-checkbox.state-checked {
+    background-image: url('official_like_sheet/hp_slot_full.png');
+}
+.hp-slot-checkbox.state-dashed {
+    background-image: url('official_like_sheet/hp_slot_dash.png');
+}
+
+#hp-container {
+    position: absolute;
+    display: flex;
+    gap: 3.6px;
+    border: none; /* Cyan debug border */
+}
+
+/* Stress Slot */
+.stress-slot-checkbox {
+    width: 27px;
+    height: 27px;
+    background-image: url('official_like_sheet/stress_slot.png');
+}
+.stress-slot-checkbox.state-checked {
+    background-image: url('official_like_sheet/stress_slot_full.png');
+}
+.stress-slot-checkbox.state-dashed {
+    background-image: url('official_like_sheet/stress_slot_dash.png');
+}
+
+#stress-container {
+    position: absolute;
+    display: flex;
+    gap: 3.6px;
+    border: none; /* Cyan debug border */
+}
+
+
+/* Hope Slot */
+.hope-slot-checkbox {
+    width: 23px;
+    height: 23px;
+    background-image: url('official_like_sheet/hope_slot.png');
+}
+.hope-slot-checkbox.state-checked {
+    background-image: url('official_like_sheet/hope_slot_full.png');
+}
+.hope-slot-checkbox.state-dashed {
+    background-image: url('official_like_sheet/hope_slot_dash.png');
+}
+
+#hope-container {
+    position: absolute;
+    display: flex;
+    gap: 35px;
+    border: none; /* Cyan debug border */
+}
+
+
+/* --- Gold Checkboxes --- */
+.handful-gold-checkbox {
+    width: 20px; /* Example size, adjust as needed */
+    height: 20px;
+    background-image: url('official_like_sheet/handful_gold_slot.png'); /* Placeholder, assuming gold_slot.png exists */
+}
+
+.handful-gold-checkbox.state-checked {
+    background-image: url('official_like_sheet/handful_gold_slot_full.png'); /* Placeholder */
+}
+
+#handful-gold-container {
+    position: absolute;
+    display: flex;
+    gap: 2px;
+    border: none;
+}
+
+.bag-gold-checkbox {
+    width: 24px;
+    height: 34px;
+    background-image: url('official_like_sheet/bag_gold_slot.png'); /* Placeholder, assuming gold_bag_slot.png exists */
+}
+.bag-gold-checkbox.state-checked {
+    background-image: url('official_like_sheet/bag_gold_slot_full.png'); /* Placeholder */
+}
+
+#bag-gold-container {
+    position: absolute;
+    display: flex;
+    gap: 0px;
+    border: none;
+}
+
+
+.chest-gold-checkbox {
+    position: absolute;
+    width: 25px; /* Example size, adjust as needed */
+    height: 25px;
+    background-image: url('official_like_sheet/chest_gold_slot.png'); /* Placeholder, assuming gold_chest_slot.png exists */
+}
+.chest-gold-checkbox.state-checked {
+   background-image: url('official_like_sheet/chest_gold_slot_full.png'); /* Placeholder */
+}
+
+/* --- Proficiency Checkbox --- */
+.proficiency-checkbox {
+    width: 16px;
+    height: 16px;
+    background-image: url('official_like_sheet/dot.png'); /* Placeholder */
+}
+
+.proficiency-checkbox.state-checked {
+    background-image: url('official_like_sheet/dot_full.png'); /* Placeholder */
+}
+
+#proficiency-container {
+    position: absolute;
+    display: flex;
+    gap: 2.9px;
+    border: none;
+}
+
+/* --- Trait Checkbox --- */
+.trait-checkbox {
+    width: 23px;
+    height: 23px;
+    background-image: url('official_like_sheet/dot.png'); /* Placeholder */
+}
+
+.trait-checkbox.state-checked {
+    background-image: url('official_like_sheet/dot_full.png'); /* Placeholder */
+}
+
+#traits-container {
+    position: absolute;
+    display: flex;
+    gap: 87px;
+    border: none;
+}
+
+/* --- Two-Handed Checkbox --- */
+.two-handed-checkbox {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-image: url('official_like_sheet/twohanded.png'); /* Placeholder */
+}
+
+.two-handed-checkbox.state-checked {
+    background-image: url('official_like_sheet/twohanded_one.png'); /* Placeholder */
+}
+
+.two-handed-checkbox.state-dashed {
+    background-image: url('official_like_sheet/twohanded_full.png');
+}
+
+
+.square-checkbox {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-image: url('official_like_sheet/square.png'); /* Placeholder */
+}
+
+.square-checkbox.state-checked {
+    background-image: url('official_like_sheet/square_full.png'); /* Placeholder */
+}
+
+.square-checkbox.state-dashed {
+    background-image: url('official_like_sheet/square_dash.png'); /* Placeholder */
+}
+
+.double-square-checkbox {
+    position: absolute;
+    width: 37px;
+    height: 37px;
+    background-image: url('official_like_sheet/double_square.png'); /* Placeholder */
+}
+
+.double-square-checkbox.state-checked {
+    background-image: url('official_like_sheet/double_square_full.png'); /* Placeholder */
+}
+
+.double-square-checkbox.state-dashed {
+    background-image: url('official_like_sheet/double_square_dash.png'); /* Placeholder */
+}
