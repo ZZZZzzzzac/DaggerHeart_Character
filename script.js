@@ -215,4 +215,88 @@ window.addEventListener('DOMContentLoaded', () => {
     elements.forEach(el => {
         el.addEventListener('input', saveFormStateToCookie);
     });
+
+    // 5. Setup action buttons
+    setupActionButtons();
 });
+
+function setupActionButtons() {
+    const importBtn = document.getElementById('import-json-btn');
+    const exportBtn = document.getElementById('export-json-btn');
+    const printBtn = document.getElementById('print-pdf-btn');
+    const fileInput = document.getElementById('json-upload');
+
+    // Export functionality
+    exportBtn.addEventListener('click', () => {
+        const state = exportFormState();
+        const dataStr = JSON.stringify(state, null, 4);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        const characterName = state.NameTextbox || 'character';
+        link.download = `${characterName}_daggerheart.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    });
+
+    // Import functionality
+    importBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const state = JSON.parse(e.target.result);
+                importFormState(state);
+                saveFormStateToCookie(); // Save imported state immediately
+                alert('JSON文件已成功导入！');
+            } catch (error) {
+                console.error('导入JSON失败:', error);
+                alert('导入失败，请检查文件格式是否正确。');
+            }
+        };
+        reader.readAsText(file);
+        // Reset file input to allow uploading the same file again
+        fileInput.value = '';
+    });
+
+    // Print functionality
+    printBtn.addEventListener('click', () => {
+        // --- Textarea to Div replacement logic for printing ---
+        const textareas = document.querySelectorAll('.base-textbox');
+        const replacements = [];
+
+        textareas.forEach(ta => {
+            const div = document.createElement('div');
+            div.className = ta.className;
+            div.style.cssText = ta.style.cssText;
+            div.style.display = 'flex';
+            div.innerHTML = ta.value.replace(/\n/g, '<br>');
+            div.classList.add('print-replacement'); // Add a class to identify them
+            
+            ta.style.display = 'none';
+            ta.parentNode.insertBefore(div, ta);
+            replacements.push({ original: ta, replacement: div });
+        });
+
+        // Use a short timeout to allow the DOM to update before printing
+        setTimeout(() => {
+            window.print();
+
+            // --- Restore original textareas after printing ---
+            replacements.forEach(pair => {
+                pair.original.style.display = '';
+                pair.replacement.remove();
+            });
+        }, 100); // 100ms delay
+    });
+}

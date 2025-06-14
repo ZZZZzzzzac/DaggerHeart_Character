@@ -32,6 +32,10 @@ This file tracks the project's progress using a task list format.
 
 *
 
+## Completed Tasks
+
+* [2025-06-14 22:06:00] - 完成任务：添加了浮动操作栏，实现了JSON导入/导出功能，并添加了将角色卡打印为两页PDF的功能。
+
 ## Next Steps
 
 *

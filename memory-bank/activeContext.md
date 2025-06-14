@@ -17,6 +17,7 @@ This file tracks the project's current status, including recent changes, current
     *   所有相关的HTML引用和JavaScript逻辑已更新。
 
 ## Recent Changes
+* [2025-06-14 22:08:00] - Added a floating action container with buttons for JSON import/export and PDF printing. Implemented the corresponding logic in `script.js`, including using `html2canvas` and `jspdf` for PDF generation. Refactored the HTML to wrap each character sheet page in a separate `div` for accurate printing.
 * [2025-06-14 18:54:52] - Placed Armor, HP, and Stress slots into separate container divs (`armor-slots-container`, `hp-container`, `stress-container`). Styled the containers using Flexbox to create grid layouts (4x3 for armor, 1x12 for HP/Stress). Set default states for HP/Stress slots (first 6 empty, last 6 dashed) in JavaScript.
 * [2025-06-14 18:27:00] - Refactored the checkbox implementation to remove the `.base-checkbox-wrapper` div. Merged positioning styles directly into the `.base-checkbox` label and updated all related HTML, CSS, and JavaScript files.
 * [2025-06-14 18:24:00] - Implemented a reusable `TriStateCheckbox` base class in `script.js` to handle three states (normal, checked, dashed) for checkboxes like armor slots. Refactored HTML to remove hidden inputs and updated CSS to use state-based classes.

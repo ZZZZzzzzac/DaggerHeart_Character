@@ -7,251 +7,260 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="action-container">
+        <button id="import-json-btn">导入JSON</button>
+        <input type="file" id="json-upload" accept=".json" style="display: none;">
+        <button id="export-json-btn">导出JSON</button>
+        <button id="print-pdf-btn">打印</button>
+    </div>
     <!-- Debug controls removed as debug mode is now hard-coded -->
-    <div class="image-container">
-
-        <img src="official_like_sheet/角色卡-打印-page-001.jpg" alt="角色卡第一页">
-
-
-        <!-- Top part of first page: Name/Race/Community/Class/Evasion/Armor/Traits -->
+    <div id="character-sheet" class="image-container">
+        <div id="page-1" class="page-container">
+            <img src="official_like_sheet/角色卡-打印-page-001.jpg" alt="角色卡第一页">
 
 
-        <textarea id="NameTextbox"          name="NameTextbox"          class="base-textbox h1-text"    style="top:  15px; left: 410px; width: 230px; height: 25px;"></textarea>
-        <textarea id="RaceTextbox"          name="RaceTextbox"          class="base-textbox h1-text"    style="top:  15px; left: 710px; width: 155px; height: 25px;"></textarea>
-        <textarea id="CommunityTextbox"     name="CommunityTextbox"     class="base-textbox h1-text"    style="top:  48px; left: 430px; width: 160px; height: 25px;"></textarea>
-        <textarea id="ClassTextbox"         name="ClassTextbox"         class="base-textbox h1-text"    style="top:  48px; left: 660px; width: 205px; height: 25px;"></textarea>
-        <textarea id="LevelTextbox"         name="LevelTextbox"         class="base-textbox h2-text"    style="top:  24px; left: 908px; width:  50px; height: 50px;"></textarea>
-        <textarea id="EvasionTextbox"       name="EvasionTextbox"       class="base-textbox h2-text"    style="top: 140px; left:  39px; width:  50px; height: 50px;"></textarea>
-        <textarea id="ArmorTextbox"         name="ArmorTextbox"         class="base-textbox h2-text"    style="top: 140px; left: 147px; width:  50px; height: 50px;"></textarea>
-        <textarea id="AgilityTextbox"       name="AgilityTextbox"       class="base-textbox h2-text"    style="top: 130px; left: 335px; width:  70px; height: 50px;"></textarea>
-        <textarea id="StrengthTextbox"      name="StrengthTextbox"      class="base-textbox h2-text"    style="top: 130px; left: 445px; width:  70px; height: 50px;"></textarea>
-        <textarea id="FinesseTextbox"       name="FinesseTextbox"       class="base-textbox h2-text"    style="top: 130px; left: 555px; width:  70px; height: 50px;"></textarea>
-        <textarea id="InstinctTextbox"      name="InstinctTextbox"      class="base-textbox h2-text"    style="top: 130px; left: 665px; width:  70px; height: 50px;"></textarea>
-        <textarea id="PresenceTextbox"      name="PresenceTextbox"      class="base-textbox h2-text"    style="top: 130px; left: 775px; width:  70px; height: 50px;"></textarea>
-        <textarea id="KnowledgeTextbox"     name="KnowledgeTextbox"     class="base-textbox h2-text"    style="top: 130px; left: 885px; width:  70px; height: 50px;"></textarea>
+            <!-- Top part of first page: Name/Race/Community/Class/Evasion/Armor/Traits -->
 
-        <div id="armor-slots-container" style="top: 125px; left: 218px;">
-            <label id="ArmorSlotCheckbox1"  class="base-checkbox armor-slot-checkbox"></label>
-            <label id="ArmorSlotCheckbox2"  class="base-checkbox armor-slot-checkbox"></label>
-            <label id="ArmorSlotCheckbox3"  class="base-checkbox armor-slot-checkbox"></label>
-            <label id="ArmorSlotCheckbox4"  class="base-checkbox armor-slot-checkbox"></label>
-            <label id="ArmorSlotCheckbox5"  class="base-checkbox armor-slot-checkbox"></label>
-            <label id="ArmorSlotCheckbox6"  class="base-checkbox armor-slot-checkbox"></label>
-            <label id="ArmorSlotCheckbox7"  class="base-checkbox armor-slot-checkbox"></label>
-            <label id="ArmorSlotCheckbox8"  class="base-checkbox armor-slot-checkbox"></label>
-            <label id="ArmorSlotCheckbox9"  class="base-checkbox armor-slot-checkbox"></label>
-            <label id="ArmorSlotCheckbox10" class="base-checkbox armor-slot-checkbox"></label>
-            <label id="ArmorSlotCheckbox11" class="base-checkbox armor-slot-checkbox"></label>
-            <label id="ArmorSlotCheckbox12" class="base-checkbox armor-slot-checkbox"></label>
+
+            <textarea id="NameTextbox"          name="NameTextbox"          class="base-textbox h1-text"    style="top:  15px; left: 410px; width: 230px; height: 25px;"></textarea>
+            <textarea id="RaceTextbox"          name="RaceTextbox"          class="base-textbox h1-text"    style="top:  15px; left: 710px; width: 155px; height: 25px;"></textarea>
+            <textarea id="CommunityTextbox"     name="CommunityTextbox"     class="base-textbox h1-text"    style="top:  48px; left: 430px; width: 160px; height: 25px;"></textarea>
+            <textarea id="ClassTextbox"         name="ClassTextbox"         class="base-textbox h1-text"    style="top:  48px; left: 660px; width: 205px; height: 25px;"></textarea>
+            <textarea id="LevelTextbox"         name="LevelTextbox"         class="base-textbox h2-text"    style="top:  24px; left: 908px; width:  50px; height: 50px;"></textarea>
+            <textarea id="EvasionTextbox"       name="EvasionTextbox"       class="base-textbox h2-text"    style="top: 140px; left:  39px; width:  50px; height: 50px;"></textarea>
+            <textarea id="ArmorTextbox"         name="ArmorTextbox"         class="base-textbox h2-text"    style="top: 140px; left: 147px; width:  50px; height: 50px;"></textarea>
+            <textarea id="AgilityTextbox"       name="AgilityTextbox"       class="base-textbox h2-text"    style="top: 130px; left: 335px; width:  70px; height: 50px;"></textarea>
+            <textarea id="StrengthTextbox"      name="StrengthTextbox"      class="base-textbox h2-text"    style="top: 130px; left: 445px; width:  70px; height: 50px;"></textarea>
+            <textarea id="FinesseTextbox"       name="FinesseTextbox"       class="base-textbox h2-text"    style="top: 130px; left: 555px; width:  70px; height: 50px;"></textarea>
+            <textarea id="InstinctTextbox"      name="InstinctTextbox"      class="base-textbox h2-text"    style="top: 130px; left: 665px; width:  70px; height: 50px;"></textarea>
+            <textarea id="PresenceTextbox"      name="PresenceTextbox"      class="base-textbox h2-text"    style="top: 130px; left: 775px; width:  70px; height: 50px;"></textarea>
+            <textarea id="KnowledgeTextbox"     name="KnowledgeTextbox"     class="base-textbox h2-text"    style="top: 130px; left: 885px; width:  70px; height: 50px;"></textarea>
+
+            <div id="armor-slots-container" style="top: 125px; left: 218px;">
+                <label id="ArmorSlotCheckbox1"  class="base-checkbox armor-slot-checkbox"></label>
+                <label id="ArmorSlotCheckbox2"  class="base-checkbox armor-slot-checkbox"></label>
+                <label id="ArmorSlotCheckbox3"  class="base-checkbox armor-slot-checkbox"></label>
+                <label id="ArmorSlotCheckbox4"  class="base-checkbox armor-slot-checkbox"></label>
+                <label id="ArmorSlotCheckbox5"  class="base-checkbox armor-slot-checkbox"></label>
+                <label id="ArmorSlotCheckbox6"  class="base-checkbox armor-slot-checkbox"></label>
+                <label id="ArmorSlotCheckbox7"  class="base-checkbox armor-slot-checkbox"></label>
+                <label id="ArmorSlotCheckbox8"  class="base-checkbox armor-slot-checkbox"></label>
+                <label id="ArmorSlotCheckbox9"  class="base-checkbox armor-slot-checkbox"></label>
+                <label id="ArmorSlotCheckbox10" class="base-checkbox armor-slot-checkbox"></label>
+                <label id="ArmorSlotCheckbox11" class="base-checkbox armor-slot-checkbox"></label>
+                <label id="ArmorSlotCheckbox12" class="base-checkbox armor-slot-checkbox"></label>
+            </div>
+
+            <div id="traits-container" style="top: 108px; left: 407px; width: 1820px;">
+                <!-- Traits Slots -->
+                <label id="TraitSlotCheckbox1"  class="base-checkbox two-state trait-checkbox"></label>
+                <label id="TraitSlotCheckbox2"  class="base-checkbox two-state trait-checkbox"></label>
+                <label id="TraitSlotCheckbox3"  class="base-checkbox two-state trait-checkbox"></label>
+                <label id="TraitSlotCheckbox4"  class="base-checkbox two-state trait-checkbox"></label>
+                <label id="TraitSlotCheckbox5"  class="base-checkbox two-state trait-checkbox"></label>
+                <label id="TraitSlotCheckbox6"  class="base-checkbox two-state trait-checkbox"></label>
+            </div>
+
+
+            <!-- Left Column: HP/Stress/Threshold/Experience/Gold/Class feature -->
+
+
+            <textarea id="MajorTextbox"                 name="MajorTextbox"                 class="base-textbox h2-text h2-small-text"  style="top: 309px; left: 133px; width:  40px; height:  40px;"></textarea>
+            <textarea id="SevereTextbox"                name="SevereTextbox"                class="base-textbox h2-text h2-small-text"  style="top: 309px; left: 277px; width:  40px; height:  40px;"></textarea>
+            <textarea id="Experience1Textbox"           name="Experience1Textbox"           class="base-textbox h1-text"                style="top: 625px; left:  30px; width: 310px; height:  25px;"></textarea>
+            <textarea id="Experience1ModifierTextbox"   name="Experience1ModifierTextbox"   class="base-textbox h2-text h2-small-text"  style="top: 620px; left: 370px; width:  40px; height:  35px;"></textarea>
+            <textarea id="Experience2Textbox"           name="Experience2Textbox"           class="base-textbox h1-text"                style="top: 658px; left:  30px; width: 310px; height:  25px;"></textarea>
+            <textarea id="Experience2ModifierTextbox"   name="Experience2ModifierTextbox"   class="base-textbox h2-text h2-small-text"  style="top: 653px; left: 370px; width:  40px; height:  35px;"></textarea>
+            <textarea id="Experience3Textbox"           name="Experience3Textbox"           class="base-textbox h1-text"                style="top: 690px; left:  30px; width: 310px; height:  25px;"></textarea>
+            <textarea id="Experience3ModifierTextbox"   name="Experience3ModifierTextbox"   class="base-textbox h2-text h2-small-text"  style="top: 685px; left: 370px; width:  40px; height:  35px;"></textarea>
+            <textarea id="Experience4Textbox"           name="Experience4Textbox"           class="base-textbox h1-text"                style="top: 723px; left:  30px; width: 310px; height:  25px;"></textarea>
+            <textarea id="Experience4ModifierTextbox"   name="Experience4ModifierTextbox"   class="base-textbox h2-text h2-small-text"  style="top: 718px; left: 370px; width:  40px; height:  35px;"></textarea>
+            <textarea id="Experience5Textbox"           name="Experience5Textbox"           class="base-textbox h1-text"                style="top: 755px; left:  30px; width: 310px; height:  25px;"></textarea>
+            <textarea id="Experience5ModifierTextbox"   name="Experience5ModifierTextbox"   class="base-textbox h2-text h2-small-text"  style="top: 750px; left: 370px; width:  40px; height:  35px;"></textarea>
+            <textarea id="ClassFeatureTextbox"          name="ClassFeatureTextbox"          class="base-textbox h3-text"                style="top: 920px; left:  10px; width: 412px; height: 315px;"></textarea>
+
+            <div id="hp-container" style="top: 369px; left: 60px; width: 420px;">
+                <!-- HP Slots -->
+                <label id="HpSlotCheckbox1"  class="base-checkbox hp-slot-checkbox"></label>
+                <label id="HpSlotCheckbox2"  class="base-checkbox hp-slot-checkbox"></label>
+                <label id="HpSlotCheckbox3"  class="base-checkbox hp-slot-checkbox"></label>
+                <label id="HpSlotCheckbox4"  class="base-checkbox hp-slot-checkbox"></label>
+                <label id="HpSlotCheckbox5"  class="base-checkbox hp-slot-checkbox"></label>
+                <label id="HpSlotCheckbox6"  class="base-checkbox hp-slot-checkbox"></label>
+                <label id="HpSlotCheckbox7"  class="base-checkbox hp-slot-checkbox"></label>
+                <label id="HpSlotCheckbox8"  class="base-checkbox hp-slot-checkbox"></label>
+                <label id="HpSlotCheckbox9"  class="base-checkbox hp-slot-checkbox"></label>
+                <label id="HpSlotCheckbox10" class="base-checkbox hp-slot-checkbox"></label>
+                <label id="HpSlotCheckbox11" class="base-checkbox hp-slot-checkbox"></label>
+                <label id="HpSlotCheckbox12" class="base-checkbox hp-slot-checkbox"></label>
+            </div>
+
+            <div id="stress-container" style="top: 405px; left: 60px; width: 420px;">
+                <!-- Stress Slots -->
+                <label id="StressSlotCheckbox1"  class="base-checkbox stress-slot-checkbox"></label>
+                <label id="StressSlotCheckbox2"  class="base-checkbox stress-slot-checkbox"></label>
+                <label id="StressSlotCheckbox3"  class="base-checkbox stress-slot-checkbox"></label>
+                <label id="StressSlotCheckbox4"  class="base-checkbox stress-slot-checkbox"></label>
+                <label id="StressSlotCheckbox5"  class="base-checkbox stress-slot-checkbox"></label>
+                <label id="StressSlotCheckbox6"  class="base-checkbox stress-slot-checkbox"></label>
+                <label id="StressSlotCheckbox7"  class="base-checkbox stress-slot-checkbox"></label>
+                <label id="StressSlotCheckbox8"  class="base-checkbox stress-slot-checkbox"></label>
+                <label id="StressSlotCheckbox9"  class="base-checkbox stress-slot-checkbox"></label>
+                <label id="StressSlotCheckbox10" class="base-checkbox stress-slot-checkbox"></label>
+                <label id="StressSlotCheckbox11" class="base-checkbox stress-slot-checkbox"></label>
+                <label id="StressSlotCheckbox12" class="base-checkbox stress-slot-checkbox"></label>
+            </div>
+
+            <div id="hope-container" style="top: 523px; left: 67px; width: 420px;">
+                <!-- Hope Slots -->
+                <label id="HopeSlotCheckbox1"  class="base-checkbox hope-slot-checkbox"></label>
+                <label id="HopeSlotCheckbox2"  class="base-checkbox hope-slot-checkbox"></label>
+                <label id="HopeSlotCheckbox3"  class="base-checkbox hope-slot-checkbox"></label>
+                <label id="HopeSlotCheckbox4"  class="base-checkbox hope-slot-checkbox"></label>
+                <label id="HopeSlotCheckbox5"  class="base-checkbox hope-slot-checkbox"></label>
+                <label id="HopeSlotCheckbox6"  class="base-checkbox hope-slot-checkbox"></label>
+            </div>
+
+            <div id="handful-gold-container" style="top: 835px; left: 24px; width: 180px;">
+                <!-- Handful of Gold Slots1-10 -->
+                <label id="HandfulGoldCheckbox1"  class="base-checkbox two-state handful-gold-checkbox"></label>
+                <label id="HandfulGoldCheckbox2"  class="base-checkbox two-state handful-gold-checkbox"></label>
+                <label id="HandfulGoldCheckbox3"  class="base-checkbox two-state handful-gold-checkbox"></label>
+                <label id="HandfulGoldCheckbox4"  class="base-checkbox two-state handful-gold-checkbox"></label>
+                <label id="HandfulGoldCheckbox5"  class="base-checkbox two-state handful-gold-checkbox"></label>
+                <label id="HandfulGoldCheckbox6"  class="base-checkbox two-state handful-gold-checkbox"></label>
+                <label id="HandfulGoldCheckbox7"  class="base-checkbox two-state handful-gold-checkbox"></label>
+                <label id="HandfulGoldCheckbox8"  class="base-checkbox two-state handful-gold-checkbox"></label>
+                <label id="HandfulGoldCheckbox9"  class="base-checkbox two-state handful-gold-checkbox"></label>
+            </div>
+
+            <div id="bag-gold-container" style="top: 827px; left: 215px; width: 170px;">
+                <!-- Bags of Gold Slots1-10 -->
+                <label id="BagGoldCheckbox1" class="base-checkbox two-state bag-gold-checkbox"></label>
+                <label id="BagGoldCheckbox2" class="base-checkbox two-state bag-gold-checkbox"></label>
+                <label id="BagGoldCheckbox3" class="base-checkbox two-state bag-gold-checkbox"></label>
+                <label id="BagGoldCheckbox4" class="base-checkbox two-state bag-gold-checkbox"></label>
+                <label id="BagGoldCheckbox5" class="base-checkbox two-state bag-gold-checkbox"></label>
+                <label id="BagGoldCheckbox6" class="base-checkbox two-state bag-gold-checkbox"></label>
+                <label id="BagGoldCheckbox7" class="base-checkbox two-state bag-gold-checkbox"></label>
+                <label id="BagGoldCheckbox8" class="base-checkbox two-state bag-gold-checkbox"></label>
+                <label id="BagGoldCheckbox9" class="base-checkbox two-state bag-gold-checkbox"></label>
+            </div>
+
+            <label id="ChestGoldCheckbox1"   class="base-checkbox two-state chest-gold-checkbox" style="top: 830px; left: 395px;"></label>
+
+            <!-- Right Column: Primary Weapon/Secondary Weapon/Armor/Item/Backup weapon -->
+
+            <div id="proficiency-container" style="top: 281px; left: 736px; width: 260px;">
+                <!-- Proficiency Checkbox 1-5 -->
+                <label id="ProficiencyCheckbox1" class="base-checkbox two-state proficiency-checkbox"></label>
+                <label id="ProficiencyCheckbox2" class="base-checkbox two-state proficiency-checkbox"></label>
+                <label id="ProficiencyCheckbox3" class="base-checkbox two-state proficiency-checkbox"></label>
+                <label id="ProficiencyCheckbox4" class="base-checkbox two-state proficiency-checkbox"></label>
+                <label id="ProficiencyCheckbox5" class="base-checkbox two-state proficiency-checkbox"></label>
+            </div>
+            <label id="TwohandedCheckbox1"      class="base-checkbox two-handed-checkbox"       style="top: 245px;  left: 890px;"></label>
+            <label id="TwohandedCheckbox2"      class="base-checkbox two-handed-checkbox"       style="top: 975px;  left: 760px;"></label>
+            <label id="TwohandedCheckbox3"      class="base-checkbox two-handed-checkbox"       style="top: 1125px; left: 760px;"></label>
+            <label id="BackupWeapon1Primary"    class="base-checkbox two-state square-checkbox" style="top: 988px;  left: 812px;"></label>
+            <label id="BackupWeapon1Secondary"  class="base-checkbox two-state square-checkbox" style="top: 988px;  left: 895px;"></label>
+            <label id="BackupWeapon2Primary"    class="base-checkbox two-state square-checkbox" style="top: 1136px;  left: 812px;"></label>
+            <label id="BackupWeapon2Secondary"  class="base-checkbox two-state square-checkbox" style="top: 1136px;  left: 895px;"></label>
+            
+            
+            <textarea id="PrimaryWeaponNameTextbox"     name="PrimaryWeaponNameTextbox"     class="base-textbox h1-text"                    style="top:  320px; left: 480px; width: 190px; height:  25px;"></textarea>
+            <textarea id="PrimaryWeaponStatTextbox"     name="PrimaryWeaponStatTextbox"     class="base-textbox h1-text"                    style="top:  320px; left: 690px; width: 140px; height:  25px;"></textarea>
+            <textarea id="PrimaryWeaponDamageTextbox"   name="PrimaryWeaponDamageTextbox"   class="base-textbox h1-text"                    style="top:  320px; left: 845px; width: 120px; height:  25px;"></textarea>
+            <textarea id="PrimaryWeaponTraitTextbox"    name="PrimaryWeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top:  360px; left: 540px; width: 420px; height:  65px;"></textarea>
+            <textarea id="SecondaryWeaponNameTextbox"   name="SecondaryWeaponNameTextbox"   class="base-textbox h1-text"                    style="top:  470px; left: 480px; width: 190px; height:  25px;"></textarea>
+            <textarea id="SecondaryWeaponStatTextbox"   name="SecondaryWeaponStatTextbox"   class="base-textbox h1-text"                    style="top:  470px; left: 690px; width: 140px; height:  25px;"></textarea>
+            <textarea id="SecondaryWeaponDamageTextbox" name="SecondaryWeaponDamageTextbox" class="base-textbox h1-text"                    style="top:  470px; left: 845px; width: 120px; height:  25px;"></textarea>
+            <textarea id="SecondaryWeaponTraitTextbox"  name="SecondaryWeaponTraitTextbox"  class="base-textbox h1-text h1-multiline-text"  style="top:  513px; left: 540px; width: 420px; height:  65px;"></textarea>
+            <textarea id="ArmorNameTextbox"             name="ArmorNameTextbox"             class="base-textbox h1-text"                    style="top:  640px; left: 480px; width: 250px; height:  25px;"></textarea>
+            <textarea id="ArmorThresholdTextbox"        name="ArmorThresholdTextbox"        class="base-textbox h1-text"                    style="top:  640px; left: 740px; width: 120px; height:  25px;"></textarea>
+            <textarea id="ArmorScoreTextbox"            name="ArmorScoreTextbox"            class="base-textbox h1-text"                    style="top:  640px; left: 880px; width:  80px; height:  25px;"></textarea>
+            <textarea id="ArmorTraitTextbox"            name="ArmorTraitTextbox"            class="base-textbox h1-text h1-multiline-text"  style="top:  685px; left: 540px; width: 420px; height:  65px;"></textarea>
+            <textarea id="ItemSlot1Textbox"             name="ItemSlot1Textbox"             class="base-textbox h1-text h1-multiline-text"  style="top:  800px; left: 480px; width: 480px; height: 160px;"></textarea>
+            <textarea id="Backup1WeaponNameTextbox"     name="Backup1WeaponNameTextbox"     class="base-textbox h1-text"                    style="top: 1010px; left: 480px; width: 190px; height:  25px;"></textarea>
+            <textarea id="Backup1WeaponStatTextbox"     name="Backup1WeaponStatTextbox"     class="base-textbox h1-text"                    style="top: 1010px; left: 690px; width: 140px; height:  25px;"></textarea>
+            <textarea id="Backup1WeaponDamageTextbox"   name="Backup1WeaponDamageTextbox"   class="base-textbox h1-text"                    style="top: 1010px; left: 845px; width: 120px; height:  25px;"></textarea>
+            <textarea id="Backup1WeaponTraitTextbox"    name="Backup1WeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top: 1052px; left: 540px; width: 420px; height:  60px;"></textarea>
+            <textarea id="Backup2WeaponNameTextbox"     name="Backup2WeaponNameTextbox"     class="base-textbox h1-text"                    style="top: 1155px; left: 480px; width: 190px; height:  25px;"></textarea>
+            <textarea id="Backup2WeaponStatTextbox"     name="Backup2WeaponStatTextbox"     class="base-textbox h1-text"                    style="top: 1155px; left: 690px; width: 140px; height:  25px;"></textarea>
+            <textarea id="Backup2WeaponDamageTextbox"   name="Backup2WeaponDamageTextbox"   class="base-textbox h1-text"                    style="top: 1155px; left: 845px; width: 120px; height:  25px;"></textarea>
+            <textarea id="Backup2WeaponTraitTextbox"    name="Backup2WeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top: 1197px; left: 540px; width: 420px; height:  61px;"></textarea>
         </div>
 
-        <div id="traits-container" style="top: 108px; left: 407px; width: 1820px;">
-            <!-- Traits Slots -->
-            <label id="TraitSlotCheckbox1"  class="base-checkbox two-state trait-checkbox"></label>
-            <label id="TraitSlotCheckbox2"  class="base-checkbox two-state trait-checkbox"></label>
-            <label id="TraitSlotCheckbox3"  class="base-checkbox two-state trait-checkbox"></label>
-            <label id="TraitSlotCheckbox4"  class="base-checkbox two-state trait-checkbox"></label>
-            <label id="TraitSlotCheckbox5"  class="base-checkbox two-state trait-checkbox"></label>
-            <label id="TraitSlotCheckbox6"  class="base-checkbox two-state trait-checkbox"></label>
+
+        <div id="page-2" class="page-container">
+            <img src="official_like_sheet/角色卡-打印-page-002.jpg" alt="角色卡第二页">
+
+
+            <textarea id="EventLogTextbox"              name="EventLogTextbox"              class="base-textbox h3-text" style="top: 140px; left:  10px; width: 345px; height: 205px;"></textarea>
+            <textarea id="AvatarTextbox"                name="AvatarTextbox"                class="base-textbox h3-text" style="top: 140px; left: 675px; width: 320px; height: 205px;"></textarea>
+            <textarea id="BackgroundQuestion1Textbox"   name="BackgroundQuestion1Textbox"   class="base-textbox h1-text" style="top: 435px; left:  30px; width: 420px; height:  25px;">·你从哪里来？你最亲近的人是谁？</textarea>
+            <textarea id="BackgroundAnswer1Textbox"     name="BackgroundAnswer1Textbox"     class="base-textbox h3-text" style="top: 465px; left:  50px; width: 420px; height:  50px;"></textarea>
+            <textarea id="BackgroundQuestion2Textbox"   name="BackgroundQuestion2Textbox"   class="base-textbox h1-text" style="top: 523px; left:  30px; width: 420px; height:  25px;">·你擅长什么？</textarea>
+            <textarea id="BackgroundAnswer2Textbox"     name="BackgroundAnswer2Textbox"     class="base-textbox h3-text" style="top: 553px; left:  50px; width: 420px; height:  50px;"></textarea>
+            <textarea id="BackgroundQuestion3Textbox"   name="BackgroundQuestion3Textbox"   class="base-textbox h1-text" style="top: 610px; left:  30px; width: 420px; height:  25px;">·你想在冒险中得到什么？</textarea>
+            <textarea id="BackgroundAnswer3Textbox"     name="BackgroundAnswer3Textbox"     class="base-textbox h3-text" style="top: 638px; left:  50px; width: 420px; height:  45px;"></textarea>
+            <textarea id="ConnectQuestion1Textbox"      name="ConnectQuestion1Textbox"      class="base-textbox h1-text" style="top: 435px; left: 520px; width: 405px; height:  25px;">·我们是怎么认识并成为队友的？</textarea>
+            <textarea id="ConnectAnswer1Textbox"        name="ConnectAnswer1Textbox"        class="base-textbox h3-text" style="top: 465px; left: 540px; width: 405px; height:  50px;"></textarea>
+            <textarea id="ConnectQuestion2Textbox"      name="ConnectQuestion2Textbox"      class="base-textbox h1-text" style="top: 523px; left: 520px; width: 405px; height:  25px;">·我做什么事情会让你情绪波动？</textarea>
+            <textarea id="ConnectAnswer2Textbox"        name="ConnectAnswer2Textbox"        class="base-textbox h3-text" style="top: 553px; left: 540px; width: 405px; height:  50px;"></textarea>
+            <textarea id="ConnectQuestion3Textbox"      name="ConnectQuestion3Textbox"      class="base-textbox h1-text" style="top: 610px; left: 520px; width: 405px; height:  25px;">·若对方在战斗中死亡，你会为对方做什么？</textarea>
+            <textarea id="ConnectAnswer3Textbox"        name="ConnectAnswer3Textbox"        class="base-textbox h3-text" style="top: 638px; left: 540px; width: 405px; height:  45px;"></textarea>
+
+            <!-- Level Up Tier 2 -->
+
+            <label id="LevelupT2_A1"  class="base-checkbox two-state square-checkbox" style="top: 881px;   left: 37px;"></label>
+            <label id="LevelupT2_A2"  class="base-checkbox two-state square-checkbox" style="top: 881px;   left: 55px;"></label>
+            <label id="LevelupT2_A3"  class="base-checkbox two-state square-checkbox" style="top: 881px;   left: 73px;"></label>
+            <label id="LevelupT2_B1"  class="base-checkbox two-state square-checkbox" style="top: 913px;   left: 55px;"></label>
+            <label id="LevelupT2_B2"  class="base-checkbox two-state square-checkbox" style="top: 913px;   left: 73px;"></label>
+            <label id="LevelupT2_C1"  class="base-checkbox two-state square-checkbox" style="top: 933px;   left: 55px;"></label>
+            <label id="LevelupT2_C2"  class="base-checkbox two-state square-checkbox" style="top: 933px;   left: 73px;"></label>
+            <label id="LevelupT2_D1"  class="base-checkbox two-state square-checkbox" style="top: 953px;   left: 73px;"></label>
+            <label id="LevelupT2_E1"  class="base-checkbox two-state square-checkbox" style="top: 985px;   left: 73px;"></label>
+            <label id="LevelupT2_G1"  class="base-checkbox two-state square-checkbox" style="top: 1030px;  left: 73px;"></label>
+
+            <!-- Level Up Tier 3 -->
+
+            <label id="LevelupT3_A1"  class="base-checkbox two-state square-checkbox" style="top: 881px;   left: 362px;"></label>
+            <label id="LevelupT3_A2"  class="base-checkbox two-state square-checkbox" style="top: 881px;   left: 380px;"></label>
+            <label id="LevelupT3_A3"  class="base-checkbox two-state square-checkbox" style="top: 881px;   left: 398px;"></label>
+            <label id="LevelupT3_B1"  class="base-checkbox two-state square-checkbox" style="top: 913px;   left: 380px;"></label>
+            <label id="LevelupT3_B2"  class="base-checkbox two-state square-checkbox" style="top: 913px;   left: 398px;"></label>
+            <label id="LevelupT3_C1"  class="base-checkbox two-state square-checkbox" style="top: 933px;   left: 380px;"></label>
+            <label id="LevelupT3_C2"  class="base-checkbox two-state square-checkbox" style="top: 933px;   left: 398px;"></label>
+            <label id="LevelupT3_D1"  class="base-checkbox two-state square-checkbox" style="top: 953px;   left: 398px;"></label>
+            <label id="LevelupT3_E1"  class="base-checkbox two-state square-checkbox" style="top: 985px;   left: 398px;"></label>
+            <label id="LevelupT3_F1"  class="base-checkbox square-checkbox"           style="top: 1030px;  left: 398px;"></label>
+            <label id="LevelupT3_G1"  class="base-checkbox two-state square-checkbox" style="top: 1050px;  left: 398px;"></label>
+            <label id="LevelupT3_H1"  class="base-checkbox double-square-checkbox"    style="top: 1079px;  left: 378px;"></label>
+            <label id="LevelupT3_I1"  class="base-checkbox double-square-checkbox"    style="top: 1105px;  left: 378px;"></label>
+
+            <!-- Level Up Tier 4 -->
+
+            <label id="LevelupT4_A1"  class="base-checkbox two-state square-checkbox" style="top: 881px;   left: 691px;"></label>
+            <label id="LevelupT4_A2"  class="base-checkbox two-state square-checkbox" style="top: 881px;   left: 709px;"></label>
+            <label id="LevelupT4_A3"  class="base-checkbox two-state square-checkbox" style="top: 881px;   left: 727px;"></label>
+            <label id="LevelupT4_B1"  class="base-checkbox two-state square-checkbox" style="top: 913px;   left: 709px;"></label>
+            <label id="LevelupT4_B2"  class="base-checkbox two-state square-checkbox" style="top: 913px;   left: 727px;"></label>
+            <label id="LevelupT4_C1"  class="base-checkbox two-state square-checkbox" style="top: 933px;   left: 709px;"></label>
+            <label id="LevelupT4_C2"  class="base-checkbox two-state square-checkbox" style="top: 933px;   left: 727px;"></label>
+            <label id="LevelupT4_D1"  class="base-checkbox two-state square-checkbox" style="top: 953px;   left: 727px;"></label>
+            <label id="LevelupT4_E1"  class="base-checkbox two-state square-checkbox" style="top: 985px;   left: 727px;"></label>
+            <label id="LevelupT4_F1"  class="base-checkbox two-state square-checkbox" style="top: 1030px;  left: 727px;"></label>
+            <label id="LevelupT4_G1"  class="base-checkbox two-state square-checkbox" style="top: 1050px;  left: 727px;"></label>
+            <label id="LevelupT4_H1"  class="base-checkbox double-square-checkbox"    style="top: 1079px;  left: 707px;"></label>
+            <label id="LevelupT4_I1"  class="base-checkbox double-square-checkbox"    style="top: 1105px;  left: 707px;"></label>
         </div>
 
-
-        <!-- Left Column: HP/Stress/Threshold/Experience/Gold/Class feature -->
-
-
-        <textarea id="MajorTextbox"                 name="MajorTextbox"                 class="base-textbox h2-text h2-small-text"  style="top: 309px; left: 133px; width:  40px; height:  40px;"></textarea>
-        <textarea id="SevereTextbox"                name="SevereTextbox"                class="base-textbox h2-text h2-small-text"  style="top: 309px; left: 277px; width:  40px; height:  40px;"></textarea>
-        <textarea id="Experience1Textbox"           name="Experience1Textbox"           class="base-textbox h1-text"                style="top: 625px; left:  30px; width: 310px; height:  25px;"></textarea>
-        <textarea id="Experience1ModifierTextbox"   name="Experience1ModifierTextbox"   class="base-textbox h2-text h2-small-text"  style="top: 620px; left: 370px; width:  40px; height:  35px;"></textarea>
-        <textarea id="Experience2Textbox"           name="Experience2Textbox"           class="base-textbox h1-text"                style="top: 658px; left:  30px; width: 310px; height:  25px;"></textarea>
-        <textarea id="Experience2ModifierTextbox"   name="Experience2ModifierTextbox"   class="base-textbox h2-text h2-small-text"  style="top: 653px; left: 370px; width:  40px; height:  35px;"></textarea>
-        <textarea id="Experience3Textbox"           name="Experience3Textbox"           class="base-textbox h1-text"                style="top: 690px; left:  30px; width: 310px; height:  25px;"></textarea>
-        <textarea id="Experience3ModifierTextbox"   name="Experience3ModifierTextbox"   class="base-textbox h2-text h2-small-text"  style="top: 685px; left: 370px; width:  40px; height:  35px;"></textarea>
-        <textarea id="Experience4Textbox"           name="Experience4Textbox"           class="base-textbox h1-text"                style="top: 723px; left:  30px; width: 310px; height:  25px;"></textarea>
-        <textarea id="Experience4ModifierTextbox"   name="Experience4ModifierTextbox"   class="base-textbox h2-text h2-small-text"  style="top: 718px; left: 370px; width:  40px; height:  35px;"></textarea>
-        <textarea id="Experience5Textbox"           name="Experience5Textbox"           class="base-textbox h1-text"                style="top: 755px; left:  30px; width: 310px; height:  25px;"></textarea>
-        <textarea id="Experience5ModifierTextbox"   name="Experience5ModifierTextbox"   class="base-textbox h2-text h2-small-text"  style="top: 750px; left: 370px; width:  40px; height:  35px;"></textarea>
-        <textarea id="ClassFeatureTextbox"          name="ClassFeatureTextbox"          class="base-textbox h3-text"                style="top: 920px; left:  10px; width: 412px; height: 315px;"></textarea>
-
-        <div id="hp-container" style="top: 369px; left: 60px; width: 420px;">
-            <!-- HP Slots -->
-            <label id="HpSlotCheckbox1"  class="base-checkbox hp-slot-checkbox"></label>
-            <label id="HpSlotCheckbox2"  class="base-checkbox hp-slot-checkbox"></label>
-            <label id="HpSlotCheckbox3"  class="base-checkbox hp-slot-checkbox"></label>
-            <label id="HpSlotCheckbox4"  class="base-checkbox hp-slot-checkbox"></label>
-            <label id="HpSlotCheckbox5"  class="base-checkbox hp-slot-checkbox"></label>
-            <label id="HpSlotCheckbox6"  class="base-checkbox hp-slot-checkbox"></label>
-            <label id="HpSlotCheckbox7"  class="base-checkbox hp-slot-checkbox"></label>
-            <label id="HpSlotCheckbox8"  class="base-checkbox hp-slot-checkbox"></label>
-            <label id="HpSlotCheckbox9"  class="base-checkbox hp-slot-checkbox"></label>
-            <label id="HpSlotCheckbox10" class="base-checkbox hp-slot-checkbox"></label>
-            <label id="HpSlotCheckbox11" class="base-checkbox hp-slot-checkbox"></label>
-            <label id="HpSlotCheckbox12" class="base-checkbox hp-slot-checkbox"></label>
-        </div>
-
-        <div id="stress-container" style="top: 405px; left: 60px; width: 420px;">
-            <!-- Stress Slots -->
-            <label id="StressSlotCheckbox1"  class="base-checkbox stress-slot-checkbox"></label>
-            <label id="StressSlotCheckbox2"  class="base-checkbox stress-slot-checkbox"></label>
-            <label id="StressSlotCheckbox3"  class="base-checkbox stress-slot-checkbox"></label>
-            <label id="StressSlotCheckbox4"  class="base-checkbox stress-slot-checkbox"></label>
-            <label id="StressSlotCheckbox5"  class="base-checkbox stress-slot-checkbox"></label>
-            <label id="StressSlotCheckbox6"  class="base-checkbox stress-slot-checkbox"></label>
-            <label id="StressSlotCheckbox7"  class="base-checkbox stress-slot-checkbox"></label>
-            <label id="StressSlotCheckbox8"  class="base-checkbox stress-slot-checkbox"></label>
-            <label id="StressSlotCheckbox9"  class="base-checkbox stress-slot-checkbox"></label>
-            <label id="StressSlotCheckbox10" class="base-checkbox stress-slot-checkbox"></label>
-            <label id="StressSlotCheckbox11" class="base-checkbox stress-slot-checkbox"></label>
-            <label id="StressSlotCheckbox12" class="base-checkbox stress-slot-checkbox"></label>
-        </div>
-
-        <div id="hope-container" style="top: 523px; left: 67px; width: 420px;">
-            <!-- Hope Slots -->
-            <label id="HopeSlotCheckbox1"  class="base-checkbox hope-slot-checkbox"></label>
-            <label id="HopeSlotCheckbox2"  class="base-checkbox hope-slot-checkbox"></label>
-            <label id="HopeSlotCheckbox3"  class="base-checkbox hope-slot-checkbox"></label>
-            <label id="HopeSlotCheckbox4"  class="base-checkbox hope-slot-checkbox"></label>
-            <label id="HopeSlotCheckbox5"  class="base-checkbox hope-slot-checkbox"></label>
-            <label id="HopeSlotCheckbox6"  class="base-checkbox hope-slot-checkbox"></label>
-        </div>
-
-        <div id="handful-gold-container" style="top: 835px; left: 24px; width: 180px;">
-            <!-- Handful of Gold Slots1-10 -->
-            <label id="HandfulGoldCheckbox1"  class="base-checkbox two-state handful-gold-checkbox"></label>
-            <label id="HandfulGoldCheckbox2"  class="base-checkbox two-state handful-gold-checkbox"></label>
-            <label id="HandfulGoldCheckbox3"  class="base-checkbox two-state handful-gold-checkbox"></label>
-            <label id="HandfulGoldCheckbox4"  class="base-checkbox two-state handful-gold-checkbox"></label>
-            <label id="HandfulGoldCheckbox5"  class="base-checkbox two-state handful-gold-checkbox"></label>
-            <label id="HandfulGoldCheckbox6"  class="base-checkbox two-state handful-gold-checkbox"></label>
-            <label id="HandfulGoldCheckbox7"  class="base-checkbox two-state handful-gold-checkbox"></label>
-            <label id="HandfulGoldCheckbox8"  class="base-checkbox two-state handful-gold-checkbox"></label>
-            <label id="HandfulGoldCheckbox9"  class="base-checkbox two-state handful-gold-checkbox"></label>
-        </div>
-
-        <div id="bag-gold-container" style="top: 827px; left: 215px; width: 170px;">
-            <!-- Bags of Gold Slots1-10 -->
-            <label id="BagGoldCheckbox1" class="base-checkbox two-state bag-gold-checkbox"></label>
-            <label id="BagGoldCheckbox2" class="base-checkbox two-state bag-gold-checkbox"></label>
-            <label id="BagGoldCheckbox3" class="base-checkbox two-state bag-gold-checkbox"></label>
-            <label id="BagGoldCheckbox4" class="base-checkbox two-state bag-gold-checkbox"></label>
-            <label id="BagGoldCheckbox5" class="base-checkbox two-state bag-gold-checkbox"></label>
-            <label id="BagGoldCheckbox6" class="base-checkbox two-state bag-gold-checkbox"></label>
-            <label id="BagGoldCheckbox7" class="base-checkbox two-state bag-gold-checkbox"></label>
-            <label id="BagGoldCheckbox8" class="base-checkbox two-state bag-gold-checkbox"></label>
-            <label id="BagGoldCheckbox9" class="base-checkbox two-state bag-gold-checkbox"></label>
-        </div> 
-
-        <label id="ChestGoldCheckbox1"   class="base-checkbox two-state chest-gold-checkbox" style="top: 830px; left: 395px;"></label>
-
-        <!-- Right Column: Primary Weapon/Secondary Weapon/Armor/Item/Backup weapon -->
-
-        <div id="proficiency-container" style="top: 281px; left: 736px; width: 260px;">
-            <!-- Proficiency Checkbox 1-5 -->
-            <label id="ProficiencyCheckbox1" class="base-checkbox two-state proficiency-checkbox"></label>
-            <label id="ProficiencyCheckbox2" class="base-checkbox two-state proficiency-checkbox"></label>
-            <label id="ProficiencyCheckbox3" class="base-checkbox two-state proficiency-checkbox"></label>
-            <label id="ProficiencyCheckbox4" class="base-checkbox two-state proficiency-checkbox"></label>
-            <label id="ProficiencyCheckbox5" class="base-checkbox two-state proficiency-checkbox"></label>
-        </div>
-        <label id="TwohandedCheckbox1"      class="base-checkbox two-handed-checkbox"       style="top: 245px;  left: 890px;"></label>
-        <label id="TwohandedCheckbox2"      class="base-checkbox two-handed-checkbox"       style="top: 975px;  left: 760px;"></label>
-        <label id="TwohandedCheckbox3"      class="base-checkbox two-handed-checkbox"       style="top: 1125px; left: 760px;"></label>
-        <label id="BackupWeapon1Primary"    class="base-checkbox two-state square-checkbox" style="top: 988px;  left: 812px;"></label>
-        <label id="BackupWeapon1Secondary"  class="base-checkbox two-state square-checkbox" style="top: 988px;  left: 895px;"></label>
-        <label id="BackupWeapon2Primary"    class="base-checkbox two-state square-checkbox" style="top: 1136px;  left: 812px;"></label>
-        <label id="BackupWeapon2Secondary"  class="base-checkbox two-state square-checkbox" style="top: 1136px;  left: 895px;"></label>
-        
-        
-        <textarea id="PrimaryWeaponNameTextbox"     name="PrimaryWeaponNameTextbox"     class="base-textbox h1-text"                    style="top:  320px; left: 480px; width: 190px; height:  25px;"></textarea>
-        <textarea id="PrimaryWeaponStatTextbox"     name="PrimaryWeaponStatTextbox"     class="base-textbox h1-text"                    style="top:  320px; left: 690px; width: 140px; height:  25px;"></textarea>
-        <textarea id="PrimaryWeaponDamageTextbox"   name="PrimaryWeaponDamageTextbox"   class="base-textbox h1-text"                    style="top:  320px; left: 845px; width: 120px; height:  25px;"></textarea>
-        <textarea id="PrimaryWeaponTraitTextbox"    name="PrimaryWeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top:  360px; left: 540px; width: 420px; height:  65px;"></textarea>
-        <textarea id="SecondaryWeaponNameTextbox"   name="SecondaryWeaponNameTextbox"   class="base-textbox h1-text"                    style="top:  470px; left: 480px; width: 190px; height:  25px;"></textarea>
-        <textarea id="SecondaryWeaponStatTextbox"   name="SecondaryWeaponStatTextbox"   class="base-textbox h1-text"                    style="top:  470px; left: 690px; width: 140px; height:  25px;"></textarea>
-        <textarea id="SecondaryWeaponDamageTextbox" name="SecondaryWeaponDamageTextbox" class="base-textbox h1-text"                    style="top:  470px; left: 845px; width: 120px; height:  25px;"></textarea>
-        <textarea id="SecondaryWeaponTraitTextbox"  name="SecondaryWeaponTraitTextbox"  class="base-textbox h1-text h1-multiline-text"  style="top:  513px; left: 540px; width: 420px; height:  65px;"></textarea>
-        <textarea id="ArmorNameTextbox"             name="ArmorNameTextbox"             class="base-textbox h1-text"                    style="top:  640px; left: 480px; width: 250px; height:  25px;"></textarea>
-        <textarea id="ArmorThresholdTextbox"        name="ArmorThresholdTextbox"        class="base-textbox h1-text"                    style="top:  640px; left: 740px; width: 120px; height:  25px;"></textarea>
-        <textarea id="ArmorScoreTextbox"            name="ArmorScoreTextbox"            class="base-textbox h1-text"                    style="top:  640px; left: 880px; width:  80px; height:  25px;"></textarea>
-        <textarea id="ArmorTraitTextbox"            name="ArmorTraitTextbox"            class="base-textbox h1-text h1-multiline-text"  style="top:  685px; left: 540px; width: 420px; height:  65px;"></textarea>
-        <textarea id="ItemSlot1Textbox"             name="ItemSlot1Textbox"             class="base-textbox h1-text h1-multiline-text"  style="top:  800px; left: 480px; width: 480px; height: 160px;"></textarea>
-        <textarea id="Backup1WeaponNameTextbox"     name="Backup1WeaponNameTextbox"     class="base-textbox h1-text"                    style="top: 1010px; left: 480px; width: 190px; height:  25px;"></textarea>
-        <textarea id="Backup1WeaponStatTextbox"     name="Backup1WeaponStatTextbox"     class="base-textbox h1-text"                    style="top: 1010px; left: 690px; width: 140px; height:  25px;"></textarea>
-        <textarea id="Backup1WeaponDamageTextbox"   name="Backup1WeaponDamageTextbox"   class="base-textbox h1-text"                    style="top: 1010px; left: 845px; width: 120px; height:  25px;"></textarea>
-        <textarea id="Backup1WeaponTraitTextbox"    name="Backup1WeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top: 1052px; left: 540px; width: 420px; height:  60px;"></textarea>
-        <textarea id="Backup2WeaponNameTextbox"     name="Backup2WeaponNameTextbox"     class="base-textbox h1-text"                    style="top: 1155px; left: 480px; width: 190px; height:  25px;"></textarea>
-        <textarea id="Backup2WeaponStatTextbox"     name="Backup2WeaponStatTextbox"     class="base-textbox h1-text"                    style="top: 1155px; left: 690px; width: 140px; height:  25px;"></textarea>
-        <textarea id="Backup2WeaponDamageTextbox"   name="Backup2WeaponDamageTextbox"   class="base-textbox h1-text"                    style="top: 1155px; left: 845px; width: 120px; height:  25px;"></textarea>
-        <textarea id="Backup2WeaponTraitTextbox"    name="Backup2WeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top: 1197px; left: 540px; width: 420px; height:  61px;"></textarea>
-
-  
-        <img src="official_like_sheet/角色卡-打印-page-002.jpg" alt="角色卡第二页">
-
-
-        <textarea id="EventLogTextbox"              name="EventLogTextbox"              class="base-textbox h3-text" style="top: 1445px; left:  10px; width: 345px; height: 205px;"></textarea>
-        <textarea id="AvatarTextbox"                name="AvatarTextbox"                class="base-textbox h3-text" style="top: 1445px; left: 675px; width: 320px; height: 205px;"></textarea>
-        <textarea id="BackgroundQuestion1Textbox"   name="BackgroundQuestion1Textbox"   class="base-textbox h1-text" style="top: 1740px; left:  30px; width: 420px; height:  25px;">·你从哪里来？你最亲近的人是谁？</textarea>
-        <textarea id="BackgroundAnswer1Textbox"     name="BackgroundAnswer1Textbox"     class="base-textbox h3-text" style="top: 1770px; left:  50px; width: 420px; height:  50px;"></textarea>
-        <textarea id="BackgroundQuestion2Textbox"   name="BackgroundQuestion2Textbox"   class="base-textbox h1-text" style="top: 1828px; left:  30px; width: 420px; height:  25px;">·你擅长什么？</textarea>
-        <textarea id="BackgroundAnswer2Textbox"     name="BackgroundAnswer2Textbox"     class="base-textbox h3-text" style="top: 1858px; left:  50px; width: 420px; height:  50px;"></textarea>
-        <textarea id="BackgroundQuestion3Textbox"   name="BackgroundQuestion3Textbox"   class="base-textbox h1-text" style="top: 1915px; left:  30px; width: 420px; height:  25px;">·你想在冒险中得到什么？</textarea>
-        <textarea id="BackgroundAnswer3Textbox"     name="BackgroundAnswer3Textbox"     class="base-textbox h3-text" style="top: 1943px; left:  50px; width: 420px; height:  45px;"></textarea>
-        <textarea id="ConnectQuestion1Textbox"      name="ConnectQuestion1Textbox"      class="base-textbox h1-text" style="top: 1740px; left: 520px; width: 405px; height:  25px;">·我们是怎么认识并成为队友的？</textarea>
-        <textarea id="ConnectAnswer1Textbox"        name="ConnectAnswer1Textbox"        class="base-textbox h3-text" style="top: 1770px; left: 540px; width: 405px; height:  50px;"></textarea>
-        <textarea id="ConnectQuestion2Textbox"      name="ConnectQuestion2Textbox"      class="base-textbox h1-text" style="top: 1828px; left: 520px; width: 405px; height:  25px;">·我做什么事情会让你情绪波动？</textarea>
-        <textarea id="ConnectAnswer2Textbox"        name="ConnectAnswer2Textbox"        class="base-textbox h3-text" style="top: 1858px; left: 540px; width: 405px; height:  50px;"></textarea>
-        <textarea id="ConnectQuestion3Textbox"      name="ConnectQuestion3Textbox"      class="base-textbox h1-text" style="top: 1915px; left: 520px; width: 405px; height:  25px;">·若对方在战斗中死亡，你会为对方做什么？</textarea>
-        <textarea id="ConnectAnswer3Textbox"        name="ConnectAnswer3Textbox"        class="base-textbox h3-text" style="top: 1943px; left: 540px; width: 405px; height:  45px;"></textarea>
-
-        <!-- Level Up Tier 2 -->
-
-        <label id="LevelupT2_A1"  class="base-checkbox two-state square-checkbox" style="top: 2186px;  left: 37px;"></label>
-        <label id="LevelupT2_A2"  class="base-checkbox two-state square-checkbox" style="top: 2186px;  left: 55px;"></label>
-        <label id="LevelupT2_A3"  class="base-checkbox two-state square-checkbox" style="top: 2186px;  left: 73px;"></label>
-        <label id="LevelupT2_B1"  class="base-checkbox two-state square-checkbox" style="top: 2218px;  left: 55px;"></label>
-        <label id="LevelupT2_B2"  class="base-checkbox two-state square-checkbox" style="top: 2218px;  left: 73px;"></label>
-        <label id="LevelupT2_C1"  class="base-checkbox two-state square-checkbox" style="top: 2238px;  left: 55px;"></label>
-        <label id="LevelupT2_C2"  class="base-checkbox two-state square-checkbox" style="top: 2238px;  left: 73px;"></label>
-        <label id="LevelupT2_D1"  class="base-checkbox two-state square-checkbox" style="top: 2258px;  left: 73px;"></label>
-        <label id="LevelupT2_E1"  class="base-checkbox two-state square-checkbox" style="top: 2290px;  left: 73px;"></label>
-        <label id="LevelupT2_G1"  class="base-checkbox two-state square-checkbox" style="top: 2335px;  left: 73px;"></label>
-
-        <!-- Level Up Tier 3 -->
-
-        <label id="LevelupT3_A1"  class="base-checkbox two-state square-checkbox" style="top: 2186px;  left: 362px;"></label>
-        <label id="LevelupT3_A2"  class="base-checkbox two-state square-checkbox" style="top: 2186px;  left: 380px;"></label>
-        <label id="LevelupT3_A3"  class="base-checkbox two-state square-checkbox" style="top: 2186px;  left: 398px;"></label>
-        <label id="LevelupT3_B1"  class="base-checkbox two-state square-checkbox" style="top: 2218px;  left: 380px;"></label>
-        <label id="LevelupT3_B2"  class="base-checkbox two-state square-checkbox" style="top: 2218px;  left: 398px;"></label>
-        <label id="LevelupT3_C1"  class="base-checkbox two-state square-checkbox" style="top: 2238px;  left: 380px;"></label>
-        <label id="LevelupT3_C2"  class="base-checkbox two-state square-checkbox" style="top: 2238px;  left: 398px;"></label>
-        <label id="LevelupT3_D1"  class="base-checkbox two-state square-checkbox" style="top: 2258px;  left: 398px;"></label>
-        <label id="LevelupT3_E1"  class="base-checkbox two-state square-checkbox" style="top: 2290px;  left: 398px;"></label>
-        <label id="LevelupT3_F1"  class="base-checkbox square-checkbox"           style="top: 2335px;  left: 398px;"></label>
-        <label id="LevelupT3_G1"  class="base-checkbox two-state square-checkbox" style="top: 2355px;  left: 398px;"></label>
-        <label id="LevelupT3_H1"  class="base-checkbox double-square-checkbox"    style="top: 2384px;  left: 378px;"></label>
-        <label id="LevelupT3_I1"  class="base-checkbox double-square-checkbox"    style="top: 2410px;  left: 378px;"></label>
-
-        <!-- Level Up Tier 4 -->
-
-        <label id="LevelupT4_A1"  class="base-checkbox two-state square-checkbox" style="top: 2186px;  left: 691px;"></label>
-        <label id="LevelupT4_A2"  class="base-checkbox two-state square-checkbox" style="top: 2186px;  left: 709px;"></label>
-        <label id="LevelupT4_A3"  class="base-checkbox two-state square-checkbox" style="top: 2186px;  left: 727px;"></label>
-        <label id="LevelupT4_B1"  class="base-checkbox two-state square-checkbox" style="top: 2218px;  left: 709px;"></label>
-        <label id="LevelupT4_B2"  class="base-checkbox two-state square-checkbox" style="top: 2218px;  left: 727px;"></label>
-        <label id="LevelupT4_C1"  class="base-checkbox two-state square-checkbox" style="top: 2238px;  left: 709px;"></label>
-        <label id="LevelupT4_C2"  class="base-checkbox two-state square-checkbox" style="top: 2238px;  left: 727px;"></label>
-        <label id="LevelupT4_D1"  class="base-checkbox two-state square-checkbox" style="top: 2258px;  left: 727px;"></label>
-        <label id="LevelupT4_E1"  class="base-checkbox two-state square-checkbox" style="top: 2290px;  left: 727px;"></label>
-        <label id="LevelupT4_F1"  class="base-checkbox two-state square-checkbox" style="top: 2335px;  left: 727px;"></label>
-        <label id="LevelupT4_G1"  class="base-checkbox two-state square-checkbox" style="top: 2355px;  left: 727px;"></label>
-        <label id="LevelupT4_H1"  class="base-checkbox double-square-checkbox"    style="top: 2384px;  left: 707px;"></label>
-        <label id="LevelupT4_I1"  class="base-checkbox double-square-checkbox"    style="top: 2410px;  left: 707px;"></label>
-
-        
 
 
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

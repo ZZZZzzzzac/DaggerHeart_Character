@@ -20,6 +20,34 @@ This file records architectural and implementation decisions using a list format
 ---
 ---
 ### Decision (Code)
+[2025-06-14 22:08:00] - 实现浮动操作栏及PDF打印功能
+
+**Rationale:**
+为了提供核心的可用性功能，需要在页面上添加一个固定的操作栏，用于导入/导出角色数据和打印角色卡。导出/导入功能利用了现有的 `exportFormState` 和 `importFormState` 函数。打印功能需要将两页的角色卡（包含背景图片和所有交互式表单域）准确地渲染成一个两页的A4 PDF文件。
+
+**Details:**
+*   **HTML ([`character_sheet_editor.html`](character_sheet_editor.html:1))**:
+    *   在 `<body>` 中添加了一个 `<div id="action-container">`，包含“导入JSON”、“导出JSON”和“打印PDF”按钮，以及一个用于文件上传的隐藏的 `<input type="file">`。
+    *   为了实现精确打印，将角色卡的每一页内容（图片和其上的所有控件）分别包裹在 `<div id="page-1">` 和 `<div id="page-2">` 中。
+    *   在 `<head>` 中添加了 `jspdf` 和 `html2canvas` 库的CDN链接。
+*   **CSS ([`style.css`](style.css:1))**:
+    *   为 `#action-container` 添加了 `position: fixed` 样式，将其固定在视口的右上角。
+    *   为新的 `.page-container` 类添加了 `position: relative`，以确保页面内的绝对定位元素正确定位。
+*   **JavaScript ([`script.js`](script.js:1))**:
+    *   创建了 `setupActionButtons` 函数，并在 `DOMContentLoaded` 时调用。
+    *   **导出**: “导出JSON”按钮的点击事件会调用 `exportFormState`，将返回的状态对象转换为JSON字符串，并创建一个可下载的 `.json` 文件。
+    *   **导入**: “导入JSON”按钮会触发隐藏的文件输入框。文件输入框的 `change` 事件使用 `FileReader` 读取文件内容，解析JSON，然后调用 `importFormState` 来填充表单。
+    *   **打印**: “打印PDF”按钮的点击事件是一个 `async` 函数：
+        *   它会隐藏操作栏以防被打印。
+        *   使用 `await html2canvas(page1)` 和 `await html2canvas(page2)` 按顺序将两个页面容器转换为canvas。
+        *   创建一个新的 `jsPDF` 实例。
+        *   将第一个canvas作为第一页添加到PDF。
+        *   添加一个新页面，然后将第二个canvas添加到PDF。
+        *   最后，生成并下载PDF文件。
+        *   `finally` 块确保无论打印成功与否，操作栏都会被重新显示。
+
+---
+### Decision (Code)
 [2025-06-14 18:56:26] - 将复选框插槽容器化以实现网格布局
 
 **Rationale:**

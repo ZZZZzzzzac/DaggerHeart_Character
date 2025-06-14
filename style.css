@@ -20,6 +20,11 @@ body {
     margin-bottom: 10px; /* 图片间的间距 */
 }
 
+.page-container {
+    position: relative; /* This is crucial for the absolute positioning of children */
+    width: 1000px; /* Match the image width */
+}
+
 /* New container for all interactive elements */
 
 /* Base style for textareas */
@@ -44,7 +49,7 @@ body {
   font-size: 20px;
   text-align: left;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start; /* Changed from flex-end to align text to the top */
   justify-content: left;
 }
 
@@ -63,10 +68,11 @@ body {
   display: flex;
   align-items: center; /* 文本垂直居中 */
   justify-content: center; /* flex 元素水平居中 */
+  line-height: 1.0; /* 确保行高不会导致偏移 */
 }
 
 .h2-small-text {
-    font-size: 27px !important; 
+    font-size: 27px !important;
 }
 
 .h3-text {
@@ -74,8 +80,11 @@ body {
   font-size: 15px;
   text-align: left;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start; /* 从 flex-end 改为 flex-start 以支持多行文本 */
   justify-content: left;
+  white-space: pre-wrap; /* 允许文本换行 */
+  word-wrap: break-word;   /* 允许长单词断行 */
+  line-height: 1.5; /* 增加行高以提高可读性 */
 }
 
 /* General debug mode style for ALL textboxes */
@@ -321,4 +330,72 @@ body {
 
 .double-square-checkbox.state-dashed {
     background-image: url('official_like_sheet/double_square_dash.png'); /* Placeholder */
+}
+/* Action Container for buttons */
+#action-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#action-container button {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 5px;
+    font-family: '黑体', 'HeiTi', serif;
+}
+
+#action-container button:hover {
+    background-color: #e0e0e0;
+}
+
+/* --- Print Styles --- */
+@media print {
+    @page {
+        margin: 0;
+        size: auto;
+    }
+
+    /* Hide non-essential elements */
+    #action-container {
+        display: none !important;
+    }
+
+    /* Reset body and prepare for printing */
+    body, html {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 1000px !important; /* Match the character sheet width */
+    }
+
+    /* Make the character sheet the only visible element */
+    body > *:not(#character-sheet) {
+        display: none !important;
+    }
+
+    #character-sheet {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .page-container {
+        page-break-after: always; /* Ensure each page prints on a new sheet */
+    }
+
+    /* Ensure textareas and checkboxes print correctly */
+    .base-textbox, .print-replacement, .base-checkbox {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
 }
