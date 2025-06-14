@@ -18,6 +18,82 @@ This file records architectural and implementation decisions using a list format
 *
 ---
 ---
+---
+### Decision (Code)
+[2025-06-14 18:56:26] - 将复选框插槽容器化以实现网格布局
+
+**Rationale:**
+为了将 `ArmorSlot`、`HpSlot` 和 `StressSlot` 复选框组织成视觉上清晰的网格，需要将它们各自包裹在 `div` 容器中。这种方法利用 Flexbox 来控制布局，而不是对每个复选框进行单独的绝对定位。这简化了 HTML，使 CSS 更具可维护性，并允许容器根据其内容自动调整大小。它还使得设置元素之间的间距和容器周围的填充变得容易。
+
+**Details:**
+*   **HTML ([`character_sheet_editor.html`](character_sheet_editor.html:1))**:
+    *   创建了 `<div id="armor-slots-container">`, `<div id="stress-container">`, 和 `<div id="hp-container">`。
+    *   将相应的 `label` 元素移动到这些容器中。
+    *   从 `label` 元素中删除了内联的 `top` 和 `left` 样式。
+    *   为容器本身设置了绝对定位的 `top` 和 `left` 内联样式。
+*   **CSS ([`style.css`](style.css:1))**:
+    *   为三个新容器ID添加了样式规则。
+    *   使用 `display: flex` 和 `flex-wrap: wrap` 来创建网格行为。
+    *   使用 `gap` 属性在复选框之间创建间距。
+    *   使用 `width` 属性来控制每行可以容纳多少个项目，从而强制实现所需的列数（护甲为3列，生命/压力为6列）。
+    *   将 `.base-checkbox` 的 `position` 从 `absolute` 更改为 `relative`，因为它们的定位现在由 flex 容器管理。
+*   **JavaScript ([`script.js`](script.js:1))**:
+    *   创建了 `setDefaultSlotStates` 函数，在 `DOMContentLoaded` 时调用。
+    *   此函数以编程方式为后6个生命值和压力插槽设置 `data-state="2"`（虚线状态），实现了任务要求的默认状态。此操作在从 cookie 加载状态之前执行，因此保存的状态可以覆盖默认值。
+---
+### Decision (Code)
+[2025-06-14 18:27:00] - 重构复选框以移除包装器元素
+
+**Rationale:**
+根据用户反馈，为了进一步简化DOM结构和CSS，移除了 `.base-checkbox-wrapper` `div` 元素。这些包装器仅用于定位，通过将它们的样式直接合并到子 `label` 元素中，可以使HTML更清晰，元素定位更直接。
+
+**Details:**
+*   **HTML ([`character_sheet_editor.html`](character_sheet_editor.html:1))**:
+    *   删除了所有 class 为 `base-checkbox-wrapper` 的 `div` 元素。
+    *   将每个已删除 `div` 的 `style` 属性（包含 `top` 和 `left`）合并到其子 `label` 元素中。
+*   **CSS ([`style.css`](style.css:1))**:
+    *   删除了 `.base-checkbox-wrapper` CSS规则。
+    *   将 `position: absolute;` 添加到 `.base-checkbox` 规则中，以处理复选框的直接定位。
+*   **JavaScript ([`script.js`](script.js:1))**:
+    *   更新了 `applyDebugStyles` 函数，使其现在查询 `.base-checkbox` 而不是 `.base-checkbox-wrapper` 来应用调试边框。
+---
+### Decision (Code)
+[2025-06-14 18:24:00] - 实现三态复选框基类 `TriStateCheckbox`
+
+**Rationale:**
+为了支持需要超过两种状态（开/关）的复杂交互，例如护甲槽（正常、已用、损坏），需要创建一个可重用的 `TriStateCheckbox` JavaScript 类。该类将封装状态逻辑（0: 未选中, 1: 左键选中, 2: 右键选中）和事件处理（左键/右键单击），从而简化HTML结构并使状态管理集中化。此方法避免了使用多个复选框或复杂的CSS选择器来模拟三种状态，提高了可维护性和可扩展性。
+
+**Details:**
+*   **JavaScript ([`script.js`](script.js:1))**:
+    *   创建了 `TriStateCheckbox` 类，该类管理一个 `label` 元素的状态。
+    *   该类处理 `click`（在状态0和1之间切换）和 `contextmenu`（在状态0和2之间切换）事件。
+    *   通过 `dataset.state` 属性在DOM中存储和更新状态。
+    *   重构了 `exportFormState` 和 `importFormState` 函数，以保存和加载复选框的数字状态（0, 1, 2），而不是布尔值。
+    *   在 `DOMContentLoaded` 时初始化所有 `.base-checkbox` 元素为 `TriStateCheckbox` 实例。
+*   **CSS ([`style.css`](style.css:1))**:
+    *   移除了依赖于 `:checked` 伪类的样式。
+    *   添加了新的类选择器 `.state-checked` 和 `.state-dashed`，以根据 `label` 元素上的类应用不同的 `background-image`。
+*   **HTML ([`character_sheet_editor.html`](character_sheet_editor.html:1))**:
+    *   从所有复选框包装器中删除了隐藏的 `<input type="checkbox">` 元素，因为状态现在完全由JavaScript管理。
+    *   保留了 `label` 上的 `for` 属性作为状态保存/加载的唯一标识符。
+---
+### Decision (Code)
+[2025-06-14 18:07:00] - 重构 Checkbox 实现为可复用的基础组件
+
+**Rationale:**
+为了支持多种不同视觉表现的 Checkbox（例如护甲槽、生命值、压力等），需要将现有的 `sampleCheckbox` 实现重构为一个更通用、可扩展的系统。此举旨在通过创建一个共享的 `base-checkbox` 类和为每种具体类型（如 `armor-slot-checkbox`）提供特定样式的方式，来简化 HTML 结构并提高 CSS 的可维护性。
+
+**Details:**
+*   **CSS ([`style.css`](style.css:1))**:
+    *   移除了旧的 `.styled-checkbox` 和相关的 `:checked` 规则。
+    *   创建了 `.base-checkbox` 类，包含所有 Checkbox 共享的样式（如 `display`, `cursor`, `background-size` 等）。
+    *   为 `armor-slot` 创建了 `.armor-slot-checkbox` 类，并为其未选中和选中状态定义了不同的 `background-image`。
+    *   更新了 `.base-checkbox-wrapper`，使其 `position` 为 `absolute`，因为所有 Checkbox 都将绝对定位。
+*   **HTML ([`character_sheet_editor.html`](character_sheet_editor.html:1))**:
+    *   移除了旧的 `sampleCheckboxWrapper` div。
+    *   为任务中要求的每种 Checkbox 类型（ArmorSlot, HitPoint, Stress 等）添加了新的 HTML 结构。
+    *   每个新的 Checkbox 都遵循以下模式：一个包含 `base-checkbox-wrapper` 类的 `div`，内部有一个隐藏的 `input.hidden-checkbox` 和一个应用了 `.base-checkbox` 及特定类型类（如 `.armor-slot-checkbox`）的 `label`。
+    *   为所有新添加的 Checkbox 暂时使用了 `armor-slot-checkbox` 的样式作为占位符。
 ### Decision (Code)
 [2025-06-14 13:48:36] - 固定角色卡图片大小，防止缩放
 

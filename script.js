@@ -1,5 +1,5 @@
 // Hard-coded debug mode switch
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 
 function applyDebugStyles() {
     if (!DEBUG_MODE) return;
@@ -11,9 +11,9 @@ function applyDebugStyles() {
     });
 
     // --- Apply to checkboxes ---
-    const allCheckboxWrappers = document.querySelectorAll('.base-checkbox-wrapper');
-    allCheckboxWrappers.forEach(wrapper => {
-        wrapper.classList.add('debug-mode');
+    const allCheckboxes = document.querySelectorAll('.base-checkbox');
+    allCheckboxes.forEach(checkbox => {
+        checkbox.classList.add('debug-mode');
     });
 }
 
@@ -33,51 +33,114 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// --- Form State Management ---
+// --- TriStateCheckbox Class ---
 
-/**
- * Exports the current state of all relevant form elements on the page.
- * @returns {object} An object containing the form state.
- */
-function exportFormState() {
-    const state = {};
-    const elements = document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="checkbox"]');
+class TriStateCheckbox {
+    /**
+     * Creates a tri-state checkbox.
+     * @param {HTMLElement} labelElement The label element that acts as the checkbox.
+     */
+    constructor(labelElement) {
+        this.label = labelElement;
+        // State: 0 = normal, 1 = checked (full), 2 = dashed
+        this.state = parseInt(this.label.dataset.state) || 0;
+        this.isTwoState = this.label.classList.contains('two-state');
+        this.updateVisuals();
 
-    elements.forEach(el => {
-        if (el.name) {
-            if (el.type === 'checkbox') {
-                state[el.name] = el.checked;
-            } else {
-                state[el.name] = el.value;
-            }
+        this.label.addEventListener('click', this.handleClick.bind(this));
+        this.label.addEventListener('contextmenu', this.handleRightClick.bind(this));
+    }
+
+    handleClick(event) {
+        event.preventDefault();
+        // Left-click toggles between normal (0) and checked (1)
+        this.state = this.state === 1 ? 0 : 1;
+        this.updateVisuals();
+        saveFormStateToCookie(); // Save state on change
+    }
+
+    handleRightClick(event) {
+        event.preventDefault();
+        if (this.isTwoState) {
+            return; // Do nothing for two-state checkboxes
         }
-    });
+        // Right-click toggles between normal (0) and dashed (2)
+        this.state = this.state === 2 ? 0 : 2;
+        this.updateVisuals();
+        saveFormStateToCookie(); // Save state on change
+    }
 
-    return state;
-}
-
-/**
- * Imports a given state into the form elements on the page.
- * @param {object} state - The state object to import.
- */
-function importFormState(state) {
-    for (const name in state) {
-        if (Object.hasOwnProperty.call(state, name)) {
-            const value = state[name];
-            const element = document.querySelector(`[name="${name}"]`);
-
-            if (element) {
-                if (element.type === 'checkbox') {
-                    element.checked = value;
-                } else {
-                    element.value = value;
-                }
-            } else {
-                console.log(`未找到名为 '${name}' 的元素`);
-            }
+    updateVisuals() {
+        this.label.dataset.state = this.state;
+        this.label.classList.remove('state-checked', 'state-dashed');
+        if (this.state === 1) {
+            this.label.classList.add('state-checked');
+        } else if (this.state === 2) {
+            this.label.classList.add('state-dashed');
         }
     }
+
+    setState(newState) {
+        this.state = parseInt(newState) || 0;
+        this.updateVisuals();
+    }
 }
+
+
+// --- Form State Management ---
+ 
+ /**
+  * Exports the current state of all relevant form elements on the page.
+  * @returns {object} An object containing the form state.
+  */
+ function exportFormState() {
+     const state = {};
+     // Textareas and text inputs
+     const textElements = document.querySelectorAll('input[type="text"], input[type="number"], textarea');
+     textElements.forEach(el => {
+         if (el.name) {
+             state[el.name] = el.value;
+         }
+     });
+
+     // Tri-state checkboxes
+     const checkboxLabels = document.querySelectorAll('.base-checkbox');
+     checkboxLabels.forEach(label => {
+         if (label.id) {
+             state[label.id] = label.dataset.state || '0';
+         }
+     });
+ 
+     return state;
+ }
+ 
+ /**
+  * Imports a given state into the form elements on the page.
+  * @param {object} state - The state object to import.
+  */
+ function importFormState(state) {
+     for (const name in state) {
+         if (Object.hasOwnProperty.call(state, name)) {
+             const value = state[name];
+             // Handle textareas and inputs
+             const textElement = document.querySelector(`[name="${name}"]`);
+             if (textElement) {
+                 textElement.value = value;
+             }
+
+             // Handle tri-state checkboxes by finding the label
+             const checkboxLabel = document.getElementById(name);
+             if (checkboxLabel && checkboxLabel.classList.contains('base-checkbox')) {
+                 if (checkboxLabel.checkboxInstance) {
+                     checkboxLabel.checkboxInstance.setState(value);
+                 } else {
+                     // Fallback for elements not yet initialized
+                     checkboxLabel.dataset.state = value;
+                 }
+             }
+         }
+     }
+ }
 
 /**
  * Saves the current form state to a cookie. This is the reliable way.
@@ -115,17 +178,41 @@ function loadFormStateFromCookie() {
 }
 
 // On page load, load the state and then set up listeners for real-time saving.
+function setDefaultSlotStates() {
+    // Set default states for HP and Stress slots
+    // This runs before loading from cookie, so cookie data will override this.
+    for (let i = 1; i <= 12; i++) {
+        const hpLabel = document.getElementById(`HpSlotCheckbox${i}`);
+        const stressLabel = document.getElementById(`StressSlotCheckbox${i}`);
+
+        if (i > 6) {
+            if (hpLabel) hpLabel.dataset.state = '2'; // Dashed
+            if (stressLabel) stressLabel.dataset.state = '2'; // Dashed
+        } else {
+            if (hpLabel) hpLabel.dataset.state = '0'; // Empty
+            if (stressLabel) stressLabel.dataset.state = '0'; // Empty
+        }
+    }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
-    // 1. Load any saved data first.
+    // 1. Set default states for slots first.
+    setDefaultSlotStates();
+
+    // 2. Initialize all TriStateCheckboxes. The constructor will pick up the default state.
+    const checkboxLabels = document.querySelectorAll('.base-checkbox');
+    checkboxLabels.forEach(label => {
+        // Attach the instance to the element for easy access later
+        label.checkboxInstance = new TriStateCheckbox(label);
+    });
+
+    // 3. Load any saved data from cookie. This will override the defaults if data exists.
     loadFormStateFromCookie();
 
-    // 2. Add event listeners to all form elements to save state on every change.
-    // This is more reliable than 'beforeunload'.
-    const elements = document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="checkbox"]');
+    // 4. Add event listeners to all non-checkbox form elements to save state on every change.
+    // Checkbox saving is now handled within the TriStateCheckbox class.
+    const elements = document.querySelectorAll('input[type="text"], input[type="number"], textarea');
     elements.forEach(el => {
-        // 'input' event for textareas and text fields for immediate feedback
         el.addEventListener('input', saveFormStateToCookie);
-        // 'change' event for checkboxes
-        el.addEventListener('change', saveFormStateToCookie);
     });
 });

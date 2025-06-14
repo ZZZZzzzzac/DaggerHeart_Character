@@ -7,6 +7,10 @@ This file tracks the project's progress using a task list format.
 
 ## Completed Tasks
 
+* [2025-06-14 18:56:15] - 完成任务：将护甲、生命值和压力插槽放入各自的容器中，并使用Flexbox进行布局。在JavaScript中为生命值和压力插槽设置了默认状态。
+* [2025-06-14 18:27:00] - 完成任务：根据反馈重构了复选框，移除了包装器 `div` 并将样式直接合并到 `label` 元素中。
+* [2025-06-14 18:24:00] - 完成任务：将 `ArmorSlotCheckbox` 实现为具有三种状态的复选框，并创建了一个可重用的 `TriStateCheckbox` 基类用于未来的开发。
+* [2025-06-14 18:07:14] - 完成任务：将 `sampleCheckbox` 重构为可复用的 `base-checkbox` 组件，并在 `character_sheet_editor.html` 中为多种统计数据创建了新的、模块化的 Checkbox 实例。
 * [2025-06-14 13:48:36] - 完成任务：修改 [`style.css`](style.css:1) 以固定角色卡图片的宽度，防止其随浏览器窗口缩放。
 * [2025-06-14 13:04:02] - 完成任务：在 `script.js` 中添加了事件监听器，以禁用用户通过 Ctrl+滚轮 或 Ctrl+/- 缩放网页的功能。
 * [2025-06-14 12:08:56] - 完成任务：修改 [`style.css`](style.css:1) 和 [`character_sheet_editor.html`](character_sheet_editor.html:1) 以调整角色卡图片（适配视口高度，从左上角开始）和调试按钮（固定在右上角）的布局。

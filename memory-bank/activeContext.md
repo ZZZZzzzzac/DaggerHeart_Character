@@ -17,6 +17,10 @@ This file tracks the project's current status, including recent changes, current
     *   所有相关的HTML引用和JavaScript逻辑已更新。
 
 ## Recent Changes
+* [2025-06-14 18:54:52] - Placed Armor, HP, and Stress slots into separate container divs (`armor-slots-container`, `hp-container`, `stress-container`). Styled the containers using Flexbox to create grid layouts (4x3 for armor, 1x12 for HP/Stress). Set default states for HP/Stress slots (first 6 empty, last 6 dashed) in JavaScript.
+* [2025-06-14 18:27:00] - Refactored the checkbox implementation to remove the `.base-checkbox-wrapper` div. Merged positioning styles directly into the `.base-checkbox` label and updated all related HTML, CSS, and JavaScript files.
+* [2025-06-14 18:24:00] - Implemented a reusable `TriStateCheckbox` base class in `script.js` to handle three states (normal, checked, dashed) for checkboxes like armor slots. Refactored HTML to remove hidden inputs and updated CSS to use state-based classes.
+* [2025-06-14 18:02:33] - Refactored the checkbox implementation in `character_sheet_editor.html` and `style.css`. Created a reusable `base-checkbox` class and specific classes for different checkbox types (e.g., `armor-slot-checkbox`). Replaced the old `sampleCheckbox` with new, modular checkboxes for various game stats.
 
 * [2025-06-14 13:04:02] - 在 `script.js` 中添加了事件监听器，以禁用用户通过 Ctrl+滚轮 或 Ctrl+/- 缩放网页的功能。
 * [2025-06-14 13:48:36] - 修改了 [`style.css`](style.css:1) 中 `.image-container img` 的样式，将 `max-height` 和 `width: auto` 替换为固定的 `width: 1000px`，以防止图片随浏览器窗口缩放。
