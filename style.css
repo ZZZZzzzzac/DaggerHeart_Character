@@ -46,6 +46,13 @@ body {
   justify-content: left;
 }
 
+.h1-multiline-text {
+  line-height: 1.7;
+  white-space: pre-wrap; /* 保留换行符和空格，允许文本换行 */
+  word-wrap: break-word; /* 允许长单词断行 */
+  overflow-wrap: break-word; /* 现代浏览器中更推荐使用 */
+}
+
 .h2-text {
   font-family: '黑体', 'HeiTi', serif; /* 使用黑体，同时添加后备字体 */
   font-size: 40px;
@@ -58,6 +65,16 @@ body {
 .h2-small-text {
     font-size: 27px !important; 
 }
+
+.h3-text {
+  font-family: '黑体', 'HeiTi', serif; /* 使用黑体，同时添加后备字体 */
+  font-size: 15px;
+  text-align: left;
+  display: flex;
+  align-items: flex-end;
+  justify-content: left;
+}
+
 
 /* General debug mode style for ALL textboxes */
 .base-textbox.debug-mode {
