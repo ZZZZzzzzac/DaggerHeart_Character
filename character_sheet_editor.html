@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="textbox.css">
     <link rel="stylesheet" href="checkbox.css">
+    <link rel="stylesheet" href="data_table_modal.css">
 </head>
 <body>
     <div id="action-container">
@@ -20,9 +21,7 @@
         <div id="page-1" class="page-container">
             <img src="official_like_sheet/角色卡-打印-page-001.jpg" alt="角色卡第一页">
 
-
             <!-- Top part of first page: Name/Race/Community/Class/Evasion/Armor/Traits -->
-
 
             <textarea id="NameTextbox"          name="NameTextbox"          class="base-textbox h1-text"    style="top:  15px; left: 410px; width: 230px; height: 25px;"></textarea>
             <textarea id="RaceTextbox"          name="RaceTextbox"          class="base-textbox h1-text"    style="top:  15px; left: 710px; width: 155px; height: 25px;"></textarea>
@@ -63,9 +62,7 @@
                 <label id="TraitSlotCheckbox6"  class="base-checkbox two-state trait-checkbox"></label>
             </div>
 
-
             <!-- Left Column: HP/Stress/Threshold/Experience/Gold/Class feature -->
-
 
             <textarea id="MajorTextbox"                 name="MajorTextbox"                 class="base-textbox h2-text h2-small-text"  style="top: 312px; left: 133px; width:  40px; height:  27px;"></textarea>
             <textarea id="SevereTextbox"                name="SevereTextbox"                class="base-textbox h2-text h2-small-text"  style="top: 312px; left: 277px; width:  40px; height:  27px;"></textarea>
@@ -161,6 +158,7 @@
                 <label id="ProficiencyCheckbox4" class="base-checkbox two-state proficiency-checkbox"></label>
                 <label id="ProficiencyCheckbox5" class="base-checkbox two-state proficiency-checkbox"></label>
             </div>
+
             <label id="TwohandedCheckbox1"      class="base-checkbox two-handed-checkbox"       style="top: 245px;  left: 890px;"></label>
             <label id="TwohandedCheckbox2"      class="base-checkbox two-handed-checkbox"       style="top: 975px;  left: 760px;"></label>
             <label id="TwohandedCheckbox3"      class="base-checkbox two-handed-checkbox"       style="top: 1125px; left: 760px;"></label>
@@ -168,12 +166,31 @@
             <label id="BackupWeapon1Secondary"  class="base-checkbox two-state square-checkbox" style="top: 988px;  left: 895px;"></label>
             <label id="BackupWeapon2Primary"    class="base-checkbox two-state square-checkbox" style="top: 1136px;  left: 812px;"></label>
             <label id="BackupWeapon2Secondary"  class="base-checkbox two-state square-checkbox" style="top: 1136px;  left: 895px;"></label>
-            
-            
+                        
             <textarea id="PrimaryWeaponNameTextbox"     name="PrimaryWeaponNameTextbox"     class="base-textbox h1-text"                    style="top:  320px; left: 484px; width: 190px; height:  25px;"></textarea>
             <textarea id="PrimaryWeaponStatTextbox"     name="PrimaryWeaponStatTextbox"     class="base-textbox h1-text"                    style="top:  320px; left: 690px; width: 140px; height:  25px;"></textarea>
             <textarea id="PrimaryWeaponDamageTextbox"   name="PrimaryWeaponDamageTextbox"   class="base-textbox h1-text"                    style="top:  320px; left: 845px; width: 120px; height:  25px;"></textarea>
             <textarea id="PrimaryWeaponTraitTextbox"    name="PrimaryWeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top:  360px; left: 540px; width: 420px; height:  65px;"></textarea>
+<div
+              id="add-secondary-weapon-btn"
+              class="base-action-button add-item-from-table-btn"
+              style="top: 473px; left: 670px; z-index: 10;"
+              data-source-variable="SECONDARY_WEAPON"
+              data-target-map='{
+                "name": "SecondaryWeaponNameTextbox",
+                "damage": "SecondaryWeaponDamageTextbox",
+                "desc": "SecondaryWeaponTraitTextbox"
+              }'
+              data-composite-target='{
+                "targetId": "SecondaryWeaponStatTextbox",
+                "format": "{trait}／{range}"
+              }'
+              data-modal-config='{
+                "title": "选择副武器",
+                "filterableColumns": ["trait", "range", "tier"],
+                "storageKey": "secondaryWeaponFilterState"
+              }'
+            ></div>
             <textarea id="SecondaryWeaponNameTextbox"   name="SecondaryWeaponNameTextbox"   class="base-textbox h1-text"                    style="top:  473px; left: 484px; width: 190px; height:  25px;"></textarea>
             <textarea id="SecondaryWeaponStatTextbox"   name="SecondaryWeaponStatTextbox"   class="base-textbox h1-text"                    style="top:  473px; left: 690px; width: 140px; height:  25px;"></textarea>
             <textarea id="SecondaryWeaponDamageTextbox" name="SecondaryWeaponDamageTextbox" class="base-textbox h1-text"                    style="top:  473px; left: 845px; width: 120px; height:  25px;"></textarea>
@@ -191,12 +208,10 @@
             <textarea id="Backup2WeaponStatTextbox"     name="Backup2WeaponStatTextbox"     class="base-textbox h1-text"                    style="top: 1155px; left: 690px; width: 140px; height:  25px;"></textarea>
             <textarea id="Backup2WeaponDamageTextbox"   name="Backup2WeaponDamageTextbox"   class="base-textbox h1-text"                    style="top: 1155px; left: 845px; width: 120px; height:  25px;"></textarea>
             <textarea id="Backup2WeaponTraitTextbox"    name="Backup2WeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top: 1197px; left: 540px; width: 420px; height:  61px;"></textarea>
-        </div>
-
+</div>
 
         <div id="page-2" class="page-container">
             <img src="official_like_sheet/角色卡-打印-page-002.jpg" alt="角色卡第二页">
-
 
             <textarea id="EventLogTextbox"              name="EventLogTextbox"              class="base-textbox h3-text" style="top: 140px; left:  10px; width: 345px; height: 205px;"></textarea>
             <textarea id="AvatarTextbox"                name="AvatarTextbox"                class="base-textbox h3-text" style="top: 140px; left: 675px; width: 320px; height: 205px;"></textarea>
@@ -258,13 +273,27 @@
             <label id="LevelupT4_H1"  class="base-checkbox double-square-checkbox"    style="top: 1079px;  left: 707px;"></label>
             <label id="LevelupT4_I1"  class="base-checkbox double-square-checkbox"    style="top: 1105px;  left: 707px;"></label>
         </div>
-
-
-
     </div>
+
 
     <script src="TriStateCheckbox.js"></script>
     <script src="action.js"></script>
+    <script src="character_creator/data/Daggerheart_Core_Rulebook_副武器表.js"></script>
+    <script src="data_table_modal.js"></script>
     <script src="script.js"></script>
+
+    <div id="data-table-modal" style="display: none;">
+        <div class="modal-content">
+            <span id="data-table-modal-close" class="close-button">&times;</span>
+            <h2 id="data-table-modal-title">Data Table</h2>
+            <div id="data-table-fixed-header">
+                <!-- Fixed header content will be dynamically inserted here -->
+            </div>
+            <div id="data-table-body-container">
+                <!-- Scrollable table body content will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>

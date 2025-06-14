@@ -7,6 +7,8 @@ This file tracks the project's progress using a task list format.
 
 ## Completed Tasks
 
+* [2025-06-15 12:58:03] - 完成任务：修复了 JavaScript 引用错误、按钮显示问题以及数据表格模态框的功能（筛选和行选择）。涉及文件：`script.js`, `character_sheet_editor.html`, `data_table_modal.css`, `data_table_modal.js`。
+* [2025-06-15 00:09:36] - 完成任务：为 `character_creator/js/data_table_modal.js` 添加了筛选、状态持久化和列宽同步功能。
 * [2025-06-14 18:56:15] - 完成任务：将护甲、生命值和压力插槽放入各自的容器中，并使用Flexbox进行布局。在JavaScript中为生命值和压力插槽设置了默认状态。
 * [2025-06-14 18:27:00] - 完成任务：根据反馈重构了复选框，移除了包装器 `div` 并将样式直接合并到 `label` 元素中。
 * [2025-06-14 18:24:00] - 完成任务：将 `ArmorSlotCheckbox` 实现为具有三种状态的复选框，并创建了一个可重用的 `TriStateCheckbox` 基类用于未来的开发。

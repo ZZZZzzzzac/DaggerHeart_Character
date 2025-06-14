@@ -66,6 +66,62 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // 5. Setup action buttons
     setupActionButtons();
+
+    // 6. Setup specific data table buttons
+    const addSecondaryWeaponBtn = document.getElementById('add-secondary-weapon-btn');
+    if (addSecondaryWeaponBtn) {
+        addSecondaryWeaponBtn.addEventListener('click', () => {
+            // Ensure the global variable exists before using it
+            if (typeof SECONDARY_WEAPON === 'undefined') {
+                console.error('Data source variable "SECONDARY_WEAPON" is not defined.');
+                alert('错误：副武器数据源未定义。');
+                return;
+            }
+
+            const modalConfig = {
+                title: "选择副武器",
+                filterableColumns: ["trait", "range", "tier"],
+                storageKey: "secondaryWeaponFilterState"
+            };
+
+            showDataTableModal(SECONDARY_WEAPON, (selectedItem) => {
+                // Direct mapping
+                const targetMap = {
+                    "name": "SecondaryWeaponNameTextbox",
+                    "damage": "SecondaryWeaponDamageTextbox",
+                    "desc": "SecondaryWeaponTraitTextbox"
+                };
+                for (const sourceKey in targetMap) {
+                    const targetElement = document.getElementById(targetMap[sourceKey]);
+                    if (targetElement) {
+                        targetElement.value = selectedItem[sourceKey] || '';
+                    }
+                }
+
+                // Composite target
+                const compositeTarget = {
+                    targetId: "SecondaryWeaponStatTextbox",
+                    format: "{trait}／{range}"
+                };
+                const compositeTargetElement = document.getElementById(compositeTarget.targetId);
+                if (compositeTargetElement) {
+                    let formattedString = compositeTarget.format;
+                    const placeholders = formattedString.match(/{[^{}]+}/g) || [];
+                    placeholders.forEach(placeholder => {
+                        const key = placeholder.substring(1, placeholder.length - 1);
+                        const value = selectedItem[key] || '';
+                        formattedString = formattedString.replace(placeholder, value);
+                    });
+                    compositeTargetElement.value = formattedString;
+                }
+                
+                // Trigger a save to persist the new data
+                if (typeof saveFormStateToLocalStorage === 'function') {
+                    saveFormStateToLocalStorage();
+                }
+            }, modalConfig);
+        });
+    }
 });
 
 
