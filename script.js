@@ -1,5 +1,5 @@
 // Hard-coded debug mode switch
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 
 function applyDebugStyles() {
     if (!DEBUG_MODE) return;
