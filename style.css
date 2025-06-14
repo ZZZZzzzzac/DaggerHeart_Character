@@ -21,13 +21,10 @@ body {
 }
 
 /* New container for all interactive elements */
-.control-container {
-    position: absolute;
-}
 
 /* Base style for textareas */
 .base-textbox {
-    position: relative; /* Positioned relative to its container */
+    position: absolute; /* Positioned relative to its container */
     background-color: transparent;
     border: none;
     resize: none;
@@ -35,6 +32,11 @@ body {
     padding: 0;
     margin: 0;
     /* top, left, width, height are now set via inline styles or specific IDs */
+}
+
+/* Remove outline on focus */
+.base-textbox:focus {
+    outline: none;
 }
 
 .h1-text {
@@ -88,7 +90,7 @@ body {
 
 /* Base style for checkbox wrappers */
 .base-checkbox-wrapper {
-    position: relative; /* Positioned relative to its container */
+    /* position: relative;  This will be handled by inline style now */
     display: flex;
     align-items: center;
 }

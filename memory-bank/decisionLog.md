@@ -150,3 +150,18 @@ The `sampleTextbox` was not appearing in debug mode because the CSS rule `#sampl
     *   `.debug-controls`: 新增类，设置 `position: fixed; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 1000;` 使调试按钮固定在右上角垂直排列。
 *   **[`character_sheet_editor.html`](character_sheet_editor.html:1)**:
     *   将原有的调试按钮包裹在 `<div class="debug-controls">` 中，并确保此 `div` 为 `<body>` 的直接子元素。
+---
+### Decision (Code)
+[2025-06-14 16:39:01] - Refactor HTML and CSS to remove container elements and streamline positioning.
+
+**Rationale:**
+To simplify the DOM structure and CSS, the `.control-container` divs, which were used solely for positioning, were removed. Their positioning styles (`top`, `left`) were merged directly into the inline styles of the child `textarea` elements. This makes the HTML cleaner and the element positioning more direct.
+
+**Details:**
+*   **HTML ([`character_sheet_editor.html`](character_sheet_editor.html:1))**:
+    *   Removed all `div` elements with the class `control-container`.
+    *   Merged the `style` attribute from each removed `div` into its child `textarea` or `div`.
+*   **CSS ([`style.css`](style.css:1))**:
+    *   Deleted the `.control-container` CSS rule.
+    *   Changed `position: relative` to `position: absolute` in the `.base-textbox` rule to handle the direct positioning of the textboxes.
+    *   Commented out `position: relative` in `.base-checkbox-wrapper` as its positioning is now handled inline.

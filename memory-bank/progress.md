@@ -33,3 +33,4 @@ This file tracks the project's progress using a task list format.
 *
 * [2025-05-16 17:54:49] - 完成任务：将用户提供的“奥术”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件。
 * ... (previous entries remain) ...
+* [2025-06-14 16:39:10] - Completed task: Refactored `character_sheet_editor.html` and `style.css` to remove `control-container` divs and merge styles, simplifying the DOM and CSS.
