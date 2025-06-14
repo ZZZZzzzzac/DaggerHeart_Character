@@ -19,6 +19,23 @@ This file records architectural and implementation decisions using a list format
 ---
 ---
 ---
+---
+### Decision (Debug)
+[2025-06-14 23:23:00] - 将数据持久化方案从 Cookie 迁移到 Local Storage
+
+**Rationale:**
+经过多轮调试，最终确定 Cookie 写入失败的根本原因是数据量超出了浏览器对单个 Cookie 约 4KB 的大小限制。即使对 Cookie 值进行编码也无法解决此核心问题，因为编码后的字符串体积更大。因此，必须采用一种能够支持更大存储容量的客户端存储方案。
+
+**Details:**
+*   **根本原因**: 角色表单的完整状态（JSON 字符串）超过了 4KB，导致 `document.cookie` 写入操作被浏览器静默拒绝。
+*   **解决方案**:
+    1.  **弃用 Cookie**: 完全移除 `saveFormStateToCookie` 和 `loadFormStateFromCookie` 函数。
+    2.  **采用 Local Storage**:
+        *   实现 `saveFormStateToLocalStorage` 函数，使用 `localStorage.setItem('characterSheetData', JSON.stringify(formState))` 来保存数据。`localStorage` API 更简单，且无需手动编码。
+        *   实现 `loadFormStateFromLocalStorage` 函数，使用 `localStorage.getItem('characterSheetData')` 来读取数据。
+    3.  **更新调用**: 在 `script.js` 中，将所有对旧 Cookie 函数的调用（在 `TriStateCheckbox` 类和 `DOMContentLoaded` 事件监听器中）全部替换为对新的 `localStorage` 函数的调用。
+*   **影响文件**: [`script.js`](script.js:1)
+*   **结果**: 此项重构彻底解决了数据无法持久化的问题。`localStorage` 提供了充足的存储空间（通常为 5MB+），确保了表单状态能够被可靠地保存和恢复。
 ### Decision (Code)
 [2025-06-14 22:08:00] - 实现浮动操作栏及PDF打印功能
 

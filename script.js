@@ -56,7 +56,7 @@ class TriStateCheckbox {
         // Left-click toggles between normal (0) and checked (1)
         this.state = this.state === 1 ? 0 : 1;
         this.updateVisuals();
-        saveFormStateToCookie(); // Save state on change
+        saveFormStateToLocalStorage(); // Save state on change
     }
 
     handleRightClick(event) {
@@ -67,7 +67,7 @@ class TriStateCheckbox {
         // Right-click toggles between normal (0) and dashed (2)
         this.state = this.state === 2 ? 0 : 2;
         this.updateVisuals();
-        saveFormStateToCookie(); // Save state on change
+        saveFormStateToLocalStorage(); // Save state on change
     }
 
     updateVisuals() {
@@ -95,14 +95,15 @@ class TriStateCheckbox {
   */
  function exportFormState() {
      const state = {};
-     // Textareas and text inputs
-     const textElements = document.querySelectorAll('input[type="text"], input[type="number"], textarea');
+     // Use the .base-textbox class to select all relevant text fields
+     const textElements = document.querySelectorAll('.base-textbox');
      textElements.forEach(el => {
-         if (el.name) {
-             state[el.name] = el.value;
+         // Use ID as the key, which matches the provided JSON structure
+         if (el.id) {
+             state[el.id] = el.value;
          }
      });
-
+ 
      // Tri-state checkboxes
      const checkboxLabels = document.querySelectorAll('.base-checkbox');
      checkboxLabels.forEach(label => {
@@ -119,17 +120,17 @@ class TriStateCheckbox {
   * @param {object} state - The state object to import.
   */
  function importFormState(state) {
-     for (const name in state) {
-         if (Object.hasOwnProperty.call(state, name)) {
-             const value = state[name];
-             // Handle textareas and inputs
-             const textElement = document.querySelector(`[name="${name}"]`);
-             if (textElement) {
+     for (const id in state) {
+         if (Object.hasOwnProperty.call(state, id)) {
+             const value = state[id];
+             // Handle textareas and inputs by ID
+             const textElement = document.getElementById(id);
+             if (textElement && textElement.classList.contains('base-textbox')) {
                  textElement.value = value;
              }
-
-             // Handle tri-state checkboxes by finding the label
-             const checkboxLabel = document.getElementById(name);
+ 
+             // Handle tri-state checkboxes by finding the label by ID
+             const checkboxLabel = document.getElementById(id);
              if (checkboxLabel && checkboxLabel.classList.contains('base-checkbox')) {
                  if (checkboxLabel.checkboxInstance) {
                      checkboxLabel.checkboxInstance.setState(value);
@@ -143,37 +144,29 @@ class TriStateCheckbox {
  }
 
 /**
- * Saves the current form state to a cookie. This is the reliable way.
+ * Saves the current form state to Local Storage.
  */
-function saveFormStateToCookie() {
+function saveFormStateToLocalStorage() {
     const formState = exportFormState();
-    // Set a cookie that expires in 7 days. samesite=strict is a good practice.
-    document.cookie = `characterSheetData=${JSON.stringify(formState)};path=/;max-age=604800;samesite=strict`;
-    console.log('角色表单数据已保存到Cookie。', document.cookie);
+    // localStorage can handle the raw string without encoding.
+    localStorage.setItem('characterSheetData', JSON.stringify(formState));
 }
 
 /**
- * Loads form state from a cookie and populates the form.
+ * Loads form state from Local Storage and populates the form.
  */
-function loadFormStateFromCookie() {
-    const cookies = document.cookie.split(';').map(cookie => cookie.trim());
-    const cookie = cookies.find(c => c.startsWith('characterSheetData='));
-    
-    if (cookie) {
+function loadFormStateFromLocalStorage() {
+    const jsonString = localStorage.getItem('characterSheetData');
+    if (jsonString) {
         try {
-            const jsonString = cookie.substring('characterSheetData='.length);
-            // Ensure jsonString is not empty before parsing
-            if (jsonString) {
-                const formState = JSON.parse(jsonString);
-                importFormState(formState);
-                console.log('角色表单数据已从Cookie加载。');
-            }
+            const formState = JSON.parse(jsonString);
+            importFormState(formState);
+            console.log('角色表单数据已从 Local Storage 加载。');
         } catch (error) {
-            console.error('无法解析角色表单数据Cookie:', error);
+            console.error('无法解析 Local Storage 中的角色表单数据:', error);
         }
-    }
-    else {
-        console.log('没有找到角色表单数据Cookie。');
+    } else {
+        console.log('没有在 Local Storage 中找到角色表单数据。');
     }
 }
 
@@ -206,14 +199,14 @@ window.addEventListener('DOMContentLoaded', () => {
         label.checkboxInstance = new TriStateCheckbox(label);
     });
 
-    // 3. Load any saved data from cookie. This will override the defaults if data exists.
-    loadFormStateFromCookie();
+    // 3. Load any saved data from Local Storage. This will override the defaults if data exists.
+    loadFormStateFromLocalStorage();
 
     // 4. Add event listeners to all non-checkbox form elements to save state on every change.
     // Checkbox saving is now handled within the TriStateCheckbox class.
-    const elements = document.querySelectorAll('input[type="text"], input[type="number"], textarea');
+    const elements = document.querySelectorAll('.base-textbox');
     elements.forEach(el => {
-        el.addEventListener('input', saveFormStateToCookie);
+        el.addEventListener('input', saveFormStateToLocalStorage);
     });
 
     // 5. Setup action buttons
@@ -257,7 +250,7 @@ function setupActionButtons() {
             try {
                 const state = JSON.parse(e.target.result);
                 importFormState(state);
-                saveFormStateToCookie(); // Save imported state immediately
+                saveFormStateToLocalStorage(); // Save imported state immediately
                 alert('JSON文件已成功导入！');
             } catch (error) {
                 console.error('导入JSON失败:', error);
