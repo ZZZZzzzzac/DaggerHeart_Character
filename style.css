@@ -1,0 +1,119 @@
+body {
+    position: relative; /* 保持，因为子元素使用了绝对定位 */
+    margin: 0;
+    padding: 0;
+}
+
+/* 角色卡的CSS */
+.image-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* 移除了 flex 相关的居中和布局样式 */
+    /* 容器尺寸由内容决定 */
+}
+
+.image-container img {
+    display: block; /* 确保图片是块级元素，避免不必要的间隙 */
+    width: 1000px;   /* 设置固定宽度，不再随视口缩放 */
+    height: auto;    /* 高度自动，保持纵横比 */
+    margin-bottom: 10px; /* 图片间的间距 */
+}
+
+/* New container for all interactive elements */
+.control-container {
+    position: absolute;
+}
+
+/* Base style for textareas */
+.base-textbox {
+    position: relative; /* Positioned relative to its container */
+    background-color: transparent;
+    border: none;
+    resize: none;
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+    /* top, left, width, height are now set via inline styles or specific IDs */
+}
+
+.h1-text {
+  font-family: '黑体', 'HeiTi', serif; /* 使用黑体，同时添加后备字体 */
+  font-size: 20px;
+  text-align: left;
+  display: flex;
+  align-items: flex-end;
+  justify-content: left;
+}
+
+.h2-text {
+  font-family: '黑体', 'HeiTi', serif; /* 使用黑体，同时添加后备字体 */
+  font-size: 40px;
+  text-align: center; /* 文本水平居中 */
+  display: flex;
+  align-items: center; /* 文本垂直居中 */
+  justify-content: center; /* flex 元素水平居中 */
+}
+
+.h2-small-text {
+    font-size: 27px !important; 
+}
+
+/* General debug mode style for ALL textboxes */
+.base-textbox.debug-mode {
+    border: 1px solid red !important; /* Use !important to ensure override */
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+/* Base style for checkbox wrappers */
+.base-checkbox-wrapper {
+    position: relative; /* Positioned relative to its container */
+    display: flex;
+    align-items: center;
+}
+
+
+
+
+/* Custom Checkbox Styles */
+.hidden-checkbox {
+    display: none;
+}
+
+.styled-checkbox {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    cursor: pointer;
+    border: 1px solid #ccc; /* Default border, can be removed if not desired */
+}
+
+.hidden-checkbox:checked + .styled-checkbox {
+    background-image: url('official_like_sheet/1.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none; /* Remove border when checked if image is sufficient */
+}
+
+.coords-display {
+    position: absolute;
+    bottom: -30px; /* Position below the container */
+    left: 0;
+    z-index: 1001;
+    margin-left: 5px;
+    font-size: 10px;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 0px 0px;
+    border-radius: 0px;
+}
+
+
+
+/* Debug mode for checkbox */
+.custom-checkbox-wrapper.debug-mode .styled-checkbox {
+    border: 1px dashed blue;
+}
+

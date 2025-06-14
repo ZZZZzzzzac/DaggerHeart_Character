@@ -17,6 +17,28 @@ This file records architectural and implementation decisions using a list format
 
 *
 ---
+---
+### Decision (Code)
+[2025-06-14 13:48:36] - 固定角色卡图片大小，防止缩放
+
+**Rationale:**
+根据用户请求，需要将角色卡背景图片设置为固定大小，使其不随浏览器窗口大小的变化而缩放，以确保所有可交互元素的位置保持稳定和精确。
+
+**Details:**
+*   **CSS ([`style.css`](style.css:1))**:
+    *   在 `.image-container img` 规则中，移除了 `max-height: 95vh;` 和 `width: auto;`。
+    *   添加了 `width: 1000px;` 来设置一个固定的宽度，并让 `height: auto;` 来保持图片的原始纵横比。这可以防止图片因视口大小改变而进行缩放。
+### Decision (Code)
+[2025-06-14 13:04:02] - 禁用网页缩放功能
+
+**Rationale:**
+为了防止用户意外通过 `Ctrl` + 鼠标滚轮或 `Ctrl` + `+` / `-` 快捷键缩放页面，影响布局和用户体验，需要添加脚本来阻止这些行为的默认事件。
+
+**Details:**
+*   **JavaScript ([`script.js`](script.js:1))**:
+    *   添加了一个 `wheel` 事件监听器到 `document`。当 `event.ctrlKey` 为 `true` 时，调用 `event.preventDefault()` 来阻止滚轮缩放。设置 `{ passive: false }` 以确保 `preventDefault` 可以被调用。
+    *   添加了一个 `keydown` 事件监听器到 `document`。当 `event.ctrlKey` 为 `true` 且按下的键是 `+`、`-` 或 `0` 时，调用 `event.preventDefault()` 来阻止键盘缩放。
+---
 ### 较早决策总结 (2025-05-13 至 2025-05-16)
 
 **基本原理:**
@@ -101,3 +123,30 @@ This file records architectural and implementation decisions using a list format
         *   **扁平化处理**: 对于领域卡，逻辑从处理按领域分组的对象改为处理扁平的卡片数组。
         *   **动态过滤**: 对于装备，`filterAndDisplayEquipment` 函数被重构，不再依赖按Tier和类型预分割的常量，而是从新的主数组 (`PRIMARY_WEAPON`, `ARMOR`, `SECONDARY_WEAPON`) 中根据角色等级动态筛选。
         *   **子职逻辑重构**: `updateSubclassOptions` 和 `updateJobTraitsAsSkills` 函数被大幅修改，以适应新的职业数据结构，其中子职信息不再是嵌套数组，而是主职业对象的直接属性 (`subclass1`, `subclass2`, `subclass1_base_feature` 等)。
+---
+### Decision (Debug)
+[2025-06-14 11:45:00] - Bug Fix Strategy: Correct CSS specificity for `sampleTextbox` debug border.
+
+**Rationale:**
+The `sampleTextbox` was not appearing in debug mode because the CSS rule `#sampleTextbox { border: none; }` had higher specificity or was processed in a way that overrode the `.debug-mode { border: 1px solid red; }` rule. The fix involves increasing the specificity of the debug mode selector.
+
+**Details:**
+*   Modified [`style.css`](style.css:1).
+*   Changed the selector for the debug mode from `.debug-mode` to `#sampleTextbox.debug-mode`. This increases specificity, ensuring that the debug border (`border: 1px solid red;`) is applied when the `debug-mode` class is active on the `#sampleTextbox` element, overriding the default `border: none;`.
+---
+### Decision (Code)
+[2025-06-14 12:09:04] - 调整角色卡图片显示和调试按钮布局
+
+**Rationale:**
+根据用户请求，调整角色卡图片的显示方式和调试按钮的布局。
+最初目标是图片原始尺寸显示，后根据用户反馈调整为图片适配视口高度。
+调试按钮统一移至右上角固定显示，方便调试。
+
+**Details:**
+*   **[`style.css`](style.css:1)**:
+    *   `body`: 设置 `margin: 0; padding: 0;`。
+    *   `.image-container`: 设置 `position: absolute; top: 0; left: 0;`，移除了原有的flex布局。
+    *   `.image-container img`: 设置 `display: block; max-height: 95vh; width: auto;`，移除了 `max-width`。确保图片从左上角开始，适配视口高度，宽度自动调整。
+    *   `.debug-controls`: 新增类，设置 `position: fixed; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 1000;` 使调试按钮固定在右上角垂直排列。
+*   **[`character_sheet_editor.html`](character_sheet_editor.html:1)**:
+    *   将原有的调试按钮包裹在 `<div class="debug-controls">` 中，并确保此 `div` 为 `<body>` 的直接子元素。

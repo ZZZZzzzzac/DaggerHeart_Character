@@ -18,6 +18,8 @@ This file tracks the project's current status, including recent changes, current
 
 ## Recent Changes
 
+* [2025-06-14 13:04:02] - 在 `script.js` 中添加了事件监听器，以禁用用户通过 Ctrl+滚轮 或 Ctrl+/- 缩放网页的功能。
+* [2025-06-14 13:48:36] - 修改了 [`style.css`](style.css:1) 中 `.image-container img` 的样式，将 `max-height` 和 `width: auto` 替换为固定的 `width: 1000px`，以防止图片随浏览器窗口缩放。
 * [2025-06-14 11:01:32] - Summarized older entries in `decisionLog.md` to improve readability, retaining the last three full entries.
 *
 * [2025-05-13 15:34:10] - 创建了 character_creator 应用 (HTML, CSS, JS) 以根据 character_template.json 生成角色表单并支持JSON导出。
@@ -35,3 +37,7 @@ This file tracks the project's current status, including recent changes, current
 * [2025-05-16 17:54:36] - 完成了将用户提供的“奥术”领域卡片文本转换为 JSON 对象并更新到 `character_creator/data/domain_card.js` 文件中的 `DOMAIN_CARDS` JavaScript 对象。
 * ... (previous entries remain) ...
 * 新人引导中子职选择逻辑可能需要进一步调整以完全适配新的职业数据结构，当前仅更新了 `template.js` 中职业选择的字段。
+* [2025-06-14 11:33:13] - 为 `character_sheet_editor.html` 添加了可交互文本输入框功能。创建了 `style.css` 和 `script.js`。`style.css` 包含基础页面布局和文本框调试样式。`script.js` 包含 `toggleDebugMode` 函数，用于切换文本框的调试边框并显示其CSS `top` 和 `left` 坐标。HTML中添加了文本框、坐标显示区域和调试切换按钮。
+* [2025-06-14 11:43:00] - Debugging: Investigating issue where `sampleTextbox` does not appear after toggling debug mode in `character_sheet_editor.html`. Identified CSS specificity issue with `border` property.
+* [2025-06-14 11:39:21] - 为 `character_sheet_editor.html` 添加了自定义Checkbox组件。在 `character_sheet_editor.html` 中添加了HTML结构和调试按钮。在 `style.css` 中添加了Checkbox的默认、选中状态样式以及调试边框样式。在 `script.js` 中添加了 `toggleCheckboxDebug` 函数以控制Checkbox的调试模式和坐标显示。
+* [2025-06-14 12:08:39] - 根据用户反馈调整了 [`style.css`](style.css:1) 中 `.image-container img` 的样式，恢复 `max-height: 95vh;` 以使图片适配视口高度，同时保持 `width: auto;` 并移除 `max-width`。调试按钮和图片容器位置的更改保持不变。
