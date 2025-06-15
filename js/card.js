@@ -30,13 +30,54 @@ function renderJsonCard(card, jsonData) {
     const contentArea = document.createElement('div');
     contentArea.className = 'card-content';
 
-    const textarea = document.createElement('textarea');
-    textarea.readOnly = true;
-    // Format the JSON and then remove markdown from the resulting string
-    const formattedJson = JSON.stringify(jsonData, null, 2);
-    textarea.value = removeMarkdownFormatting(formattedJson);
+    // --- Data Extraction ---
+    const titleKeys = ["名称", "name"];
+    const descriptionKeys = ["特性", "效果", "desc", "description"];
 
-    contentArea.appendChild(textarea);
+    let title = "";
+    for (const key of titleKeys) {
+        if (jsonData[key]) {
+            title = jsonData[key];
+            break;
+        }
+    }
+
+    let description = "";
+    for (const key of descriptionKeys) {
+        if (jsonData[key]) {
+            description += (description ? "\n" : "") + jsonData[key];
+        }
+    }
+
+    const tags = [];
+    const reservedKeys = [...titleKeys, ...descriptionKeys];
+    for (const key in jsonData) {
+        if (!reservedKeys.includes(key)) {
+            tags.push(`${key}: ${jsonData[key]}`);
+        }
+    }
+
+    // --- Element Creation ---
+    const titleElement = document.createElement('div');
+    titleElement.className = 'card-title-json';
+    titleElement.textContent = removeMarkdownFormatting(title);
+
+    const tagsContainer = document.createElement('div');
+    tagsContainer.className = 'card-tags-container';
+    tags.forEach(tagText => {
+        const tagElement = document.createElement('div');
+        tagElement.className = 'card-tag';
+        tagElement.textContent = removeMarkdownFormatting(tagText);
+        tagsContainer.appendChild(tagElement);
+    });
+
+    const descriptionElement = document.createElement('div');
+    descriptionElement.className = 'card-description-json';
+    descriptionElement.textContent = removeMarkdownFormatting(description);
+
+    contentArea.appendChild(titleElement);
+    contentArea.appendChild(tagsContainer);
+    contentArea.appendChild(descriptionElement);
     card.appendChild(contentArea);
 }
 

@@ -171,8 +171,14 @@ function clearForm() {
             stressLabel.checkboxInstance.setState(stressLabel.dataset.state);
         }
     }
+
+    // 5. Clear all skill cards
+    const cardContainer = document.getElementById('card-container');
+    if (cardContainer) {
+        cardContainer.innerHTML = '';
+    }
     
-    // 5. Clear the saved state from local storage
+    // 6. Clear the saved state from local storage
     localStorage.removeItem('characterSheetData');
 
     console.log('表单已清空并重置为默认状态。');
@@ -188,9 +194,11 @@ function setupGlobalActionButtons() {
     const fileInput = document.getElementById('json-upload');
     const customPackBtn = document.getElementById('upload-custom-pack-btn');
     const customPackInput = document.getElementById('custom-pack-upload');
-
-    if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
+    const variantCardBtn = document.getElementById('add-variant-card-btn');
+    const variantCardInput = document.getElementById('variant-card-upload');
+ 
+     if (clearBtn) {
+         clearBtn.addEventListener('click', () => {
             if (confirm('你确定要清空所有数据吗？此操作无法撤销。')) {
                 clearForm();
             }
@@ -298,10 +306,40 @@ function setupGlobalActionButtons() {
             customPackInput.value = ''; // Reset input
         });
     }
+ 
+    // Variant Card Upload functionality
+    if (variantCardBtn && variantCardInput) {
+        variantCardBtn.addEventListener('click', () => {
+            variantCardInput.click();
+        });
 
+        variantCardInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
 
-    // Print functionality
-    printBtn.addEventListener('click', () => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const packData = JSON.parse(e.target.result);
+                    if (typeof add_custom_variant === 'function') {
+                        add_custom_variant(packData);
+                    } else {
+                        console.error('add_custom_variant function not found.');
+                        alert('错误：处理变体卡的函数未找到。');
+                    }
+                } catch (error) {
+                    console.error('导入变体卡失败:', error);
+                    alert('导入失败，请检查文件格式是否为有效的JSON。');
+                }
+            };
+            reader.readAsText(file);
+            variantCardInput.value = ''; // Reset input
+        });
+    }
+
+ 
+     // Print functionality
+     printBtn.addEventListener('click', () => {
         // --- Prepare for printing ---
         const textareas = document.querySelectorAll('.base-textbox');
         const replacements = [];

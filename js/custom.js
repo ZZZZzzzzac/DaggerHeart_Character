@@ -181,3 +181,61 @@ function add_custom_subclass(customSubclasses) {
         filterFn: filterFn
     });
 }
+
+/**
+ * Adds custom variant cards from an uploaded JSON file.
+ * The user uploads a card pack, from which this function extracts 'variant' data,
+ * processes it, and then presents it in a modal for the user to select a card to create.
+ * @param {Array<object>|object} items - The parsed JSON content from the uploaded file.
+ */
+function add_custom_variant(items) {
+    let variants = [];
+
+    // Find the 'variant' array within the uploaded data structure.
+    if (Array.isArray(items) && items.length > 0) {
+        // Case 1: The file is an array of packs, check the first one.
+        const pack = items[0];
+        if (pack && Array.isArray(pack.variant)) {
+            variants = pack.variant;
+        } else if (pack && pack.name && pack.desc) {
+            // Case 2: The file is an array of variants itself.
+            variants = items;
+        }
+    } else if (typeof items === 'object' && items !== null) {
+        // Case 3: The file is a single pack object.
+        if (Array.isArray(items.variant)) {
+            variants = items.variant;
+        }
+    }
+
+    if (variants.length === 0) {
+        alert("在上传的文件中没有找到有效的'variant'数据。请确保文件包含一个名为 'variant' 的对象列表。");
+        return;
+    }
+
+    // 1. Process variants: remove the 'id' field from each object.
+    const processedVariants = variants.map(variant => {
+        // Use object destructuring to exclude the 'id' property.
+        const { id, ...rest } = variant;
+        return rest;
+    });
+
+    // 2. Define the configuration for the data table modal.
+    const modalConfig = {
+        title: "选择要生成的变体卡牌",
+    };
+
+    // 3. Define the callback function for when a row is selected.
+    const handleRowSelected = (selectedRowData) => {
+        if (selectedRowData) {
+            // 4. Create a card from the selected data.
+            createCard(selectedRowData);
+        }
+    };
+
+    // 5. Call showDataTableModal with the correct arguments.
+    showDataTableModal(processedVariants, handleRowSelected, modalConfig)
+        .catch(error => {
+            console.log("模态框已关闭: ", error);
+        });
+}

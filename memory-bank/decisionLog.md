@@ -319,3 +319,26 @@ To simplify the DOM structure and CSS, the `.control-container` divs, which were
     *   Deleted the `.control-container` CSS rule.
     *   Changed `position: relative` to `position: absolute` in the `.base-textbox` rule to handle the direct positioning of the textboxes.
     *   Commented out `position: relative` in `.base-checkbox-wrapper` as its positioning is now handled inline.
+---
+### Decision (Code)
+[2025-06-15 22:32:32] - Implement "Add Variant Card" Feature
+
+**Rationale:**
+To provide users with a way to generate specific "variant" cards from larger custom card packs, a new feature was required. This allows users to upload a JSON file, view a specific list of 'variant' items from that file in a searchable and filterable table, and then select one to generate as a card on the canvas. This avoids manually adding large amounts of data and provides a streamlined workflow for using parts of custom packs.
+
+**Details:**
+*   **JavaScript ([`js/custom.js`](js/custom.js:1))**:
+    *   Created the `add_custom_variant(items)` function.
+    *   **Data Extraction**: The function intelligently finds the `variant` array within the parsed JSON data, whether it's at the root, inside a pack object, or in an array of packs.
+    *   **Data Processing**: It iterates through the extracted `variants` and removes the `id` field from each object, as it's not needed for card creation.
+    *   **Modal Integration**: It correctly calls the global `showDataTableModal` function, passing the processed data, a callback function (`handleRowSelected`), and a configuration object (`modalConfig`). The config defines the modal's title, column mappings, filterable columns, and column widths for a clean presentation.
+    *   **Card Creation**: The `handleRowSelected` callback receives the data of the row clicked by the user and passes it to the global `createCard` function to render it on the sheet.
+
+*   **HTML ([`index.html`](index.html:1))**:
+    *   Added a new button `<button id="add-variant-card-btn">` and a corresponding hidden file input `<input type="file" id="variant-card-upload">` to the main action container (`#action-container`). This provides the user-facing entry point for the feature.
+
+*   **JavaScript ([`js/action.js`](js/action.js:1))**:
+    *   In `setupGlobalActionButtons`, added logic to handle the new elements.
+    *   An event listener on the button triggers the hidden file input.
+    *   An event listener on the file input's `change` event reads the selected file using `FileReader`.
+    *   Once the file is read, the JSON is parsed, and the `add_custom_variant` function is called with the parsed data, bridging the UI with the core logic.

@@ -59,3 +59,44 @@
     line-height: 1; /* Ensure text is vertically centered */
 }
 
+
+/* --- JSON Card Content Styles --- */
+.card-title-json {
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.2em;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.card-tags-container {
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.card-tag {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+
+.card-description-json {
+    padding: 10px;
+    font-size: 0.9em;
+    white-space: pre-wrap; /* Respect newlines */
+    overflow-y: auto;
+    height: calc(100% - 100px); /* Adjust based on title/tags height */
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
