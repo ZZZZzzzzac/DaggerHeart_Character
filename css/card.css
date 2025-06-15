@@ -42,11 +42,20 @@
 
 .close-card {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 2px;
+    right: 2px;
     cursor: pointer;
-    font-size: 20px;
-    color: #333;
+    font-size: 16px; /* Adjusted for better fit */
+    color: white;
     z-index: 12;
+    background-color: rgba(100, 100, 100, 0.8); /* Semi-transparent grey */
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    line-height: 1; /* Ensure text is vertically centered */
 }
 
