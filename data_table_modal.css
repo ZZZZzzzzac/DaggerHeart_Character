@@ -84,3 +84,34 @@ th select {
     border-radius: 3px;
     box-sizing: border-box; /* Ensure padding is included in width */
 }
+
+.add-btn {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background-color: #808080; /* Grey */
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.add-btn::before,
+.add-btn::after {
+    content: '';
+    position: absolute;
+    background-color: white;
+    border-radius: 1px;
+}
+
+.add-btn::before {
+    width: 12px; /* Horizontal bar */
+    height: 2px;
+}
+
+.add-btn::after {
+    width: 2px;
+    height: 12px; /* Vertical bar */
+}
