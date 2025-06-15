@@ -132,8 +132,8 @@ body {
 }
 
 .skill-card {
-    width: 180px;
-    height: 250px;
+    width: 300px;
+    height: 420px;
     position: absolute;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     background-color: white;
