@@ -46,6 +46,8 @@
     font-size: 27px !important;
 }
 
+
+
 .h3-text {
   font-family: '黑体', 'HeiTi', serif; /* 使用黑体，同时添加后备字体 */
   font-size: 15px;
@@ -56,6 +58,15 @@
   white-space: pre-wrap; /* 允许文本换行 */
   word-wrap: break-word;   /* 允许长单词断行 */
   line-height: 1.5; /* 增加行高以提高可读性 */
+}
+
+.h4-text {
+  font-family: '楷体', 'KaiTi', serif; /* 使用楷体，同时添加后备字体 */
+  font-size: 16px;
+  text-align: left;
+  display: flex;
+  align-items: flex-start; /* Changed from flex-end to align text to the top */
+  justify-content: left;
 }
 
 /* General debug mode style for ALL textboxes */
