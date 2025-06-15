@@ -17,6 +17,7 @@ This file tracks the project's current status, including recent changes, current
     *   所有相关的HTML引用和JavaScript逻辑已更新。
 
 ## Recent Changes
+* [2025-06-15 16:14:01] - **[FEAT]** Created `data_transformer.js` to process the raw `JOBS_DATA` into structured `CLASS_DATA` and `SUBCLASS_DATA` global variables. This standardizes the data structure for classes and subclasses, making it easier for other parts of the application to consume.
 * [2025-06-15 11:47:43] - **[FIX]** Repaired the printing functionality by implementing a robust strategy. This involved dynamically creating a `#print-wrapper` in `action.js` to isolate printable content and rewriting the `@media print` rules in `style.css` to force all elements into a static document flow, ensuring correct page breaks and visibility for both the character sheet and skill cards.
 * [2025-06-15 09:23:51] - **[FIX]** Repaired the "Clear Form" functionality by refactoring the `clearForm` function in `action.js` to correctly reset all form elements and clear local storage. Also refactored button setup logic by moving global action button setup from `script.js` to `action.js` to avoid duplicate definitions.
 * [2025-06-15 12:57:19] - **[FIX]** Repaired the data table modal's filtering and row selection functionality. The fix involved refactoring `data_table_modal.js` to remove obsolete dynamic HTML fetching and modifying the `showDataTableModal` function signature to correctly accept and execute the `onRowSelected` callback.

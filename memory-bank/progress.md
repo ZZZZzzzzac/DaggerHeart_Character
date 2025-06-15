@@ -7,6 +7,7 @@ This file tracks the project's progress using a task list format.
 
 ## Completed Tasks
 
+* [2025-06-15 16:14:15] - **[FEAT]** 完成任务：创建了 `data_transformer.js` 脚本，该脚本成功将 `JOBS_DATA` 转换为 `CLASS_DATA` 和 `SUBCLASS_DATA`，为应用程序提供了标准化的职业和子职业数据结构。
 * [2025-06-15 11:47:34] - **[FIX]** 彻底修复了打印功能。通过结合动态DOM操作（在`action.js`中创建`#print-wrapper`）和精确的CSS重置（在`style.css`中强制`position: static`），确保了角色卡和技能卡片能够按正确的顺序和分页进行打印。
 * [2025-06-15 12:58:03] - 完成任务：修复了 JavaScript 引用错误、按钮显示问题以及数据表格模态框的功能（筛选和行选择）。涉及文件：`script.js`, `character_sheet_editor.html`, `data_table_modal.css`, `data_table_modal.js`。
 * [2025-06-15 10:58:58] - 完成任务：为新的技能卡片功能添加了基础的HTML结构和CSS样式。修改了 `character_sheet_editor.html` 和 `style.css`。

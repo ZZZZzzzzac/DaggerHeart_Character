@@ -18,11 +18,9 @@
         <button id="clear-form-btn" style="background-color: #dc3545;">清空表单</button>
         
         <button id="add-domain-card-btn">添加领域卡</button>
-        <button id="add-ancestry-card-btn">添加种族卡</button>
-        <button id="add-community-card-btn">添加社群卡</button>
-        <button id="add-class-card-btn">添加职业卡</button>
-        <button id="add-subclass-card-btn">添加子职卡</button>
-        
+        <button id="add-subclass-card-btn" style="display: none;">添加子职卡</button>
+        <button id="add-beast-form-card-btn">添加野兽形态卡</button>
+
         <div class="card-size-control">
             <label for="card-width-input">卡片大小:</label>
             <br>
@@ -38,9 +36,9 @@
             <!-- Top part of first page: Name/Race/Community/Class/Evasion/Armor/Traits -->
 
             <textarea id="NameTextbox"          name="NameTextbox"          class="base-textbox h1-text"    style="top:  15px; left: 410px; width: 230px; height: 25px;"></textarea>
-            <textarea id="RaceTextbox"          name="RaceTextbox"          class="base-textbox h1-text"    style="top:  15px; left: 710px; width: 155px; height: 25px;"></textarea>
-            <textarea id="CommunityTextbox"     name="CommunityTextbox"     class="base-textbox h1-text"    style="top:  48px; left: 430px; width: 160px; height: 25px;"></textarea>
-            <textarea id="ClassTextbox"         name="ClassTextbox"         class="base-textbox h1-text"    style="top:  48px; left: 660px; width: 205px; height: 25px;"></textarea>
+            <textarea id="RaceTextbox"          name="RaceTextbox"          class="base-textbox h1-text"    style="top:  15px; left: 710px; width: 135px; height: 25px;"></textarea>
+            <textarea id="CommunityTextbox"     name="CommunityTextbox"     class="base-textbox h1-text"    style="top:  48px; left: 430px; width: 140px; height: 25px;"></textarea>
+            <textarea id="ClassTextbox"         name="ClassTextbox"         class="base-textbox h1-text"    style="top:  48px; left: 660px; width: 185px; height: 25px;"></textarea>
             <textarea id="LevelTextbox"         name="LevelTextbox"         class="base-textbox h2-text"    style="top:  28px; left: 908px; width:  50px; height: 40px;"></textarea>
             <textarea id="EvasionTextbox"       name="EvasionTextbox"       class="base-textbox h2-text"    style="top: 144px; left:  39px; width:  50px; height: 40px;"></textarea>
             <textarea id="ArmorTextbox"         name="ArmorTextbox"         class="base-textbox h2-text"    style="top: 144px; left: 147px; width:  50px; height: 40px;"></textarea>
@@ -50,6 +48,10 @@
             <textarea id="InstinctTextbox"      name="InstinctTextbox"      class="base-textbox h2-text"    style="top: 134px; left: 665px; width:  70px; height: 40px;"></textarea>
             <textarea id="PresenceTextbox"      name="PresenceTextbox"      class="base-textbox h2-text"    style="top: 134px; left: 775px; width:  70px; height: 40px;"></textarea>
             <textarea id="KnowledgeTextbox"     name="KnowledgeTextbox"     class="base-textbox h2-text"    style="top: 134px; left: 885px; width:  70px; height: 40px;"></textarea>
+
+            <div id="add-ancestry-card-btn"     class="add-btn" style="top: 16px; left: 845px; z-index: 10;"></div>
+            <div id="add-community-card-btn"    class="add-btn" style="top: 49px; left: 570px; z-index: 10;"></div>
+            <div id="add-class-card-btn"        class="add-btn" style="top: 49px; left: 845px; z-index: 10;"></div>
 
             <div id="armor-slots-container" style="top: 125px; left: 218px;">
                 <label id="ArmorSlotCheckbox1"  class="base-checkbox armor-slot-checkbox"></label>
@@ -203,11 +205,11 @@
             <textarea id="Backup2WeaponDamageTextbox"   name="Backup2WeaponDamageTextbox"   class="base-textbox h1-text"                    style="top: 1155px; left: 845px; width: 120px; height:  25px;"></textarea>
             <textarea id="Backup2WeaponTraitTextbox"    name="Backup2WeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top: 1197px; left: 540px; width: 420px; height:  61px;"></textarea>
 
-            <div id="add-primary-weapon-btn"    class="add-btn" style="top: 295px; left: 560px; z-index: 10;"></div>
-            <div id="add-secondary-weapon-btn"  class="add-btn" style="top: 445px; left: 560px; z-index: 10;"></div>
-            <div id="add-armor-btn"             class="add-btn" style="top: 606px; left: 780px; z-index: 10;"></div>
-            <div id="add-item-btn"              class="add-btn" style="top: 783px; left: 560px; z-index: 10;"></div>
-            <div id="add-backup1-weapon-btn"    class="add-btn" style="top: 984px; left: 580px; z-index: 10;"></div>
+            <div id="add-primary-weapon-btn"    class="add-btn" style="top: 295px;  left: 560px; z-index: 10;"></div>
+            <div id="add-secondary-weapon-btn"  class="add-btn" style="top: 445px;  left: 560px; z-index: 10;"></div>
+            <div id="add-armor-btn"             class="add-btn" style="top: 606px;  left: 780px; z-index: 10;"></div>
+            <div id="add-item-btn"              class="add-btn" style="top: 783px;  left: 560px; z-index: 10;"></div>
+            <div id="add-backup1-weapon-btn"    class="add-btn" style="top: 984px;  left: 580px; z-index: 10;"></div>
             <div id="add-backup2-weapon-btn"    class="add-btn" style="top: 1130px; left: 580px; z-index: 10;"></div>
 
 
@@ -278,7 +280,11 @@
         </div>
     </div>
 
-
+    <script src="character_creator/data/Daggerheart_Core_Rulebook_领域卡.js"></script>
+    <script src="character_creator/data/Daggerheart_Core_Rulebook_种族.js"></script>
+    <script src="character_creator/data/Daggerheart_Core_Rulebook_社群.js"></script>
+    <script src="character_creator/data/Daggerheart_Core_Rulebook_职业表.js"></script>
+    <script src="character_creator/data/Daggerheart_Core_Rulebook_野兽形态.js"></script>
     <script src="character_creator/data/Daggerheart_Core_Rulebook_副武器表.js"></script>
     <script src="character_creator/data/Daggerheart_Core_Rulebook_主武器表.js"></script>
     <script src="character_creator/data/Daggerheart_Core_Rulebook_护甲表.js"></script>

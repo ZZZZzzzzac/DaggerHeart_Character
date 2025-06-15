@@ -9,6 +9,7 @@
  * @param {string} [config.title] - 模态框的标题。
  */
 function showDataTableModal(data, onRowSelected, config = {}) {
+    console.log("Opening data table modal with config:", config);
     return new Promise((resolve, reject) => {
         // 1. 获取 DOM 元素引用
         const modal = document.getElementById('data-table-modal');
@@ -32,8 +33,8 @@ function showDataTableModal(data, onRowSelected, config = {}) {
             return;
         }
 
-        const keys = Object.keys(data[0]);
-        const { columnMap = {}, filterableColumns = [], storageKey, columnWidths = {} } = config;
+        const { columnMap = {}, filterableColumns = [], storageKey, columnWidths = {}, hiddenColumns = [], preselectedFilters = {} } = config;
+        const keys = Object.keys(data[0]).filter(key => !hiddenColumns.includes(key));
 
         const headerTable = document.createElement('table');
         const thead = document.createElement('thead');
@@ -68,6 +69,10 @@ function showDataTableModal(data, onRowSelected, config = {}) {
                     option.textContent = value;
                     select.appendChild(option);
                 });
+
+                if (preselectedFilters[key]) {
+                    select.value = preselectedFilters[key];
+                }
 
                 filterTh.appendChild(select);
                 filterSelects.push(select);
@@ -109,11 +114,6 @@ function showDataTableModal(data, onRowSelected, config = {}) {
             });
         };
 
-        const syncColumnWidths = () => {
-            // This function is no longer needed as widths are set directly.
-            // Kept for potential future use or can be removed.
-        };
-
         const applyFiltersAndRender = () => {
             const currentFilters = {};
             filterSelects.forEach(select => {
@@ -131,7 +131,6 @@ function showDataTableModal(data, onRowSelected, config = {}) {
             });
 
             renderTableBody(filteredData);
-            syncColumnWidths();
         };
 
         // 5. 状态持久化和事件绑定
@@ -159,7 +158,7 @@ function showDataTableModal(data, onRowSelected, config = {}) {
                 if (typeof onRowSelected === 'function') {
                     onRowSelected(selectedData);
                 }
-                resolve(selectedData); // Still resolve the promise for other potential uses
+                resolve(selectedData);
                 cleanupAndClose();
             }
         };
@@ -196,8 +195,6 @@ function showDataTableModal(data, onRowSelected, config = {}) {
 
         // 初始加载
         applyFiltersAndRender();
-        // 确保初始宽度同步
-        setTimeout(syncColumnWidths, 0);
     });
 }
 
@@ -266,8 +263,6 @@ function setupDataModalButtons() {
                     });
                     compositeDamageElement.value = formattedString;
                 }
-
-                // No immediate save here anymore
             }, modalConfig);
         });
     };
@@ -336,12 +331,11 @@ function setupDataModalButtons() {
                 return;
             }
 
-            const armorWidths = { 名称: '10%', 重伤阈值: '5%', 严重阈值: '5%', 护甲值: '5%', 位阶: '5%' };
             const modalConfig = {
                 title: "选择护甲",
                 filterableColumns: ["重伤阈值", "严重阈值", "护甲值", "位阶"],
                 storageKey: "armorFilterState",
-                columnWidths: armorWidths
+                columnWidths: { 名称: '10%', 重伤阈值: '5%', 严重阈值: '5%', 护甲值: '5%', 位阶: '5%' }
             };
             
             showDataTableModal(ARMOR, (selectedItem) => {
@@ -363,8 +357,6 @@ function setupDataModalButtons() {
                     const severe = selectedItem.严重阈值 || '';
                     thresholdTarget.value = `${major}／${severe}`;
                 }
-                
-                // No immediate save here anymore
             }, modalConfig);
         });
     }
@@ -380,12 +372,11 @@ function setupDataModalButtons() {
                 return;
             }
 
-            const itemWidths = { 名称: '15%', 掷骰: '5%'};
             const modalConfig = {
                 title: "选择物品",
                 filterableColumns: ["类型", "位阶"],
                 storageKey: "itemFilterState",
-                columnWidths: itemWidths
+                columnWidths: { 名称: '15%', 掷骰: '5%'}
             };
 
             showDataTableModal(ITEMS, (selectedItem) => {
@@ -398,9 +389,183 @@ function setupDataModalButtons() {
                         targetTextbox.value += `\n${newItemText}`;
                     }
                 }
-                // No immediate save here anymore
             }, modalConfig);
         });
     }
-}
+    
+    // Domain Cards
+    const addDomainCardBtn = document.getElementById('add-domain-card-btn');
+    if (addDomainCardBtn) {
+        addDomainCardBtn.addEventListener('click', () => {
+            if (typeof DOMAIN_CARDS === 'undefined') {
+                console.error('Data source variable "DOMAIN_CARDS" is not defined.');
+                alert('错误：领域卡数据源未定义。');
+                return;
+            }
 
+            const modalConfig = {
+                title: "选择领域卡",
+                filterableColumns: ["领域", "等级", "属性", "回想"],
+                storageKey: "domainCardFilterState",
+                columnWidths: { 名称: '10%', 领域: '5%', 等级: '5%', 属性: '5%', 回想: '5%' }
+            };
+
+            showDataTableModal(DOMAIN_CARDS, (selectedItem) => {
+                createCard(selectedItem);
+            }, modalConfig);
+        });
+    }
+
+    // Ancestry Cards
+    const addAncestryCardBtn = document.getElementById('add-ancestry-card-btn');
+    if (addAncestryCardBtn) {
+        addAncestryCardBtn.addEventListener('click', () => {
+            if (typeof RACES_DATA === 'undefined') {
+                console.error('Data source variable "RACES_DATA" is not defined.');
+                alert('错误：种族数据源未定义。');
+                return;
+            }
+
+            const modalConfig = {
+                title: "选择种族",
+                hiddenColumns: ["描述"],
+                storageKey: "ancestryCardFilterState",
+                columnWidths: { 名称: '10%', 特性1名称: '10%', 特性2名称: '10%' }
+            };
+
+            showDataTableModal(RACES_DATA, (selectedItem) => {
+                createCard(selectedItem);
+            }, modalConfig);
+        });
+    }
+
+    // Community Cards
+    const addCommunityCardBtn = document.getElementById('add-community-card-btn');
+    if (addCommunityCardBtn) {
+        addCommunityCardBtn.addEventListener('click', () => {
+            if (typeof COMM_DATA === 'undefined') {
+                console.error('Data source variable "COMM_DATA" is not defined.');
+                alert('错误：社群数据源未定义。');
+                return;
+            }
+
+            const modalConfig = {
+                title: "选择社群",
+                hiddenColumns: ["描述","性格"],
+                storageKey: "communityCardFilterState",
+                columnWidths: { 名称: '10%', 特性名称: '10%'}
+            };
+
+            showDataTableModal(COMM_DATA, (selectedItem) => {
+                createCard(selectedItem);
+            }, modalConfig);
+        });
+    }
+
+    // Beast Form Cards
+    const addBeastFormCardBtn = document.getElementById('add-beast-form-card-btn');
+    if (addBeastFormCardBtn) {
+        addBeastFormCardBtn.addEventListener('click', () => {
+            if (typeof BEAST_FORM === 'undefined') {
+                console.error('Data source variable "BEAST_FORM" is not defined.');
+                alert('错误：野兽形态数据源未定义。');
+                return;
+            }
+
+            const modalConfig = {
+                title: "选择野兽形态",
+                hiddenColumns: ["例子"],
+                filterableColumns: ["位阶", "属性", "闪避值", "攻击范围", "攻击属性", "攻击伤害", "攻击类型", "获得优势"],
+                storageKey: "beastFormCardFilterState",
+                columnWidths: { 名称: '10%', 位阶: '5%', 属性: '5%', 闪避值: '5%', 攻击范围: '5%', 攻击属性: '5%', 攻击伤害: '5%', 攻击类型: '5%', 获得优势: '10%'}
+            };
+
+            showDataTableModal(BEAST_FORM, (selectedItem) => {
+                createCard(selectedItem);
+            }, modalConfig);
+        });
+    }
+
+    // Class Cards
+    const addClassCardBtn = document.getElementById('add-class-card-btn');
+    if (addClassCardBtn) {
+        addClassCardBtn.addEventListener('click', () => {
+            if (typeof MAIN_CLASS === 'undefined') {
+                console.error('Data source variable "MAIN_CLASS" is not defined.');
+                alert('错误：职业数据源未定义。');
+                return;
+            }
+
+            const modalConfig = {
+                title: "选择职业",
+                storageKey: "classCardFilterState",
+                hiddenColumns: ["背景问题", "关系问题"],
+                columnWidths: { 名称: '7%', 领域: '7%', 初始闪避值: '5%', 初始生命值: '5%', 希望特性: '15%'}
+            };
+
+            showDataTableModal(MAIN_CLASS, (selectedItem) => {
+                const classFeatureTextbox = document.getElementById('ClassFeatureTextbox');
+                if (classFeatureTextbox) {
+                    classFeatureTextbox.value = `${selectedItem.希望特性}\n\n${selectedItem.职业特性}`;
+                }
+
+                const backgroundQuestion1 = document.getElementById('BackgroundQuestion1Textbox');
+                const backgroundQuestion2 = document.getElementById('BackgroundQuestion2Textbox');
+                const backgroundQuestion3 = document.getElementById('BackgroundQuestion3Textbox');
+                if (backgroundQuestion1 && backgroundQuestion2 && backgroundQuestion3 && selectedItem.背景问题) {
+                    backgroundQuestion1.value = selectedItem.背景问题[0] || '';
+                    backgroundQuestion2.value = selectedItem.背景问题[1] || '';
+                    backgroundQuestion3.value = selectedItem.背景问题[2] || '';
+                }
+
+                const connectQuestion1 = document.getElementById('ConnectQuestion1Textbox');
+                const connectQuestion2 = document.getElementById('ConnectQuestion2Textbox');
+                const connectQuestion3 = document.getElementById('ConnectQuestion3Textbox');
+                if (connectQuestion1 && connectQuestion2 && connectQuestion3 && selectedItem.关系问题) {
+                    connectQuestion1.value = selectedItem.关系问题[0] || '';
+                    connectQuestion2.value = selectedItem.关系问题[1] || '';
+                    connectQuestion3.value = selectedItem.关系问题[2] || '';
+                }
+                
+                const subClassBtn = document.getElementById('add-subclass-card-btn');
+                if (subClassBtn) {
+                    subClassBtn.dataset.parentClass = selectedItem.名称;
+                    setTimeout(() => {
+                        subClassBtn.click();
+                    }, 100);
+                }
+            }, modalConfig);
+        });
+    }
+
+    // Subclass Cards
+    const addSubclassCardBtn = document.getElementById('add-subclass-card-btn');
+    if (addSubclassCardBtn) {
+        addSubclassCardBtn.addEventListener('click', function() { // Use function() to get correct 'this'
+            if (typeof SUB_CLASS === 'undefined') {
+                console.error('Data source variable "SUB_CLASS" is not defined.');
+                alert('错误：子职业数据源未定义。');
+                return;
+            }
+
+            const parentClass = this.dataset.parentClass;
+            const preselectedFilters = parentClass ? { "母职业": parentClass } : {};
+
+            const modalConfig = {
+                title: "选择子职业",
+                filterableColumns: ["母职业"],
+                storageKey: "subclassCardFilterState",
+                columnWidths: { 名称: '10%', 母职业: '10%', 施法属性: '7%'},
+                preselectedFilters: preselectedFilters
+            };
+
+            showDataTableModal(SUB_CLASS, (selectedItem) => {
+                createCard(selectedItem);
+            }, modalConfig);
+
+            if (parentClass) {
+                delete this.dataset.parentClass;
+            }
+        });
+    }
+}
