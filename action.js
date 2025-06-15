@@ -21,6 +21,24 @@ function exportFormState() {
         }
     });
 
+    // --- Export Skill Cards ---
+    state.cards = [];
+    const cardElements = document.querySelectorAll('#card-container .skill-card');
+    cardElements.forEach(cardEl => {
+        if (cardEl.dataset.cardData) {
+            try {
+                const cardData = JSON.parse(cardEl.dataset.cardData);
+                const position = {
+                    left: cardEl.style.left,
+                    top: cardEl.style.top
+                };
+                state.cards.push({ data: cardData, position: position });
+            } catch (e) {
+                console.error('Error processing card data on export:', e, cardEl.dataset.cardData);
+            }
+        }
+    });
+
     return state;
 }
  
@@ -29,6 +47,12 @@ function exportFormState() {
  * @param {object} state - The state object to import.
  */
 function importFormState(state) {
+    // Clear existing cards before importing new ones
+    const cardContainer = document.getElementById('card-container');
+    if (cardContainer) {
+        cardContainer.innerHTML = '';
+    }
+
     for (const id in state) {
         if (Object.hasOwnProperty.call(state, id)) {
             const value = state[id];
@@ -49,6 +73,16 @@ function importFormState(state) {
                 }
             }
         }
+    }
+
+    // --- Import and Recreate Skill Cards ---
+    if (Array.isArray(state.cards)) {
+        state.cards.forEach(cardInfo => { // cardInfo is now {data, position}
+            // Assuming createCard is a globally available function from script.js
+            if (typeof createCard === 'function') {
+                createCard(cardInfo);
+            }
+        });
     }
 }
 
@@ -206,32 +240,63 @@ function setupGlobalActionButtons() {
 
     // Print functionality
     printBtn.addEventListener('click', () => {
-        // --- Textarea to Div replacement logic for printing ---
+        // --- Prepare for printing ---
         const textareas = document.querySelectorAll('.base-textbox');
         const replacements = [];
 
+        // 1. Replace textareas with divs for better printing
         textareas.forEach(ta => {
             const div = document.createElement('div');
             div.className = ta.className;
             div.style.cssText = ta.style.cssText;
             div.style.display = 'flex';
             div.innerHTML = ta.value.replace(/\n/g, '<br>');
-            div.classList.add('print-replacement'); // Add a class to identify them
+            div.classList.add('print-replacement');
             
             ta.style.display = 'none';
             ta.parentNode.insertBefore(div, ta);
             replacements.push({ original: ta, replacement: div });
         });
 
-        // Use a short timeout to allow the DOM to update before printing
-        setTimeout(() => {
-            window.print();
+        // 2. Create a temporary wrapper for printing
+        const printWrapper = document.createElement('div');
+        printWrapper.id = 'print-wrapper';
+        const characterSheet = document.getElementById('character-sheet');
+        const cardContainer = document.getElementById('card-container');
+        
+        // Temporarily move the sheet and cards into the wrapper
+        if (characterSheet) printWrapper.appendChild(characterSheet);
+        if (cardContainer) printWrapper.appendChild(cardContainer);
+        
+        document.body.appendChild(printWrapper);
+        document.body.classList.add('printing');
 
-            // --- Restore original textareas after printing ---
+        // --- Define the after-print cleanup ---
+        window.onafterprint = () => {
+            // 1. Restore original textareas
             replacements.forEach(pair => {
                 pair.original.style.display = '';
-                pair.replacement.remove();
+                if (pair.replacement.parentNode) {
+                    pair.replacement.parentNode.removeChild(pair.replacement);
+                }
             });
-        }, 100); // 100ms delay
+
+            // 2. Move elements back to the body
+            const originalSheetParent = document.body; // Or wherever it should be
+            if (characterSheet) originalSheetParent.insertBefore(characterSheet, printWrapper);
+            if (cardContainer) originalSheetParent.insertBefore(cardContainer, printWrapper);
+
+            // 3. Remove the temporary wrapper and printing class
+            if (printWrapper.parentNode) {
+                printWrapper.parentNode.removeChild(printWrapper);
+            }
+            document.body.classList.remove('printing');
+
+            // 4. Clean up the event handler
+            window.onafterprint = null;
+        };
+
+        // --- Trigger the print dialog ---
+        window.print();
     });
 }
