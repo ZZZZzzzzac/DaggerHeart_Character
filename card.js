@@ -32,7 +32,9 @@ function renderJsonCard(card, jsonData) {
 
     const textarea = document.createElement('textarea');
     textarea.readOnly = true;
-    textarea.value = JSON.stringify(jsonData, null, 2);
+    // Format the JSON and then remove markdown from the resulting string
+    const formattedJson = JSON.stringify(jsonData, null, 2);
+    textarea.value = removeMarkdownFormatting(formattedJson);
 
     contentArea.appendChild(textarea);
     card.appendChild(contentArea);

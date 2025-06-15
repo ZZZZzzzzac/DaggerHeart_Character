@@ -59,7 +59,12 @@ function importFormState(state) {
             // Handle textareas and inputs by ID
             const textElement = document.getElementById(id);
             if (textElement && textElement.classList.contains('base-textbox')) {
-                textElement.value = value;
+                // Remove markdown for specific textboxes
+                if (id === 'ClassFeatureTextbox' || id.endsWith('TraitTextbox')) {
+                    textElement.value = removeMarkdownFormatting(value);
+                } else {
+                    textElement.value = value;
+                }
             }
 
             // Handle tri-state checkboxes by finding the label by ID

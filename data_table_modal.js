@@ -107,7 +107,7 @@ function showDataTableModal(data, onRowSelected, config = {}) {
                 tr.dataset.rowData = JSON.stringify(item);
                 keys.forEach(key => {
                     const td = document.createElement('td');
-                    td.textContent = item[key];
+                    td.textContent = removeMarkdownFormatting(item[key]);
                     tr.appendChild(td);
                 });
                 tbody.appendChild(tr);
@@ -226,7 +226,7 @@ function setupDataModalButtons() {
                 for (const sourceKey in targetMap) {
                     const targetElement = document.getElementById(targetMap[sourceKey]);
                     if (targetElement) {
-                        targetElement.value = selectedItem[sourceKey] || '';
+                        targetElement.value = removeMarkdownFormatting(selectedItem[sourceKey] || '');
                     }
                 }
 
@@ -347,7 +347,7 @@ function setupDataModalButtons() {
                 for (const sourceKey in directMap) {
                     const targetElement = document.getElementById(directMap[sourceKey]);
                     if (targetElement) {
-                        targetElement.value = selectedItem[sourceKey] || '';
+                        targetElement.value = removeMarkdownFormatting(selectedItem[sourceKey] || '');
                     }
                 }
 
@@ -382,7 +382,7 @@ function setupDataModalButtons() {
             showDataTableModal(ITEMS, (selectedItem) => {
                 const targetTextbox = document.getElementById('ItemSlot1Textbox');
                 if (targetTextbox) {
-                    const newItemText = `${selectedItem.名称}: ${selectedItem.特性}`;
+                    const newItemText = `${selectedItem.名称}: ${removeMarkdownFormatting(selectedItem.特性)}`;
                     if (targetTextbox.value.trim() === '') {
                         targetTextbox.value = newItemText;
                     } else {
@@ -506,7 +506,8 @@ function setupDataModalButtons() {
             showDataTableModal(MAIN_CLASS, (selectedItem) => {
                 const classFeatureTextbox = document.getElementById('ClassFeatureTextbox');
                 if (classFeatureTextbox) {
-                    classFeatureTextbox.value = `${selectedItem.希望特性}\n\n${selectedItem.职业特性}`;
+
+                    classFeatureTextbox.value = removeMarkdownFormatting(`${selectedItem.希望特性}\n\n${selectedItem.职业特性}`);
                 }
 
                 const backgroundQuestion1 = document.getElementById('BackgroundQuestion1Textbox');

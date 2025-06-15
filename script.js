@@ -1,6 +1,24 @@
 // Hard-coded debug mode switch
 const DEBUG_MODE = false;
 
+/**
+ * Removes basic Markdown formatting (bold, italics) from a string.
+ * @param {string} text The input text.
+ * @returns {string} The text with formatting removed.
+ */
+function removeMarkdownFormatting(text) {
+    if (typeof text !== 'string') {
+        return text;
+    }
+    // Remove bold (**text** or __text__), italics (*text* or _text_), and convert \n to newlines
+    return text
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/__(.*?)__/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/_(.*?)_/g, '$1')
+        .replace(/\\n/g, '\n');
+}
+
 function applyDebugStyles() {
     if (!DEBUG_MODE) return;
 
