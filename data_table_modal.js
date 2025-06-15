@@ -134,7 +134,7 @@ function showDataTableModal(data, onRowSelected, config = {}) {
         };
 
         // 5. 状态持久化和事件绑定
-        if (storageKey) {
+        if (storageKey && !Object.keys(preselectedFilters).length) {
             const savedState = localStorage.getItem(storageKey);
             if (savedState) {
                 const filters = JSON.parse(savedState);
@@ -541,7 +541,7 @@ function setupDataModalButtons() {
     // Subclass Cards
     const addSubclassCardBtn = document.getElementById('add-subclass-card-btn');
     if (addSubclassCardBtn) {
-        addSubclassCardBtn.addEventListener('click', function() { // Use function() to get correct 'this'
+        addSubclassCardBtn.addEventListener('click', function() {
             if (typeof SUB_CLASS === 'undefined') {
                 console.error('Data source variable "SUB_CLASS" is not defined.');
                 alert('错误：子职业数据源未定义。');
@@ -549,13 +549,18 @@ function setupDataModalButtons() {
             }
 
             const parentClass = this.dataset.parentClass;
-            const preselectedFilters = parentClass ? { "母职业": parentClass } : {};
+            
+            if (parentClass) {
+                localStorage.removeItem("subclassCardFilterState");
+            }
+
+            const preselectedFilters = parentClass ? { "主职": parentClass } : {};
 
             const modalConfig = {
                 title: "选择子职业",
-                filterableColumns: ["母职业"],
+                filterableColumns: ["主职"],
                 storageKey: "subclassCardFilterState",
-                columnWidths: { 名称: '10%', 母职业: '10%', 施法属性: '7%'},
+                columnWidths: { 名称: '10%', 主职: '10%', 施法属性: '7%', 等级: '7%'},
                 preselectedFilters: preselectedFilters
             };
 

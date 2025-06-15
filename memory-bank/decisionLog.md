@@ -17,6 +17,39 @@ This file records architectural and implementation decisions using a list format
 
 *
 ---
+### Decision (Code)
+[2025-06-15 18:18:00] - Implement "Upload Custom Card Pack" Feature
+
+**Rationale:**
+To allow users to extend the application's data with their own custom content, a feature was needed to upload JSON files containing card data. The initial implementation focuses on Domain Cards, but is designed to be extensible for other card types in the future. The core requirements were to:
+1.  Provide a simple UI for file selection.
+2.  Parse the uploaded JSON.
+3.  Identify the type of data within the JSON (e.g., domain cards).
+4.  Standardize the keys of the uploaded objects to match the application's internal data structure. This needed to be a flexible, many-to-one mapping (e.g., "name", "cardName", "title" all become "名称").
+5.  Merge the standardized data with the existing in-memory data, preventing duplicates.
+
+**Details:**
+*   **HTML ([`character_sheet_editor.html`](character_sheet_editor.html:1))**:
+    *   Added a new button `<button id="upload-custom-pack-btn">` and a corresponding hidden file input `<input type="file" id="custom-pack-upload">` to the main action container.
+
+*   **JavaScript ([`action.js`](action.js:1))**:
+    *   Added event listeners for the new button and file input.
+    *   The button's click listener triggers the file input.
+    *   The file input's `change` listener reads the selected file using `FileReader`.
+    *   On successful read, the JSON is parsed. It then iterates through the top-level keys of the JSON object.
+    *   A predefined list `["domain", "domain_card", "domains"]` is used to identify if a key corresponds to domain card data.
+    *   If a matching key is found, it calls the global `add_custom_domain_card` function, passing the associated array of cards.
+
+*   **JavaScript ([`script.js`](script.js:1))**:
+    *   Created the `add_custom_domain_card(customCards)` function.
+    *   **Key Mapping**: Implemented a `keyMap` object where each standard key (e.g., "名称") maps to an array of possible aliases (e.g., `["name", "cardname", "title"]`).
+    *   A reverse map is created from `keyMap` for efficient lookup (`{ "name": "名称", ... }`).
+    *   **Standardization**: The function iterates through the uploaded cards. For each card, it iterates through its keys, converting them to lowercase and looking them up in the reverse map to find the standard key. A new, standardized card object is built.
+    *   **Merging**: It creates a `Set` of existing domain card names to efficiently check for duplicates.
+    *   The standardized cards are filtered to exclude any with names that already exist in the main `DOMAIN_CARDS` array.
+    *   The new, unique cards are then pushed into the global `DOMAIN_CARDS` array.
+    *   User is alerted of the outcome (number of cards added or none).
+---
 ---
 ---
 ---

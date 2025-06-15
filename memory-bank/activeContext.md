@@ -7,16 +7,10 @@ This file tracks the project's current status, including recent changes, current
 
 ## Current Focus
 
-* [2025-06-13 16:01:00] - 完成所有数据源迁移：
-    *   道具/消耗品 -> `Daggerheart_Core_Rulebook_战利品与消耗品表.js` (LOOT)。
-    *   种族 -> `Daggerheart_Core_Rulebook_种族.js`。
-    *   社群 -> `Daggerheart_Core_Rulebook_社群.js`。
-    *   职业 -> `Daggerheart_Core_Rulebook_职业.js`。
-    *   装备 -> `Daggerheart_Core_Rulebook_主武器表.js`, `_副武器表.js`, `_护甲表.js`。
-    *   领域卡 -> `Daggerheart_Core_Rulebook_领域卡.js`。
-    *   所有相关的HTML引用和JavaScript逻辑已更新。
+* [2025-06-15 18:18:00] - Implemented "Upload Custom Card Pack" feature.
 
 ## Recent Changes
+* [2025-06-15 18:18:00] - **[FEAT]** Implemented the "Upload Custom Card Pack" feature. Added a button to `character_sheet_editor.html`, file handling logic in `action.js`, and a data processing function `add_custom_domain_card` in `script.js` that supports many-to-one key mapping and merges new domain cards into the `DOMAIN_CARDS` array.
 * [2025-06-15 16:14:01] - **[FEAT]** Created `data_transformer.js` to process the raw `JOBS_DATA` into structured `CLASS_DATA` and `SUBCLASS_DATA` global variables. This standardizes the data structure for classes and subclasses, making it easier for other parts of the application to consume.
 * [2025-06-15 11:47:43] - **[FIX]** Repaired the printing functionality by implementing a robust strategy. This involved dynamically creating a `#print-wrapper` in `action.js` to isolate printable content and rewriting the `@media print` rules in `style.css` to force all elements into a static document flow, ensuring correct page breaks and visibility for both the character sheet and skill cards.
 * [2025-06-15 09:23:51] - **[FIX]** Repaired the "Clear Form" functionality by refactoring the `clearForm` function in `action.js` to correctly reset all form elements and clear local storage. Also refactored button setup logic by moving global action button setup from `script.js` to `action.js` to avoid duplicate definitions.

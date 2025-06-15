@@ -181,6 +181,8 @@ function setupGlobalActionButtons() {
     const printBtn = document.getElementById('print-pdf-btn');
     const clearBtn = document.getElementById('clear-form-btn');
     const fileInput = document.getElementById('json-upload');
+    const customPackBtn = document.getElementById('upload-custom-pack-btn');
+    const customPackInput = document.getElementById('custom-pack-upload');
 
     if (clearBtn) {
         clearBtn.addEventListener('click', () => {
@@ -237,6 +239,61 @@ function setupGlobalActionButtons() {
         // Reset file input to allow uploading the same file again
         fileInput.value = '';
     });
+
+    // Custom Pack Upload functionality
+    if (customPackBtn && customPackInput) {
+        customPackBtn.addEventListener('click', () => {
+            customPackInput.click();
+        });
+
+        customPackInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const packData = JSON.parse(e.target.result);
+                    const domainKeys = ["domain", "domain_card", "domains"];
+                    const classKeys = ["class", "profession", "job"];
+                    const subclassKeys = ["subclass", "subclass_card", "subclasses"];
+
+                    for (const key in packData) {
+                        const lowerKey = key.toLowerCase();
+                        if (domainKeys.includes(lowerKey)) {
+                            if (typeof add_custom_domain_card === 'function') {
+                                add_custom_domain_card(packData[key]);
+                            } else {
+                                console.error('add_custom_domain_card function not found.');
+                                alert('错误：处理领域卡的函数未找到。');
+                            }
+                        } else if (classKeys.includes(lowerKey)) {
+                            if (typeof add_custom_class === 'function') {
+                                add_custom_class(packData[key]);
+                            } else {
+                                console.error('add_custom_class function not found.');
+                                alert('错误：处理职业的函数未找到。');
+                            }
+                        } else if (subclassKeys.includes(lowerKey)) {
+                            if (typeof add_custom_subclass === 'function') {
+                                add_custom_subclass(packData[key]);
+                            } else {
+                                console.error('add_custom_subclass function not found.');
+                                alert('错误：处理子职业的函数未找到。');
+                            }
+                        }
+                    }
+
+                } catch (error) {
+                    console.error('导入自定义卡包失败:', error);
+                    alert('导入失败，请检查文件格式是否为有效的JSON。');
+                }
+            };
+            reader.readAsText(file);
+            customPackInput.value = ''; // Reset input
+        });
+    }
+
 
     // Print functionality
     printBtn.addEventListener('click', () => {
