@@ -143,4 +143,4 @@ const RACES_DATA = [
         "trait2_name": "灵活",
         "trait2_desc": "在创建角色时，闪避值获得永久 +1 加值。"
     }
-]
+];

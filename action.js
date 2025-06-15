@@ -59,6 +59,7 @@ function saveFormStateToLocalStorage() {
     const formState = exportFormState();
     // localStorage can handle the raw string without encoding.
     localStorage.setItem('characterSheetData', JSON.stringify(formState));
+    console.log('角色表单数据已保存到 Local Storage。');
 }
 
 /**
@@ -97,12 +98,68 @@ function setDefaultSlotStates() {
     }
 }
 
+function clearForm() {
+    console.log('Clearing form and resetting to default states...');
+    // 1. Clear all textareas
+    const textElements = document.querySelectorAll('.base-textbox');
+    textElements.forEach(el => {
+        el.value = '';
+    });
 
-function setupActionButtons() {
+    // 2. Reset all checkboxes to their initial state (0)
+    const checkboxLabels = document.querySelectorAll('.base-checkbox');
+    checkboxLabels.forEach(label => {
+        if (label.checkboxInstance) {
+            label.checkboxInstance.setState('0');
+        } else {
+            label.dataset.state = '0';
+            // Manually update visuals for non-instantiated checkboxes
+            label.classList.remove('state-checked', 'state-dashed');
+        }
+    });
+
+    // 3. Apply the specific default states for HP and Stress slots
+    setDefaultSlotStates();
+
+    // 4. Ensure the visuals of HP and Stress checkboxes match the new default state
+    for (let i = 1; i <= 12; i++) {
+        const hpLabel = document.getElementById(`HpSlotCheckbox${i}`);
+        const stressLabel = document.getElementById(`StressSlotCheckbox${i}`);
+        if (hpLabel && hpLabel.checkboxInstance) {
+            hpLabel.checkboxInstance.setState(hpLabel.dataset.state);
+        }
+        if (stressLabel && stressLabel.checkboxInstance) {
+            stressLabel.checkboxInstance.setState(stressLabel.dataset.state);
+        }
+    }
+    
+    // 5. Clear the saved state from local storage
+    localStorage.removeItem('characterSheetData');
+
+    console.log('表单已清空并重置为默认状态。');
+    alert('所有数据已被清空。刷新页面后将是全新的角色卡。');
+}
+
+
+function setupGlobalActionButtons() {
     const importBtn = document.getElementById('import-json-btn');
     const exportBtn = document.getElementById('export-json-btn');
     const printBtn = document.getElementById('print-pdf-btn');
+    const clearBtn = document.getElementById('clear-form-btn');
     const fileInput = document.getElementById('json-upload');
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (confirm('你确定要清空所有数据吗？此操作无法撤销。')) {
+                clearForm();
+            }
+        });
+    }
+    
+    if (!importBtn || !exportBtn || !printBtn || !fileInput) {
+        console.warn("一个或多个全局操作按钮未在DOM中找到。");
+        return;
+    }
 
     // Export functionality
     exportBtn.addEventListener('click', () => {

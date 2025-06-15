@@ -13,14 +13,17 @@
 
 .modal-content {
     background-color: #fefefe;
-    margin: 10% auto; /* 10% from the top and centered */
+    margin: auto; /* Centered */
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
-    max-width: 900px;
+    width: 80vw; /* 80% of viewport width */
+    height: 60vh; /* 60% of viewport height */
     display: flex;
     flex-direction: column;
-    max-height: 80vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .close-button {
@@ -44,12 +47,13 @@
 /* Table container styles */
 #data-table-fixed-header {
     overflow-y: hidden;
-    padding-right: 17px; /* To account for scrollbar width in the body */
+    padding-right: 15px; /* To account for scrollbar width in the body */
+    flex-shrink: 0; /* Prevent the header from shrinking */
 }
 
 #data-table-body-container {
     overflow-y: auto;
-    max-height: 50vh; /* Adjust as needed */
+    flex-grow: 1; /* Allow the body to take up remaining space */
 }
 
 /* Compact table styles */
@@ -60,9 +64,10 @@ table {
 
 th, td {
     border: 1px solid #ddd;
-    padding: 4px;
+    padding: 2px; /* Reduced padding */
     font-size: 14px;
     text-align: left;
+    vertical-align: middle; /* Align content vertically */
 }
 
 th {
@@ -73,8 +78,9 @@ th {
 /* Filter select styles */
 th select {
     width: 100%;
-    padding: 2px;
+    padding: 4px; /* Increased padding */
     font-size: 12px;
     border: 1px solid #ccc;
     border-radius: 3px;
+    box-sizing: border-box; /* Ensure padding is included in width */
 }

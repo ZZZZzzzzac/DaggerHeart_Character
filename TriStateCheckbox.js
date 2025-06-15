@@ -19,7 +19,7 @@ class TriStateCheckbox {
         // Left-click toggles between normal (0) and checked (1)
         this.state = this.state === 1 ? 0 : 1;
         this.updateVisuals();
-        saveFormStateToLocalStorage(); // Save state on change
+        // saveFormStateToLocalStorage(); // Save state on change
     }
 
     handleRightClick(event) {
@@ -30,7 +30,7 @@ class TriStateCheckbox {
         // Right-click toggles between normal (0) and dashed (2)
         this.state = this.state === 2 ? 0 : 2;
         this.updateVisuals();
-        saveFormStateToLocalStorage(); // Save state on change
+        // saveFormStateToLocalStorage(); // Save state on change
     }
 
     updateVisuals() {

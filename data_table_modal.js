@@ -10,7 +10,7 @@
  */
 function showDataTableModal(data, onRowSelected, config = {}) {
     return new Promise((resolve, reject) => {
-        // 1. 获取 DOM 元素引用 (HTML is now in the main document)
+        // 1. 获取 DOM 元素引用
         const modal = document.getElementById('data-table-modal');
         const closeButton = document.getElementById('data-table-modal-close');
         const titleElement = document.getElementById('data-table-modal-title');
@@ -33,20 +33,26 @@ function showDataTableModal(data, onRowSelected, config = {}) {
         }
 
         const keys = Object.keys(data[0]);
-        const { columnMap = {}, filterableColumns = [], storageKey } = config;
+        const { columnMap = {}, filterableColumns = [], storageKey, columnWidths = {} } = config;
 
         const headerTable = document.createElement('table');
         const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
+        const titleRow = document.createElement('tr');
+        const filterRow = document.createElement('tr');
         const filterSelects = [];
 
         // 3. 动态生成表头和筛选器
         keys.forEach(key => {
-            const th = document.createElement('th');
-            const title = document.createElement('div');
-            title.textContent = columnMap[key] || key;
-            th.appendChild(title);
+            // Title Row
+            const titleTh = document.createElement('th');
+            if (columnWidths[key]) {
+                titleTh.style.width = columnWidths[key];
+            }
+            titleTh.textContent = columnMap[key] || key;
+            titleRow.appendChild(titleTh);
 
+            // Filter Row
+            const filterTh = document.createElement('th');
             if (filterableColumns.includes(key)) {
                 const select = document.createElement('select');
                 select.dataset.key = key;
@@ -63,19 +69,26 @@ function showDataTableModal(data, onRowSelected, config = {}) {
                     select.appendChild(option);
                 });
 
-                th.appendChild(select);
+                filterTh.appendChild(select);
                 filterSelects.push(select);
             }
-            headerRow.appendChild(th);
+            filterRow.appendChild(filterTh);
         });
 
-        thead.appendChild(headerRow);
+        thead.appendChild(titleRow);
+        thead.appendChild(filterRow);
         headerTable.appendChild(thead);
         fixedHeader.appendChild(headerTable);
 
         const bodyTable = document.createElement('table');
         const colgroup = document.createElement('colgroup');
-        keys.forEach(() => colgroup.appendChild(document.createElement('col')));
+        keys.forEach(key => {
+            const col = document.createElement('col');
+            if (columnWidths[key]) {
+                col.style.width = columnWidths[key];
+            }
+            colgroup.appendChild(col);
+        });
         bodyTable.appendChild(colgroup);
         const tbody = document.createElement('tbody');
         bodyTable.appendChild(tbody);
@@ -97,14 +110,8 @@ function showDataTableModal(data, onRowSelected, config = {}) {
         };
 
         const syncColumnWidths = () => {
-            const headerCells = headerTable.querySelectorAll('th');
-            const bodyCols = colgroup.querySelectorAll('col');
-            if (headerCells.length !== bodyCols.length) return;
-            
-            headerCells.forEach((th, index) => {
-                const thWidth = window.getComputedStyle(th).width;
-                bodyCols[index].style.width = thWidth;
-            });
+            // This function is no longer needed as widths are set directly.
+            // Kept for potential future use or can be removed.
         };
 
         const applyFiltersAndRender = () => {

@@ -15,6 +15,7 @@
         <input type="file" id="json-upload" accept=".json" style="display: none;">
         <button id="export-json-btn">导出JSON</button>
         <button id="print-pdf-btn">打印</button>
+        <button id="clear-form-btn" style="background-color: #dc3545;">清空表单</button>
     </div>
     <!-- Debug controls removed as debug mode is now hard-coded -->
     <div id="character-sheet" class="image-container">
@@ -159,38 +160,18 @@
                 <label id="ProficiencyCheckbox5" class="base-checkbox two-state proficiency-checkbox"></label>
             </div>
 
-            <label id="TwohandedCheckbox1"      class="base-checkbox two-handed-checkbox"       style="top: 245px;  left: 890px;"></label>
-            <label id="TwohandedCheckbox2"      class="base-checkbox two-handed-checkbox"       style="top: 975px;  left: 760px;"></label>
-            <label id="TwohandedCheckbox3"      class="base-checkbox two-handed-checkbox"       style="top: 1125px; left: 760px;"></label>
-            <label id="BackupWeapon1Primary"    class="base-checkbox two-state square-checkbox" style="top: 988px;  left: 812px;"></label>
-            <label id="BackupWeapon1Secondary"  class="base-checkbox two-state square-checkbox" style="top: 988px;  left: 895px;"></label>
+            <label id="TwohandedCheckbox1"      class="base-checkbox two-handed-checkbox"       style="top: 245px;   left: 890px;"></label>
+            <label id="TwohandedCheckbox2"      class="base-checkbox two-handed-checkbox"       style="top: 975px;   left: 760px;"></label>
+            <label id="TwohandedCheckbox3"      class="base-checkbox two-handed-checkbox"       style="top: 1125px;  left: 760px;"></label>
+            <label id="BackupWeapon1Primary"    class="base-checkbox two-state square-checkbox" style="top: 988px;   left: 812px;"></label>
+            <label id="BackupWeapon1Secondary"  class="base-checkbox two-state square-checkbox" style="top: 988px;   left: 895px;"></label>
             <label id="BackupWeapon2Primary"    class="base-checkbox two-state square-checkbox" style="top: 1136px;  left: 812px;"></label>
             <label id="BackupWeapon2Secondary"  class="base-checkbox two-state square-checkbox" style="top: 1136px;  left: 895px;"></label>
                         
             <textarea id="PrimaryWeaponNameTextbox"     name="PrimaryWeaponNameTextbox"     class="base-textbox h1-text"                    style="top:  320px; left: 484px; width: 190px; height:  25px;"></textarea>
             <textarea id="PrimaryWeaponStatTextbox"     name="PrimaryWeaponStatTextbox"     class="base-textbox h1-text"                    style="top:  320px; left: 690px; width: 140px; height:  25px;"></textarea>
             <textarea id="PrimaryWeaponDamageTextbox"   name="PrimaryWeaponDamageTextbox"   class="base-textbox h1-text"                    style="top:  320px; left: 845px; width: 120px; height:  25px;"></textarea>
-            <textarea id="PrimaryWeaponTraitTextbox"    name="PrimaryWeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top:  360px; left: 540px; width: 420px; height:  65px;"></textarea>
-<div
-              id="add-secondary-weapon-btn"
-              class="base-action-button add-item-from-table-btn"
-              style="top: 473px; left: 670px; z-index: 10;"
-              data-source-variable="SECONDARY_WEAPON"
-              data-target-map='{
-                "name": "SecondaryWeaponNameTextbox",
-                "damage": "SecondaryWeaponDamageTextbox",
-                "desc": "SecondaryWeaponTraitTextbox"
-              }'
-              data-composite-target='{
-                "targetId": "SecondaryWeaponStatTextbox",
-                "format": "{trait}／{range}"
-              }'
-              data-modal-config='{
-                "title": "选择副武器",
-                "filterableColumns": ["trait", "range", "tier"],
-                "storageKey": "secondaryWeaponFilterState"
-              }'
-            ></div>
+            <textarea id="PrimaryWeaponTraitTextbox"    name="PrimaryWeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top:  360px; left: 540px; width: 420px; height:  65px;"></textarea>            
             <textarea id="SecondaryWeaponNameTextbox"   name="SecondaryWeaponNameTextbox"   class="base-textbox h1-text"                    style="top:  473px; left: 484px; width: 190px; height:  25px;"></textarea>
             <textarea id="SecondaryWeaponStatTextbox"   name="SecondaryWeaponStatTextbox"   class="base-textbox h1-text"                    style="top:  473px; left: 690px; width: 140px; height:  25px;"></textarea>
             <textarea id="SecondaryWeaponDamageTextbox" name="SecondaryWeaponDamageTextbox" class="base-textbox h1-text"                    style="top:  473px; left: 845px; width: 120px; height:  25px;"></textarea>
@@ -208,7 +189,16 @@
             <textarea id="Backup2WeaponStatTextbox"     name="Backup2WeaponStatTextbox"     class="base-textbox h1-text"                    style="top: 1155px; left: 690px; width: 140px; height:  25px;"></textarea>
             <textarea id="Backup2WeaponDamageTextbox"   name="Backup2WeaponDamageTextbox"   class="base-textbox h1-text"                    style="top: 1155px; left: 845px; width: 120px; height:  25px;"></textarea>
             <textarea id="Backup2WeaponTraitTextbox"    name="Backup2WeaponTraitTextbox"    class="base-textbox h1-text h1-multiline-text"  style="top: 1197px; left: 540px; width: 420px; height:  61px;"></textarea>
-</div>
+
+            <div id="add-primary-weapon-btn"    class="base-action-button" style="top: 295px; left: 560px; z-index: 10;"></div>
+            <div id="add-secondary-weapon-btn"  class="base-action-button" style="top: 445px; left: 560px; z-index: 10;"></div>
+            <div id="add-armor-btn"             class="base-action-button" style="top: 606px; left: 780px; z-index: 10;"></div>
+            <div id="add-item-btn"              class="base-action-button" style="top: 783px; left: 560px; z-index: 10;"></div>
+            <div id="add-backup1-weapon-btn"    class="base-action-button" style="top: 984px; left: 580px; z-index: 10;"></div>
+            <div id="add-backup2-weapon-btn"    class="base-action-button" style="top: 1130px; left: 580px; z-index: 10;"></div>
+
+
+        </div>
 
         <div id="page-2" class="page-container">
             <img src="official_like_sheet/角色卡-打印-page-002.jpg" alt="角色卡第二页">
@@ -276,9 +266,12 @@
     </div>
 
 
+    <script src="character_creator/data/Daggerheart_Core_Rulebook_副武器表.js"></script>
+    <script src="character_creator/data/Daggerheart_Core_Rulebook_主武器表.js"></script>
+    <script src="character_creator/data/Daggerheart_Core_Rulebook_护甲表.js"></script>
+    <script src="character_creator/data/Daggerheart_Core_Rulebook_战利品与消耗品表.js"></script>
     <script src="TriStateCheckbox.js"></script>
     <script src="action.js"></script>
-    <script src="character_creator/data/Daggerheart_Core_Rulebook_副武器表.js"></script>
     <script src="data_table_modal.js"></script>
     <script src="script.js"></script>
 

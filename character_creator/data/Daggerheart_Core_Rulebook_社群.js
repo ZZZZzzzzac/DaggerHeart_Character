@@ -62,4 +62,4 @@ const GROUPS_DATA = [
         "trait_name": "轻盈步伐",
         "trait_desc": "你的移动天然无声。在试图不被察觉的移动掷骰中具有优势。"
     }
-]
+];
