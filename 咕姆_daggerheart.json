@@ -176,11 +176,11 @@
     "LevelupT4_H1": "0",
     "LevelupT4_I1": "0",
     "cards": [
-        "character_creator/data/全卡图/种族/龙人.png",
-        "character_creator/data/全卡图/种族/魔裔.png",
+        "龙人",
+        "魔裔",
         "character_creator/data/全卡图/社群/地下之民.png",
-        "character_creator/data/全卡图/职业/基础/元素结社-基础.png",
         "character_creator/data/全卡图/领域/1/追猎才能.png",
-        "character_creator/data/全卡图/领域/1/自然之语.png"
+        "character_creator/data/全卡图/领域/1/自然之语.png",
+        "character_creator/data/全卡图/职业/基础/元素结社-基础.png"
     ]
 }
