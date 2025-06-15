@@ -18,6 +18,39 @@ This file records architectural and implementation decisions using a list format
 *
 ---
 ### Decision (Code)
+[2025-06-15 23:00:02] - Fix Tooltip Positioning with Page Scroll
+
+**Rationale:**
+The tooltip's position was incorrect when the page was scrolled. This was because the positioning logic used `event.clientY`, which provides coordinates relative to the viewport, not the entire document. When the page scrolls, the viewport's position relative to the document changes, causing the tooltip to appear at the wrong vertical offset. The fix is to use coordinates that account for the scroll offset.
+
+**Details:**
+*   **JavaScript ([`js/script.js`](js/script.js:1))**:
+    *   Modified the `setupTooltips` function.
+    *   The `mousemove` and `mouseenter` event listeners now use `event.pageX` and `event.pageY` instead of `event.clientX` and `event.clientY`.
+    *   `pageX`/`pageY` provide coordinates relative to the top-left of the fully rendered content area in the browser, including any part of the document that is scrolled out of view. This ensures the tooltip's `top` and `left` CSS properties are calculated correctly regardless of the page's scroll position.
+---
+### Decision (Code)
+[2025-06-15 22:48:39] - Implement Generic Tooltip with Hover Delay
+
+**Rationale:**
+To improve user experience and provide non-intrusive contextual help, a generic tooltip system was required. This system allows any HTML element with a `data-tooltip` attribute to display a help message. Based on user feedback, a 1-second delay was added to prevent the tooltip from appearing immediately on a casual mouse-over, making the UI feel less cluttered.
+
+**Details:**
+*   **CSS ([`css/style.css`](css/style.css:1))**:
+    *   Added a `.tooltip` class with `position: absolute`, dark background, and white text.
+    *   The tooltip is hidden by default (`opacity: 0`) and becomes visible via a `.visible` class (`opacity: 1`) with a fade transition.
+    *   `pointer-events: none` prevents the tooltip from interfering with mouse interactions.
+
+*   **JavaScript ([`js/script.js`](js/script.js:1))**:
+    *   Created a `setupTooltips()` function, executed on `DOMContentLoaded`.
+    *   The function uses a `setTimeout` on `mouseenter` to delay the tooltip's creation and appearance by 1000ms (1 second).
+    *   A `clearTimeout` is used on `mouseleave` to cancel the tooltip's appearance if the user moves the mouse away before the delay is over.
+    *   Event listeners for `mouseenter`, `mousemove`, and `mouseleave` handle the creation, positioning, and removal of the tooltip `div`.
+
+*   **HTML ([`index.html`](index.html:1))**:
+    *   As an initial implementation example, the `data-tooltip="左键标记与恢复生命点, 右键增加与减少生命槽"` attribute was added to the `<div id="hp-container">`.
+---
+### Decision (Code)
 [2025-06-15 18:18:00] - Implement "Upload Custom Card Pack" Feature
 
 **Rationale:**

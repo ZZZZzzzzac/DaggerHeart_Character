@@ -7,6 +7,8 @@ This file tracks the project's progress using a task list format.
 
 ## Completed Tasks
 
+* [2025-06-15 22:49:00] - **[FEAT]** Implemented a generic tooltip feature that displays help text on hover for any element with a `data-tooltip` attribute. Added a 1-second delay based on user feedback.
+* [2025-06-15 22:40:14] - **[FEAT]** Implemented the "Add Variant Card" feature. This allows users to upload a JSON card pack, select a specific 'variant' from a modal table, and generate it as a card on the character sheet.
 * [2025-06-15 18:15:00] - **[FEAT]** Implemented the "Upload Custom Card Pack" feature. This includes adding a button to the UI, handling JSON file uploads, parsing the file, standardizing card data keys with a many-to-one mapping, and merging the new cards with the existing data sources.
 * [2025-06-15 16:14:15] - **[FEAT]** 完成任务：创建了 `data_transformer.js` 脚本，该脚本成功将 `JOBS_DATA` 转换为 `CLASS_DATA` 和 `SUBCLASS_DATA`，为应用程序提供了标准化的职业和子职业数据结构。
 * [2025-06-15 11:47:34] - **[FIX]** 彻底修复了打印功能。通过结合动态DOM操作（在`action.js`中创建`#print-wrapper`）和精确的CSS重置（在`style.css`中强制`position: static`），确保了角色卡和技能卡片能够按正确的顺序和分页进行打印。

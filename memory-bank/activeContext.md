@@ -8,6 +8,8 @@ This file tracks the project's current status, including recent changes, current
 ## Current Focus
 
 * [2025-06-15 18:18:00] - Implemented "Upload Custom Card Pack" feature.
+* [2025-06-15 22:40:06] - Implemented "Add Variant Card" feature.
+* [2025-06-15 22:48:53] - Implemented a generic tooltip feature.
 
 ## Recent Changes
 * [2025-06-15 18:18:00] - **[FEAT]** Implemented the "Upload Custom Card Pack" feature. Added a button to `character_sheet_editor.html`, file handling logic in `action.js`, and a data processing function `add_custom_domain_card` in `script.js` that supports many-to-one key mapping and merges new domain cards into the `DOMAIN_CARDS` array.

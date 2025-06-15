@@ -156,3 +156,23 @@ body {
     }
 }
 
+
+/* --- Tooltip Styles --- */
+.tooltip {
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 14px;
+    z-index: 1010; /* Ensure it's on top of other elements */
+    pointer-events: none; /* Prevent the tooltip from interfering with mouse events */
+    white-space: pre-wrap; /* Allow text to wrap */
+    max-width: 300px; /* Set a max-width for readability */
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.tooltip.visible {
+    opacity: 1;
+}
