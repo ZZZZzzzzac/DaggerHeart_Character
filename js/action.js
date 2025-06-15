@@ -306,20 +306,6 @@ function setupGlobalActionButtons() {
         const textareas = document.querySelectorAll('.base-textbox');
         const replacements = [];
 
-        // 1. Replace textareas with divs for better printing
-        textareas.forEach(ta => {
-            const div = document.createElement('div');
-            div.className = ta.className;
-            div.style.cssText = ta.style.cssText;
-            div.style.display = 'flex';
-            div.innerHTML = ta.value.replace(/\n/g, '<br>');
-            div.classList.add('print-replacement');
-            
-            ta.style.display = 'none';
-            ta.parentNode.insertBefore(div, ta);
-            replacements.push({ original: ta, replacement: div });
-        });
-
         // 2. Create a temporary wrapper for printing
         const printWrapper = document.createElement('div');
         printWrapper.id = 'print-wrapper';
@@ -357,7 +343,7 @@ function setupGlobalActionButtons() {
 
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'h3-print-item';
-                contentDiv.innerHTML = `<h4>${title}</h4><p>${ta.value.replace(/\n/g, '<br>')}</p>`;
+                contentDiv.innerHTML = `<h3>${title}</h3><p>${ta.value.replace(/\n/g, '<br>')}</p>`;
                 h3Container.appendChild(contentDiv);
             }
         });

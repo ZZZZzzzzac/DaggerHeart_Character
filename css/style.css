@@ -138,20 +138,20 @@ body {
 
         #h3-container .h3-print-item {
             page-break-inside: avoid;
-            margin-bottom: 5px;
+            margin-bottom: 1em; /* Use em for relative spacing */
+            padding-bottom: 0.5em;
             border-bottom: 1px solid #ccc;
-            padding-bottom: 3px;
         }
 
         #h3-container .h3-print-item h3 {
-            font-size: 1.5em;
+            font-size: 1.2em; /* Relative font size */
             font-weight: bold;
-            margin-bottom: 3px;
+            margin-bottom: 0.5em;
         }
 
         #h3-container .h3-print-item p {
             font-size: 1em;
-            white-space: pre-wrap; /* Preserve line breaks */
+            white-space: pre-wrap;
         }
     }
 }
