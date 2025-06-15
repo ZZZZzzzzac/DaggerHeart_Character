@@ -117,5 +117,42 @@ body {
         -webkit-print-color-adjust: exact !important;
         color-adjust: exact !important;
     }
+
+    /* Styles for the dedicated h3-text print container */
+    #h3-container {
+        display: none; /* Hidden by default */
+    }
+
+    @media print {
+        #print-wrapper #h3-container {
+            display: block !important;
+            position: static !important;
+            page-break-before: always;
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box; /*
+            此属性可确保内边距和边框都包含在元素的总宽度和高度内,
+            防止其超出打印边界。
+            */
+        }
+
+        #h3-container .h3-print-item {
+            page-break-inside: avoid;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 3px;
+        }
+
+        #h3-container .h3-print-item h3 {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        #h3-container .h3-print-item p {
+            font-size: 1em;
+            white-space: pre-wrap; /* Preserve line breaks */
+        }
+    }
 }
 

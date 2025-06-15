@@ -325,10 +325,49 @@ function setupGlobalActionButtons() {
         printWrapper.id = 'print-wrapper';
         const characterSheet = document.getElementById('character-sheet');
         const cardContainer = document.getElementById('card-container');
+        const h3Container = document.getElementById('h3-container');
+
+        // 3. Populate the h3-container
+        h3Container.innerHTML = ''; // Clear previous content
+        const h3TextElements = document.querySelectorAll('.h3-text');
+        h3TextElements.forEach(ta => {
+            if (ta.value && ta.value.trim() !== '') {
+                let title = '';
+                const id = ta.id;
+
+                const titleMap = {
+                    'ClassFeatureTextbox': '职业特性',
+                    'EventLogTextbox': '事件记录',
+                    'AvatarTextbox': '角色形象'
+                };
+
+                if (titleMap[id]) {
+                    title = titleMap[id];
+                } else if (id.includes('BackgroundAnswer')) {
+                    const questionId = id.replace('Answer', 'Question');
+                    const questionEl = document.getElementById(questionId);
+                    title = questionEl ? questionEl.value : '背景'; // Fallback
+                } else if (id.includes('ConnectAnswer')) {
+                    const questionId = id.replace('Answer', 'Question');
+                    const questionEl = document.getElementById(questionId);
+                    title = questionEl ? questionEl.value : '连接'; // Fallback
+                } else {
+                    title = id.replace('Textbox', ''); // Default behavior
+                }
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'h3-print-item';
+                contentDiv.innerHTML = `<h4>${title}</h4><p>${ta.value.replace(/\n/g, '<br>')}</p>`;
+                h3Container.appendChild(contentDiv);
+            }
+        });
         
-        // Temporarily move the sheet and cards into the wrapper
+        // Temporarily move the sheet, cards, and h3 container into the wrapper
         if (characterSheet) printWrapper.appendChild(characterSheet);
         if (cardContainer) printWrapper.appendChild(cardContainer);
+        if (h3Container && h3Container.hasChildNodes()) {
+            printWrapper.appendChild(h3Container);
+        }
         
         document.body.appendChild(printWrapper);
         document.body.classList.add('printing');
@@ -347,6 +386,10 @@ function setupGlobalActionButtons() {
             const originalSheetParent = document.body; // Or wherever it should be
             if (characterSheet) originalSheetParent.insertBefore(characterSheet, printWrapper);
             if (cardContainer) originalSheetParent.insertBefore(cardContainer, printWrapper);
+            if (h3Container) {
+                originalSheetParent.insertBefore(h3Container, printWrapper);
+                h3Container.innerHTML = ''; // Clear content after printing
+            }
 
             // 3. Remove the temporary wrapper and printing class
             if (printWrapper.parentNode) {
