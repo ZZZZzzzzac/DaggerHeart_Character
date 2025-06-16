@@ -32,7 +32,7 @@ function renderJsonCard(card, jsonData) {
 
     // --- Data Extraction ---
     const titleKeys = ["名称", "name"];
-    const descriptionKeys = ["特性", "效果", "desc", "description"];
+    const descriptionKeys = ["特性", "效果", "desc", "description","描述"];
 
     let title = "";
     for (const key of titleKeys) {

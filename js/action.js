@@ -22,7 +22,17 @@ function exportFormState() {
     });
 
     // --- Export Skill Cards ---
-    state.cards = [];
+    state.cards = exportCardData();
+
+    return state;
+}
+
+/**
+ * Exports the data of all skill cards currently on the page.
+ * @returns {Array<object>} An array of card data objects, including their position.
+ */
+function exportCardData() {
+    const cards = [];
     const cardElements = document.querySelectorAll('#card-container .skill-card');
     cardElements.forEach(cardEl => {
         if (cardEl.dataset.cardData) {
@@ -32,14 +42,13 @@ function exportFormState() {
                     left: cardEl.style.left,
                     top: cardEl.style.top
                 };
-                state.cards.push({ data: cardData, position: position });
+                cards.push({ data: cardData, position: position });
             } catch (e) {
                 console.error('Error processing card data on export:', e, cardEl.dataset.cardData);
             }
         }
     });
-
-    return state;
+    return cards;
 }
  
 /**
@@ -196,6 +205,7 @@ function setupGlobalActionButtons() {
     const customPackInput = document.getElementById('custom-pack-upload');
     const variantCardBtn = document.getElementById('add-variant-card-btn');
     const variantCardInput = document.getElementById('variant-card-upload');
+    const saveCardsBtn = document.getElementById('save-cards-btn');
  
      if (clearBtn) {
          clearBtn.addEventListener('click', () => {
@@ -337,6 +347,27 @@ function setupGlobalActionButtons() {
         });
     }
 
+    // Save All Cards functionality
+    if (saveCardsBtn) {
+        saveCardsBtn.addEventListener('click', () => {
+            const cardData = exportCardData();
+            if (cardData.length === 0) {
+                alert('当前没有可保存的卡牌。');
+                return;
+            }
+
+            const dataStr = JSON.stringify(cardData, null, 4);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'daggerheart_cards.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
+    }
  
      // Print functionality
      printBtn.addEventListener('click', () => {

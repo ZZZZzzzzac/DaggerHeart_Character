@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/textbox.css">
     <link rel="stylesheet" href="css/checkbox.css">
     <link rel="stylesheet" href="css/data_table_modal.css">
+    <link rel="stylesheet" href="css/custom_card_modal.css">
 </head>
 <body>
     <div id="action-container">
@@ -16,17 +17,17 @@
         <input type="file" id="json-upload" accept=".json" style="display: none;">
         <button id="export-json-btn">导出JSON</button>
         <button id="print-pdf-btn">打印</button>
-        <button id="clear-form-btn" style="background-color: #dc3545;">清空表单</button>
+        <button id="clear-form-btn" style="background-color: rgb(255, 176, 184);">清空表单</button>
 
         <button id="upload-custom-pack-btn">上传自定义卡包</button>
         <input type="file" id="custom-pack-upload" accept=".json" style="display: none;">
 
-        <button id="add-variant-card-btn">添加变体卡</button>
-        <input type="file" id="variant-card-upload" accept=".json" style="display: none;">
+        <button id="save-cards-btn" class="action-btn">保存当前卡牌</button>
         
         <button id="add-domain-card-btn">添加领域卡</button>
         <button id="add-subclass-card-btn" style="display: none;">添加子职卡</button>
         <button id="add-beast-form-card-btn">添加野兽形态卡</button>
+        <button id="add-custom-card-btn" class="action-btn">添加自定义卡牌</button>
 
         <div class="card-size-control">
             <label for="card-width-input">卡片大小:</label>
@@ -304,6 +305,7 @@
     <script src="js/data_table_modal.js"></script>
     <script src="js/card.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/custom_card_modal.js"></script>
 
     <div id="data-table-modal" style="display: none;">
         <div class="modal-content">
@@ -315,6 +317,24 @@
             <div id="data-table-body-container">
                 <!-- Scrollable table body content will be dynamically inserted here -->
             </div>
+        </div>
+    </div>
+
+    <div id="custom-card-modal" style="display: none;">
+        <div id="custom-card-modal-content">
+            <span id="custom-card-modal-close">&times;</span>
+            <h2>添加自定义卡牌</h2>
+            <div id="custom-card-templates">
+                <button class="template-btn" data-template="domain">领域卡</button>
+                <button class="template-btn" data-template="class" data-tooltip="职业的希望特性和职业特性都写在描述中">职业</button>
+                <button class="template-btn" data-template="subclass">子职</button>
+            </div>
+            <input type="text" id="custom-card-name" placeholder="卡牌名称 (必填)">
+            <input type="text" id="custom-card-type" placeholder="卡牌类型 (必填)">
+            <div id="custom-card-kv-container"></div>
+            <button id="add-kv-pair-btn">添加可选属性</button>
+            <textarea id="custom-card-desc" placeholder="描述 (必填)"></textarea>
+            <button id="custom-card-finish-btn">完成</button>
         </div>
     </div>
     

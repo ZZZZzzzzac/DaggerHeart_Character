@@ -1,0 +1,120 @@
+/* Modal Overlay */
+#custom-card-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1001; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal Content */
+#custom-card-modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+}
+
+/* Close Button */
+#custom-card-modal-close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#custom-card-modal-close:hover,
+#custom-card-modal-close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Inputs and Textarea */
+#custom-card-modal-content input[type="text"],
+#custom-card-modal-content textarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#custom-card-modal-content textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+/* Buttons */
+#custom-card-modal-content button {
+    background-color: #67696b;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+#custom-card-modal-content button:hover {
+    opacity: 0.8;
+}
+
+#add-kv-pair-btn {
+    background-color: #008CBA; /* Blue */
+}
+
+/* KV Pair Container */
+#custom-card-kv-container .kv-pair {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#custom-card-kv-container .kv-pair input {
+    flex-grow: 1;
+    margin: 0 !important;
+}
+
+#custom-card-kv-container .kv-pair .remove-kv-btn {
+    background-color: #f44336; /* Red */
+    padding: 5px 10px;
+    margin: 0 !important;
+    width: auto;
+    font-size: 12px;
+}
+
+/* Template Buttons */
+#custom-card-templates {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.template-btn {
+    background-color: #6c757d; /* Gray */
+    padding: 8px 12px !important;
+    width: auto !important;
+    margin: 0 !important;
+}

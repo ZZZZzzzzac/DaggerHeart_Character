@@ -8,7 +8,6 @@ This file tracks the project's current status, including recent changes, current
 ## Current Focus
 
 * [2025-06-15 18:18:00] - Implemented "Upload Custom Card Pack" feature.
-* [2025-06-15 22:40:06] - Implemented "Add Variant Card" feature.
 * [2025-06-15 22:48:53] - Implemented a generic tooltip feature.
 
 ## Recent Changes
