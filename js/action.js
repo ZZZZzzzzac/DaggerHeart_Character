@@ -203,8 +203,6 @@ function setupGlobalActionButtons() {
     const fileInput = document.getElementById('json-upload');
     const customPackBtn = document.getElementById('upload-custom-pack-btn');
     const customPackInput = document.getElementById('custom-pack-upload');
-    const variantCardBtn = document.getElementById('add-variant-card-btn');
-    const variantCardInput = document.getElementById('variant-card-upload');
     const saveCardsBtn = document.getElementById('save-cards-btn');
  
      if (clearBtn) {
@@ -277,36 +275,8 @@ function setupGlobalActionButtons() {
             reader.onload = (e) => {
                 try {
                     const packData = JSON.parse(e.target.result);
-                    const domainKeys = ["domain", "domain_card", "domains"];
-                    const classKeys = ["class", "profession", "job"];
-                    const subclassKeys = ["subclass", "subclass_card", "subclasses"];
-
-                    for (const key in packData) {
-                        const lowerKey = key.toLowerCase();
-                        if (domainKeys.includes(lowerKey)) {
-                            if (typeof add_custom_domain_card === 'function') {
-                                add_custom_domain_card(packData[key]);
-                            } else {
-                                console.error('add_custom_domain_card function not found.');
-                                alert('错误：处理领域卡的函数未找到。');
-                            }
-                        } else if (classKeys.includes(lowerKey)) {
-                            if (typeof add_custom_class === 'function') {
-                                add_custom_class(packData[key]);
-                            } else {
-                                console.error('add_custom_class function not found.');
-                                alert('错误：处理职业的函数未找到。');
-                            }
-                        } else if (subclassKeys.includes(lowerKey)) {
-                            if (typeof add_custom_subclass === 'function') {
-                                add_custom_subclass(packData[key]);
-                            } else {
-                                console.error('add_custom_subclass function not found.');
-                                alert('错误：处理子职业的函数未找到。');
-                            }
-                        }
-                    }
-
+                    // 调用新的统一处理函数
+                    processUploadedPack(packData);
                 } catch (error) {
                     console.error('导入自定义卡包失败:', error);
                     alert('导入失败，请检查文件格式是否为有效的JSON。');
@@ -317,46 +287,20 @@ function setupGlobalActionButtons() {
         });
     }
  
-    // Variant Card Upload functionality
-    if (variantCardBtn && variantCardInput) {
-        variantCardBtn.addEventListener('click', () => {
-            variantCardInput.click();
-        });
-
-        variantCardInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const packData = JSON.parse(e.target.result);
-                    if (typeof add_custom_variant === 'function') {
-                        add_custom_variant(packData);
-                    } else {
-                        console.error('add_custom_variant function not found.');
-                        alert('错误：处理变体卡的函数未找到。');
-                    }
-                } catch (error) {
-                    console.error('导入变体卡失败:', error);
-                    alert('导入失败，请检查文件格式是否为有效的JSON。');
-                }
-            };
-            reader.readAsText(file);
-            variantCardInput.value = ''; // Reset input
-        });
-    }
 
     // Save All Cards functionality
     if (saveCardsBtn) {
         saveCardsBtn.addEventListener('click', () => {
-            const cardData = exportCardData();
-            if (cardData.length === 0) {
+            const cardDataWithPosition = exportCardData();
+            if (cardDataWithPosition.length === 0) {
                 alert('当前没有可保存的卡牌。');
                 return;
             }
 
-            const dataStr = JSON.stringify(cardData, null, 4);
+            // 根据要求，仅为此特定导出功能提取卡牌数据，去除位置信息。
+            const cardsOnly = cardDataWithPosition.map(item => item.data);
+
+            const dataStr = JSON.stringify(cardsOnly, null, 4);
             const dataBlob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(dataBlob);
             const link = document.createElement('a');

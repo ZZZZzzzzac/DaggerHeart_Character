@@ -428,7 +428,7 @@ function setupDataModalButtons() {
 
             const modalConfig = {
                 title: "选择种族",
-                hiddenColumns: ["描述"],
+                hiddenColumns: ["简介"],
                 storageKey: "ancestryCardFilterState",
                 columnWidths: { 名称: '10%', 特性1名称: '10%', 特性2名称: '10%' }
             };
@@ -451,7 +451,7 @@ function setupDataModalButtons() {
 
             const modalConfig = {
                 title: "选择社群",
-                hiddenColumns: ["描述","性格"],
+                hiddenColumns: ["简介","性格"],
                 storageKey: "communityCardFilterState",
                 columnWidths: { 名称: '10%', 特性名称: '10%'}
             };
@@ -500,7 +500,7 @@ function setupDataModalButtons() {
                 title: "选择职业",
                 storageKey: "classCardFilterState",
                 hiddenColumns: ["背景问题", "关系问题"],
-                columnWidths: { 名称: '7%', 领域: '7%', 初始闪避值: '5%', 初始生命值: '5%', 希望特性: '15%'}
+                columnWidths: { 名称: '7%', 领域: '7%', 初始闪避值: '5%', 初始生命点: '5%', 希望特性: '15%'}
             };
 
             showDataTableModal(MAIN_CLASS, (selectedItem) => {
