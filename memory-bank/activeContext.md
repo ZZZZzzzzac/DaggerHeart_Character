@@ -10,6 +10,7 @@ This file tracks the project's current status, including recent changes, current
 * [2025-06-15 18:18:00] - Implemented "Upload Custom Card Pack" feature.
 * [2025-06-15 22:48:53] - Implemented a generic tooltip feature.
 
+* [2025-06-17 10:01:25] - **[FIX]** Resolved issue where `card-container` (for skill cards) would overlap the character sheet on smaller screens. Changed its width and height to `1px` in [`css/card.css`](css/card.css:1) as per user feedback, making it minimally intrusive while allowing cards to be dragged freely. User also adjusted `right` to `250px`.
 ## Recent Changes
 * [2025-06-15 18:18:00] - **[FEAT]** Implemented the "Upload Custom Card Pack" feature. Added a button to `character_sheet_editor.html`, file handling logic in `action.js`, and a data processing function `add_custom_domain_card` in `script.js` that supports many-to-one key mapping and merges new domain cards into the `DOMAIN_CARDS` array.
 * [2025-06-15 16:14:01] - **[FEAT]** Created `data_transformer.js` to process the raw `JOBS_DATA` into structured `CLASS_DATA` and `SUBCLASS_DATA` global variables. This standardizes the data structure for classes and subclasses, making it easier for other parts of the application to consume.
