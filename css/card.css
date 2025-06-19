@@ -3,8 +3,8 @@
 /* --- Skill Card Styles --- */
 #card-container {
     position: absolute;
-    top: 0;
-    right: 250px;
+    top: 0px;
+    left: 1000px;
     width: 1px; /* 设置为1px宽度 */
     height: 1px; /* 设置为1px高度 */
     z-index: 10;
