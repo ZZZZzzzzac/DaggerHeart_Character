@@ -197,11 +197,11 @@ function createCard(cardInfo) { // cardInfo can be {data, position} or just data
             img.src = url;
         };
 
-        testImage(onlineUrl,
-            (validUrl) => processCardCreation(validUrl), // Online URL works
-            () => { // Online URL failed, try local
-                testImage(localUrl,
-                    (validUrl) => processCardCreation(validUrl), // Local URL works
+        testImage(localUrl,
+            (validUrl) => processCardCreation(validUrl), // Local URL works
+            () => { // Local URL failed, try online
+                testImage(onlineUrl,
+                    (validUrl) => processCardCreation(validUrl), // Online URL works
                     () => processCardCreation(data) // Both failed, use original data
                 );
             }
