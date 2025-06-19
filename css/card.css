@@ -4,10 +4,11 @@
 #card-container {
     position: absolute;
     top: 0;
-    right: 0;
-    width: 50vw;
-    height: 100vh;
+    right: 250px;
+    width: 1px; /* 设置为1px宽度 */
+    height: 1px; /* 设置为1px高度 */
     z-index: 10;
+    overflow: visible; /* 确保拖出容器的卡片可见 */
 }
 
 .skill-card {
