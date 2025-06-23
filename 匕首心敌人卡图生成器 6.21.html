@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>匕首之心敌人卡片生成器</title>
+  <!-- 引入Inter字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- 引入Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- 引入html2canvas用于截图 -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <style>
+    /* 重置与基础样式 */
+    * {
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background: #f5f5f5; 
+      padding: 20px; 
+      color: #333;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center; 
+      margin-bottom: 20px; 
+      font-size: 28px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+    
+    /* 新增：顶部俱乐部信息样式 */
+    .club-info {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    /* 表单样式 */
+    .form-section {
+      background: #fff; 
+      padding: 25px; 
+      border-radius: 10px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+      margin-bottom: 25px;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block; 
+      margin-bottom: 8px; 
+      font-weight: 600;
+      color: #555;
+    }
+    input, select, textarea {
+      width: 100%; 
+      padding: 10px; 
+      border: 1px solid #ddd; 
+      border-radius: 6px; 
+      font-size: 15px;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #5a3d5c;
+    }
+    .form-row {
+      display: flex; 
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .form-col {
+      flex: 1;
+      min-width: 200px;
+    }
+    button {
+      background: #5a3d5c; 
+      color: #fff; 
+      border: none; 
+      padding: 12px 24px; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-size: 16px; 
+      font-weight: 500;
+      transition: background 0.3s, transform 0.2s;
+    }
+    button:hover {
+      background: #4a304d;
+      transform: translateY(-1px);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    .generate-btn {
+      width: 100%; 
+      margin-top: 15px;
+      background: #e74c3c;
+    }
+    .generate-btn:hover {
+      background: #c0392b;
+    }
+    
+    /* 阈值分隔样式 */
+    .threshold-container {
+      display: flex;
+      align-items: center;
+    }
+    .threshold-input {
+      width: 45%;
+    }
+    .threshold-divider {
+      margin: 0 6px;
+      font-weight: bold;
+    }
+
+    /* 特性表单样式 */
+    .feature-form-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    .feature-name {
+      flex: 2;
+    }
+    .feature-type {
+      flex: 1;
+    }
+    .feature-desc {
+      flex: 4;
+    }
+    .remove-feature {
+      padding: 10px 14px;
+      background: #e74c3c;
+    }
+    .remove-feature:hover {
+      background: #c0392b;
+    }
+    .add-feature-btn {
+      background: #2ecc71;
+    }
+    .add-feature-btn:hover {
+      background: #27ae60;
+    }
+
+    /* 卡牌核心样式 */
+    .enemy-card {
+      background: #fff; 
+      border: 3px solid #333; 
+      border-radius: 12px; 
+      padding: 25px; 
+      margin-bottom: 25px; 
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15); 
+      font-size: 15px; 
+      line-height: 1.7;
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .card-title {
+      font-size: 24px; 
+      font-weight: 700; 
+      margin-bottom: 10px; 
+      text-transform: uppercase; 
+      border-bottom: 3px solid #333; 
+      padding-bottom: 8px;
+      color: #2c3e50;
+    }
+    .card-subtitle {
+      font-style: italic; 
+      margin-bottom: 15px; 
+      color: #666;
+      font-size: 16px;
+    }
+    .card-stats {
+      margin-bottom: 18px; 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 12px;
+    }
+    .stat-item {
+      background: #f9f9f9; 
+      padding: 8px 12px; 
+      border-radius: 6px; 
+      border: 1px solid #eee;
+      font-weight: 500;
+    }
+    .card-attack {
+      margin-bottom: 18px;
+      padding: 12px;
+      background: #f5f5f5;
+      border-radius: 6px;
+    }
+    .card-features {
+      margin-bottom: 10px;
+    }
+    .feature-item {
+      margin-bottom: 10px; 
+      padding-left: 15px; 
+      text-indent: -15px;
+    }
+    .feature-type {
+      font-weight: 600; 
+      display: inline-block; 
+      width: 90px; 
+      color: #5a3d5c;
+    }
+    
+    /* 生命值和压力值样式 */
+    .health-points, .stress-points {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 15px;
+    }
+    .health-points::before, .stress-points::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      background-size: contain;
+    }
+    .health-points::before {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="none" stroke="%23333" stroke-width="2"/></svg>');
+    }
+    .stress-points::before {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="none" stroke="%23e74c3c" stroke-width="2"/></svg>');
+    }
+    
+    /* 截图区域 */
+    #screenshot-area {
+      display: none; 
+      position: fixed; 
+      top: 0; left: 0; 
+      width: 100%; height: 100%; 
+      background: rgba(0,0,0,0.7); 
+      justify-content: center; 
+      align-items: center; 
+      z-index: 9999;
+      padding: 20px;
+    }
+    #screenshot-content {
+      background: #fff; 
+      padding: 30px; 
+      border-radius: 12px; 
+      max-width: 90%; 
+      max-height: 90%; 
+      overflow: auto;
+      position: relative;
+    }
+    
+    /* 工具提示样式 */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 240px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 10px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -120px;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      transform: translateY(10px);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 8px;
+      border-style: solid;
+      border-color: #333 transparent transparent transparent;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* 响应式调整 */
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .feature-form-row {
+        flex-wrap: wrap;
+      }
+      .feature-name, .feature-type, .feature-desc {
+        flex: none;
+        width: 100%;
+      }
+      .enemy-card {
+        padding: 20px;
+      }
+      .card-title {
+        font-size: 20px;
+      }
+      .card-subtitle {
+        font-size: 14px;
+      }
+      .club-info {
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 新增：顶部俱乐部信息 -->
+    <div class="club-info">不咕鸟TRPG创想俱乐部 QQ群691707475</div>
+    
+    <h1>匕首之心敌人卡片生成器</h1>
+    
+    <!-- 表单区域 -->
+    <div class="form-section">
+      <form id="enemyForm">
+        <div class="form-group">
+          <label class="form-label" for="enemyName">敌人名称</label>
+          <input type="text" id="enemyName" placeholder="例如: 构装体" value="构装体" required>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="enemyRank">位阶</label>
+              <select id="enemyRank" required>
+                <option value="T1">T1</option>
+                <option value="T2">T2</option>
+                <option value="T3">T3</option>
+                <option value="T4">T4</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="enemyType">类型</label>
+              <select id="enemyType" required>
+                <option value="打手">打手</option>
+                <option value="集群">集群</option>
+                <option value="领导者">领导者</option>
+                <option value="小兵">小兵</option>
+                <option value="远程">远程</option>
+                <option value="潜伏">潜伏</option>
+                <option value="社交">社交</option>
+                <option value="独狼">独狼</option>
+                <option value="标准">标准</option>
+                <option value="辅助">辅助</option>
+              </select>
+              <div class="tooltip mt-2" style="display: inline-block;">
+                <span class="tooltiptext" id="typeTooltip"></span>
+                <button type="button" class="tooltip-trigger bg-gray-200 px-2 py-1 rounded text-sm" style="cursor: help;">
+                  <i class="fa fa-question-circle"></i> 类型说明
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="enemyDesc">描述</label>
+          <textarea id="enemyDesc" rows="3" placeholder="例如: 一个由石头和钢铁组成的类人生物..." required>一个由石头和钢铁组成的类人生物，通过魔法组装并激活。</textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="enemyMotives">动机与战术</label>
+          <textarea id="enemyMotives" rows="2" placeholder="例如: 破坏环境，服从创造者..." required>破坏环境，服从创造者，粉碎目标，践踏群体</textarea>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="enemyDifficulty">难度</label>
+              <input type="number" id="enemyDifficulty" placeholder="例如: 13" value="13" required min="1">
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label">阈值</label>
+              <div class="threshold-container">
+                <input type="number" id="enemyThreshold1" class="threshold-input" placeholder="例如: 7" value="7" required min="1">
+                <span class="threshold-divider">/</span>
+                <input type="number" id="enemyThreshold2" class="threshold-input" placeholder="例如: 15" value="15" required min="1">
+              </div>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="enemyHP">生命值</label>
+              <input type="number" id="enemyHP" placeholder="例如: 9" value="9" required min="1">
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="enemyStress">压力值</label>
+              <input type="number" id="enemyStress" placeholder="例如: 4" value="4" required min="1">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="enemyATK">攻击加值</label>
+              <input type="text" id="enemyATK" placeholder="例如: +4" value="+4" required>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="enemyAttack">攻击</label>
+              <input type="text" id="enemyAttack" placeholder="例如: 拳头猛击: 近战 | 1d20 物理" value="拳头猛击: 近战 | 1d20 物理" required>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">特性</label>
+          <div class="features-container" id="featuresContainer">
+            <div class="feature-form-row">
+              <input type="text" class="feature-name" placeholder="特性名称" value="不屈" required>
+              <select class="feature-type" required>
+                <option value="被动">被动</option>
+                <option value="反应">反应</option>
+                <option value="动作">动作</option>
+                <option value="其他">其他</option>
+              </select>
+              <input type="text" class="feature-desc" placeholder="特性描述" value="(2) - 构装体每个GM回合最多可被聚光灯照射两次。按常规消耗恐惧值来对其使用聚光灯。" required>
+              <button type="button" class="remove-feature" onclick="removeFeatureRow(this)">-</button>
+            </div>
+            <div class="feature-form-row">
+              <input type="text" class="feature-name" placeholder="特性名称" value="脆弱结构" required>
+              <select class="feature-type" required>
+                <option value="被动">被动</option>
+                <option value="反应">反应</option>
+                <option value="动作">动作</option>
+                <option value="其他">其他</option>
+              </select>
+              <input type="text" class="feature-desc" placeholder="特性描述" value="- 当构装体因物理伤害标记生命值时，必须额外标记一点生命值。" required>
+              <button type="button" class="remove-feature" onclick="removeFeatureRow(this)">-</button>
+            </div>
+            <div class="feature-form-row">
+              <input type="text" class="feature-name" placeholder="特性名称" value="践踏" required>
+              <select class="feature-type" required>
+                <option value="动作">动作</option>
+                <option value="被动">被动</option>
+                <option value="反应">反应</option>
+                <option value="其他">其他</option>
+              </select>
+              <input type="text" class="feature-desc" placeholder="特性描述" value="- 标记一点压力值，在构装体移动时对其路径上的所有目标发动一次攻击。构装体成功命中的目标受到1d8点物理伤害。" required>
+              <button type="button" class="remove-feature" onclick="removeFeatureRow(this)">-</button>
+            </div>
+            <div class="feature-form-row">
+              <input type="text" class="feature-name" placeholder="特性名称" value="过载" required>
+              <select class="feature-type" required>
+                <option value="反应">反应</option>
+                <option value="被动">被动</option>
+                <option value="动作">动作</option>
+                <option value="其他">其他</option>
+              </select>
+              <input type="text" class="feature-desc" placeholder="特性描述" value="- 在计算构装体的攻击伤害之前，你可以标记一点压力值，使伤害掷骰获得+10加值。构装体随后可以再次获得聚光灯效果。" required>
+              <button type="button" class="remove-feature" onclick="removeFeatureRow(this)">-</button>
+            </div>
+            <div class="feature-form-row">
+              <input type="text" class="feature-name" placeholder="特性名称" value="死亡震颤" required>
+              <select class="feature-type" required>
+                <option value="反应">反应</option>
+                <option value="被动">被动</option>
+                <option value="动作">动作</option>
+                <option value="其他">其他</option>
+              </select>
+              <input type="text" class="feature-desc" placeholder="特性描述" value="- 当构装体标记最后一点生命值时，驱动它的魔法会在一阵力量爆发中破裂。对极近距离内的所有目标以优势进行一次攻击。构装体成功命中的目标受到1d12+2点魔法伤害。" required>
+              <button type="button" class="remove-feature" onclick="removeFeatureRow(this)">-</button>
+            </div>
+          </div>
+          <button type="button" class="add-feature-btn" onclick="addFeatureRow()">+ 添加特性</button>
+        </div>
+        
+        <button type="button" class="generate-btn" onclick="generateCard()">生成并下载卡片</button>
+      </form>
+    </div>
+
+    <!-- 截图预览区域 -->
+    <div id="screenshot-area">
+      <div id="screenshot-content">
+        <div id="cardToScreenshot" class="enemy-card"></div>
+        <button onclick="downloadCard()" class="mt-4 bg-blue-500 hover:bg-blue-600">
+          <i class="fa fa-download"></i> 下载PNG
+        </button>
+        <button onclick="closeScreenshot()" class="mt-4 ml-2 bg-gray-500 hover:bg-gray-600">
+          <i class="fa fa-times"></i> 关闭
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 类型说明文本
+    const typeDescriptions = {
+      "打手": "攻击力强大，强悍。",
+      "集群": "一群相同的生物，作为一个单位一起行动。",
+      "领导者": "指挥和召唤其他敌人。",
+      "小兵": "容易被消灭，但数量多则危险。",
+      "远程": "脆弱，但通常从远处攻击造成高伤害。",
+      "潜伏": "机动并利用机会伏击敌人。",
+      "社交": "主要提供人际威胁或类似的社会冲突，而不是战斗。",
+      "独狼": "仅凭自身即可让对整个团队陷入苦战。",
+      "标准": "代表某个故事中敌对、反派组织的普通敌人。",
+      "辅助": "增强其盟友和/或扰乱其敌人"
+    };
+
+    // 页面加载后初始化类型选择框的工具提示
+    document.addEventListener('DOMContentLoaded', function() {
+      const typeSelect = document.getElementById('enemyType');
+      const tooltipText = document.getElementById('typeTooltip');
+      
+      // 初始化显示当前选中项的说明
+      tooltipText.textContent = typeDescriptions[typeSelect.value] || '';
+      
+      // 更新说明文本
+      typeSelect.addEventListener('change', function() {
+        tooltipText.textContent = typeDescriptions[this.value] || '';
+      });
+      
+      // 确保输入框只能输入有效数字
+      document.getElementById('enemyDifficulty').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value < 1) this.value = 1;
+      });
+      
+      document.getElementById('enemyThreshold1').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value < 1) this.value = 1;
+      });
+      
+      document.getElementById('enemyThreshold2').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value < 1) this.value = 1;
+      });
+      
+      document.getElementById('enemyHP').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value < 1) this.value = 1;
+      });
+      
+      document.getElementById('enemyStress').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value < 1) this.value = 1;
+      });
+    });
+
+    // 动态添加特性行
+    function addFeatureRow() {
+      const container = document.getElementById("featuresContainer");
+      const newRow = document.createElement("div");
+      newRow.className = "feature-form-row";
+      newRow.innerHTML = `
+        <input type="text" class="feature-name" placeholder="特性名称" required>
+        <select class="feature-type" required>
+          <option value="被动">被动</option>
+          <option value="反应">反应</option>
+          <option value="动作">动作</option>
+          <option value="其他">其他</option>
+        </select>
+        <input type="text" class="feature-desc" placeholder="特性描述" required>
+        <button type="button" class="remove-feature" onclick="removeFeatureRow(this)">-</button>
+      `;
+      container.appendChild(newRow);
+    }
+
+    // 移除特性行
+    function removeFeatureRow(btn) {
+      const row = btn.parentNode;
+      if (row.parentNode.children.length > 1) { // 至少保留一行
+        row.parentNode.removeChild(row);
+      }
+    }
+
+    // 生成卡牌HTML
+    function generateCard() {
+      // 获取表单值
+      const name = document.getElementById("enemyName").value;
+      const rank = document.getElementById("enemyRank").value;
+      const type = document.getElementById("enemyType").value;
+      const desc = document.getElementById("enemyDesc").value;
+      const motives = document.getElementById("enemyMotives").value;
+      const difficulty = document.getElementById("enemyDifficulty").value;
+      const threshold1 = document.getElementById("enemyThreshold1").value;
+      const threshold2 = document.getElementById("enemyThreshold2").value;
+      const hp = document.getElementById("enemyHP").value;
+      const stress = document.getElementById("enemyStress").value;
+      const atk = document.getElementById("enemyATK").value;
+      const attack = document.getElementById("enemyAttack").value;
+      const featureRows = document.querySelectorAll(".feature-form-row");
+
+      // 生成特性HTML
+      let featuresHtml = "";
+      featureRows.forEach((row) => {
+        const name = row.querySelector(".feature-name").value;
+        const type = row.querySelector(".feature-type").value;
+        const desc = row.querySelector(".feature-desc").value;
+        if (name.trim() !== "" && desc.trim() !== "") {
+          featuresHtml += `<div class="feature-item"><span class="feature-type">${name} (${type})</span> ${desc}</div>`;
+        }
+      });
+
+      // 构建卡牌HTML
+      const cardHtml = `
+        <div class="card-title">${name}</div>
+        <div class="card-subtitle">${rank} ${type}</div>
+        <p>${desc}</p>
+        <p><strong>动机与战术:</strong> ${motives}</p>
+        <div class="card-stats">
+          <div class="stat-item">难度: ${difficulty}</div>
+          <div class="stat-item">阈值: ${threshold1}/${threshold2}</div>
+          <div class="stat-item health-points">生命值: ${hp}</div>
+          <div class="stat-item stress-points">压力值: ${stress}</div>
+        </div>
+        <div class="card-attack">
+          <strong>攻击加值:</strong> ${atk} | ${attack}
+        </div>
+        <div class="card-features">
+          <strong>特性</strong>
+          ${featuresHtml}
+        </div>
+      `;
+
+      // 显示生成的卡牌
+      const cardContainer = document.getElementById("cardToScreenshot");
+      cardContainer.innerHTML = cardHtml;
+      document.getElementById("screenshot-area").style.display = "flex";
+    }
+
+    // 下载卡牌为PNG（依赖html2canvas）
+    function downloadCard() {
+      const card = document.getElementById("cardToScreenshot");
+      html2canvas(card, {
+        scale: 2,
+        useCORS: true,
+        logging: false
+      }).then((canvas) => {
+        const link = document.createElement("a");
+        link.download = `${document.getElementById("enemyName").value}_卡片.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+
+    // 关闭截图预览
+    function closeScreenshot() {
+      document.getElementById("screenshot-area").style.display = "none";
+    }
+  </script>
+</body>
+</html>
+  

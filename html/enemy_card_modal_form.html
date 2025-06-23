@@ -1,0 +1,161 @@
+<div class="club-info">不咕鸟TRPG创想俱乐部 QQ群691707475</div>
+<form id="enemyForm">
+    <div class="form-group">
+        <label class="form-label" for="enemyName">敌人名称</label>
+        <input type="text" id="enemyName" placeholder="例如: 构装体" value="构装体" required>
+    </div>
+
+    <div class="form-row">
+        <div class="form-col">
+            <div class="form-group">
+                <label class="form-label" for="enemyRank">位阶</label>
+                <select id="enemyRank" required>
+                    <option value="T1">T1</option>
+                    <option value="T2">T2</option>
+                    <option value="T3">T3</option>
+                    <option value="T4">T4</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-col">
+            <div class="form-group">
+                <label class="form-label" for="enemyType">类型</label>
+                <select id="enemyType" required>
+                    <option value="打手">打手</option>
+                    <option value="集群">集群</option>
+                    <option value="领导者">领导者</option>
+                    <option value="小兵">小兵</option>
+                    <option value="远程">远程</option>
+                    <option value="潜伏">潜伏</option>
+                    <option value="社交">社交</option>
+                    <option value="独狼">独狼</option>
+                    <option value="标准">标准</option>
+                    <option value="辅助">辅助</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="enemyDesc">描述</label>
+        <textarea id="enemyDesc" rows="3" placeholder="例如: 一个由石头和钢铁组成的类人生物..." required>一个由石头和钢铁组成的类人生物，通过魔法组装并激活。</textarea>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="enemyMotives">动机与战术</label>
+        <textarea id="enemyMotives" rows="2" placeholder="例如: 破坏环境，服从创造者..." required>破坏环境，服从创造者，粉碎目标，践踏群体</textarea>
+    </div>
+
+    <div class="form-row">
+        <div class="form-col">
+            <div class="form-group">
+                <label class="form-label" for="enemyDifficulty">难度</label>
+                <input type="number" id="enemyDifficulty" placeholder="例如: 13" value="13" required min="1">
+            </div>
+        </div>
+        <div class="form-col">
+            <div class="form-group">
+                <label class="form-label">阈值</label>
+                <div class="threshold-container">
+                    <input type="number" id="enemyThreshold1" class="threshold-input" placeholder="例如: 7" value="7" required min="1">
+                    <span class="threshold-divider">/</span>
+                    <input type="number" id="enemyThreshold2" class="threshold-input" placeholder="例如: 15" value="15" required min="1">
+                </div>
+            </div>
+        </div>
+        <div class="form-col">
+            <div class="form-group">
+                <label class="form-label" for="enemyHP">生命值</label>
+                <input type="number" id="enemyHP" placeholder="例如: 9" value="9" required min="1">
+            </div>
+        </div>
+        <div class="form-col">
+            <div class="form-group">
+                <label class="form-label" for="enemyStress">压力值</label>
+                <input type="number" id="enemyStress" placeholder="例如: 4" value="4" required min="1">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-col">
+            <div class="form-group">
+                <label class="form-label" for="enemyATK">攻击加值</label>
+                <input type="text" id="enemyATK" placeholder="例如: +4" value="+4" required>
+            </div>
+        </div>
+        <div class="form-col">
+            <div class="form-group">
+                <label class="form-label" for="enemyAttack">攻击</label>
+                <input type="text" id="enemyAttack" placeholder="例如: 拳头猛击: 近战 | 1d20 物理" value="拳头猛击: 近战 | 1d20 物理" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">特性</label>
+        <div class="features-container" id="featuresContainer">
+            <div class="feature-form-row">
+                <input type="text" class="feature-name" placeholder="特性名称" value="不屈" required>
+                <select class="feature-type" required>
+                    <option value="被动">被动</option>
+                    <option value="反应">反应</option>
+                    <option value="动作">动作</option>
+                    <option value="其他">其他</option>
+                </select>
+                <input type="text" class="feature-desc" placeholder="特性描述" value="(2) - 构装体每个GM回合最多可被聚光灯照射两次。按常规消耗恐惧值来对其使用聚光灯。" required>
+                <button type="button" class="remove-feature">-</button>
+            </div>
+            <div class="feature-form-row">
+                <input type="text" class="feature-name" placeholder="特性名称" value="脆弱结构" required>
+                <select class="feature-type" required>
+                    <option value="被动" selected>被动</option>
+                    <option value="反应">反应</option>
+                    <option value="动作">动作</option>
+                    <option value="其他">其他</option>
+                </select>
+                <input type="text" class="feature-desc" placeholder="特性描述" value="- 当构装体因物理伤害标记生命值时，必须额外标记一点生命值。" required>
+                <button type="button" class="remove-feature">-</button>
+            </div>
+            <div class="feature-form-row">
+                <input type="text" class="feature-name" placeholder="特性名称" value="践踏" required>
+                <select class="feature-type" required>
+                    <option value="动作" selected>动作</option>
+                    <option value="被动">被动</option>
+                    <option value="反应">反应</option>
+                    <option value="其他">其他</option>
+                </select>
+                <input type="text" class="feature-desc" placeholder="特性描述" value="- 标记一点压力值，在构装体移动时对其路径上的所有目标发动一次攻击。构装体成功命中的目标受到1d8点物理伤害。" required>
+                <button type="button" class="remove-feature">-</button>
+            </div>
+            <div class="feature-form-row">
+                <input type="text" class="feature-name" placeholder="特性名称" value="过载" required>
+                <select class="feature-type" required>
+                    <option value="反应" selected>反应</option>
+                    <option value="被动">被动</option>
+                    <option value="动作">动作</option>
+                    <option value="其他">其他</option>
+                </select>
+                <input type="text" class="feature-desc" placeholder="特性描述" value="- 在计算构装体的攻击伤害之前，你可以标记一点压力值，使伤害掷骰获得+10加值。构装体随后可以再次获得聚光灯效果。" required>
+                <button type="button" class="remove-feature">-</button>
+            </div>
+            <div class="feature-form-row">
+                <input type="text" class="feature-name" placeholder="特性名称" value="死亡震颤" required>
+                <select class="feature-type" required>
+                    <option value="反应" selected>反应</option>
+                    <option value="被动">被动</option>
+                    <option value="动作">动作</option>
+                    <option value="其他">其他</option>
+                </select>
+                <input type="text" class="feature-desc" placeholder="特性描述" value="- 当构装体标记最后一点生命值时，驱动它的魔法会在一阵力量爆发中破裂。对极近距离内的所有目标以优势进行一次攻击。构装体成功命中的目标受到1d12+2点魔法伤害。" required>
+                <button type="button" class="remove-feature">-</button>
+            </div>
+        </div>
+        <button type="button" class="add-feature-btn">+ 添加特性</button>
+    </div>
+
+    <div class="button-container">
+        <button type="button" id="enemy-card-finish-btn">添加到网页</button>
+        <button type="button" id="enemy-card-download-json-btn">下载为JSON</button>
+    </div>
+</form>
