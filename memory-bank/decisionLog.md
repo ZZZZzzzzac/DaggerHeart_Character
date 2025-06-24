@@ -18,6 +18,33 @@ This file records architectural and implementation decisions using a list format
 *
 ---
 ### Decision (Code)
+[2025-06-24 16:43:30] - Implement Character Avatar Upload Feature
+
+**Rationale:**
+To allow users to personalize their character sheets, a feature was needed to upload and display a character avatar image. This feature should replace the existing `AvatarTextbox` when an image is active and allow reverting to the textbox.
+
+**Details:**
+*   **HTML ([`index.html`](index.html:1))**:
+    *   Added an "add" button (`<div id="upload-avatar-btn" class="add-btn">`) next to the `AvatarTextbox`.
+    *   Added a hidden file input (`<input type="file" id="avatar-upload-input">`).
+    *   Added a container (`<div id="avatar-image-container">`) to hold the uploaded image and a close button. This container is styled to match the `AvatarTextbox` dimensions and position and is initially hidden.
+    *   Inside `avatar-image-container`, an `<img>` tag (`id="avatar-image"`) displays the uploaded picture, and a `<span>` (`id="close-avatar-image-btn"`) with the `.close-card` class serves as the close button.
+
+*   **JavaScript ([`js/action.js`](js/action.js:1))**:
+    *   In `setupGlobalActionButtons()`:
+        *   Retrieved all new HTML elements.
+        *   Added a `click` listener to `upload-avatar-btn` to trigger `avatar-upload-input.click()`.
+        *   Added a `change` listener to `avatar-upload-input`:
+            *   Reads the selected file using `FileReader.readAsDataURL()`.
+            *   On load, sets `avatar-image.src` to the `dataURL`.
+            *   Shows `avatar-image-container` (`style.display = 'block'`).
+            *   Hides `AvatarTextbox` (`style.display = 'none'`).
+        *   Added a `click` listener to `close-avatar-image-btn`:
+            *   Clears `avatar-image.src`.
+            *   Hides `avatar-image-container`.
+            *   Shows `AvatarTextbox`.
+---
+### Decision (Code)
 [2025-06-15 23:00:02] - Fix Tooltip Positioning with Page Scroll
 
 **Rationale:**
@@ -113,7 +140,7 @@ To allow users to extend the application's data with their own custom content, a
     *   在 `<body>` 中添加了一个 `<div id="action-container">`，包含“导入JSON”、“导出JSON”和“打印PDF”按钮，以及一个用于文件上传的隐藏的 `<input type="file">`。
     *   为了实现精确打印，将角色卡的每一页内容（图片和其上的所有控件）分别包裹在 `<div id="page-1">` 和 `<div id="page-2">` 中。
     *   在 `<head>` 中添加了 `jspdf` 和 `html2canvas` 库的CDN链接。
-*   **CSS ([`style.css`](style.css:1))**:
+*   **CSS ([`css/style.css`](css/style.css:1))**:
     *   为 `#action-container` 添加了 `position: fixed` 样式，将其固定在视口的右上角。
     *   为新的 `.page-container` 类添加了 `position: relative`，以确保页面内的绝对定位元素正确定位。
 *   **JavaScript ([`script.js`](script.js:1))**:
@@ -142,7 +169,7 @@ To allow users to extend the application's data with their own custom content, a
     *   将相应的 `label` 元素移动到这些容器中。
     *   从 `label` 元素中删除了内联的 `top` 和 `left` 样式。
     *   为容器本身设置了绝对定位的 `top` 和 `left` 内联样式。
-*   **CSS ([`style.css`](style.css:1))**:
+*   **CSS ([`css/style.css`](css/style.css:1))**:
     *   为三个新容器ID添加了样式规则。
     *   使用 `display: flex` 和 `flex-wrap: wrap` 来创建网格行为。
     *   使用 `gap` 属性在复选框之间创建间距。
@@ -162,7 +189,7 @@ To allow users to extend the application's data with their own custom content, a
 *   **HTML ([`character_sheet_editor.html`](character_sheet_editor.html:1))**:
     *   删除了所有 class 为 `base-checkbox-wrapper` 的 `div` 元素。
     *   将每个已删除 `div` 的 `style` 属性（包含 `top` 和 `left`）合并到其子 `label` 元素中。
-*   **CSS ([`style.css`](style.css:1))**:
+*   **CSS ([`css/style.css`](css/style.css:1))**:
     *   删除了 `.base-checkbox-wrapper` CSS规则。
     *   将 `position: absolute;` 添加到 `.base-checkbox` 规则中，以处理复选框的直接定位。
 *   **JavaScript ([`script.js`](script.js:1))**:
@@ -181,7 +208,7 @@ To allow users to extend the application's data with their own custom content, a
     *   通过 `dataset.state` 属性在DOM中存储和更新状态。
     *   重构了 `exportFormState` 和 `importFormState` 函数，以保存和加载复选框的数字状态（0, 1, 2），而不是布尔值。
     *   在 `DOMContentLoaded` 时初始化所有 `.base-checkbox` 元素为 `TriStateCheckbox` 实例。
-*   **CSS ([`style.css`](style.css:1))**:
+*   **CSS ([`css/style.css`](css/style.css:1))**:
     *   移除了依赖于 `:checked` 伪类的样式。
     *   添加了新的类选择器 `.state-checked` 和 `.state-dashed`，以根据 `label` 元素上的类应用不同的 `background-image`。
 *   **HTML ([`character_sheet_editor.html`](character_sheet_editor.html:1))**:
@@ -195,7 +222,7 @@ To allow users to extend the application's data with their own custom content, a
 为了支持多种不同视觉表现的 Checkbox（例如护甲槽、生命值、压力等），需要将现有的 `sampleCheckbox` 实现重构为一个更通用、可扩展的系统。此举旨在通过创建一个共享的 `base-checkbox` 类和为每种具体类型（如 `armor-slot-checkbox`）提供特定样式的方式，来简化 HTML 结构并提高 CSS 的可维护性。
 
 **Details:**
-*   **CSS ([`style.css`](style.css:1))**:
+*   **CSS ([`css/style.css`](css/style.css:1))**:
     *   移除了旧的 `.styled-checkbox` 和相关的 `:checked` 规则。
     *   创建了 `.base-checkbox` 类，包含所有 Checkbox 共享的样式（如 `display`, `cursor`, `background-size` 等）。
     *   为 `armor-slot` 创建了 `.armor-slot-checkbox` 类，并为其未选中和选中状态定义了不同的 `background-image`。

@@ -7,10 +7,17 @@ This file tracks the project's current status, including recent changes, current
 
 ## Current Focus
 
+* [2025-06-24 16:56:17] - Further enhanced "Upload Character Avatar" feature: `clearForm` now also resets the avatar image.
+* [2025-06-24 16:53:53] - Enhanced "Upload Character Avatar" feature: adjusted image display (contain & center) and integrated avatar image (Base64) into JSON import/export.
 * [2025-06-15 18:18:00] - Implemented "Upload Custom Card Pack" feature.
 * [2025-06-15 22:48:53] - Implemented a generic tooltip feature.
 
 ## Recent Changes
+* [2025-06-24 16:56:17] - **[FEAT]** Updated `clearForm` function in [`js/action.js`](js/action.js:1) to also clear the uploaded character avatar, reset the image source, hide the image container, and show the avatar textarea.
+* [2025-06-24 16:53:53] - **[FEAT]** Enhanced character avatar functionality:
+    *   Modified [`index.html`](index.html:1) to set `object-fit: contain` and `text-align: center` for the avatar image display, ensuring the entire image is visible and centered.
+    *   Updated `exportFormState` and `importFormState` in [`js/action.js`](js/action.js:1) to include the avatar image (as Base64 data URI) in the JSON import/export process.
+* [2025-06-24 16:43:30] - **[FEAT]** Added character avatar upload functionality. This includes an upload button, an image display area, and logic to show the uploaded image, hide the avatar textarea, and a close button to revert. Modified [`index.html`](index.html:1) and [`js/action.js`](js/action.js:1).
 * [2025-06-15 18:18:00] - **[FEAT]** Implemented the "Upload Custom Card Pack" feature. Added a button to `character_sheet_editor.html`, file handling logic in `action.js`, and a data processing function `add_custom_domain_card` in `script.js` that supports many-to-one key mapping and merges new domain cards into the `DOMAIN_CARDS` array.
 * [2025-06-15 16:14:01] - **[FEAT]** Created `data_transformer.js` to process the raw `JOBS_DATA` into structured `CLASS_DATA` and `SUBCLASS_DATA` global variables. This standardizes the data structure for classes and subclasses, making it easier for other parts of the application to consume.
 * [2025-06-15 11:47:43] - **[FIX]** Repaired the printing functionality by implementing a robust strategy. This involved dynamically creating a `#print-wrapper` in `action.js` to isolate printable content and rewriting the `@media print` rules in `style.css` to force all elements into a static document flow, ensuring correct page breaks and visibility for both the character sheet and skill cards.
@@ -26,7 +33,6 @@ This file tracks the project's current status, including recent changes, current
 * [2025-06-14 18:27:00] - Refactored the checkbox implementation to remove the `.base-checkbox-wrapper` div. Merged positioning styles directly into the `.base-checkbox` label and updated all related HTML, CSS, and JavaScript files.
 * [2025-06-14 18:24:00] - Implemented a reusable `TriStateCheckbox` base class in `script.js` to handle three states (normal, checked, dashed) for checkboxes like armor slots. Refactored HTML to remove hidden inputs and updated CSS to use state-based classes.
 * [2025-06-14 18:02:33] - Refactored the checkbox implementation in `character_sheet_editor.html` and `style.css`. Created a reusable `base-checkbox` class and specific classes for different checkbox types (e.g., `armor-slot-checkbox`). Replaced the old `sampleCheckbox` with new, modular checkboxes for various game stats.
-
 * [2025-06-14 13:04:02] - 在 `script.js` 中添加了事件监听器，以禁用用户通过 Ctrl+滚轮 或 Ctrl+/- 缩放网页的功能。
 * [2025-06-14 13:48:36] - 修改了 [`style.css`](style.css:1) 中 `.image-container img` 的样式，将 `max-height` 和 `width: auto` 替换为固定的 `width: 1000px`，以防止图片随浏览器窗口缩放。
 * [2025-06-14 11:01:32] - Summarized older entries in `decisionLog.md` to improve readability, retaining the last three full entries.

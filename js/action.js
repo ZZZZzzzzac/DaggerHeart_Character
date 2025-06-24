@@ -24,6 +24,12 @@ function exportFormState() {
     // --- Export Skill Cards ---
     state.cards = exportCardData();
 
+    // Export avatar image if present
+    const avatarImage = document.getElementById('avatar-image');
+    if (avatarImage && avatarImage.src && avatarImage.src !== '#' && avatarImage.src !== window.location.href + '#') { // Check if src is valid and not placeholder
+        state.avatarImageSrc = avatarImage.src;
+    }
+
     return state;
 }
 
@@ -97,6 +103,22 @@ function importFormState(state) {
                 createCard(cardInfo);
             }
         });
+    }
+
+    // Import avatar image if present in state
+    const avatarImageElement = document.getElementById('avatar-image');
+    const avatarImageContainer = document.getElementById('avatar-image-container');
+    const avatarTextbox = document.getElementById('AvatarTextbox');
+
+    if (state.avatarImageSrc && avatarImageElement && avatarImageContainer && avatarTextbox) {
+        avatarImageElement.src = state.avatarImageSrc;
+        avatarImageContainer.style.display = 'block';
+        avatarTextbox.style.display = 'none';
+    } else if (avatarImageContainer && avatarTextbox) {
+        // Ensure avatar is hidden if not in state
+        avatarImageContainer.style.display = 'none';
+        avatarTextbox.style.display = 'block';
+        if(avatarImageElement) avatarImageElement.src = '#';
     }
 }
 
@@ -186,8 +208,18 @@ function clearForm() {
     if (cardContainer) {
         cardContainer.innerHTML = '';
     }
+
+    // 6. Clear Avatar Image
+    const avatarImage = document.getElementById('avatar-image');
+    const avatarImageContainer = document.getElementById('avatar-image-container');
+    const avatarTextbox = document.getElementById('AvatarTextbox');
+    if (avatarImage && avatarImageContainer && avatarTextbox) {
+        avatarImage.src = '#';
+        avatarImageContainer.style.display = 'none';
+        avatarTextbox.style.display = 'block';
+    }
     
-    // 6. Clear the saved state from local storage
+    // 7. Clear the saved state from local storage
     localStorage.removeItem('characterSheetData');
 
     console.log('表单已清空并重置为默认状态。');
@@ -204,8 +236,16 @@ function setupGlobalActionButtons() {
     const customPackBtn = document.getElementById('upload-custom-pack-btn');
     const customPackInput = document.getElementById('custom-pack-upload');
     const saveCardsBtn = document.getElementById('save-cards-btn');
+
+    // Avatar Upload Elements
+    const uploadAvatarBtn = document.getElementById('upload-avatar-btn');
+    const avatarUploadInput = document.getElementById('avatar-upload-input');
+    const avatarImageContainer = document.getElementById('avatar-image-container');
+    const avatarImage = document.getElementById('avatar-image');
+    const closeAvatarImageBtn = document.getElementById('close-avatar-image-btn');
+    const avatarTextbox = document.getElementById('AvatarTextbox');
  
-     if (clearBtn) {
+      if (clearBtn) {
          clearBtn.addEventListener('click', () => {
             if (confirm('你确定要清空所有数据吗？此操作无法撤销。')) {
                 clearForm();
@@ -402,5 +442,34 @@ function setupGlobalActionButtons() {
 
         // --- Trigger the print dialog ---
         window.print();
-    });
-}
+        });
+    
+        // Avatar Upload Functionality
+        if (uploadAvatarBtn && avatarUploadInput && avatarImageContainer && avatarImage && closeAvatarImageBtn && avatarTextbox) {
+            uploadAvatarBtn.addEventListener('click', () => {
+                avatarUploadInput.click();
+            });
+    
+            avatarUploadInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        avatarImage.src = e.target.result;
+                        avatarImageContainer.style.display = 'block';
+                        avatarTextbox.style.display = 'none'; // Or avatarTextbox.disabled = true;
+                    }
+                    reader.readAsDataURL(file);
+                }
+                avatarUploadInput.value = ''; // Reset file input
+            });
+    
+            closeAvatarImageBtn.addEventListener('click', () => {
+                avatarImage.src = '#'; // Clear image
+                avatarImageContainer.style.display = 'none';
+                avatarTextbox.style.display = 'block'; // Or avatarTextbox.disabled = false;
+            });
+        } else {
+            console.warn('One or more avatar upload elements not found in DOM.');
+        }
+    }
