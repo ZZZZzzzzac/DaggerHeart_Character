@@ -7,6 +7,8 @@ function processUploadedPack(packData) {
         domain: 0,
         class: 0,
         subclass: 0,
+        race: 0,
+        community: 0,
         other: 0
     };
 
@@ -43,6 +45,18 @@ function processUploadedPack(packData) {
                     addedCounts.subclass++;
                 }
                 break;
+            case '种族':
+                if (typeof RACES_DATA !== 'undefined' && RACES_DATA && !RACES_DATA.some(c => c.名称 === card.名称)) {
+                    RACES_DATA.push(card);
+                    addedCounts.race++;
+                }
+                break;
+            case '社群':
+                if (typeof COMM_DATA !== 'undefined' && COMM_DATA && !COMM_DATA.some(c => c.名称 === card.名称)) {
+                    COMM_DATA.push(card);
+                    addedCounts.community++;
+                }
+                break;
             default:
                 // 如果类型不匹配或不存在，则直接创建卡牌
                 if (typeof createCard === 'function') {
@@ -64,6 +78,12 @@ function processUploadedPack(packData) {
     }
     if (addedCounts.subclass > 0) {
         messageParts.push(`- 新增子职: ${addedCounts.subclass}`);
+    }
+    if (addedCounts.race > 0) {
+        messageParts.push(`- 新增种族: ${addedCounts.race}`);
+    }
+    if (addedCounts.community > 0) {
+        messageParts.push(`- 新增社群: ${addedCounts.community}`);
     }
     if (addedCounts.other > 0) {
         messageParts.push(`- 直接创建到页面的其他卡牌: ${addedCounts.other}`);

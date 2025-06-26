@@ -86,25 +86,6 @@ function createCard(cardInfo) { // cardInfo can be {data, position} or just data
     let data = cardInfo.data || cardInfo;
     const position = cardInfo.position;
 
-    // --- Data Pre-processing ---
-    if (typeof data === 'object' && data !== null && data.类型 === '主职') {
-        let hopeTrait = data.希望特性 || '';
-        let classTrait = data.职业特性 || '';
-        
-        // Combine traits into description
-        let newDescription = `${hopeTrait}\n\n${classTrait}`.trim();
-        
-        // Add to existing description or set as new description
-        if (data.描述) {
-            data.描述 += `\n\n${newDescription}`;
-        } else {
-            data.描述 = newDescription;
-        }
-
-        // The original fields are kept for data integrity on export,
-        // but they are hidden during rendering in renderJsonCard.
-    }
-
     // --- Smart URL Mapping Logic ---
     const processCardCreation = (finalData) => {
         const cardContainer = document.getElementById('card-container');

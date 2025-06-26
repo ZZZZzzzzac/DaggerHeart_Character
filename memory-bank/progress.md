@@ -7,6 +7,7 @@ This file tracks the project's progress using a task list format.
 
 ## Completed Tasks
 
+* [2025-06-26 17:24:26] - **[FEAT]** 在 [`js/custom.js`](js/custom.js:1) 中为 `processUploadedPack` 函数添加了对“种族”和“社群”类型卡牌的处理逻辑，允许将这些卡牌分别合并到 `RACES_DATA` 和 `COMM_DATA` 中。
 * [2025-06-24 16:56:17] - **[FEAT]** Implemented character avatar upload and enhancement. Added UI elements in [`index.html`](index.html:1). Implemented handling logic in [`js/action.js`](js/action.js:1) for image selection, display (contain & center), toggling visibility with avatar textarea, Base64 import/export in JSON, and clearing avatar on form reset.
 * [2025-06-17 10:01:41] - **[FIX]** Fixed `card-container` overlapping issue by setting its dimensions to `1px` x `1px` in [`css/card.css`](css/card.css:1), preventing it from obscuring the character sheet on small screens.
 * [2025-06-15 22:49:00] - **[FEAT]** Implemented a generic tooltip feature that displays help text on hover for any element with a `data-tooltip` attribute. Added a 1-second delay based on user feedback.
@@ -40,6 +41,7 @@ This file tracks the project's progress using a task list format.
 
 ## Current Tasks
 
+* [2025-06-26 17:23:00] - 在 js/custom.js 中添加对“种族”和“社群”卡牌类型的处理逻辑。
 *
 
 ## Completed Tasks

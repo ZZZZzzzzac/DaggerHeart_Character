@@ -17,6 +17,26 @@ This file records architectural and implementation decisions using a list format
 
 *
 ---
+---
+### Decision (Code)
+[2025-06-26 17:24:43] - 在自定义卡包处理中增加对种族和社群卡牌的支持
+
+**Rationale:**
+为了允许用户通过自定义卡包功能导入种族和社群数据，需要扩展 `processUploadedPack` 函数的功能。此更改将使得这些类型的卡牌能够被正确识别并添加到相应的全局数据数组中。
+
+**Details:**
+*   **JavaScript ([`js/custom.js`](js/custom.js:1))**:
+    *   在 `addedCounts` 对象中添加了 `race: 0` 和 `community: 0` 用于计数。
+    *   在 `processUploadedPack` 函数的 `switch (cardType)` 语句中：
+        *   添加了 `case '种族':`：
+            *   检查 `RACES_DATA` 是否已定义且存在。
+            *   检查卡牌名称是否已存在于 `RACES_DATA` 中（使用 `some` 和 `c.名称 === card.名称`）。
+            *   如果卡牌是新的，则将其 `push` 到 `RACES_DATA` 并增加 `addedCounts.race`。
+        *   添加了 `case '社群':`：
+            *   检查 `COMM_DATA` 是否已定义且存在。
+            *   检查卡牌名称是否已存在于 `COMM_DATA` 中。
+            *   如果卡牌是新的，则将其 `push` 到 `COMM_DATA` 并增加 `addedCounts.community`。
+    *   更新了处理完成后的提示消息，以包含新增的种族和社群卡牌数量。
 ### Decision (Code)
 [2025-06-24 16:43:30] - Implement Character Avatar Upload Feature
 

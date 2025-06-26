@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         class: {
             type: '主职',
-            keys: ['领域', '初始闪避值', '初始生命点', '希望特性', '职业特性']
+            keys: ['领域', '初始闪避值', '初始生命点', '希望特性'] // 移除了 '职业特性'
         },
         subclass: {
             type: '子职',
@@ -133,6 +133,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             
             });
+
+            // 如果类型是“主职”，将描述复制到职业特性
+            if (typeValue === templates.class.type) {
+                cardJson['职业特性'] = descValue;
+            }
 
             // Call the global createCard function (assuming it's defined in another file, e.g., card.js)
             if (typeof createCard === 'function') {

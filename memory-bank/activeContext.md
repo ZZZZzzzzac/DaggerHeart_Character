@@ -7,6 +7,8 @@ This file tracks the project's current status, including recent changes, current
 
 ## Current Focus
 
+* [2025-06-26 17:16:31] - 开始在 js/custom.js 中添加对“种族”和“社群”卡牌类型的处理逻辑。
+* [2025-06-26 17:23:35] - 完成在 js/custom.js 中添加对“种族”和“社群”卡牌类型的处理逻辑。
 * [2025-06-24 16:56:17] - Further enhanced "Upload Character Avatar" feature: `clearForm` now also resets the avatar image.
 * [2025-06-24 16:53:53] - Enhanced "Upload Character Avatar" feature: adjusted image display (contain & center) and integrated avatar image (Base64) into JSON import/export.
 * [2025-06-15 18:18:00] - Implemented "Upload Custom Card Pack" feature.
