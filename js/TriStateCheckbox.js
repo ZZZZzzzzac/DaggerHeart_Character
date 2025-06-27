@@ -16,6 +16,10 @@ class TriStateCheckbox {
 
     handleClick(event) {
         event.preventDefault();
+        // If current state is dashed (2), do nothing on left click.
+        if (this.state === 2) {
+            return;
+        }
         // Left-click toggles between normal (0) and checked (1)
         this.state = this.state === 1 ? 0 : 1;
         this.updateVisuals();
@@ -24,7 +28,7 @@ class TriStateCheckbox {
 
     handleRightClick(event) {
         event.preventDefault();
-        if (this.isTwoState) {
+        if (this.isTwoState || this.state === 1) {
             return; // Do nothing for two-state checkboxes
         }
         // Right-click toggles between normal (0) and dashed (2)

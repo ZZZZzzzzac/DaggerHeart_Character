@@ -7,6 +7,7 @@ This file tracks the project's progress using a task list format.
 
 ## Completed Tasks
 
+* [2025-06-27 13:11:22] - **[FEAT]** 调整了 [`js/TriStateCheckbox.js`](js/TriStateCheckbox.js:1) 中的点击处理逻辑，禁止在 "dashed" 状态下通过左键单击切换到 "checked" 状态。
 * [2025-06-27 13:05:10] - **[FEAT]** 增强了护甲选择功能，在选择护甲时会根据角色等级动态计算伤害阈值并更新护甲插槽。同时，将等级重置功能添加到了清空表单的逻辑中。涉及文件：[`js/data_table_modal.js`](js/data_table_modal.js:1), [`js/action.js`](js/action.js:1)。
 * [2025-06-27 12:50:45] - **[FEAT]** 在 [`js/data_table_modal.js`](js/data_table_modal.js:1) 中，实现了在从模态框中选择种族、社群和职业后，自动填充主表单中的相应字段（名称、初始闪避、初始生命点）。同时修复了一个由于JS作用域问题导致的运行时错误。
 * [2025-06-26 17:24:26] - **[FEAT]** 在 [`js/custom.js`](js/custom.js:1) 中为 `processUploadedPack` 函数添加了对“种族”和“社群”类型卡牌的处理逻辑，允许将这些卡牌分别合并到 `RACES_DATA` 和 `COMM_DATA` 中。
