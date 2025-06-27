@@ -131,6 +131,10 @@ function showDataTableModal(data, onRowSelected, config = {}) {
             });
 
             renderTableBody(filteredData);
+
+            // Adjust header padding to account for scrollbar
+            const scrollbarWidth = bodyContainer.offsetWidth - bodyContainer.clientWidth;
+            fixedHeader.style.paddingRight = `${scrollbarWidth}px`;
         };
 
         // 5. 状态持久化和事件绑定
@@ -225,7 +229,8 @@ function setupDataModalButtons() {
 
             const modalConfig = {
                 title: modalTitle,
-                filterableColumns: ["属性", "距离", "双手", "类型", "位阶"],
+                hiddenColumns: ["类型"],
+                filterableColumns: ["属性", "距离", "双手", "伤害类型", "位阶"],
                 storageKey: storageKey,
                 columnWidths: columnWidths
             };
@@ -233,7 +238,7 @@ function setupDataModalButtons() {
             showDataTableModal(dataSource, (selectedItem) => {
                 const targetMap = {
                     "名称": nameId,
-                    "特性": traitId
+                    "描述": traitId
                 };
                 for (const sourceKey in targetMap) {
                     const targetElement = document.getElementById(targetMap[sourceKey]);
@@ -262,7 +267,7 @@ function setupDataModalButtons() {
                 // Composite for Damage
                 const compositeDamageTarget = {
                     targetId: damageId,
-                    format: "{伤害}／{类型}"
+                    format: "{伤害}／{伤害类型}"
                 };
                 const compositeDamageElement = document.getElementById(compositeDamageTarget.targetId);
                 if (compositeDamageElement) {
@@ -279,7 +284,7 @@ function setupDataModalButtons() {
         });
     };
 
-    const weaponWidths = { 名称: '10%', 伤害: '5%', 属性: '5%', 距离: '7%', 双手: '5%', 类型: '5%', 位阶: '5%' };
+    const weaponWidths = { 名称: '10%', 伤害: '5%', 属性: '5%', 距离: '7%', 双手: '5%', 伤害类型: '5%', 位阶: '5%' };
 
     // Primary Weapon
     setupWeaponButton(
@@ -345,6 +350,7 @@ function setupDataModalButtons() {
 
             const modalConfig = {
                 title: "选择护甲",
+                hiddenColumns: ["类型"],
                 filterableColumns: ["重伤阈值", "严重阈值", "护甲值", "位阶"],
                 storageKey: "armorFilterState",
                 columnWidths: { 名称: '10%', 重伤阈值: '5%', 严重阈值: '5%', 护甲值: '5%', 位阶: '5%' }
@@ -410,7 +416,7 @@ function setupDataModalButtons() {
 
     // Items
     const addItemBtn = document.getElementById('add-item-btn');
-    const ITEMS = typeof LOOT_DATA !== 'undefined' ? [...(LOOT_DATA.consumables || []), ...(LOOT_DATA.items || [])] : undefined;
+    const ITEMS = typeof LOOT_DATA !== 'undefined' ? LOOT_DATA : undefined;
     if (addItemBtn) {
         addItemBtn.addEventListener('click', () => {
             if (typeof ITEMS === 'undefined') {
@@ -421,15 +427,15 @@ function setupDataModalButtons() {
 
             const modalConfig = {
                 title: "选择物品",
-                filterableColumns: ["类型", "位阶"],
+                filterableColumns: ["类型"],
                 storageKey: "itemFilterState",
-                columnWidths: { 名称: '15%', 掷骰: '5%'}
+                columnWidths: { 名称: '15%', 类型: '5%', 掷骰: '5%' }
             };
 
             showDataTableModal(ITEMS, (selectedItem) => {
                 const targetTextbox = document.getElementById('ItemSlot1Textbox');
                 if (targetTextbox) {
-                    const newItemText = `${selectedItem.名称}: ${removeMarkdownFormatting(selectedItem.特性)}`;
+                    const newItemText = `${selectedItem.名称}: ${removeMarkdownFormatting(selectedItem.描述 || '')}`;
                     if (targetTextbox.value.trim() === '') {
                         targetTextbox.value = newItemText;
                     } else {

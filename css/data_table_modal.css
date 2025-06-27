@@ -47,7 +47,7 @@
 /* Table container styles */
 #data-table-fixed-header {
     overflow-y: hidden;
-    padding-right: 15px; /* To account for scrollbar width in the body */
+    /* padding-right is now handled dynamically by JavaScript */
     flex-shrink: 0; /* Prevent the header from shrinking */
 }
 
