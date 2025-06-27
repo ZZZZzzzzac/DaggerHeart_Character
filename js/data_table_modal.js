@@ -199,6 +199,18 @@ function showDataTableModal(data, onRowSelected, config = {}) {
 }
 
 function setupDataModalButtons() {
+    // Helper function to update checkbox visuals based on state, avoiding dependency on TriStateCheckbox class instance
+    const updateCheckboxVisualState = (element) => {
+        if (!element) return;
+        const state = element.dataset.state;
+        element.classList.remove('state-checked', 'state-dashed');
+        if (state === '1') {
+            element.classList.add('state-checked');
+        } else if (state === '2') {
+            element.classList.add('state-dashed');
+        }
+    };
+
     // Helper function to set up a weapon button
     const setupWeaponButton = (buttonId, dataSource, modalTitle, storageKey, nameId, statId, damageId, traitId, columnWidths) => {
         const button = document.getElementById(buttonId);
@@ -339,6 +351,7 @@ function setupDataModalButtons() {
             };
             
             showDataTableModal(ARMOR, (selectedItem) => {
+                // Retain existing logic for name and trait
                 const directMap = {
                     "名称": "ArmorNameTextbox",
                     "护甲值": "ArmorScoreTextbox",
@@ -357,6 +370,40 @@ function setupDataModalButtons() {
                     const severe = selectedItem.严重阈值 || '';
                     thresholdTarget.value = `${major}／${severe}`;
                 }
+
+                // New logic for thresholds and armor value
+                const levelEl = document.getElementById('LevelTextbox');
+                const level = parseInt(levelEl.value, 10) || 1;
+
+                const majorThreshold = parseInt(selectedItem.重伤阈值, 10) || level;
+                const severeThreshold = parseInt(selectedItem.严重阈值, 10) || (level*2);
+                const armorValue = parseInt(selectedItem.护甲值, 10) || 0;
+
+                const majorTextbox = document.getElementById('MajorTextbox');
+                if (majorTextbox) {
+                    majorTextbox.value = majorThreshold + level;
+                }
+
+                const severeTextbox = document.getElementById('SevereTextbox');
+                if (severeTextbox) {
+                    severeTextbox.value = severeThreshold + level;
+                }
+
+                const armorTextbox = document.getElementById('ArmorTextbox');
+                if (armorTextbox) {
+                    armorTextbox.value = armorValue;
+                }
+
+                // Update armor slots
+                const armorSlots = document.querySelectorAll('#armor-slots-container .armor-slot-checkbox');
+                armorSlots.forEach((slot, index) => {
+                    if (index < armorValue) {
+                        slot.dataset.state = '0'; // empty
+                    } else {
+                        slot.dataset.state = '2'; // dash
+                    }
+                    updateCheckboxVisualState(slot);
+                });
             }, modalConfig);
         });
     }
@@ -434,6 +481,10 @@ function setupDataModalButtons() {
             };
 
             showDataTableModal(RACES_DATA, (selectedItem) => {
+                const raceTextbox = document.getElementById('RaceTextbox');
+                if (raceTextbox) {
+                    raceTextbox.value = selectedItem.名称 || '';
+                }
                 createCard(selectedItem);
             }, modalConfig);
         });
@@ -457,6 +508,10 @@ function setupDataModalButtons() {
             };
 
             showDataTableModal(COMM_DATA, (selectedItem) => {
+                const communityTextbox = document.getElementById('CommunityTextbox');
+                if (communityTextbox) {
+                    communityTextbox.value = selectedItem.名称 || '';
+                }
                 createCard(selectedItem);
             }, modalConfig);
         });
@@ -504,9 +559,34 @@ function setupDataModalButtons() {
             };
 
             showDataTableModal(MAIN_CLASS, (selectedItem) => {
+                // Fill Class Name
+                const classTextbox = document.getElementById('ClassTextbox');
+                if (classTextbox) {
+                    classTextbox.value = selectedItem.名称 || '';
+                }
+
+                // Fill Evasion
+                const evasionTextbox = document.getElementById('EvasionTextbox');
+                if (evasionTextbox) {
+                    evasionTextbox.value = selectedItem.初始闪避值 || '';
+                }
+
+                // Fill HP
+                const initialHp = parseInt(selectedItem.初始生命点, 10);
+                if (!isNaN(initialHp)) {
+                    const hpSlots = document.querySelectorAll('#hp-container .hp-slot-checkbox');
+                    hpSlots.forEach((slot, index) => {
+                        if (index < initialHp) {
+                            slot.dataset.state = '0'; // empty
+                        } else {
+                            slot.dataset.state = '2'; // dash
+                        }
+                        updateCheckboxVisualState(slot);
+                    });
+                }
+
                 const classFeatureTextbox = document.getElementById('ClassFeatureTextbox');
                 if (classFeatureTextbox) {
-
                     classFeatureTextbox.value = removeMarkdownFormatting(`${selectedItem.希望特性}\n\n${selectedItem.职业特性}`);
                 }
 

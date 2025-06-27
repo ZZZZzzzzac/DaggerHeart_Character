@@ -175,6 +175,11 @@ function clearForm() {
     textElements.forEach(el => {
         el.value = '';
     });
+    // Reset Level to 1
+    const levelTextbox = document.getElementById('LevelTextbox');
+    if (levelTextbox) {
+        levelTextbox.value = '1';
+    }
 
     // 2. Reset all checkboxes to their initial state (0)
     const checkboxLabels = document.querySelectorAll('.base-checkbox');

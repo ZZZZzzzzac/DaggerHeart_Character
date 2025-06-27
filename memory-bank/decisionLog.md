@@ -37,6 +37,22 @@ This file records architectural and implementation decisions using a list format
             *   检查卡牌名称是否已存在于 `COMM_DATA` 中。
             *   如果卡牌是新的，则将其 `push` 到 `COMM_DATA` 并增加 `addedCounts.community`。
     *   更新了处理完成后的提示消息，以包含新增的种族和社群卡牌数量。
+---
+### Decision (Debug)
+[2025-06-27 12:50:31] - 修复因JS模块作用域问题导致的 `TriStateCheckbox` 实例访问失败
+
+**Rationale:**
+在 `data_table_modal.js` 中选择职业后，尝试更新生命值（HP）插槽时，代码因无法访问在 `script.js` 中定义的 `TriStateCheckbox.instances` 静态属性而崩溃。这是典型的JavaScript模块作用域问题，一个模块无法直接访问另一个模块内部的变量，除非它被明确导出和导入，或者挂载到全局对象上。为了在不进行大规模重构（如引入模块打包工具或全局暴露变量）的情况下解决此问题，需要一种更解耦的方法来更新复选框状态。
+
+**Details:**
+*   **根本原因**: `data_table_modal.js` 中的代码试图调用 `TriStateCheckbox.instances.get(slot.id)`，但 `TriStateCheckbox.instances` 在其作用域内是 `undefined`。
+*   **解决方案**:
+    1.  **移除直接依赖**: 删除了对 `TriStateCheckbox.instances` 的所有引用。
+    2.  **创建本地辅助函数**: 在 `addClassCardBtn` 事件监听器内部创建了一个名为 `updateCheckboxVisualState` 的辅助函数。
+    3.  **直接操作DOM**: 该函数通过直接修改复选框元素的 `dataset.state` 属性来更新其逻辑状态。
+    4.  **手动同步视觉**: 函数接着手动管理元素的CSS类（`state-checked`, `state-dashed`），以确保视觉表现与逻辑状态同步。
+*   **影响文件**: [`js/data_table_modal.js`](js/data_table_modal.js:1)
+*   **结果**: 此修复方案成功地更新了HP插槽的状态，同时避免了跨文件作用域问题，使模态框组件更加独立和健壮。
 ### Decision (Code)
 [2025-06-24 16:43:30] - Implement Character Avatar Upload Feature
 

@@ -14,6 +14,8 @@ This file tracks the project's current status, including recent changes, current
 * [2025-06-15 18:18:00] - Implemented "Upload Custom Card Pack" feature.
 * [2025-06-15 22:48:53] - Implemented a generic tooltip feature.
 
+* [2025-06-27 13:02:24] - **[FEAT]** 增强了护甲选择逻辑：在 `js/data_table_modal.js` 中，选择护甲后会根据角色等级计算并填充伤害阈值，并更新护甲插槽。同时，在 `js/action.js` 的 `clearForm` 函数中增加了将等级重置为1的逻辑。
+* [2025-06-27 12:50:12] - **[FEAT]** 在 `js/data_table_modal.js` 中实现了新功能：选择种族、社群或职业后，会自动填充角色表单上的相应字段（名称、闪避、生命值）。修复了在更新生命值插槽时因作用域问题导致的运行时错误。
 ## Recent Changes
 * [2025-06-24 16:56:17] - **[FEAT]** Updated `clearForm` function in [`js/action.js`](js/action.js:1) to also clear the uploaded character avatar, reset the image source, hide the image container, and show the avatar textarea.
 * [2025-06-24 16:53:53] - **[FEAT]** Enhanced character avatar functionality:
