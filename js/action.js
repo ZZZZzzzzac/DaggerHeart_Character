@@ -193,20 +193,36 @@ function clearForm() {
         }
     });
 
-    // 3. Apply the specific default states for HP and Stress slots
-    setDefaultSlotStates();
-
-    // 4. Ensure the visuals of HP and Stress checkboxes match the new default state
+    // 3. Apply the specific default states for HP and Stress slots directly
     for (let i = 1; i <= 12; i++) {
         const hpLabel = document.getElementById(`HpSlotCheckbox${i}`);
         const stressLabel = document.getElementById(`StressSlotCheckbox${i}`);
+        const state = (i > 6) ? '2' : '0'; // Default state: first 6 are empty, rest are dashed
+
         if (hpLabel && hpLabel.checkboxInstance) {
-            hpLabel.checkboxInstance.setState(hpLabel.dataset.state);
+            hpLabel.checkboxInstance.setState(state);
         }
         if (stressLabel && stressLabel.checkboxInstance) {
-            stressLabel.checkboxInstance.setState(stressLabel.dataset.state);
+            stressLabel.checkboxInstance.setState(state);
         }
     }
+
+    // 4.5 Set default Hope and Gold
+    // Set default Hope (2 points)
+    for (let i = 1; i <= 2; i++) {
+        const hopeLabel = document.getElementById(`HopeSlotCheckbox${i}`);
+        if (hopeLabel && hopeLabel.checkboxInstance) {
+            hopeLabel.checkboxInstance.setState('1');
+        }
+    }
+
+    // Set default Gold (1 bag) based on user feedback pointing to bag-gold-container
+    const bagGoldLabel = document.getElementById('HandfulGoldCheckbox1');
+    if (bagGoldLabel && bagGoldLabel.checkboxInstance) {
+        bagGoldLabel.checkboxInstance.setState('1');
+    }
+
+    
 
     // 5. Clear all skill cards
     const cardContainer = document.getElementById('card-container');

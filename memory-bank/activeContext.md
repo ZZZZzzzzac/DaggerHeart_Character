@@ -14,6 +14,8 @@ This file tracks the project's current status, including recent changes, current
 * [2025-06-15 18:18:00] - Implemented "Upload Custom Card Pack" feature.
 * [2025-06-15 22:48:53] - Implemented a generic tooltip feature.
 
+* [2025-06-27 13:25:20] - **[REFACTOR]** 重构了 `js/action.js` 中的 `clearForm` 函数，移除了设置HP和Stress插槽默认状态时的重复代码，使其更加简洁高效。
+* [2025-06-27 13:22:02] - **[FEAT]** 根据用户最终修改，更新了 `js/action.js` 中的 `clearForm` 函数，现在它会将第一个“一把金币”(`HandfulGoldCheckbox1`)复选框的状态设置为默认选中。
 * [2025-06-27 13:09:14] - **[FEAT]** 调整了 `js/TriStateCheckbox.js` 的逻辑，当复选框处于 "dashed" (state 2) 状态时，左键单击不再会将其切换为 "checked" (state 1)。
 * [2025-06-27 13:02:24] - **[FEAT]** 增强了护甲选择逻辑：在 `js/data_table_modal.js` 中，选择护甲后会根据角色等级计算并填充伤害阈值，并更新护甲插槽。同时，在 `js/action.js` 的 `clearForm` 函数中增加了将等级重置为1的逻辑。
 * [2025-06-27 12:50:12] - **[FEAT]** 在 `js/data_table_modal.js` 中实现了新功能：选择种族、社群或职业后，会自动填充角色表单上的相应字段（名称、闪避、生命值）。修复了在更新生命值插槽时因作用域问题导致的运行时错误。
