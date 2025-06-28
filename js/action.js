@@ -120,6 +120,20 @@ function importFormState(state) {
         avatarTextbox.style.display = 'block';
         if(avatarImageElement) avatarImageElement.src = '#';
     }
+
+    updatePageTitle(); // Update title after importing
+}
+
+/**
+ * Updates the page title based on the character name.
+ */
+function updatePageTitle() {
+    const nameTextbox = document.getElementById('NameTextbox');
+    if (nameTextbox && nameTextbox.value.trim()) {
+        document.title = `${nameTextbox.value.trim()}_zzz车卡器`;
+    } else {
+        document.title = '角色卡编辑器'; // Reset to default if name is empty
+    }
 }
 
 /**
@@ -265,6 +279,11 @@ function setupGlobalActionButtons() {
     const avatarImage = document.getElementById('avatar-image');
     const closeAvatarImageBtn = document.getElementById('close-avatar-image-btn');
     const avatarTextbox = document.getElementById('AvatarTextbox');
+    const nameTextbox = document.getElementById('NameTextbox');
+
+    if (nameTextbox) {
+        nameTextbox.addEventListener('blur', updatePageTitle);
+    }
  
       if (clearBtn) {
          clearBtn.addEventListener('click', () => {
@@ -288,7 +307,7 @@ function setupGlobalActionButtons() {
         const link = document.createElement('a');
         link.href = url;
         const characterName = state.NameTextbox || 'character';
-        link.download = `${characterName}_daggerheart.json`;
+        link.download = `${characterName}_匕首之心人物卡_zzz.json`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -366,7 +385,7 @@ function setupGlobalActionButtons() {
             const url = URL.createObjectURL(dataBlob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'daggerheart_cards.json';
+            link.download = '匕首之心卡牌包_zzz.json';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
