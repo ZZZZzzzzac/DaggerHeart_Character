@@ -652,6 +652,18 @@ function setupDataModalButtons() {
             };
 
             showDataTableModal(SUB_CLASS, (selectedItem) => {
+                const classTextbox = document.getElementById('ClassTextbox');
+                if (classTextbox && selectedItem.主职 && selectedItem.名称) {
+                    const mainClassName = selectedItem.主职;
+                    let subClassName = selectedItem.名称;
+                    const lastDashIndex = subClassName.lastIndexOf('-');
+
+                    if (lastDashIndex > -1) {
+                        subClassName = subClassName.substring(0, lastDashIndex).trim();
+                    }
+                    
+                    classTextbox.value = `${mainClassName}-${subClassName}`;
+                }
                 createCard(selectedItem);
             }, modalConfig);
 
