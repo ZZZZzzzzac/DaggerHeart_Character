@@ -458,6 +458,7 @@ function setupDataModalButtons() {
 
             const modalConfig = {
                 title: "选择领域卡",
+                hiddenColumns: ["类型"],
                 filterableColumns: ["领域", "等级", "属性", "回想"],
                 storageKey: "domainCardFilterState",
                 columnWidths: { 名称: '10%', 领域: '5%', 等级: '5%', 属性: '5%', 回想: '5%' }
