@@ -361,7 +361,7 @@ function setupDataModalButtons() {
                 const directMap = {
                     "名称": "ArmorNameTextbox",
                     "护甲值": "ArmorScoreTextbox",
-                    "特性": "ArmorTraitTextbox"
+                    "描述": "ArmorTraitTextbox"
                 };
                 for (const sourceKey in directMap) {
                     const targetElement = document.getElementById(directMap[sourceKey]);
