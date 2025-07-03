@@ -7,6 +7,7 @@ This file tracks the project's progress using a task list format.
 
 ## Completed Tasks
 
+* [2025-07-03 22:44:19] - **[FEAT]** 在 [`js/data_table_modal.js`](js/data_table_modal.js:1) 中实现了新功能：选择职业后，在打开领域卡选择模态框时，标题会显示当前职业的领域信息。
 * [2025-06-27 13:28:24] - **[REFACTOR]** 在 [`js/action.js`](js/action.js:1) 中重构了 `clearForm` 函数，简化了设置HP和Stress插槽默认状态的逻辑，消除了代码冗余。
 * [2025-06-27 13:22:12] - **[FEAT]** 完成了对 `clearForm` 函数的最终修改，在 [`js/action.js`](js/action.js:1) 中将默认金币设置为1个“一把金币”。
 * [2025-06-27 13:11:22] - **[FEAT]** 调整了 [`js/TriStateCheckbox.js`](js/TriStateCheckbox.js:1) 中的点击处理逻辑，禁止在 "dashed" 状态下通过左键单击切换到 "checked" 状态。

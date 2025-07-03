@@ -456,8 +456,13 @@ function setupDataModalButtons() {
                 return;
             }
 
+            let modalTitle = "选择领域卡";
+            if (window.selectedClassDomain) {
+                modalTitle = `选择领域卡                 当前职业领域：${window.selectedClassDomain}`;
+            }
+
             const modalConfig = {
-                title: "选择领域卡",
+                title: modalTitle,
                 hiddenColumns: ["类型"],
                 filterableColumns: ["领域", "等级", "属性", "回想"],
                 storageKey: "domainCardFilterState",
@@ -566,6 +571,9 @@ function setupDataModalButtons() {
             };
 
             showDataTableModal(MAIN_CLASS, (selectedItem) => {
+                // Store selected class domain
+                window.selectedClassDomain = selectedItem.领域;
+
                 // Fill Class Name
                 const classTextbox = document.getElementById('ClassTextbox');
                 if (classTextbox) {
