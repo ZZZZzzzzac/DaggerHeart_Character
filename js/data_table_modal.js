@@ -194,7 +194,7 @@ function showDataTableModal(data, onRowSelected, config = {}) {
         window.addEventListener('click', handleWindowClick);
 
         if (config.title) {
-            titleElement.textContent = config.title;
+            titleElement.innerHTML = config.title;
         }
 
         // 初始加载
@@ -456,9 +456,10 @@ function setupDataModalButtons() {
                 return;
             }
 
+            const classDomain = document.getElementById('ClassDomainTextbox')?.value;
             let modalTitle = "选择领域卡";
-            if (window.selectedClassDomain) {
-                modalTitle = `选择领域卡                 当前职业领域：${window.selectedClassDomain}`;
+            if (classDomain) {
+                modalTitle = `选择领域卡 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 当前职业领域：${classDomain}`;
             }
 
             const modalConfig = {
@@ -571,8 +572,11 @@ function setupDataModalButtons() {
             };
 
             showDataTableModal(MAIN_CLASS, (selectedItem) => {
-                // Store selected class domain
-                window.selectedClassDomain = selectedItem.领域;
+                // Store selected class domain in the hidden textbox
+                const classDomainTextbox = document.getElementById('ClassDomainTextbox');
+                if (classDomainTextbox) {
+                    classDomainTextbox.value = selectedItem.领域 || '';
+                }
 
                 // Fill Class Name
                 const classTextbox = document.getElementById('ClassTextbox');
