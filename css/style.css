@@ -58,7 +58,7 @@ body {
 @media print {
     @page {
         margin: 0;
-        size: auto;
+        size: A4;
     }
 
     /* Hide everything that is not the print wrapper */
@@ -69,6 +69,7 @@ body {
     /* Ensure the print wrapper is visible */
     #print-wrapper {
         display: block !important;
+        zoom: 1.2; /* Adjust this value as needed, 1.2 might be too large */
     }
 
     /* Reset body and html */

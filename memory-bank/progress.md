@@ -7,6 +7,7 @@ This file tracks the project's progress using a task list format.
 
 ## Completed Tasks
 
+* [2025-07-04 11:15:18] - **[FIX]** 修复了打印缩放问题。通过向 css/style.css 中的 #print-wrapper 添加 zoom: 1.2; 样式，使打印输出默认为120%缩放，同时允许用户在打印对话框中进行调整。
 * [2025-07-04 10:29:08] - **[FEAT]** 更新了 js/url_map.js 中的所有 online 图片 URL，以使用基于 local 路径的标准化 GitHub Pages 链接。
 * [2025-07-03 22:44:19] - **[FEAT]** 在 [`js/data_table_modal.js`](js/data_table_modal.js:1) 中实现了新功能：选择职业后，在打开领域卡选择模态框时，标题会显示当前职业的领域信息。
 * [2025-06-27 13:28:24] - **[REFACTOR]** 在 [`js/action.js`](js/action.js:1) 中重构了 `clearForm` 函数，简化了设置HP和Stress插槽默认状态的逻辑，消除了代码冗余。

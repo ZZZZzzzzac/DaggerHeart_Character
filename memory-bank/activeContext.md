@@ -8,6 +8,7 @@ This file tracks the project's current status, including recent changes, current
 ## Current Focus
 
 * [2025-07-03 22:46:23] - 在 `js/data_table_modal.js` 中实现了在选择领域卡时显示当前职业领域的功能。
+* [2025-07-04 11:15:03] - 修复了打印功能，通过在 CSS 中使用 zoom: 1.2 使内容在A4纸上默认以120%缩放，以更好地填充页面。
 * [2025-07-04 10:28:50] - 将 js/url_map.js 中的 online 地址更新为新的 GitHub Pages 格式。
 * [2025-06-26 17:16:31] - 开始在 js/custom.js 中添加对“种族”和“社群”卡牌类型的处理逻辑。
 * [2025-06-26 17:23:35] - 完成在 js/custom.js 中添加对“种族”和“社群”卡牌类型的处理逻辑。
