@@ -488,7 +488,7 @@ function setupDataModalButtons() {
 
             const modalConfig = {
                 title: "选择种族",
-                hiddenColumns: ["简介"],
+                hiddenColumns: ["简介","类型"],
                 storageKey: "ancestryCardFilterState",
                 columnWidths: { 名称: '10%', 特性1名称: '10%', 特性2名称: '10%' }
             };
@@ -515,7 +515,7 @@ function setupDataModalButtons() {
 
             const modalConfig = {
                 title: "选择社群",
-                hiddenColumns: ["简介","性格"],
+                hiddenColumns: ["简介","性格","类型"],
                 storageKey: "communityCardFilterState",
                 columnWidths: { 名称: '10%', 特性名称: '10%'}
             };
