@@ -141,7 +141,6 @@ function updatePageTitle() {
  */
 function saveFormStateToLocalStorage() {
     const formState = exportFormState();
-    // localStorage can handle the raw string without encoding.
     localStorage.setItem('characterSheetData', JSON.stringify(formState));
     console.log('角色表单数据已保存到 Local Storage。');
 }
@@ -167,7 +166,6 @@ function loadFormStateFromLocalStorage() {
 // On page load, load the state and then set up listeners for real-time saving.
 function setDefaultSlotStates() {
     // Set default states for HP and Stress slots
-    // This runs before loading from cookie, so cookie data will override this.
     for (let i = 1; i <= 12; i++) {
         const hpLabel = document.getElementById(`HpSlotCheckbox${i}`);
         const stressLabel = document.getElementById(`StressSlotCheckbox${i}`);
@@ -202,7 +200,6 @@ function clearForm() {
             label.checkboxInstance.setState('0');
         } else {
             label.dataset.state = '0';
-            // Manually update visuals for non-instantiated checkboxes
             label.classList.remove('state-checked', 'state-dashed');
         }
     });
@@ -211,7 +208,7 @@ function clearForm() {
     for (let i = 1; i <= 12; i++) {
         const hpLabel = document.getElementById(`HpSlotCheckbox${i}`);
         const stressLabel = document.getElementById(`StressSlotCheckbox${i}`);
-        const state = (i > 6) ? '2' : '0'; // Default state: first 6 are empty, rest are dashed
+        const state = (i > 6) ? '2' : '0';
 
         if (hpLabel && hpLabel.checkboxInstance) {
             hpLabel.checkboxInstance.setState(state);
@@ -222,21 +219,16 @@ function clearForm() {
     }
 
     // 4.5 Set default Hope and Gold
-    // Set default Hope (2 points)
     for (let i = 1; i <= 2; i++) {
         const hopeLabel = document.getElementById(`HopeSlotCheckbox${i}`);
         if (hopeLabel && hopeLabel.checkboxInstance) {
             hopeLabel.checkboxInstance.setState('1');
         }
     }
-
-    // Set default Gold (1 bag) based on user feedback pointing to bag-gold-container
     const bagGoldLabel = document.getElementById('HandfulGoldCheckbox1');
     if (bagGoldLabel && bagGoldLabel.checkboxInstance) {
         bagGoldLabel.checkboxInstance.setState('1');
     }
-
-    
 
     // 5. Clear all skill cards
     const cardContainer = document.getElementById('card-container');
@@ -271,8 +263,6 @@ function setupGlobalActionButtons() {
     const customPackBtn = document.getElementById('upload-custom-pack-btn');
     const customPackInput = document.getElementById('custom-pack-upload');
     const saveCardsBtn = document.getElementById('save-cards-btn');
-
-    // Avatar Upload Elements
     const uploadAvatarBtn = document.getElementById('upload-avatar-btn');
     const avatarUploadInput = document.getElementById('avatar-upload-input');
     const avatarImageContainer = document.getElementById('avatar-image-container');
@@ -329,7 +319,7 @@ function setupGlobalActionButtons() {
             try {
                 const state = JSON.parse(e.target.result);
                 importFormState(state);
-                saveFormStateToLocalStorage(); // Save imported state immediately
+                saveFormStateToLocalStorage();
                 alert('JSON文件已成功导入！');
             } catch (error) {
                 console.error('导入JSON失败:', error);
@@ -337,7 +327,6 @@ function setupGlobalActionButtons() {
             }
         };
         reader.readAsText(file);
-        // Reset file input to allow uploading the same file again
         fileInput.value = '';
     });
 
@@ -355,7 +344,6 @@ function setupGlobalActionButtons() {
             reader.onload = (e) => {
                 try {
                     const packData = JSON.parse(e.target.result);
-                    // 调用新的统一处理函数
                     processUploadedPack(packData);
                 } catch (error) {
                     console.error('导入自定义卡包失败:', error);
@@ -363,11 +351,10 @@ function setupGlobalActionButtons() {
                 }
             };
             reader.readAsText(file);
-            customPackInput.value = ''; // Reset input
+            customPackInput.value = '';
         });
     }
  
-
     // Save All Cards functionality
     if (saveCardsBtn) {
         saveCardsBtn.addEventListener('click', () => {
@@ -376,10 +363,7 @@ function setupGlobalActionButtons() {
                 alert('当前没有可保存的卡牌。');
                 return;
             }
-
-            // 根据要求，仅为此特定导出功能提取卡牌数据，去除位置信息。
             const cardsOnly = cardDataWithPosition.map(item => item.data);
-
             const dataStr = JSON.stringify(cardsOnly, null, 4);
             const dataBlob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(dataBlob);
@@ -393,27 +377,51 @@ function setupGlobalActionButtons() {
         });
     }
  
-     // Print functionality
+     // --- REFACTORED PRINT FUNCTIONALITY ---
      printBtn.addEventListener('click', () => {
-        // --- Prepare for printing ---
-        const textareas = document.querySelectorAll('.base-textbox');
-        const replacements = [];
+        const printArea = document.getElementById('print-area');
+        if (!printArea) {
+            console.error('Print area not found!');
+            return;
+        }
 
-        // 2. Create a temporary wrapper for printing
-        const printWrapper = document.createElement('div');
-        printWrapper.id = 'print-wrapper';
+        // 1. Clear previous print content
+        printArea.innerHTML = '';
+
+        // 2. Add Character Sheet
         const characterSheet = document.getElementById('character-sheet');
-        const cardContainer = document.getElementById('card-container');
-        const h3Container = document.getElementById('h3-container');
+        if (characterSheet) {
+            const sheetClone = characterSheet.cloneNode(true);
+            sheetClone.id = ''; // Avoid duplicate IDs
+            sheetClone.classList.add('print-section', 'print-character-sheet');
+            printArea.appendChild(sheetClone);
+        }
 
-        // 3. Populate the h3-container
-        h3Container.innerHTML = ''; // Clear previous content
-        const h3TextElements = document.querySelectorAll('.h3-text');
+        // 3. Add Skill Cards
+        const cardContainer = document.getElementById('card-container');
+        const allCards = cardContainer.querySelectorAll('.skill-card');
+        if (allCards.length > 0) {
+            const cardPrintSection = document.createElement('div');
+            cardPrintSection.className = 'print-section print-card-container';
+            allCards.forEach(card => {
+                const cardClone = card.cloneNode(true);
+                cardClone.id = ''; // Avoid duplicate IDs
+                cardPrintSection.appendChild(cardClone);
+            });
+            printArea.appendChild(cardPrintSection);
+        }
+
+        // 4. Add h3-text content
+        const h3PrintSection = document.createElement('div');
+        h3PrintSection.className = 'print-section print-h3-container';
+        // Query within the original character sheet to avoid picking up clones
+        const h3TextElements = document.querySelectorAll('#character-sheet .h3-text');
+        let hasH3Content = false;
         h3TextElements.forEach(ta => {
             if (ta.value && ta.value.trim() !== '') {
+                hasH3Content = true;
                 let title = '';
                 const id = ta.id;
-
                 const titleMap = {
                     'ClassFeatureTextbox': '职业特性',
                     'EventLogTextbox': '事件记录',
@@ -425,91 +433,62 @@ function setupGlobalActionButtons() {
                 } else if (id.includes('BackgroundAnswer')) {
                     const questionId = id.replace('Answer', 'Question');
                     const questionEl = document.getElementById(questionId);
-                    title = questionEl ? questionEl.value : '背景'; // Fallback
+                    title = questionEl ? questionEl.value : '背景';
                 } else if (id.includes('ConnectAnswer')) {
                     const questionId = id.replace('Answer', 'Question');
                     const questionEl = document.getElementById(questionId);
-                    title = questionEl ? questionEl.value : '连接'; // Fallback
+                    title = questionEl ? questionEl.value : '连接';
                 } else {
-                    title = id.replace('Textbox', ''); // Default behavior
+                    title = id.replace('Textbox', '');
                 }
 
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'h3-print-item';
                 contentDiv.innerHTML = `<h3>${title}</h3><p>${ta.value.replace(/\n/g, '<br>')}</p>`;
-                h3Container.appendChild(contentDiv);
+                h3PrintSection.appendChild(contentDiv);
             }
         });
-        
-        // Temporarily move the sheet, cards, and h3 container into the wrapper
-        if (characterSheet) printWrapper.appendChild(characterSheet);
-        if (cardContainer) printWrapper.appendChild(cardContainer);
-        if (h3Container && h3Container.hasChildNodes()) {
-            printWrapper.appendChild(h3Container);
+
+        if (hasH3Content) {
+            printArea.appendChild(h3PrintSection);
         }
         
-        document.body.appendChild(printWrapper);
-        document.body.classList.add('printing');
-
-        // --- Define the after-print cleanup ---
-        window.onafterprint = () => {
-            // 1. Restore original textareas
-            replacements.forEach(pair => {
-                pair.original.style.display = '';
-                if (pair.replacement.parentNode) {
-                    pair.replacement.parentNode.removeChild(pair.replacement);
-                }
-            });
-
-            // 2. Move elements back to the body
-            const originalSheetParent = document.body; // Or wherever it should be
-            if (characterSheet) originalSheetParent.insertBefore(characterSheet, printWrapper);
-            if (cardContainer) originalSheetParent.insertBefore(cardContainer, printWrapper);
-            if (h3Container) {
-                originalSheetParent.insertBefore(h3Container, printWrapper);
-                h3Container.innerHTML = ''; // Clear content after printing
-            }
-
-            // 3. Remove the temporary wrapper and printing class
-            if (printWrapper.parentNode) {
-                printWrapper.parentNode.removeChild(printWrapper);
-            }
-            document.body.classList.remove('printing');
-
-            // 4. Clean up the event handler
-            window.onafterprint = null;
-        };
-
-        // --- Trigger the print dialog ---
+        // 5. Trigger Print Dialog
         window.print();
+
+        // 6. Cleanup after printing (optional, as the area is hidden)
+        // Using a timeout to ensure it cleans up after the print dialog closes
+        setTimeout(() => {
+            printArea.innerHTML = '';
+        }, 1000);
+    });
+    
+    // Avatar Upload Functionality
+    if (uploadAvatarBtn && avatarUploadInput && avatarImageContainer && avatarImage && closeAvatarImageBtn && avatarTextbox) {
+        uploadAvatarBtn.addEventListener('click', () => {
+            avatarUploadInput.click();
         });
-    
-        // Avatar Upload Functionality
-        if (uploadAvatarBtn && avatarUploadInput && avatarImageContainer && avatarImage && closeAvatarImageBtn && avatarTextbox) {
-            uploadAvatarBtn.addEventListener('click', () => {
-                avatarUploadInput.click();
-            });
-    
-            avatarUploadInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        avatarImage.src = e.target.result;
-                        avatarImageContainer.style.display = 'block';
-                        avatarTextbox.style.display = 'none'; // Or avatarTextbox.disabled = true;
-                    }
-                    reader.readAsDataURL(file);
+
+        avatarUploadInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    avatarImage.src = e.target.result;
+                    avatarImageContainer.style.display = 'block';
+                    avatarTextbox.style.display = 'none';
                 }
-                avatarUploadInput.value = ''; // Reset file input
-            });
-    
-            closeAvatarImageBtn.addEventListener('click', () => {
-                avatarImage.src = '#'; // Clear image
-                avatarImageContainer.style.display = 'none';
-                avatarTextbox.style.display = 'block'; // Or avatarTextbox.disabled = false;
-            });
-        } else {
-            console.warn('One or more avatar upload elements not found in DOM.');
-        }
+                reader.readAsDataURL(file);
+            }
+            avatarUploadInput.value = '';
+        });
+
+        closeAvatarImageBtn.addEventListener('click', () => {
+            avatarImage.src = '#';
+            avatarImageContainer.style.display = 'none';
+            avatarTextbox.style.display = 'block';
+        });
+    } else {
+        console.warn('One or more avatar upload elements not found in DOM.');
     }
+}
