@@ -89,6 +89,11 @@ body {
         page-break-after: always;
         position: relative;
     }
+    
+        /* Do not break page after the last section */
+        #print-area > .print-section:last-child {
+            page-break-after: avoid;
+        }
 
     /* Style for the character sheet images */
     .print-character-sheet {
