@@ -417,6 +417,8 @@ function setupGlobalActionButtons() {
         // Query within the original character sheet to avoid picking up clones
         const h3TextElements = document.querySelectorAll('#character-sheet .h3-text');
         let hasH3Content = false;
+        let eventLogContent = null; // Store EventLogTextbox content to add last
+        
         h3TextElements.forEach(ta => {
             if (ta.value && ta.value.trim() !== '') {
                 hasH3Content = true;
@@ -445,9 +447,20 @@ function setupGlobalActionButtons() {
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'h3-print-item';
                 contentDiv.innerHTML = `<h3>${title}</h3><p>${ta.value.replace(/\n/g, '<br>')}</p>`;
-                h3PrintSection.appendChild(contentDiv);
+                
+                // If this is EventLogTextbox, store it for later instead of adding immediately
+                if (id === 'EventLogTextbox') {
+                    eventLogContent = contentDiv;
+                } else {
+                    h3PrintSection.appendChild(contentDiv);
+                }
             }
         });
+        
+        // Add EventLogTextbox content at the end if it exists
+        if (eventLogContent) {
+            h3PrintSection.appendChild(eventLogContent);
+        }
 
         if (hasH3Content) {
             printArea.appendChild(h3PrintSection);
