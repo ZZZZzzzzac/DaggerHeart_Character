@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="css/checkbox.css">
     <link rel="stylesheet" href="css/data_table_modal.css">
     <link rel="stylesheet" href="css/custom_card_modal.css">
-    <link rel="stylesheet" href="css/enemy_card_modal.css">
 </head>
 <body>
     <div id="action-container">
@@ -29,7 +28,6 @@
         <button id="add-subclass-card-btn" style="display: none;">添加子职卡</button>
         <button id="add-beast-form-card-btn">添加野兽形态卡</button>
         <button id="add-custom-card-btn" class="action-btn">添加自定义卡牌</button>
-        <button id="add-enemy-card-btn" class="action-btn">添加敌人卡牌</button>
 
         <div class="card-size-control">
             <label for="card-width-input">卡片大小:</label>
@@ -315,7 +313,6 @@
     <script src="js/card.js"></script>
     <script src="js/script.js"></script>
     <script src="js/custom_card_modal.js"></script>
-    <script src="js/enemy_card_modal.js"></script>
 
     <div id="data-table-modal" style="display: none;">
         <div class="modal-content">
@@ -349,15 +346,6 @@
         </div>
     </div>
 
-    <div id="enemy-card-modal" style="display: none;">
-        <div id="enemy-card-modal-content">
-            <span id="enemy-card-modal-close">&times;</span>
-            <h2>添加敌人卡牌</h2>
-            <div id="modal-body-content">
-                <!-- 内容将从外部文件加载 -->
-            </div>
-        </div>
-    </div>
     
     <div id="card-container"></div>
     <div id="h3-container"></div>
