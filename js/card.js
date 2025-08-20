@@ -122,14 +122,12 @@ function createCard(cardInfo) { // cardInfo can be {data, position} or just data
         } else if (typeof finalData === 'object' && finalData !== null) {
             // JSON card
             renderJsonCard(card, finalData);
-            if (finalData.isCustom) {
-                card.addEventListener('contextmenu', (e) => {
-                    e.preventDefault();
-                    if (window.customCardModal) {
-                        window.customCardModal.openForEdit(card);
-                    }
-                });
-            }
+            card.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                if (window.customCardModal) {
+                    window.customCardModal.openForEdit(card);
+                }
+            });
         }
 
         cardContainer.appendChild(card);

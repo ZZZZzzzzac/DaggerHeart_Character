@@ -121,7 +121,6 @@ class CustomCardModal {
             "名称": nameValue,
             "类型": typeValue,
             "描述": descValue,
-            "isCustom": true
         };
 
         const kvPairs = this.kvContainer.querySelectorAll('.kv-pair');
@@ -163,7 +162,7 @@ class CustomCardModal {
         document.getElementById('custom-card-desc').value = cardData['描述'] || '';
 
         Object.entries(cardData).forEach(([key, value]) => {
-            if (key !== '名称' && key !== '类型' && key !== '描述' && key !== '职业特性' && key !== 'isCustom') {
+            if (key !== '名称' && key !== '类型' && key !== '描述' && key !== '职业特性') {
                 this.addKvPair(key, value);
             }
         });

@@ -479,7 +479,7 @@ function setupDataModalButtons() {
     // Ancestry Cards
     const addAncestryCardBtn = document.getElementById('add-ancestry-card-btn');
     if (addAncestryCardBtn) {
-        addAncestryCardBtn.addEventListener('click', () => {
+        addAncestryCardBtn.addEventListener('click', async () => { // Make the event listener async
             if (typeof RACES_DATA === 'undefined') {
                 console.error('Data source variable "RACES_DATA" is not defined.');
                 alert('错误：种族数据源未定义。');
@@ -487,19 +487,45 @@ function setupDataModalButtons() {
             }
 
             const modalConfig = {
-                title: "选择种族",
-                hiddenColumns: ["简介","类型"],
+                title: "选择第一个种族",
+                hiddenColumns: ["简介", "类型"],
                 storageKey: "ancestryCardFilterState",
                 columnWidths: { 名称: '10%', 特性1名称: '10%', 特性2名称: '10%' }
             };
 
-            showDataTableModal(RACES_DATA, (selectedItem) => {
+            try {
+                // First selection
+                const selectedItem1 = await showDataTableModal(RACES_DATA, null, modalConfig);
+
+                // Second selection
+                modalConfig.title = "选择第二个种族";
+                const selectedItem2 = await showDataTableModal(RACES_DATA, null, modalConfig);
+
                 const raceTextbox = document.getElementById('RaceTextbox');
                 if (raceTextbox) {
-                    raceTextbox.value = selectedItem.名称 || '';
+                    if (selectedItem1.名称 === selectedItem2.名称) {
+                        // If both selections are the same, treat as a single selection
+                        raceTextbox.value = selectedItem1.名称 || '';
+                        createCard(selectedItem1);
+                    } else {
+                        // If selections are different, create a new mixed-race object
+                        const desc1Parts = selectedItem1.描述.split('\n');
+                        const desc2Parts = selectedItem2.描述.split('\n');
+
+                        const mixedRace = {
+                            "名称": `${selectedItem1.名称}+${selectedItem2.名称}`,
+                            "类型": "种族",
+                            "描述": `${desc1Parts[0]}\n\n${desc2Parts[1]}`
+                        };
+                        
+                        raceTextbox.value = mixedRace.名称;
+                        createCard(mixedRace);
+                    }
                 }
-                createCard(selectedItem);
-            }, modalConfig);
+
+            } catch (error) {
+                console.log('Race selection was cancelled.', error);
+            }
         });
     }
 
