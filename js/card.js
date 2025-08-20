@@ -1,4 +1,3 @@
-
 /**
  * Updates the CSS rules for skill card dimensions based on input values.
  */
@@ -123,6 +122,14 @@ function createCard(cardInfo) { // cardInfo can be {data, position} or just data
         } else if (typeof finalData === 'object' && finalData !== null) {
             // JSON card
             renderJsonCard(card, finalData);
+            if (finalData.isCustom) {
+                card.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    if (window.customCardModal) {
+                        window.customCardModal.openForEdit(card);
+                    }
+                });
+            }
         }
 
         cardContainer.appendChild(card);
@@ -191,4 +198,16 @@ function createCard(cardInfo) { // cardInfo can be {data, position} or just data
         // No mapping found, proceed with original data
         processCardCreation(data);
     }
+}
+
+function updateCard(cardElement, cardJson) {
+    cardElement.dataset.cardData = JSON.stringify(cardJson);
+    
+    // Clear existing content
+    const contentArea = cardElement.querySelector('.card-content');
+    if (contentArea) {
+        contentArea.remove();
+    }
+    
+    renderJsonCard(cardElement, cardJson);
 }
