@@ -121,13 +121,25 @@ function createCard(cardInfo) { // cardInfo can be {data, position} or just data
             card.appendChild(contentArea);
         } else if (typeof finalData === 'object' && finalData !== null) {
             // JSON card
-            renderJsonCard(card, finalData);
-            card.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                if (window.customCardModal) {
-                    window.customCardModal.openForEdit(card);
-                }
-            });
+            if (finalData.imageUrl) {
+                // If imageUrl exists, create an image card
+                const contentArea = document.createElement('div');
+                contentArea.className = 'card-content';
+                const img = document.createElement('img');
+                img.src = finalData.imageUrl;
+                img.draggable = false; // Prevent default browser image drag behavior
+                contentArea.appendChild(img);
+                card.appendChild(contentArea);
+            } else {
+                // Otherwise, render as a JSON card
+                renderJsonCard(card, finalData);
+                card.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    if (window.customCardModal) {
+                        window.customCardModal.openForEdit(card);
+                    }
+                });
+            }
         }
 
         cardContainer.appendChild(card);

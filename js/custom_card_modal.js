@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         domain: { type: '领域卡', keys: ['领域', '等级', '属性', '回想'] },
         class: { type: '主职', keys: ['领域', '初始闪避值', '初始生命点', '希望特性'] },
         subclass: { type: '子职', keys: ['主职', '等级', '施法属性'] },
-        image: { type: '图片', keys: ['图片链接'] }
+        image: { type: '图片', keys: ['imageUrl'] }
     };
 
     window.customCardModal = new CustomCardModal(
