@@ -1006,5 +1006,89 @@ const url_map = {
     "自然之力": {
         "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/领域/10/自然之力.png",
         "local": "data/全卡图/领域/10/自然之力.png"
+    },
+    "龙人族": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/种族/龙人族.png",
+        "local": "data/全卡图/种族/龙人族.png"
+    },
+    "艾露猫": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/种族/艾露猫.png",
+        "local": "data/全卡图/种族/艾露猫.png"
+    },
+    "奇面族": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/种族/奇面族.png",
+        "local": "data/全卡图/种族/奇面族.png"
+    },
+    "土龙族": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/种族/土龙族.png",
+        "local": "data/全卡图/种族/土龙族.png"
+    },
+    "海民": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/种族/海民.png",
+        "local": "data/全卡图/种族/海民.png"
+    },
+    "科科特村": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/科科特村.png",
+        "local": "data/全卡图/社群/科科特村.png"
+    },
+    "江波村": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/江波村.png",
+        "local": "data/全卡图/社群/江波村.png"
+    },
+    "东多鲁玛": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/东多鲁玛.png",
+        "local": "data/全卡图/社群/东多鲁玛.png"
+    },
+    "波凯村": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/波凯村.png",
+        "local": "data/全卡图/社群/波凯村.png"
+    },
+    "莫加村": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/莫加村.png",
+        "local": "data/全卡图/社群/莫加村.png"
+    },
+    "洁云村": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/洁云村.png",
+        "local": "data/全卡图/社群/洁云村.png"
+    },
+    "旅团": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/旅团.png",
+        "local": "data/全卡图/社群/旅团.png"
+    },
+    "贝尔纳村": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/贝尔纳村.png",
+        "local": "data/全卡图/社群/贝尔纳村.png"
+    },
+    "龙历院": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/龙历院.png",
+        "local": "data/全卡图/社群/龙历院.png"
+    },
+    "新大陆古龙调查团第一期": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/新大陆古龙调查团第一期.png",
+        "local": "data/全卡图/社群/新大陆古龙调查团第一期.png"
+    },
+    "新大陆古龙调查团第二期": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/新大陆古龙调查团第二期.png",
+        "local": "data/全卡图/社群/新大陆古龙调查团第二期.png"
+    },
+    "新大陆古龙调查团第三期": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/新大陆古龙调查团第三期.png",
+        "local": "data/全卡图/社群/新大陆古龙调查团第三期.png"
+    },
+    "新大陆古龙调查团第四期": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/新大陆古龙调查团第四期.png",
+        "local": "data/全卡图/社群/新大陆古龙调查团第四期.png"
+    },
+    "新大陆古龙调查团第五期": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/新大陆古龙调查团第五期.png",
+        "local": "data/全卡图/社群/新大陆古龙调查团第五期.png"
+    },
+    "炎火村": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/炎火村.png",
+        "local": "data/全卡图/社群/炎火村.png"
+    },
+    "埃尔迦德": {
+        "online": "https://zzzzzzzzac.github.io/DaggerHeart_Character/data/全卡图/社群/埃尔迦德.png",
+        "local": "data/全卡图/社群/埃尔迦德.png"
     }
 }
