@@ -568,7 +568,7 @@ function setupDataModalButtons() {
 
             const modalConfig = {
                 title: "选择野兽形态",
-                hiddenColumns: ["例子"],
+                hiddenColumns: ["例子","类型"],
                 filterableColumns: ["位阶", "属性", "闪避值", "攻击范围", "攻击属性", "攻击伤害", "攻击类型", "获得优势"],
                 storageKey: "beastFormCardFilterState",
                 columnWidths: { 名称: '10%', 位阶: '5%', 属性: '5%', 闪避值: '5%', 攻击范围: '5%', 攻击属性: '5%', 攻击伤害: '5%', 攻击类型: '5%', 获得优势: '10%'}
