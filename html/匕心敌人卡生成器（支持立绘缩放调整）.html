@@ -1393,21 +1393,24 @@
         
         // 导出为JSON (UPDATED: 增加 imageSrc, imageWidth, rotation)
         function exportToJSON() {
+            const thresholdValue = document.getElementById('threshold').value || '8/14'; // 默认值
+            const parts = thresholdValue.split('/');
             const data = {
-                name: document.getElementById('name').value,
-                rank: document.getElementById('rank').value,
-                type: document.getElementById('type').value,
-                description: document.getElementById('description').value,
-                motivation: document.getElementById('motivation').value,
-                weaponName: document.getElementById('weaponName').value,
-                weaponRange: document.getElementById('weaponRange').value,
-                damageDice: document.getElementById('damageDice').value,
-                damageType: document.getElementById('damageType').value,
-                difficulty: document.getElementById('difficulty').value,
-                threshold: document.getElementById('threshold').value,
-                health: document.getElementById('health').value,
-                stress: document.getElementById('stress').value,
-                attackBonus: document.getElementById('attackBonus').value,
+                名称: document.getElementById('name').value,
+                位阶: document.getElementById('rank').value,
+                种类: document.getElementById('type').value,
+                简介: document.getElementById('description').value,
+                动机与战术: document.getElementById('motivation').value,
+                攻击武器: document.getElementById('weaponName').value,
+                攻击范围: document.getElementById('weaponRange').value,
+                攻击伤害: document.getElementById('damageDice').value,
+                攻击属性: document.getElementById('damageType').value,
+                难度: document.getElementById('difficulty').value,
+                重度伤害阈值: parts[0],
+                严重伤害阈值: parts[1],
+                生命点: document.getElementById('health').value,
+                压力点: document.getElementById('stress').value,
+                攻击命中: document.getElementById('attackBonus').value,
                 
                 // NEW/UPDATED IMAGE DATA
                 imageStyle: document.querySelector('.style-option.active').getAttribute('data-style'),
@@ -1421,8 +1424,8 @@
                 },
                 // END NEW/UPDATED IMAGE DATA
 
-                experiences: Array.from(document.querySelectorAll('.experience-input')).map(input => input.value),
-                traits: [],
+                经历: Array.from(document.querySelectorAll('.experience-input')).map(input => input.value),
+                特性: [],
                 specialTraits: []
             };
             
@@ -1433,9 +1436,9 @@
                 const descInput = traitItems[i].querySelector('.trait-desc-input');
                 const flavorInput = traitItems[i].querySelector('.trait-flavor-input');
                 
-                data.traits.push({
-                    name: nameInput ? nameInput.value : '',
-                    description: descInput ? descInput.value : '',
+                data.特性.push({
+                    名称: nameInput ? nameInput.value : '',
+                    特性描述: descInput ? descInput.value : '',
                     flavor: flavorInput ? flavorInput.value : ''
                 });
             }
@@ -1495,20 +1498,31 @@
         // 从JSON数据加载表单 (UPDATED: 加载 imageSrc, imageWidth, rotation)
         function loadDataFromJSON(data) {
             // 基本数据
-            document.getElementById('name').value = data.name || '';
-            document.getElementById('rank').value = data.rank || '1';
-            document.getElementById('type').value = data.type || '标准';
-            document.getElementById('description').value = data.description || '';
-            document.getElementById('motivation').value = data.motivation || '';
-            document.getElementById('weaponName').value = data.weaponName || '';
-            document.getElementById('weaponRange').value = data.weaponRange || '';
-            document.getElementById('damageDice').value = data.damageDice || '';
-            document.getElementById('damageType').value = data.damageType || '';
-            document.getElementById('difficulty').value = data.difficulty || '12';
-            document.getElementById('threshold').value = data.threshold || '8/14';
-            document.getElementById('health').value = data.health || '5';
-            document.getElementById('stress').value = data.stress || '3';
-            document.getElementById('attackBonus').value = data.attackBonus || '1';
+            document.getElementById('name').value = data.名称 || '';
+            document.getElementById('rank').value = data.位阶 || '1';
+            document.getElementById('type').value = data.种类 || '标准';
+            document.getElementById('description').value = data.简介 || '';
+            document.getElementById('motivation').value = data.动机与战术 || '';
+            document.getElementById('weaponName').value = data.攻击武器 || '';
+            document.getElementById('weaponRange').value = data.攻击范围 || '';
+            document.getElementById('damageDice').value = data.攻击伤害 || '';
+            document.getElementById('damageType').value = data.攻击属性 || '';
+            document.getElementById('difficulty').value = data.难度 || '12';
+            document.getElementById('threshold').value = 
+  (data.重度伤害阈值 || '8') + "/" + (data.严重伤害阈值 || '14');
+            document.getElementById('health').value = data.生命点 || '5';
+            document.getElementById('stress').value = data.压力点 || '3';
+            // 处理攻击命中值，支持带符号的字符串如 "+2"
+            let attackBonusValue = '1';
+            if (data.攻击命中 !== undefined) {
+                if (typeof data.攻击命中 === 'string') {
+                    // 如果是字符串，解析数字值（支持带符号）
+                    attackBonusValue = parseInt(data.攻击命中) || 1;
+                } else {
+                    attackBonusValue = data.攻击命中;
+                }
+            }
+            document.getElementById('attackBonus').value = attackBonusValue;
 
             // 加载图片数据 (NEW/UPDATED)
             const imageSrc = data.imageSrc || ENEMY_DEFAULT_IMAGE_SRC;
@@ -1556,15 +1570,22 @@
             document.getElementById('special-traits').innerHTML = '';
             
             // 加载经历
-            if (data.experiences && data.experiences.length > 0) {
-                data.experiences.forEach(exp => addExperience(exp));
+            if (data.经历) {
+                // 如果经历是字符串，转换为单元素数组
+                if (typeof data.经历 === 'string') {
+                    addExperience(data.经历);
+                } else if (data.经历.length > 0) {
+                    data.经历.forEach(exp => addExperience(exp));
+                } else {
+                    addExperience();
+                }
             } else {
                 addExperience();
             }
             
             // 加载特性
-            if (data.traits && data.traits.length > 0) {
-                data.traits.forEach(trait => addTrait(trait.name, trait.description, trait.flavor));
+            if (data.特性 && data.特性.length > 0) {
+                data.特性.forEach(trait => addTrait(trait.名称, trait.特性描述, trait.flavor));
             } else {
                 addTrait();
             }

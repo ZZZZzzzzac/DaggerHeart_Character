@@ -1063,14 +1063,14 @@
         // 导出为JSON (增加 rotation)
         function exportToJSON() {
             const data = {
-                name: document.getElementById('name').value,
-                nameEn: document.getElementById('nameEn').value,
-                rank: document.getElementById('rank').value,
-                type: document.getElementById('type').value,
-                description: document.getElementById('description').value,
-                tendencies: document.getElementById('tendencies').value,
-                difficulty: document.getElementById('difficulty').value,
-                enemies: document.getElementById('enemies').value,
+                名称: document.getElementById('name').value,
+                原文: document.getElementById('nameEn').value,
+                位阶: document.getElementById('rank').value,
+                种类: document.getElementById('type').value,
+                简介: document.getElementById('description').value,
+                趋向: document.getElementById('tendencies').value,
+                难度: document.getElementById('difficulty').value,
+                潜在敌人: document.getElementById('enemies').value,
                 // 新增：场景图片数据
                 sceneImage: {
                     src: document.getElementById('card-scene-image-inner').src,
@@ -1082,7 +1082,7 @@
                         positionY: document.getElementById('scenePositionYSlider').value
                     }
                 },
-                traits: []
+                特性: []
             };
             
             // 收集特性
@@ -1095,11 +1095,11 @@
                 const fearCheckbox = traitItems[i].querySelector('.fear-trait-checkbox');
                 const fearCostInput = traitItems[i].querySelector('.fear-cost-input');
                 
-                data.traits.push({
-                    name: nameInput ? nameInput.value : '',
-                    type: typeSelect ? typeSelect.value : '',
-                    description: descInput ? descInput.value : '',
-                    questions: questionsInput ? questionsInput.value : '',
+                data.特性.push({
+                    名称: nameInput ? nameInput.value : '',
+                    类型: typeSelect ? typeSelect.value : '',
+                    特性描述: descInput ? descInput.value : '',
+                    特性问题: questionsInput ? questionsInput.value : '',
                     fearCost: fearCheckbox && fearCheckbox.checked ? parseInt(fearCostInput.value) : 0
                 });
             }
@@ -1145,14 +1145,14 @@
         // 从JSON数据加载表单 (增加 rotation)
         function loadDataFromJSON(data) {
             // 基本数据
-            document.getElementById('name').value = data.name || '';
-            document.getElementById('nameEn').value = data.nameEn || '';
-            document.getElementById('rank').value = data.rank || '1';
-            document.getElementById('type').value = data.type || '险境';
-            document.getElementById('description').value = data.description || '';
-            document.getElementById('tendencies').value = data.tendencies || '';
-            document.getElementById('difficulty').value = data.difficulty || '10';
-            document.getElementById('enemies').value = data.enemies || '';
+            document.getElementById('name').value = data.名称 || '';
+            document.getElementById('nameEn').value = data.原文 || '';
+            document.getElementById('rank').value = data.位阶 || '1';
+            document.getElementById('type').value = data.种类 || '险境';
+            document.getElementById('description').value = data.简介 || '';
+            document.getElementById('tendencies').value = data.趋向 || '';
+            document.getElementById('difficulty').value = data.难度 || '10';
+            document.getElementById('enemies').value = data.潜在敌人 || '';
             
             // 加载场景图片数据
             if (data.sceneImage) {
@@ -1188,9 +1188,9 @@
             document.getElementById('traits').innerHTML = '';
             
             // 加载特性
-            if (data.traits && data.traits.length > 0) {
-                data.traits.forEach(trait => 
-                    addTrait(trait.name, trait.type, trait.description, trait.questions, trait.fearCost)
+            if (data.特性 && data.特性.length > 0) {
+                data.特性.forEach(trait => 
+                    addTrait(trait.名称, trait.类型, trait.特性描述, trait.特性问题, trait.fearCost)
                 );
             } else {
                 addTrait();
