@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匕首之心敌人卡片生成器</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #3a3a3a;
+            --secondary-color: #8a1c1c;
+            --background-color: #f5f5f5;
+            --card-background: #fff;
+            --border-color: #ccc;
+            --card-border-radius: 16px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        h1, h2, h3 {
+            color: var(--secondary-color);
+        }
+        
+        .form-section {
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: var(--card-border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .action-buttons {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 15px 0;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        button:hover {
+            background-color: #6e1616;
+        }
+        
+        .card-container {
+            background-color: var(--card-background);
+            padding: 25px;
+            border-radius: var(--card-border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .enemy-card {
+            border: 2px solid var(--primary-color);
+            border-radius: var(--card-border-radius);
+            padding: 20px;
+            position: relative;
+            background: white;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .enemy-header {
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        /* 允许图片容器根据 JS 设置的 width 自适应 */
+        .enemy-header.has-image {
+            grid-template-columns: 1fr auto; 
+        }
+        
+        .enemy-text-info {
+            grid-column: 1;
+        }
+        
+        .enemy-image-container {
+            grid-column: 2;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* 宽度由 JS 设置 inline style，高度固定 */
+            height: 200px; 
+            margin: 0 auto;
+        }
+        
+        .enemy-header.has-image .enemy-image-container {
+            display: flex;
+        }
+        
+        /* 实际的立绘边框，作为 overflow 容器 */
+        .enemy-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid var(--secondary-color);
+            background-color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden; /* 关键：裁剪图片 */
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .enemy-image.square {
+            border-radius: 12px;
+        }
+        
+        /* 内部图片元素，用于缩放、平移和旋转 */
+        .enemy-image-inner {
+            display: block;
+            width: auto;
+            height: auto;
+            object-fit: initial; 
+            min-width: 1px;
+            min-height: 1px;
+            transition: transform 0.1s;
+            transform-origin: center center;
+        }
+
+        /* 以下样式保持不变 */
+        .enemy-name {
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        .enemy-rank {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .enemy-description {
+            margin: 10px 0;
+            font-style: italic;
+        }
+        
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .weapon-stat-item {
+            display: flex;
+            align-items: center;
+            margin-left: 0;
+            justify-content: flex-start;
+            width: 100%;
+        }
+        
+        .experience-container {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            margin-top: -5px;
+        }
+        
+        .enemy-traits {
+            margin: 15px 0;
+        }
+        
+        .trait-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+        
+        .trait {
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+        
+        .trait-name {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .trait-desc::before {
+            content: "● ";
+            font-weight: bold;
+        }
+        
+        .trait-flavor {
+            font-style: italic;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .special-trait {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px dashed var(--secondary-color);
+            border-radius: 4px;
+        }
+        
+        .special-trait-header {
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+        
+        .dynamic-list {
+            margin-top: 10px;
+        }
+        
+        .list-item {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .trait-item {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .trait-name-input {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .trait-desc-input {
+            width: 100%;
+            min-height: 80px;
+        }
+        
+        .trait-flavor-input {
+            width: 100%;
+            min-height: 60px;
+            font-style: italic;
+        }
+        
+        .special-trait-item {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-bottom: 15px;
+            border: 1px solid var(--secondary-color);
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .special-trait-input {
+            width: 100%;
+            margin-bottom: 10px;
+            min-height: 60px;
+        }
+        
+        .remove-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        
+        .add-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .footer p {
+            margin: 2px 0;
+        }
+        
+        .weapon-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .weapon-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        /* 对齐调整 */
+        .aligned-stats-row {
+            display: flex;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .aligned-stat-item {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .aligned-weapon-item {
+            display: flex;
+            align-items: center;
+            flex: 3;
+            padding-left: 35px;
+        }
+        
+        /* 图片编辑模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin: 0;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .preview-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        /* 预览框，尺寸由 JS 控制 */
+        .preview-frame {
+            width: 200px; 
+            height: 200px;
+            border: 3px solid var(--secondary-color);
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 10px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .preview-frame.square {
+            border-radius: 12px;
+        }
+        
+        /* 预览图片，用于 transform */
+        #previewImageInner { 
+            display: block;
+            width: auto;
+            height: auto;
+            object-fit: initial;
+            min-width: 1px;
+            min-height: 1px;
+            transition: transform 0.1s;
+            transform-origin: center center;
+        }
+        
+        .image-controls {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .slider {
+            flex: 1;
+        }
+        
+        .slider-value {
+            min-width: 40px;
+            text-align: right;
+        }
+        
+        .style-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .style-option {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .style-option.active {
+            border-color: var(--secondary-color);
+            background-color: rgba(138, 28, 28, 0.1);
+        }
+        
+        .style-preview {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 5px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+        
+        .style-option.square .style-preview {
+            border-radius: 12px;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .enemy-header, .enemy-header.has-image {
+                grid-template-columns: 1fr;
+            }
+            
+            .enemy-image-container {
+                grid-column: 1;
+                margin-top: 20px;
+                width: 100% !important; /* 在小屏幕上强制全宽 */
+                height: auto;
+            }
+
+            .enemy-image {
+                height: 200px; /* 保持高度不变 */
+            }
+            
+            .weapon-form, .weapon-form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-row, .aligned-stats-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .aligned-stat-item, .aligned-weapon-item {
+                flex: 1;
+                padding-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>匕首之心敌人卡片生成器</h1>
+    </div>
+    
+    <div class="container">
+        <div class="form-section">
+            <h2>敌人数据</h2>
+            
+            <div class="form-group">
+                <label for="name">名称</label>
+                <input type="text" id="name" placeholder="例如：锯齿刀强盗" oninput="updateCard()">
+            </div>
+            
+            <div class="form-group">
+                <label for="rank">位阶</label>
+                <select id="rank" onchange="updateCard()">
+                    <option value="1">位阶 1</option>
+                    <option value="2">位阶 2</option>
+                    <option value="3">位阶 3</option>
+                    <option value="4">位阶 4</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="type">类型</label>
+                <select id="type" onchange="updateCard()">
+                    <option value="标准">标准</option>
+                    <option value="斗士">斗士</option>
+                    <option value="集群">集群</option>
+                    <option value="头目">头目</option>
+                    <option value="杂兵">杂兵</option>
+                    <option value="远程">远程</option>
+                    <option value="潜伏">潜伏</option>
+                    <option value="社交">社交</option>
+                    <option value="独狼">独狼</option>
+                    <option value="辅助">辅助</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">描述</label>
+                <textarea id="description" placeholder="对敌人的外观和举止的概述" oninput="updateCard()"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="motivation">动机与战术</label>
+                <textarea id="motivation" placeholder="例如：逃跑、获利、偷窃、投掷烟雾弹" oninput="updateCard()"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="imageUpload">敌人立绘</label>
+                <input type="file" id="imageUpload" accept="image/*">
+                <button type="button" id="removeImage" style="margin-top: 5px; padding: 5px 10px; font-size: 12px;">移除立绘</button>
+                <button type="button" id="editImage" style="margin-top: 5px; padding: 5px 10px; font-size: 12px; display: none;">编辑立绘</button>
+            </div>
+            
+            <div class="form-group" id="imageWidthControlGroup" style="display: none;">
+                <label for="enemyImageWidth">立绘宽度 (像素)</label>
+                <div class="slider-container">
+                    <input type="range" id="enemyImageWidth" min="150" max="450" value="200" class="slider" oninput="updateCard()">
+                    <span class="slider-value" id="enemyImageWidthValue">200px</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>立绘样式</label>
+                <div class="style-toggle">
+                    <div class="style-option active" data-style="circle">
+                        <div class="style-preview">○</div>
+                        <div>圆形</div>
+                    </div>
+                    <div class="style-option" data-style="square">
+                        <div class="style-preview">□</div>
+                        <div>圆角矩形</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>武器信息</label>
+                <div class="weapon-form">
+                    <div>
+                        <label for="weaponName">武器名称</label>
+                        <input type="text" id="weaponName" placeholder="例如：匕首" oninput="updateCard()">
+                    </div>
+                    <div>
+                        <label for="weaponRange">武器范围</label>
+                        <input type="text" id="weaponRange" placeholder="例如：近战" oninput="updateCard()">
+                    </div>
+                </div>
+                <div class="weapon-form-row">
+                    <div>
+                        <label for="damageDice">伤害骰</label>
+                        <input type="text" id="damageDice" placeholder="例如：1d8+1" oninput="updateCard()">
+                    </div>
+                    <div>
+                        <label for="damageType">伤害类型</label>
+                        <input type="text" id="damageType" placeholder="例如：物理" oninput="updateCard()">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="difficulty">难度</label>
+                <input type="number" id="difficulty" value="12" min="1" max="30" oninput="updateCard()">
+            </div>
+            
+            <div class="form-group">
+                <label for="threshold">伤害阈值 (格式: 重度/严重)</label>
+                <input type="text" id="threshold" value="8/14" placeholder="例如：8/14" oninput="updateCard()">
+            </div>
+            
+            <div class="form-group">
+                <label for="health">生命点</label>
+                <input type="number" id="health" value="5" min="1" oninput="updateCard()">
+            </div>
+            
+            <div class="form-group">
+                <label for="stress">压力点</label>
+                <input type="number" id="stress" value="3" min="0" oninput="updateCard()">
+            </div>
+            
+            <div class="form-group">
+                <label for="attackBonus">攻击调整值</label>
+                <input type="number" id="attackBonus" value="1" min="-5" max="10" oninput="updateCard()">
+            </div>
+            
+            <div class="form-group">
+                <label>经历</label>
+                <div id="experiences" class="dynamic-list"></div>
+                <button type="button" class="add-btn" onclick="addExperience()">添加经历</button>
+            </div>
+            
+            <div class="form-group">
+                <label>特性</label>
+                <div id="traits" class="dynamic-list"></div>
+                <button type="button" class="add-btn" onclick="addTrait()">添加特性</button>
+            </div>
+            
+            <div class="form-group">
+                <label>特殊特性 (可选)</label>
+                <div id="special-traits" class="dynamic-list"></div>
+                <button type="button" class="add-btn" onclick="addSpecialTrait()">添加特殊特性</button>
+            </div>
+            
+            <div class="action-buttons">
+                <button type="button" onclick="updateCard()">更新卡片</button>
+                <button type="button" onclick="exportToPNG()">导出为PNG</button>
+                <button type="button" onclick="exportToJSON()">导出为JSON</button>
+                <button type="button" onclick="importFromJSON()">导入JSON</button>
+                <button type="button" onclick="resetForm()">重置表单</button>
+            </div>
+        </div>
+        
+        <div class="card-container">
+            <h2>预览</h2>
+            <div id="card-preview" class="enemy-card">
+                <div class="enemy-header" id="enemy-header">
+                    <div class="enemy-text-info">
+                        <div class="enemy-name" id="card-name">敌人名称</div>
+                        <div class="enemy-rank" id="card-rank">位阶1 标准</div>
+                        <div class="enemy-description" id="card-description">敌人描述将显示在这里</div>
+                    </div>
+                    
+                    <div class="enemy-image-container" id="enemy-image-container" style="width: 200px; height: 200px;">
+                        <div id="card-image" class="enemy-image">
+                            <img id="card-image-inner" class="enemy-image-inner" 
+                                 src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNmNWY1ZjUiLz48dGV4dCB4PSIxMDAiIHk9IjEwMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5Ij5OTyBJTUFHRTwvdGV4dD48L3N2Zz4=" alt="敌人立绘">
+                        </div>
+                    </div>
+                    </div>
+                
+                <div class="enemy-motivation" id="card-motivation">
+                    <strong>动机与战术:</strong> <span id="card-motivation-text">动机与战术将显示在这里</span>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <span class="stat-label">难度:</span>
+                            <span id="card-difficulty">12</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">阈值:</span>
+                            <span id="card-threshold">8/14</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">生命点:</span>
+                            <span id="card-health">5</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">压力点:</span>
+                            <span id="card-stress">3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="aligned-stats-row">
+                        <div class="aligned-stat-item">
+                            <span class="stat-label">攻击:</span>
+                            <span id="card-attack-bonus">+1</span>
+                        </div>
+                        <div class="aligned-weapon-item">
+                            <span class="stat-label">武器:</span>
+                            <span id="card-weapon-full">匕首:近战|1d8+1 物理</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="experience-container">
+                    <span class="stat-label">经历:</span>
+                    <span id="card-experiences">盗贼+2</span>
+                </div>
+                
+                <div class="enemy-traits">
+                    <div class="trait-header">特性</div>
+                    <div id="card-traits">
+                        <div class="trait">
+                            <span class="trait-name">如履平地</span>
+                            <span class="trait-desc">被动：锯齿刀盗贼攀爬起来和奔跑一样轻松。</span>
+                            <span class="trait-flavor">"他们像蜘蛛一样在墙壁上移动。"</span>
+                        </div>
+                        <div class="trait">
+                            <span class="trait-name">居高临下</span>
+                            <span class="trait-desc">被动：当锯齿刀盗贼从一个目标上方进行普通攻击并成功时，其造成 1d10+1 的物理伤害而非普通伤害。</span>
+                            <span class="trait-flavor">"从高处发动的攻击总是更加致命。"</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="card-special-traits" style="display: none;">
+                    <div id="special-traits-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="imageEditModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">编辑立绘</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <div class="preview-container">
+                <div class="preview-title">预览效果</div>
+                <div class="preview-frame" id="previewFrame">
+                    <img id="previewImageInner" src="" alt="预览"> 
+                </div>
+            </div>
+            
+            <div class="image-controls">
+                <div class="control-group">
+                    <label class="control-label">缩放</label>
+                    <div class="slider-container">
+                        <input type="range" id="scaleSlider" min="50" max="200" value="100" class="slider">
+                        <span class="slider-value" id="scaleValue">100%</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">旋转</label>
+                    <div class="slider-container">
+                        <input type="range" id="rotateSlider" min="-180" max="180" value="0" class="slider">
+                        <span class="slider-value" id="rotateValue">0°</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">水平位置</label>
+                    <div class="slider-container">
+                        <input type="range" id="positionXSlider" min="0" max="100" value="50" class="slider">
+                        <span class="slider-value" id="positionXValue">50%</span>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">垂直位置</label>
+                    <div class="slider-container">
+                        <input type="range" id="positionYSlider" min="0" max="100" value="50" class="slider">
+                        <span class="slider-value" id="positionYValue">50%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="style-toggle">
+                <div class="style-option active" data-style="circle">
+                    <div class="style-preview">○</div>
+                    <div>圆形</div>
+                </div>
+                <div class="style-option" data-style="square">
+                    <div class="style-preview">□</div>
+                    <div>圆角矩形</div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button id="cancelEdit" style="background-color: #666;">取消</button>
+                <button id="applyEdit" style="background-color: var(--secondary-color);">应用</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>本网页开源且免费</p>
+        <p>作者：Rink_CX | 版本：25/10-V1.5 (敌人卡V1.1)</p>
+    </div>
+
+    <script>
+        // --- 全局常量 ---
+        const ENEMY_DEFAULT_IMAGE_SRC = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNmNWY1ZjUiLz48dGV4dCB4PSIxMDAiIHk9IjEwMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5Ij5OTyBJTUFHRTwvdGV4dD48L2ZzZz4=";
+        const ENEMY_FRAME_WIDTH_DEFAULT = 200;
+        const ENEMY_FRAME_HEIGHT = 200; // 敌人立绘框的固定高度
+
+        // --- 初始化 ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加默认经历
+            addExperience('盗贼+2');
+            
+            // 添加默认特性
+            addTrait('如履平地', '被动：锯齿刀盗贼攀爬起来和奔跑一样轻松。', '"他们像蜘蛛一样在墙壁上移动。"');
+            addTrait('居高临下', '被动：当锯齿刀盗贼从一个目标上方进行普通攻击并成功时，其造成 1d10+1 的物理伤害而非普通伤害。', '"从高处发动的攻击总是更加致命。"');
+            
+            // 设置默认武器信息
+            document.getElementById('weaponName').value = '匕首';
+            document.getElementById('weaponRange').value = '近战';
+            document.getElementById('damageDice').value = '1d8+1';
+            document.getElementById('damageType').value = '物理';
+            
+            // 更新卡片
+            updateCard();
+            
+            // 添加图片上传事件监听
+            document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+            
+            // 添加移除图片按钮事件监听
+            document.getElementById('removeImage').addEventListener('click', removeImage);
+            
+            // 添加编辑图片按钮事件监听
+            document.getElementById('editImage').addEventListener('click', openImageEditor);
+            
+            // 添加样式切换事件监听
+            document.querySelectorAll('.style-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.style-option').forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    updatePreviewStyle();
+                    updateImageStyle();
+                });
+            });
+            
+            // 模态框事件监听
+            document.querySelector('.close-modal').addEventListener('click', closeImageEditor);
+            document.getElementById('cancelEdit').addEventListener('click', closeImageEditor);
+            document.getElementById('applyEdit').addEventListener('click', applyImageEdit);
+            
+            // 图片编辑控制事件监听 (NEW: 增加旋转滑块)
+            document.getElementById('scaleSlider').addEventListener('input', updatePreview);
+            document.getElementById('rotateSlider').addEventListener('input', updatePreview);
+            document.getElementById('positionXSlider').addEventListener('input', updatePreview);
+            document.getElementById('positionYSlider').addEventListener('input', updatePreview);
+        });
+
+        // --- 核心图片处理函数 ---
+
+        // 应用图片变换到指定的图片元素
+        function applyImageTransform(scale, rotation, posX, posY, element) {
+            // 偏移百分比 = 50 - 滑块值 (positionX/Y)
+            const offsetX = 50 - posX; 
+            const offsetY = 50 - posY;
+            
+            element.style.transform = `scale(${scale/100}) rotate(${rotation}deg) translate(${offsetX}%, ${offsetY}%)`;
+        }
+
+        // 处理图片上传 (UPDATED: 增加初始缩放计算和旋转重置)
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imgSrc = event.target.result;
+                    
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        const naturalWidth = tempImg.naturalWidth;
+                        const naturalHeight = tempImg.naturalHeight;
+                        const frameWidth = document.getElementById('enemyImageWidth').value || ENEMY_FRAME_WIDTH_DEFAULT;
+                        const frameHeight = ENEMY_FRAME_HEIGHT;
+
+                        // 计算让图片**完全覆盖**立绘框所需的最小缩放比例 (Cover 模式)
+                        const scaleX = frameWidth / naturalWidth;
+                        const scaleY = frameHeight / naturalHeight;
+                        const coverScaleFactor = Math.max(scaleX, scaleY);
+
+                        let initialScale = Math.ceil(coverScaleFactor * 100);
+                        // 确保在滑块范围内
+                        initialScale = Math.max(50, Math.min(200, initialScale)); 
+
+                        // 1. 设置卡片上的图片源
+                        document.getElementById('card-image-inner').src = imgSrc;
+                        // 2. 设置编辑模态框中的图片源 (ID: previewImageInner)
+                        document.getElementById('previewImageInner').src = imgSrc; 
+
+                        document.getElementById('editImage').style.display = 'inline-block';
+                        
+                        // 3. 重置编辑控制到计算出的默认值
+                        document.getElementById('scaleSlider').value = initialScale;
+                        document.getElementById('rotateSlider').value = 0; // NEW
+                        document.getElementById('positionXSlider').value = 50;
+                        document.getElementById('positionYSlider').value = 50;
+                        
+                        // 4. 应用计算出的默认值到图片并更新显示 (rotation 为 0)
+                        applyImageTransform(initialScale, 0, 50, 50, document.getElementById('card-image-inner'));
+                        
+                        updateCard();
+                    };
+                    tempImg.src = imgSrc;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // 移除图片 (UPDATED: 增加旋转和宽度重置)
+        function removeImage() {
+            document.getElementById('card-image-inner').src = ENEMY_DEFAULT_IMAGE_SRC;
+            document.getElementById('card-image-inner').style.transform = '';
+            document.getElementById('imageUpload').value = '';
+            document.getElementById('editImage').style.display = 'none';
+            
+            // 重置宽度和编辑控制值
+            document.getElementById('enemyImageWidth').value = ENEMY_FRAME_WIDTH_DEFAULT;
+            document.getElementById('scaleSlider').value = 100;
+            document.getElementById('rotateSlider').value = 0; // NEW
+            document.getElementById('positionXSlider').value = 50;
+            document.getElementById('positionYSlider').value = 50;
+
+            updateCard();
+        }
+        
+        // 更新卡片布局 (UPDATED: 增加宽度控制组显示)
+        function updateCardLayout() {
+            const cardImageInner = document.getElementById('card-image-inner');
+            const enemyHeader = document.getElementById('enemy-header');
+            const imageContainer = document.getElementById('enemy-image-container');
+            const editImageBtn = document.getElementById('editImage');
+            const widthControlGroup = document.getElementById('imageWidthControlGroup'); // NEW
+
+            const hasImage = cardImageInner.src && !cardImageInner.src.includes('data:image/svg+xml') && cardImageInner.src !== 'about:blank';
+            
+            if (hasImage) {
+                enemyHeader.classList.add('has-image');
+                editImageBtn.style.display = 'inline-block';
+                imageContainer.style.display = 'flex';
+                widthControlGroup.style.display = 'block'; // NEW
+            } else {
+                enemyHeader.classList.remove('has-image');
+                editImageBtn.style.display = 'none';
+                imageContainer.style.display = 'none';
+                widthControlGroup.style.display = 'none'; // NEW
+            }
+        }
+        
+        // 更新预览样式
+        function updatePreviewStyle() {
+            const previewFrame = document.getElementById('previewFrame');
+            // 更新预览框的尺寸以匹配当前设置的宽度
+            const currentWidth = document.getElementById('enemyImageWidth').value;
+            previewFrame.style.width = `${currentWidth}px`;
+            
+            const activeStyle = document.querySelector('#imageEditModal .style-option.active').getAttribute('data-style');
+            
+            if (activeStyle === 'circle') {
+                previewFrame.classList.remove('square');
+                previewFrame.style.borderRadius = '50%';
+            } else {
+                previewFrame.classList.add('square');
+                previewFrame.style.borderRadius = '12px';
+            }
+        }
+        
+        // 更新图片样式
+        function updateImageStyle() {
+            const cardImageFrame = document.getElementById('card-image'); // Frame is the container for overflow
+            const activeStyle = document.querySelector('.style-option.active').getAttribute('data-style');
+            
+            if (activeStyle === 'circle') {
+                cardImageFrame.classList.remove('square');
+                cardImageFrame.style.borderRadius = '50%';
+            } else {
+                cardImageFrame.classList.add('square');
+                cardImageFrame.style.borderRadius = '12px';
+            }
+        }
+        
+        // 打开图片编辑器 (UPDATED: 解析 rotation 并同步宽度)
+        function openImageEditor() {
+            document.getElementById('imageEditModal').style.display = 'flex';
+            
+            const cardImageInner = document.getElementById('card-image-inner');
+            const currentWidth = document.getElementById('enemyImageWidth').value;
+            const previewFrame = document.getElementById('previewFrame');
+
+            // 同步预览框尺寸
+            previewFrame.style.width = `${currentWidth}px`;
+            previewFrame.style.height = `${ENEMY_FRAME_HEIGHT}px`;
+
+            // 同步当前卡片图片的 transform 样式到滑块
+            const currentTransform = cardImageInner.style.transform;
+            let scale = 100;
+            let rotation = 0; // NEW
+            let posX = 50;
+            let posY = 50;
+
+            const scaleMatch = currentTransform.match(/scale\(([^)]+)\)/);
+            const rotateMatch = currentTransform.match(/rotate\(([^)]+)\)/); // NEW
+            const translateMatch = currentTransform.match(/translate\(([^)]+)\)/);
+
+            if (scaleMatch && scaleMatch[1]) {
+                 scale = parseFloat(scaleMatch[1]) * 100;
+            }
+            
+            if (rotateMatch && rotateMatch[1]) {
+                 rotation = parseFloat(rotateMatch[1].replace('deg', '')); // 提取旋转角度
+            }
+
+            if (translateMatch && translateMatch[1]) {
+                const [tx, ty] = translateMatch[1].split(',').map(s => parseFloat(s.trim().replace('%', '')));
+                posX = 50 - tx;
+                posY = 50 - ty;
+            }
+
+            document.getElementById('scaleSlider').value = scale;
+            document.getElementById('rotateSlider').value = rotation; // NEW
+            document.getElementById('positionXSlider').value = posX;
+            document.getElementById('positionYSlider').value = posY;
+
+            // 同步图片源
+            document.getElementById('previewImageInner').src = cardImageInner.src;
+            
+            // 更新预览（包括图片源和transform）
+            updatePreview();
+            updatePreviewStyle(); 
+        }
+        
+        // 关闭图片编辑器
+        function closeImageEditor() {
+            document.getElementById('imageEditModal').style.display = 'none';
+        }
+        
+        // 更新预览 (UPDATED: 增加旋转)
+        function updatePreview() {
+            const scale = document.getElementById('scaleSlider').value;
+            const rotation = document.getElementById('rotateSlider').value; // NEW
+            const posX = document.getElementById('positionXSlider').value;
+            const posY = document.getElementById('positionYSlider').value;
+            
+            document.getElementById('scaleValue').textContent = scale + '%';
+            document.getElementById('rotateValue').textContent = rotation + '°'; // NEW
+            document.getElementById('positionXValue').textContent = posX + '%';
+            document.getElementById('positionYValue').textContent = posY + '%';
+            
+            const previewImage = document.getElementById('previewImageInner'); 
+            // 应用变换
+            applyImageTransform(scale, rotation, posX, posY, previewImage);
+        }
+        
+        // 应用图片编辑 (UPDATED: 增加旋转)
+        function applyImageEdit() {
+            const scale = document.getElementById('scaleSlider').value;
+            const rotation = document.getElementById('rotateSlider').value; // NEW
+            const posX = document.getElementById('positionXSlider').value;
+            const posY = document.getElementById('positionYSlider').value;
+            const activeStyle = document.querySelector('#imageEditModal .style-option.active').getAttribute('data-style');
+            
+            // 更新卡片上的样式
+            document.querySelectorAll('.style-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.getAttribute('data-style') === activeStyle) {
+                    option.classList.add('active');
+                }
+            });
+            
+            updateImageStyle();
+            
+            // 更新卡片上的图片变换
+            const cardImageInner = document.getElementById('card-image-inner');
+            // 应用变换
+            applyImageTransform(scale, rotation, posX, posY, cardImageInner);
+            
+            closeImageEditor();
+        }
+        
+        // 添加经历输入框
+        function addExperience(value = '') {
+            const experiencesContainer = document.getElementById('experiences');
+            const div = document.createElement('div');
+            div.className = 'list-item';
+            div.innerHTML = `
+                <input type="text" class="experience-input" value="${value}" placeholder="例如：盗贼+2" style="flex: 1;" oninput="updateCard()">
+                <button type="button" class="remove-btn" onclick="this.parentElement.remove(); updateCard();">删除</button>
+            `;
+            experiencesContainer.appendChild(div);
+        }
+        
+        // 添加特性输入框
+        function addTrait(name = '', description = '', flavor = '') {
+            const traitsContainer = document.getElementById('traits');
+            const div = document.createElement('div');
+            div.className = 'trait-item';
+            div.innerHTML = `
+                <input type="text" class="trait-name-input" value="${name}" placeholder="特性名称" oninput="updateCard()">
+                <textarea class="trait-desc-input" placeholder="特性描述" oninput="updateCard()">${description}</textarea>
+                <textarea class="trait-flavor-input" placeholder="风味说明（可选）" oninput="updateCard()">${flavor}</textarea>
+                <button type="button" class="remove-btn" onclick="this.parentElement.remove(); updateCard();">删除</button>
+            `;
+            traitsContainer.appendChild(div);
+        }
+        
+        // 添加特殊特性输入框
+        function addSpecialTrait(name = '', trigger = '', choice = '', effect = '') {
+            const specialTraitsContainer = document.getElementById('special-traits');
+            const div = document.createElement('div');
+            div.className = 'special-trait-item';
+            div.innerHTML = `
+                <div class="special-trait-header">特性名称</div>
+                <input type="text" class="special-trait-name-input" value="${name}" placeholder="特殊特性名称（例如：休想得逞）" oninput="updateCard()">
+                <div class="special-trait-header">触发条件</div>
+                <textarea class="special-trait-input" placeholder="触发条件" oninput="updateCard()">${trigger}</textarea>
+                <div class="special-trait-header">选择项</div>
+                <textarea class="special-trait-input" placeholder="选择项" oninput="updateCard()">${choice}</textarea>
+                <div class="special-trait-header">效果</div>
+                <textarea class="special-trait-input" placeholder="效果" oninput="updateCard()">${effect}</textarea>
+                <button type="button" class="remove-btn" onclick="this.parentElement.remove(); updateCard();">删除</button>
+            `;
+            specialTraitsContainer.appendChild(div);
+        }
+        
+        // 更新卡片预览 (UPDATED: 增加宽度应用)
+        function updateCard() {
+            // 基本信息
+            document.getElementById('card-name').textContent = document.getElementById('name').value || '敌人名称';
+            document.getElementById('card-rank').textContent = `位阶${document.getElementById('rank').value} ${document.getElementById('type').value}`;
+            document.getElementById('card-description').textContent = document.getElementById('description').value || '敌人描述将显示在这里';
+            document.getElementById('card-motivation-text').textContent = document.getElementById('motivation').value || '动机与战术将显示在这里';
+            
+            // 统计数据
+            document.getElementById('card-difficulty').textContent = document.getElementById('difficulty').value;
+            document.getElementById('card-threshold').textContent = document.getElementById('threshold').value;
+            document.getElementById('card-health').textContent = document.getElementById('health').value;
+            document.getElementById('card-stress').textContent = document.getElementById('stress').value;
+            
+            // 攻击信息
+            const attackBonus = document.getElementById('attackBonus').value;
+            document.getElementById('card-attack-bonus').textContent = attackBonus >= 0 ? `+${attackBonus}` : attackBonus;
+            
+            // 武器信息
+            const weaponName = document.getElementById('weaponName').value || '匕首';
+            const weaponRange = document.getElementById('weaponRange').value || '';
+            const damageDice = document.getElementById('damageDice').value || '1d8+1';
+            const damageType = document.getElementById('damageType').value || '物理';
+            
+            let weaponText = weaponName;
+            if (weaponRange) {
+                weaponText += `:${weaponRange}`;
+            }
+            if (damageDice) {
+                weaponText += `|${damageDice}`;
+            }
+            if (damageType) {
+                weaponText += ` ${damageType}`;
+            }
+            
+            document.getElementById('card-weapon-full').textContent = weaponText;
+
+            // 敌人立绘宽度调整 (NEW)
+            const imageWidthContainer = document.getElementById('enemy-image-container');
+            const imageWidthSlider = document.getElementById('enemyImageWidth');
+            const imageWidthValue = document.getElementById('enemyImageWidthValue');
+            const currentWidth = imageWidthSlider.value;
+            
+            // 应用到卡片容器
+            imageWidthContainer.style.width = `${currentWidth}px`;
+            imageWidthContainer.style.height = `${ENEMY_FRAME_HEIGHT}px`;
+            imageWidthValue.textContent = `${currentWidth}px`;
+            
+            // 更新图片布局
+            updateCardLayout();
+            
+            // 经历
+            const experienceInputs = document.querySelectorAll('.experience-input');
+            const experiences = Array.from(experienceInputs).map(input => input.value).filter(val => val);
+            document.getElementById('card-experiences').textContent = experiences.join('，') || '无';
+            
+            // 特性
+            const traitsContainer = document.getElementById('card-traits');
+            traitsContainer.innerHTML = '';
+            
+            const traitNameInputs = document.querySelectorAll('#traits .trait-name-input');
+            const traitDescInputs = document.querySelectorAll('#traits .trait-desc-input');
+            const traitFlavorInputs = document.querySelectorAll('#traits .trait-flavor-input');
+            
+            for (let i = 0; i < traitNameInputs.length; i++) {
+                if (traitNameInputs[i].value || traitDescInputs[i].value) {
+                    const traitDiv = document.createElement('div');
+                    traitDiv.className = 'trait';
+                    
+                    let html = '';
+                    html += `<span class="trait-name">${traitNameInputs[i].value || '特性'}</span>`;
+                    html += `<span class="trait-desc">${traitDescInputs[i].value || '特性描述'}</span>`;
+                    
+                    // 添加风味说明
+                    if (traitFlavorInputs[i] && traitFlavorInputs[i].value) {
+                        html += `<span class="trait-flavor">${traitFlavorInputs[i].value}</span>`;
+                    }
+                    
+                    traitDiv.innerHTML = html;
+                    traitsContainer.appendChild(traitDiv);
+                }
+            }
+            
+            if (traitsContainer.children.length === 0) {
+                const traitDiv = document.createElement('div');
+                traitDiv.className = 'trait';
+                traitDiv.innerHTML = `<span class="trait-desc">无特性</span>`;
+                traitsContainer.appendChild(traitDiv);
+            }
+            
+            // 特殊特性
+            const specialTraitsContainer = document.getElementById('special-traits-container');
+            specialTraitsContainer.innerHTML = '';
+            const specialTraitSection = document.getElementById('card-special-traits');
+            
+            const specialTraitItems = document.querySelectorAll('#special-traits .special-trait-item');
+            let hasSpecialTraits = false;
+            
+            for (let i = 0; i < specialTraitItems.length; i++) {
+                const nameInput = specialTraitItems[i].querySelector('.special-trait-name-input');
+                const inputs = specialTraitItems[i].querySelectorAll('.special-trait-input');
+                
+                if ((nameInput && nameInput.value) || 
+                    (inputs.length >= 3 && 
+                    (inputs[0].value || inputs[1].value || inputs[2].value))) {
+                    hasSpecialTraits = true;
+                    
+                    const specialTraitDiv = document.createElement('div');
+                    specialTraitDiv.className = 'special-trait';
+                    
+                    let html = '';
+                    // 添加特殊特性名称作为标题
+                    if (nameInput && nameInput.value) {
+                        html += `<div class="trait-header">${nameInput.value}</div>`;
+                    }
+                    
+                    if (inputs.length >= 3) {
+                        if (inputs[0].value) {
+                            html += `<div class="special-trait-header">触发: ${inputs[0].value}</div>`;
+                        }
+                        if (inputs[1].value) {
+                            html += `<div class="special-trait-header">选择: ${inputs[1].value}</div>`;
+                        }
+                        if (inputs[2].value) {
+                            html += `<div class="trait-desc">${inputs[2].value}</div>`;
+                        }
+                    }
+                    
+                    specialTraitDiv.innerHTML = html;
+                    specialTraitsContainer.appendChild(specialTraitDiv);
+                }
+            }
+            
+            // 显示或隐藏特殊特性部分
+            specialTraitSection.style.display = hasSpecialTraits ? 'block' : 'none';
+            
+            // 更新样式
+            updateImageStyle();
+        }
+        
+        // 导出为PNG
+        function exportToPNG() {
+            html2canvas(document.getElementById('card-preview'), {
+                backgroundColor: null,
+                borderRadius: '16px'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `${document.getElementById('name').value || 'enemy'}_card.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+        
+        // 导出为JSON (UPDATED: 增加 imageSrc, imageWidth, rotation)
+        function exportToJSON() {
+            const data = {
+                name: document.getElementById('name').value,
+                rank: document.getElementById('rank').value,
+                type: document.getElementById('type').value,
+                description: document.getElementById('description').value,
+                motivation: document.getElementById('motivation').value,
+                weaponName: document.getElementById('weaponName').value,
+                weaponRange: document.getElementById('weaponRange').value,
+                damageDice: document.getElementById('damageDice').value,
+                damageType: document.getElementById('damageType').value,
+                difficulty: document.getElementById('difficulty').value,
+                threshold: document.getElementById('threshold').value,
+                health: document.getElementById('health').value,
+                stress: document.getElementById('stress').value,
+                attackBonus: document.getElementById('attackBonus').value,
+                
+                // NEW/UPDATED IMAGE DATA
+                imageStyle: document.querySelector('.style-option.active').getAttribute('data-style'),
+                imageSrc: document.getElementById('card-image-inner').src, // NEW
+                imageWidth: document.getElementById('enemyImageWidth').value, // NEW
+                imageTransform: {
+                    scale: document.getElementById('scaleSlider').value,
+                    rotation: document.getElementById('rotateSlider').value, // NEW
+                    positionX: document.getElementById('positionXSlider').value,
+                    positionY: document.getElementById('positionYSlider').value
+                },
+                // END NEW/UPDATED IMAGE DATA
+
+                experiences: Array.from(document.querySelectorAll('.experience-input')).map(input => input.value),
+                traits: [],
+                specialTraits: []
+            };
+            
+            // 收集特性
+            const traitItems = document.querySelectorAll('#traits .trait-item');
+            for (let i = 0; i < traitItems.length; i++) {
+                const nameInput = traitItems[i].querySelector('.trait-name-input');
+                const descInput = traitItems[i].querySelector('.trait-desc-input');
+                const flavorInput = traitItems[i].querySelector('.trait-flavor-input');
+                
+                data.traits.push({
+                    name: nameInput ? nameInput.value : '',
+                    description: descInput ? descInput.value : '',
+                    flavor: flavorInput ? flavorInput.value : ''
+                });
+            }
+            
+            // 收集特殊特性
+            const specialTraitItems = document.querySelectorAll('#special-traits .special-trait-item');
+            for (let i = 0; i < specialTraitItems.length; i++) {
+                const nameInput = specialTraitItems[i].querySelector('.special-trait-name-input');
+                const inputs = specialTraitItems[i].querySelectorAll('.special-trait-input');
+                
+                data.specialTraits.push({
+                    name: nameInput ? nameInput.value : '',
+                    trigger: inputs[0] ? inputs[0].value : '',
+                    choice: inputs[1] ? inputs[1].value : '',
+                    effect: inputs[2] ? inputs[2].value : ''
+                });
+            }
+            
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.download = `${document.getElementById('name').value || 'enemy'}_card.json`;
+            link.href = url;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+        
+        // 导入JSON
+        function importFromJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        try {
+                            const data = JSON.parse(event.target.result);
+                            loadDataFromJSON(data);
+                        } catch (error) {
+                            alert('导入失败：文件格式不正确');
+                            console.error(error);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            
+            input.click();
+        }
+        
+        // 从JSON数据加载表单 (UPDATED: 加载 imageSrc, imageWidth, rotation)
+        function loadDataFromJSON(data) {
+            // 基本数据
+            document.getElementById('name').value = data.name || '';
+            document.getElementById('rank').value = data.rank || '1';
+            document.getElementById('type').value = data.type || '标准';
+            document.getElementById('description').value = data.description || '';
+            document.getElementById('motivation').value = data.motivation || '';
+            document.getElementById('weaponName').value = data.weaponName || '';
+            document.getElementById('weaponRange').value = data.weaponRange || '';
+            document.getElementById('damageDice').value = data.damageDice || '';
+            document.getElementById('damageType').value = data.damageType || '';
+            document.getElementById('difficulty').value = data.difficulty || '12';
+            document.getElementById('threshold').value = data.threshold || '8/14';
+            document.getElementById('health').value = data.health || '5';
+            document.getElementById('stress').value = data.stress || '3';
+            document.getElementById('attackBonus').value = data.attackBonus || '1';
+
+            // 加载图片数据 (NEW/UPDATED)
+            const imageSrc = data.imageSrc || ENEMY_DEFAULT_IMAGE_SRC;
+            const imageWidth = data.imageWidth || ENEMY_FRAME_WIDTH_DEFAULT;
+            
+            document.getElementById('card-image-inner').src = imageSrc;
+            document.getElementById('previewImageInner').src = imageSrc;
+            document.getElementById('enemyImageWidth').value = imageWidth;
+            
+            // 设置图片样式
+            if (data.imageStyle) {
+                document.querySelectorAll('.style-option').forEach(option => {
+                    option.classList.remove('active');
+                    if (option.getAttribute('data-style') === data.imageStyle) {
+                        option.classList.add('active');
+                    }
+                });
+            }
+            
+            // 设置图片变换
+            if (data.imageTransform) {
+                const { scale, rotation, positionX, positionY } = data.imageTransform;
+                
+                // 应用变换到卡片图片
+                applyImageTransform(scale || 100, rotation || 0, positionX || 50, positionY || 50, document.getElementById('card-image-inner'));
+                
+                // 同步滑块值 (方便下次编辑)
+                document.getElementById('scaleSlider').value = scale || 100;
+                document.getElementById('rotateSlider').value = rotation || 0; // NEW
+                document.getElementById('positionXSlider').value = positionX || 50;
+                document.getElementById('positionYSlider').value = positionY || 50;
+            } else {
+                // Reset transforms if no data
+                document.getElementById('card-image-inner').style.transform = '';
+                document.getElementById('scaleSlider').value = 100;
+                document.getElementById('rotateSlider').value = 0;
+                document.getElementById('positionXSlider').value = 50;
+                document.getElementById('positionYSlider').value = 50;
+            }
+            // END NEW/UPDATED IMAGE DATA
+            
+            // 清空动态列表
+            document.getElementById('experiences').innerHTML = '';
+            document.getElementById('traits').innerHTML = '';
+            document.getElementById('special-traits').innerHTML = '';
+            
+            // 加载经历
+            if (data.experiences && data.experiences.length > 0) {
+                data.experiences.forEach(exp => addExperience(exp));
+            } else {
+                addExperience();
+            }
+            
+            // 加载特性
+            if (data.traits && data.traits.length > 0) {
+                data.traits.forEach(trait => addTrait(trait.name, trait.description, trait.flavor));
+            } else {
+                addTrait();
+            }
+            
+            // 加载特殊特性
+            if (data.specialTraits && data.specialTraits.length > 0) {
+                data.specialTraits.forEach(specialTrait => 
+                    addSpecialTrait(specialTrait.name, specialTrait.trigger, specialTrait.choice, specialTrait.effect)
+                );
+            }
+            
+            // 更新卡片
+            updateCard();
+            
+            alert('数据导入成功！');
+        }
+        
+        // 重置表单 (UPDATED: 增加旋转和宽度重置)
+        function resetForm() {
+            if (confirm('确定要重置所有内容吗？')) {
+                document.getElementById('name').value = '';
+                document.getElementById('rank').value = '1';
+                document.getElementById('type').value = '标准';
+                document.getElementById('description').value = '';
+                document.getElementById('motivation').value = '';
+                document.getElementById('difficulty').value = '12';
+                document.getElementById('threshold').value = '8/14';
+                document.getElementById('health').value = '5';
+                document.getElementById('stress').value = '3';
+                document.getElementById('attackBonus').value = '1';
+                document.getElementById('imageUpload').value = '';
+                document.getElementById('weaponName').value = '';
+                document.getElementById('weaponRange').value = '';
+                document.getElementById('damageDice').value = '';
+                document.getElementById('damageType').value = '';
+                
+                // 重置图片
+                document.getElementById('card-image-inner').src = ENEMY_DEFAULT_IMAGE_SRC;
+                document.getElementById('card-image-inner').style.transform = '';
+                document.getElementById('editImage').style.display = 'none';
+                
+                // 重置样式为默认
+                document.querySelectorAll('.style-option').forEach(option => {
+                    option.classList.remove('active');
+                    if (option.getAttribute('data-style') === 'circle') {
+                        option.classList.add('active');
+                    }
+                });
+                
+                // 重置编辑控制
+                document.getElementById('enemyImageWidth').value = ENEMY_FRAME_WIDTH_DEFAULT; // NEW
+                document.getElementById('scaleSlider').value = 100;
+                document.getElementById('rotateSlider').value = 0; // NEW
+                document.getElementById('positionXSlider').value = 50;
+                document.getElementById('positionYSlider').value = 50;
+                
+                // 清空动态列表
+                document.getElementById('experiences').innerHTML = '';
+                document.getElementById('traits').innerHTML = '';
+                document.getElementById('special-traits').innerHTML = '';
+                
+                // 添加空的经历和特性输入框
+                addExperience();
+                addTrait();
+                
+                // 更新卡片
+                updateCard();
+            }
+        }
+    </script>
+</body>
+</html>
