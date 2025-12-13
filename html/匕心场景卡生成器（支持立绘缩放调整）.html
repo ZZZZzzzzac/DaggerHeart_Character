@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匕首之心环境卡片生成器</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #3a3a3a;
+            --secondary-color: #1c538a;
+            --background-color: #f5f5f5;
+            --card-background: #fff;
+            --border-color: #ccc;
+            --card-border-radius: 16px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        h1, h2, h3 {
+            color: var(--secondary-color);
+        }
+        
+        .form-section {
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: var(--card-border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .action-buttons {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 15px 0;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        button:hover {
+            background-color: #165e8a;
+        }
+        
+        .card-container {
+            background-color: var(--card-background);
+            padding: 25px;
+            border-radius: var(--card-border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .environment-card {
+            border: 2px solid var(--primary-color);
+            border-radius: var(--card-border-radius);
+            padding: 20px;
+            position: relative;
+            background: white;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .environment-header {
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            /* 关键修改：使用 grid 布局 */
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        /* 关键修改：当有图片时，启用两列布局 */
+        .environment-header.has-image {
+            grid-template-columns: 1fr auto; /* 文本信息占 1fr，图片容器宽度自适应 */
+        }
+
+        .environment-text-info {
+            grid-column: 1;
+        }
+        
+        /* 场景立绘容器 - 矩形，尺寸可控 */
+        .environment-image-container {
+            grid-column: 2;
+            display: none; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* 容器的尺寸将由 JS 设置 inline style */
+            height: 200px; /* 固定高度 */
+            margin: 0 auto;
+        }
+        
+        .environment-header.has-image .environment-image-container {
+            display: flex;
+        }
+        
+        /* 实际的立绘图片边框 */
+        .environment-image {
+            width: 100%; 
+            height: 100%;
+            border-radius: 8px; /* 圆角矩形 */
+            border: 3px solid var(--secondary-color);
+            background-color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden; 
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* 图片元素，使用 transform 控制 */
+        .environment-image-inner {
+            display: block;
+            width: auto;
+            height: auto;
+            object-fit: initial; 
+            min-width: 1px;
+            min-height: 1px;
+            transition: transform 0.1s;
+            transform-origin: center center;
+            /* 必须确保 transform-origin 在中心，否则旋转和平移会不自然 */
+        }
+        
+        .environment-name {
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        .environment-name-en {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 5px 0;
+            color: var(--secondary-color);
+        }
+        
+        .environment-rank {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .environment-description {
+            margin: 10px 0;
+            font-style: italic;
+        }
+        
+        .environment-tendencies {
+            margin: 15px 0;
+        }
+        
+        .tendencies-label {
+            font-weight: bold;
+        }
+        
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .potential-enemies {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            margin-top: -5px;
+        }
+        
+        .environment-traits {
+            margin: 15px 0;
+        }
+        
+        .trait-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+        
+        .trait {
+            margin-bottom: 15px;
+            padding-left: 10px;
+        }
+        
+        .trait-name {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .trait-desc::before {
+            content: "● ";
+            font-weight: bold;
+        }
+        
+        .trait-questions {
+            font-style: italic;
+            margin-top: 5px;
+            display: block;
+            color: #666;
+        }
+        
+        .dynamic-list {
+            margin-top: 10px;
+        }
+        
+        .trait-item {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .trait-name-input {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .trait-type-select {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .trait-desc-input {
+            width: 100%;
+            min-height: 80px;
+            margin-bottom: 10px;
+        }
+        
+        .trait-questions-input {
+            width: 100%;
+            min-height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .fear-cost-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .remove-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        
+        .add-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .footer p {
+            margin: 2px 0;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .environment-header, .environment-header.has-image {
+                grid-template-columns: 1fr;
+            }
+
+            .environment-text-info {
+                grid-column: 1;
+            }
+
+            .environment-image-container {
+                grid-column: 1;
+                width: 100% !important; /* 在小屏幕上强制全宽 */
+                height: auto;
+            }
+
+            .environment-image {
+                height: 200px; /* 保持高度不变 */
+            }
+            
+            .stats-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 650px; 
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin: 0;
+        }
+        
+        .close-modal-scene {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .preview-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        /* 预览框，初始尺寸为 350x200 */
+        .scene-preview-frame {
+            width: 350px;
+            height: 200px;
+            border: 3px solid var(--secondary-color);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 10px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #previewSceneImage {
+            display: block; 
+            width: auto;
+            height: auto;
+            object-fit: initial;
+            min-width: 1px;
+            min-height: 1px;
+            transition: transform 0.1s;
+            transform-origin: center center;
+        }
+        
+        .image-controls {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .slider {
+            flex: 1;
+        }
+        
+        .slider-value {
+            min-width: 40px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>匕首之心环境卡片生成器</h1>
+    </div>
+    
+    <div class="container">
+        <div class="form-section">
+            <h2>环境数据</h2>
+            
+            <div class="form-group">
+                <label for="name">名称</label>
+                <input type="text" id="name" placeholder="例如：汹涌河流" oninput="updateCard()">
+            </div>
+            
+            <div class="form-group">
+                <label for="nameEn">英文名称</label>
+                <input type="text" id="nameEn" placeholder="例如：RAGING RIVER" oninput="updateCard()">
+            </div>
+            
+            <div class="form-group">
+                <label for="rank">位阶</label>
+                <select id="rank" onchange="updateCard()">
+                    <option value="1">位阶 1</option>
+                    <option value="2">位阶 2</option>
+                    <option value="3">位阶 3</option>
+                    <option value="4">位阶 4</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="type">类型</label>
+                <select id="type" onchange="updateCard()">
+                    <option value="险境">险境</option>
+                    <option value="探索">探索</option>
+                    <option value="社交">社交</option>
+                    <option value="事件">事件</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">描述</label>
+                <textarea id="description" placeholder="环境的简要描述" oninput="updateCard()"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="tendencies">趋向</label>
+                <textarea id="tendencies" placeholder="例如：阻隔通行、卷走措手不及的人、分隔两岸" oninput="updateCard()"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="difficulty">难度</label>
+                <input type="number" id="difficulty" value="10" min="1" max="30" oninput="updateCard()">
+            </div>
+            
+            <div class="form-group">
+                <label for="enemies">潜在敌人</label>
+                <textarea id="enemies" placeholder="例如：野兽（熊，玻璃蛇），锯齿刀强盗" oninput="updateCard()"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="sceneImageUpload">场景立绘</label>
+                <input type="file" id="sceneImageUpload" accept="image/*">
+                <button type="button" id="removeSceneImage" style="margin-top: 5px; padding: 5px 10px; font-size: 12px;">移除立绘</button>
+                <button type="button" id="editSceneImage" style="margin-top: 5px; padding: 5px 10px; font-size: 12px; display: none;">编辑立绘</button>
+            </div>
+            
+            <div class="form-group" id="sceneImageWidthControlGroup" style="display: none;">
+                <label for="sceneImageWidth">立绘宽度 (像素)</label>
+                <div class="slider-container">
+                    <input type="range" id="sceneImageWidth" min="150" max="450" value="350" class="slider" oninput="updateCard()">
+                    <span class="slider-value" id="sceneImageWidthValue">350px</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>特性</label>
+                <div id="traits" class="dynamic-list"></div>
+                <button type="button" class="add-btn" onclick="addTrait()">添加特性</button>
+            </div>
+            
+            <div class="action-buttons">
+                <button type="button" onclick="updateCard()">更新卡片</button>
+                <button type="button" onclick="exportToPNG()">导出为PNG</button>
+                <button type="button" onclick="exportToJSON()">导出为JSON</button>
+                <button type="button" onclick="importFromJSON()">导入JSON</button>
+                <button type="button" onclick="resetForm()">重置表单</button>
+            </div>
+        </div>
+        
+        <div class="card-container">
+            <h2>预览</h2>
+            <div id="card-preview" class="environment-card">
+                <div class="environment-header" id="environment-header">
+                    <div class="environment-text-info">
+                        <div class="environment-name" id="card-name">环境名称</div>
+                        <div class="environment-name-en" id="card-name-en">ENVIRONMENT NAME</div>
+                        <div class="environment-rank" id="card-rank">位阶1 险境</div>
+                        <div class="environment-description" id="card-description">环境描述将显示在这里</div>
+                    </div>
+
+                    <div class="environment-image-container" id="environment-image-container" style="width: 350px; height: 200px;">
+                        <div id="card-scene-image" class="environment-image">
+                             <img id="card-scene-image-inner" class="environment-image-inner" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzUwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMzUwIDIwMCI+PHJlY3Qgd2lkdGg9IjM1MCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNmNWY1ZjUiLz48dGV4dCB4PSIxNzUiIHk9IjEwMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5Ij5OTyBJTUFHRTwvdGV4dD48L2ZzZ3M+" alt="场景立绘">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="environment-tendencies">
+                    <span class="tendencies-label">趋向：</span>
+                    <span id="card-tendencies">趋向将显示在这里</span>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <span class="stat-label">难度:</span>
+                            <span id="card-difficulty">10</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="potential-enemies">
+                    <span class="stat-label">潜在敌人:</span>
+                    <span id="card-enemies">潜在敌人将显示在这里</span>
+                </div>
+                
+                <div class="environment-traits">
+                    <div class="trait-header">特性</div>
+                    <div id="card-traits">
+                        <div class="trait">
+                            <span class="trait-name">危险渡河 Dangerous Crossing - 被动</span>
+                            <span class="trait-desc">穿越河流需要队伍完成一个进展倒计时（4）。掷骰结果为恐惧失败的玩家角色会立即成为"暗流"动作的目标，而无需在该特性上花费恐惧点。</span>
+                            <span class="trait-questions">是否有玩家角色以前曾涉水渡过类似的河流？他们中是否有人害怕溺水？</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="sceneImageEditModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">编辑场景立绘</h3>
+                <button class="close-modal-scene">&times;</button>
+            </div>
+            
+            <div class="preview-container">
+                <div class="preview-title">预览效果</div>
+                <div class="scene-preview-frame" id="previewSceneFrame">
+                    <img id="previewSceneImage" src="" alt="预览">
+                </div>
+            </div>
+            
+            <div class="image-controls">
+                <div class="control-group">
+                    <label class="control-label">缩放</label>
+                    <div class="slider-container">
+                        <input type="range" id="sceneScaleSlider" min="50" max="300" value="100" class="slider">
+                        <span class="slider-value" id="sceneScaleValue">100%</span>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">旋转</label>
+                    <div class="slider-container">
+                        <input type="range" id="sceneRotateSlider" min="-180" max="180" value="0" class="slider">
+                        <span class="slider-value" id="sceneRotateValue">0°</span>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">水平位置</label>
+                    <div class="slider-container">
+                        <input type="range" id="scenePositionXSlider" min="0" max="100" value="50" class="slider">
+                        <span class="slider-value" id="scenePositionXValue">50%</span>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">垂直位置</label>
+                    <div class="slider-container">
+                        <input type="range" id="scenePositionYSlider" min="0" max="100" value="50" class="slider">
+                        <span class="slider-value" id="scenePositionYValue">50%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button id="cancelSceneEdit" style="background-color: #666;">取消</button>
+                <button id="applySceneEdit" style="background-color: var(--secondary-color);">应用</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>本网页开源且免费</p>
+        <p>作者：Rink_CX | 版本：25/10-V1.4 (场景卡V2.1)</p>
+    </div>
+
+    <script>
+        // --- 全局常量 ---
+        const SCENE_DEFAULT_IMAGE_SRC = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzUwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMzUwIDIwMCI+PHJlY3Qgd2lkdGg9IjM1MCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNmNWY1ZjUiLz48dGV4dCB4PSIxNzUiIHk9IjEwMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5Ij5OTyBJTUFHRTwvdGV4dD48L2ZzZ3M+";
+        const SCENE_FRAME_WIDTH_DEFAULT = 350; 
+        const SCENE_FRAME_HEIGHT = 200; // 场景立绘框的固定高度
+
+        // --- 初始化 ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置默认值 (保持不变)
+            document.getElementById('name').value = '汹涌河流';
+            document.getElementById('nameEn').value = 'RAGING RIVER';
+            document.getElementById('type').value = '险境';
+            document.getElementById('description').value = '一条流速湍急、没有桥梁跨越的河流，水深足以冲走大多数人。';
+            document.getElementById('tendencies').value = '阻隔通行、卷走措手不及的人、分隔两岸';
+            document.getElementById('enemies').value = '野兽（熊，玻璃蛇），锯齿刀强盗（锯齿刀咒术师，锯齿刀碎膝者，锯齿刀喽啰，锯齿刀队长，锯齿刀影子，锯齿刀狙击手）';
+            
+            // 添加默认特性 (保持不变)
+            addTrait('危险渡河 Dangerous Crossing', '被动', '穿越河流需要队伍完成一个进展倒计时（4）。掷骰结果为恐惧失败的玩家角色会立即成为"暗流"动作的目标，而无需在该特性上花费恐惧点。', '是否有玩家角色以前曾涉水渡过类似的河流？他们中是否有人害怕溺水？', 0);
+            addTrait('暗流 Undertow', '动作', '花费 1 恐惧点将一名玩家角色卷入暗流。其必须进行一次敏捷反应掷骰。失败时，受到 1d6+1 点物理伤害，并被冲向下游一个近距离范围的距离，在脱离河流前处于脆弱状态。成功时，其必须标记 1 压力点。', '河床上散落着哪些小物件和饰品？这片水域是否存在掠食者？', 1);
+            addTrait('耐心猎手 Patient Hunter', '动作', '花费 1 恐惧点在一名选定的玩家角色的近距离范围内召唤一条玻璃蛇。这条蛇出现在河流中或河流附近，并立即获得聚焦，使用其"蛇形盘旋"动作。', '这头野兽的巢穴里藏着什么财宝？已有多少旅人成为它的猎物？', 1);
+            
+            // --- 场景立绘事件监听 ---
+            document.getElementById('sceneImageUpload').addEventListener('change', handleSceneImageUpload);
+            document.getElementById('removeSceneImage').addEventListener('click', removeSceneImage);
+            document.getElementById('editSceneImage').addEventListener('click', openSceneImageEditor);
+            
+            document.querySelector('.close-modal-scene').addEventListener('click', closeSceneImageEditor);
+            document.getElementById('cancelSceneEdit').addEventListener('click', closeSceneImageEditor);
+            document.getElementById('applySceneEdit').addEventListener('click', applySceneEdit);
+
+            // 增加旋转滑块的监听
+            document.getElementById('sceneScaleSlider').addEventListener('input', updateScenePreview);
+            document.getElementById('sceneRotateSlider').addEventListener('input', updateScenePreview); 
+            document.getElementById('scenePositionXSlider').addEventListener('input', updateScenePreview);
+            document.getElementById('scenePositionYSlider').addEventListener('input', updateScenePreview);
+
+            // 更新卡片
+            updateCard();
+            updateScenePreview(); // 初始化预览
+        });
+        
+        // --- 通用图片处理函数 ---
+        // 应用图片变换到指定的图片元素
+        // 增加 rotation 参数
+        function applyImageTransform(scale, rotation, posX, posY, element) {
+            // 偏移百分比 = 50 - 滑块值 (positionX/Y)
+            const offsetX = 50 - posX; 
+            const offsetY = 50 - posY;
+            
+            element.style.transform = `scale(${scale/100}) rotate(${rotation}deg) translate(${offsetX}%, ${offsetY}%)`;
+        }
+
+        // --- 场景立绘功能实现 ---
+
+        // 处理场景图片上传
+        function handleSceneImageUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imgSrc = event.target.result;
+                    
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        const naturalWidth = tempImg.naturalWidth;
+                        const naturalHeight = tempImg.naturalHeight;
+                        const frameWidth = document.getElementById('sceneImageWidth').value || SCENE_FRAME_WIDTH_DEFAULT;
+                        const frameHeight = SCENE_FRAME_HEIGHT;
+
+                        // 计算让图片**完全覆盖**立绘框所需的最小缩放比例 (Cover 模式)
+                        const scaleX = frameWidth / naturalWidth;
+                        const scaleY = frameHeight / naturalHeight;
+                        // 取较大值确保图片覆盖整个框
+                        const coverScaleFactor = Math.max(scaleX, scaleY);
+
+                        // 转换为百分比并向上取整，作为初始缩放值
+                        let initialScale = Math.ceil(coverScaleFactor * 100);
+                        initialScale = Math.max(50, Math.min(300, initialScale));
+                        
+                        // 1. 设置卡片上的图片源
+                        document.getElementById('card-scene-image-inner').src = imgSrc;
+                        // 2. 设置编辑模态框中的图片源
+                        document.getElementById('previewSceneImage').src = imgSrc;
+
+                        document.getElementById('editSceneImage').style.display = 'inline-block';
+                        
+                        // 3. 重置编辑控制到**计算出的**默认值
+                        document.getElementById('sceneScaleSlider').value = initialScale;
+                        document.getElementById('sceneRotateSlider').value = 0; // 旋转重置为 0
+                        document.getElementById('scenePositionXSlider').value = 50;
+                        document.getElementById('scenePositionYSlider').value = 50;
+                        
+                        // 4. 应用计算出的默认值到图片并更新显示 (rotation 为 0)
+                        applyImageTransform(initialScale, 0, 50, 50, document.getElementById('card-scene-image-inner'));
+                        
+                        // 5. 更新卡片布局
+                        updateCard(); 
+                    };
+                    tempImg.src = imgSrc;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // 移除场景图片
+        function removeSceneImage() {
+            document.getElementById('card-scene-image-inner').src = SCENE_DEFAULT_IMAGE_SRC;
+            document.getElementById('sceneImageUpload').value = '';
+            document.getElementById('editSceneImage').style.display = 'none';
+            document.getElementById('card-scene-image-inner').style.transform = '';
+            
+            // 重置立绘宽度和编辑控制值
+            document.getElementById('sceneImageWidth').value = SCENE_FRAME_WIDTH_DEFAULT;
+            document.getElementById('sceneScaleSlider').value = 100;
+            document.getElementById('sceneRotateSlider').value = 0;
+            document.getElementById('scenePositionXSlider').value = 50;
+            document.getElementById('scenePositionYSlider').value = 50;
+            
+            updateCard();
+        }
+
+        // 更新卡片布局 (是否有立绘)
+        function updateCardLayout() {
+            const cardImageInner = document.getElementById('card-scene-image-inner');
+            const environmentHeader = document.getElementById('environment-header');
+            const imageContainer = document.getElementById('environment-image-container');
+            const editImageBtn = document.getElementById('editSceneImage');
+            const widthControlGroup = document.getElementById('sceneImageWidthControlGroup');
+            
+            // 检查图片源是否为默认占位图
+            const hasImage = cardImageInner.src && !cardImageInner.src.includes('data:image/svg+xml') && cardImageInner.src !== 'about:blank';
+            
+            if (hasImage) {
+                environmentHeader.classList.add('has-image');
+                editImageBtn.style.display = 'inline-block';
+                imageContainer.style.display = 'flex';
+                widthControlGroup.style.display = 'block';
+            } else {
+                environmentHeader.classList.remove('has-image');
+                editImageBtn.style.display = 'none';
+                imageContainer.style.display = 'none';
+                widthControlGroup.style.display = 'none';
+            }
+        }
+
+        // 打开场景图片编辑器
+        function openSceneImageEditor() {
+            document.getElementById('sceneImageEditModal').style.display = 'flex';
+
+            const cardImageInner = document.getElementById('card-scene-image-inner');
+            const currentWidth = document.getElementById('sceneImageWidth').value;
+            const previewFrame = document.getElementById('previewSceneFrame');
+            
+            // 同步当前卡片图片的 transform 样式到滑块
+            const currentTransform = cardImageInner.style.transform;
+            let scale = 100;
+            let rotation = 0; // 新增旋转变量
+            let posX = 50;
+            let posY = 50;
+
+            const scaleMatch = currentTransform.match(/scale\(([^)]+)\)/);
+            const rotateMatch = currentTransform.match(/rotate\(([^)]+)\)/); // 匹配 rotate
+            const translateMatch = currentTransform.match(/translate\(([^)]+)\)/);
+
+            if (scaleMatch && scaleMatch[1]) {
+                 scale = parseFloat(scaleMatch[1]) * 100;
+            }
+            
+            if (rotateMatch && rotateMatch[1]) {
+                 rotation = parseFloat(rotateMatch[1].replace('deg', '')); // 提取旋转角度
+            }
+
+            if (translateMatch && translateMatch[1]) {
+                const [tx, ty] = translateMatch[1].split(',').map(s => parseFloat(s.trim().replace('%', '')));
+                posX = 50 - tx;
+                posY = 50 - ty;
+            }
+
+            document.getElementById('sceneScaleSlider').value = scale;
+            document.getElementById('sceneRotateSlider').value = rotation; // 设置旋转滑块值
+            document.getElementById('scenePositionXSlider').value = posX;
+            document.getElementById('scenePositionYSlider').value = posY;
+
+            // 同步预览框尺寸为当前卡片宽度
+            previewFrame.style.width = `${currentWidth}px`;
+            
+            // 更新预览（包括图片源和transform）
+            document.getElementById('previewSceneImage').src = cardImageInner.src;
+            updateScenePreview();
+        }
+        
+        // 关闭场景图片编辑器
+        function closeSceneImageEditor() {
+            document.getElementById('sceneImageEditModal').style.display = 'none';
+        }
+
+        // 更新场景预览 (模态框中的预览图片)
+        function updateScenePreview() {
+            const scale = document.getElementById('sceneScaleSlider').value;
+            const rotation = document.getElementById('sceneRotateSlider').value; // 获取旋转值
+            const posX = document.getElementById('scenePositionXSlider').value;
+            const posY = document.getElementById('scenePositionYSlider').value;
+            const previewImage = document.getElementById('previewSceneImage');
+            
+            document.getElementById('sceneScaleValue').textContent = scale + '%';
+            document.getElementById('sceneRotateValue').textContent = rotation + '°'; // 更新显示
+            document.getElementById('scenePositionXValue').textContent = posX + '%';
+            document.getElementById('scenePositionYValue').textContent = posY + '%';
+            
+            // 传入 rotation
+            applyImageTransform(scale, rotation, posX, posY, previewImage);
+        }
+        
+        // 应用场景图片编辑
+        function applySceneEdit() {
+            const scale = document.getElementById('sceneScaleSlider').value;
+            const rotation = document.getElementById('sceneRotateSlider').value; // 获取旋转值
+            const posX = document.getElementById('scenePositionXSlider').value;
+            const posY = document.getElementById('scenePositionYSlider').value;
+            
+            // 更新卡片上的图片变换
+            const cardImageInner = document.getElementById('card-scene-image-inner');
+            // 传入 rotation
+            applyImageTransform(scale, rotation, posX, posY, cardImageInner);
+            
+            closeSceneImageEditor();
+        }
+        
+        // --- 核心卡片渲染函数 (保持不变) ---
+        
+        // 添加特性输入框
+        function addTrait(name = '', type = '被动', description = '', questions = '', fearCost = 0) {
+            const traitsContainer = document.getElementById('traits');
+            const div = document.createElement('div');
+            div.className = 'trait-item';
+            div.innerHTML = `
+                <input type="text" class="trait-name-input" value="${name}" placeholder="特性名称（含英文）">
+                <select class="trait-type-select" onchange="updateCard()">
+                    <option value="被动" ${type === '被动' ? 'selected' : ''}>被动</option>
+                    <option value="动作" ${type === '动作' ? 'selected' : ''}>动作</option>
+                    <option value="反应" ${type === '反应' ? 'selected' : ''}>反应</option>
+                </select>
+                <div class="fear-cost-container">
+                    <label>
+                        <input type="checkbox" class="fear-trait-checkbox" ${fearCost > 0 ? 'checked' : ''} onchange="toggleFearCost(this)"> 恐惧特性
+                    </label>
+                    <input type="number" class="fear-cost-input" value="${fearCost}" min="1" max="5" ${fearCost > 0 ? '' : 'disabled'} placeholder="恐惧点花费" style="width: 80px; margin-left: 10px;">
+                </div>
+                <textarea class="trait-desc-input" placeholder="特性描述">${description}</textarea>
+                <textarea class="trait-questions-input" placeholder="引导问题">${questions}</textarea>
+                <button type="button" class="remove-btn" onclick="this.parentElement.remove(); updateCard();">删除</button>
+            `;
+            traitsContainer.appendChild(div);
+        }
+        
+        // 切换恐惧特性成本输入框状态
+        function toggleFearCost(checkbox) {
+            const fearCostInput = checkbox.parentElement.parentElement.querySelector('.fear-cost-input');
+            fearCostInput.disabled = !checkbox.checked;
+            if (!checkbox.checked) {
+                fearCostInput.value = 0;
+            } else {
+                fearCostInput.value = 1;
+            }
+            updateCard();
+        }
+        
+        // 更新卡片预览
+        function updateCard() {
+            // 基本信息
+            document.getElementById('card-name').textContent = document.getElementById('name').value || '环境名称';
+            document.getElementById('card-name-en').textContent = document.getElementById('nameEn').value || 'ENVIRONMENT NAME';
+            document.getElementById('card-rank').textContent = `位阶${document.getElementById('rank').value} ${document.getElementById('type').value}`;
+            document.getElementById('card-description').textContent = document.getElementById('description').value || '环境描述将显示在这里';
+            document.getElementById('card-tendencies').textContent = document.getElementById('tendencies').value || '趋向将显示在这里';
+            
+            // 统计数据
+            document.getElementById('card-difficulty').textContent = document.getElementById('difficulty').value;
+            
+            // 潜在敌人
+            document.getElementById('card-enemies').textContent = document.getElementById('enemies').value || '潜在敌人将显示在这里';
+
+            // 场景立绘宽度调整
+            const imageWidthContainer = document.getElementById('environment-image-container');
+            const imageWidthSlider = document.getElementById('sceneImageWidth');
+            const imageWidthValue = document.getElementById('sceneImageWidthValue');
+            const currentWidth = imageWidthSlider.value;
+            
+            // 应用到卡片容器
+            imageWidthContainer.style.width = `${currentWidth}px`;
+            imageWidthValue.textContent = `${currentWidth}px`;
+            
+            // 更新图片布局
+            updateCardLayout();
+            
+            // 特性
+            const traitsContainer = document.getElementById('card-traits');
+            traitsContainer.innerHTML = '';
+            
+            const traitItems = document.querySelectorAll('#traits .trait-item');
+            
+            for (let i = 0; i < traitItems.length; i++) {
+                const nameInput = traitItems[i].querySelector('.trait-name-input');
+                const typeSelect = traitItems[i].querySelector('.trait-type-select');
+                const descInput = traitItems[i].querySelector('.trait-desc-input');
+                const questionsInput = traitItems[i].querySelector('.trait-questions-input');
+                const fearCheckbox = traitItems[i].querySelector('.fear-trait-checkbox');
+                const fearCostInput = traitItems[i].querySelector('.fear-cost-input');
+                
+                if (nameInput.value || descInput.value) {
+                    const traitDiv = document.createElement('div');
+                    traitDiv.className = 'trait';
+                    
+                    let traitName = nameInput.value || '特性';
+                    if (typeSelect.value) {
+                        traitName += ` - ${typeSelect.value}`;
+                    }
+                    
+                    if (fearCheckbox.checked && fearCostInput.value > 0) {
+                        traitName += ` [${fearCostInput.value}恐惧点]`;
+                    }
+                    
+                    let html = `<span class="trait-name">${traitName}</span>`;
+                    
+                    if (descInput.value) {
+                        html += `<span class="trait-desc">${descInput.value}</span>`;
+                    }
+                    
+                    if (questionsInput.value) {
+                        html += `<span class="trait-questions">${questionsInput.value}</span>`;
+                    }
+                    
+                    traitDiv.innerHTML = html;
+                    traitsContainer.appendChild(traitDiv);
+                }
+            }
+            
+            if (traitsContainer.children.length === 0) {
+                const traitDiv = document.createElement('div');
+                traitDiv.className = 'trait';
+                traitDiv.innerHTML = `<span class="trait-desc">无特性</span>`;
+                traitsContainer.appendChild(traitDiv);
+            }
+        }
+        
+        // 导出为PNG
+        function exportToPNG() {
+            html2canvas(document.getElementById('card-preview'), {
+                backgroundColor: null,
+                borderRadius: '16px'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `${document.getElementById('name').value || 'environment'}_card.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+        
+        // 导出为JSON (增加 rotation)
+        function exportToJSON() {
+            const data = {
+                name: document.getElementById('name').value,
+                nameEn: document.getElementById('nameEn').value,
+                rank: document.getElementById('rank').value,
+                type: document.getElementById('type').value,
+                description: document.getElementById('description').value,
+                tendencies: document.getElementById('tendencies').value,
+                difficulty: document.getElementById('difficulty').value,
+                enemies: document.getElementById('enemies').value,
+                // 新增：场景图片数据
+                sceneImage: {
+                    src: document.getElementById('card-scene-image-inner').src,
+                    width: document.getElementById('sceneImageWidth').value,
+                    transform: {
+                        scale: document.getElementById('sceneScaleSlider').value,
+                        rotation: document.getElementById('sceneRotateSlider').value, // 导出 rotation
+                        positionX: document.getElementById('scenePositionXSlider').value,
+                        positionY: document.getElementById('scenePositionYSlider').value
+                    }
+                },
+                traits: []
+            };
+            
+            // 收集特性
+            const traitItems = document.querySelectorAll('#traits .trait-item');
+            for (let i = 0; i < traitItems.length; i++) {
+                const nameInput = traitItems[i].querySelector('.trait-name-input');
+                const typeSelect = traitItems[i].querySelector('.trait-type-select');
+                const descInput = traitItems[i].querySelector('.trait-desc-input');
+                const questionsInput = traitItems[i].querySelector('.trait-questions-input');
+                const fearCheckbox = traitItems[i].querySelector('.fear-trait-checkbox');
+                const fearCostInput = traitItems[i].querySelector('.fear-cost-input');
+                
+                data.traits.push({
+                    name: nameInput ? nameInput.value : '',
+                    type: typeSelect ? typeSelect.value : '',
+                    description: descInput ? descInput.value : '',
+                    questions: questionsInput ? questionsInput.value : '',
+                    fearCost: fearCheckbox && fearCheckbox.checked ? parseInt(fearCostInput.value) : 0
+                });
+            }
+            
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.download = `${document.getElementById('name').value || 'environment'}_card.json`;
+            link.href = url;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+        
+        // 导入JSON
+        function importFromJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        try {
+                            const data = JSON.parse(event.target.result);
+                            loadDataFromJSON(data);
+                        } catch (error) {
+                            alert('导入失败：文件格式不正确');
+                            console.error(error);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            
+            input.click();
+        }
+        
+        // 从JSON数据加载表单 (增加 rotation)
+        function loadDataFromJSON(data) {
+            // 基本数据
+            document.getElementById('name').value = data.name || '';
+            document.getElementById('nameEn').value = data.nameEn || '';
+            document.getElementById('rank').value = data.rank || '1';
+            document.getElementById('type').value = data.type || '险境';
+            document.getElementById('description').value = data.description || '';
+            document.getElementById('tendencies').value = data.tendencies || '';
+            document.getElementById('difficulty').value = data.difficulty || '10';
+            document.getElementById('enemies').value = data.enemies || '';
+            
+            // 加载场景图片数据
+            if (data.sceneImage) {
+                const { src, width, transform } = data.sceneImage;
+                
+                // 1. 设置图片源
+                document.getElementById('card-scene-image-inner').src = src || SCENE_DEFAULT_IMAGE_SRC;
+                document.getElementById('previewSceneImage').src = src || SCENE_DEFAULT_IMAGE_SRC;
+                
+                // 2. 设置立绘宽度
+                const currentWidth = width || SCENE_FRAME_WIDTH_DEFAULT;
+                document.getElementById('sceneImageWidth').value = currentWidth;
+                
+                // 3. 设置图片变换
+                if (transform) {
+                    const { scale, rotation, positionX, positionY } = transform;
+                    // 应用变换到卡片图片
+                    applyImageTransform(scale || 100, rotation || 0, positionX || 50, positionY || 50, document.getElementById('card-scene-image-inner'));
+                    // 同步滑块值 (方便下次编辑)
+                    document.getElementById('sceneScaleSlider').value = scale || 100;
+                    document.getElementById('sceneRotateSlider').value = rotation || 0; // 设置 rotation 滑块
+                    document.getElementById('scenePositionXSlider').value = positionX || 50;
+                    document.getElementById('scenePositionYSlider').value = positionY || 50;
+                }
+            } else {
+                 // 如果没有图片数据，则重置图片
+                document.getElementById('card-scene-image-inner').src = SCENE_DEFAULT_IMAGE_SRC;
+                document.getElementById('card-scene-image-inner').style.transform = '';
+                document.getElementById('sceneImageWidth').value = SCENE_FRAME_WIDTH_DEFAULT;
+            }
+
+            // 清空特性列表
+            document.getElementById('traits').innerHTML = '';
+            
+            // 加载特性
+            if (data.traits && data.traits.length > 0) {
+                data.traits.forEach(trait => 
+                    addTrait(trait.name, trait.type, trait.description, trait.questions, trait.fearCost)
+                );
+            } else {
+                addTrait();
+            }
+            
+            // 更新卡片
+            updateCard();
+            
+            alert('数据导入成功！');
+        }
+        
+        // 重置表单 (增加 rotation 重置)
+        function resetForm() {
+            if (confirm('确定要重置所有内容吗？')) {
+                document.getElementById('name').value = '';
+                document.getElementById('nameEn').value = '';
+                document.getElementById('rank').value = '1';
+                document.getElementById('type').value = '险境';
+                document.getElementById('description').value = '';
+                document.getElementById('tendencies').value = '';
+                document.getElementById('difficulty').value = '10';
+                document.getElementById('enemies').value = '';
+
+                // 重置图片
+                document.getElementById('card-scene-image-inner').src = SCENE_DEFAULT_IMAGE_SRC;
+                document.getElementById('card-scene-image-inner').style.transform = '';
+                document.getElementById('editSceneImage').style.display = 'none';
+                
+                // 重置图片宽度和编辑控制
+                document.getElementById('sceneImageUpload').value = '';
+                document.getElementById('sceneImageWidth').value = SCENE_FRAME_WIDTH_DEFAULT;
+                document.getElementById('sceneScaleSlider').value = 100;
+                document.getElementById('sceneRotateSlider').value = 0; // 重置 rotation
+                document.getElementById('scenePositionXSlider').value = 50;
+                document.getElementById('scenePositionYSlider').value = 50;
+                
+                // 清空特性列表
+                document.getElementById('traits').innerHTML = '';
+                
+                // 添加空的特性输入框
+                addTrait();
+                
+                // 更新卡片
+                updateCard();
+            }
+        }
+    </script>
+</body>
+</html>
