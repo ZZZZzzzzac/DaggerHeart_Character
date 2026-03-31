@@ -300,8 +300,20 @@ function setupGlobalActionButtons() {
      * @returns {Promise<string[]>} 子文件夹名称数组
      */
     async function scanSkinFolders() {
+        // 1. 尝试读取预构建的 folders.json（生产环境推荐，避免 403）
+        try {
+            const listRes = await fetch('skin/folders.json?_=' + Date.now());
+            if (listRes.ok) {
+                const list = await listRes.json();
+                if (Array.isArray(list)) return list;
+            }
+        } catch (e) {
+            // 静默降级
+        }
+
+        // 2. 回退：直接请求目录并解析 HTML（依赖本地 Python 服务器等开启了目录浏览的环境）
         const res = await fetch('skin/?_=' + Date.now());
-        if (!res.ok) throw new Error('无法访问 skin/ 目录，请确认使用 HTTP 服务器打开项目。');
+        if (!res.ok) throw new Error('无法加载皮肤列表。请通过脚本生成 skin/folders.json，或在 Nginx 中配置 autoindex on;');
         const html = await res.text();
 
         const parser = new DOMParser();
@@ -310,9 +322,9 @@ function setupGlobalActionButtons() {
 
         doc.querySelectorAll('a[href]').forEach(a => {
             const href = a.getAttribute('href');
-            // 目录链接以 / 结尾，排除父目录 ../ 和绝对路径
+            // 目录链接以 / 结尾，排除父目录 ../
             if (href && href.endsWith('/') && !href.startsWith('..') && !href.startsWith('/') && !href.startsWith('http')) {
-                const name = href.replace(/\/$/, '');
+                const name = decodeURIComponent(href.replace(/\/$/, ''));
                 if (name) folders.push(name);
             }
         });
