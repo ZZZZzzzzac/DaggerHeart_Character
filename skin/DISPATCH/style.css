@@ -1,0 +1,629 @@
+:root {
+    --bg-dark: #121c19;
+    --border-light: #e6dfcd;
+    --panel-bg: #ecdcc3;
+    --label-bg: #ccaf90;
+    --active-tab: #cd7e36;
+    --inactive-tab: #517163;
+    --text-dark: #372a23;
+    --text-muted: #6e867d;
+    --font-main: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    --border-color: #372a23;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    background-color: var(--bg-dark);
+    background-image: 
+        linear-gradient(rgba(81, 113, 99, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(81, 113, 99, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    font-family: var(--font-main);
+    color: var(--text-dark);
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    max-height: 800px;
+    border: 4px solid var(--border-color);
+    outline: 4px solid var(--border-light);
+    outline-offset: -8px;
+    background-color: var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+/* Header */
+.top-bar, .bottom-bar {
+    color: var(--text-muted);
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--border-light);
+    margin-right: 15px;
+}
+
+.bottom-bar {
+    justify-content: center;
+    padding: 10px 0 0 0;
+}
+
+.main-wrapper {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+/* Tab Bar */
+.tab-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 8px;
+    margin-left: 17%;
+}
+
+.tab {
+    padding: 8px 50px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 3px solid var(--border-color);
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.tab.active  { background-color: var(--active-tab);   color: white; }
+.tab.inactive { background-color: var(--inactive-tab); color: white; }
+.tab-icon { font-weight: normal; }
+
+.key-hint {
+    background-color: #d8c29b;
+    border: 2px solid var(--border-color);
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--text-dark);
+    border-radius: 4px;
+    box-shadow: 1px 1px 0 var(--border-color);
+}
+
+.tab-btn { margin: 0 5px; }
+
+/* Content Area */
+.content-area {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* ── Left Column : 等级 / 闪避 / 护甲 ── */
+.col-left {
+    display: flex;
+    flex-direction: column;
+    width: 120px;
+    min-height: 0;
+    gap: 20px;
+}
+
+.stat-block, .bottom-block {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--panel-bg);
+}
+
+.col-left .stat-block {
+    flex: 1;
+    position: relative;
+}
+
+.col-left .stat-block::before {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    bottom: -15px;
+    right: -15px;
+    background: linear-gradient(135deg, transparent 50%, #9aa597 50%);
+    z-index: 0;
+}
+
+/* 数字显示（替代 textarea） */
+.stat-number {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(28px, 5cqw, 48px);
+    font-weight: bold;
+    color: var(--text-dark);
+    border-left: 4px solid var(--border-light);
+    border-top: 4px solid var(--border-light);
+    border-right: 2px solid var(--border-color);
+    z-index: 1;
+    position: relative;
+    letter-spacing: 1px;
+    user-select: none;
+}
+
+.stat-label {
+    background-color: var(--label-bg);
+    text-align: center;
+    padding: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    z-index: 1;
+    position: relative;
+    border-left: 4px solid var(--border-light);
+    border-right: 2px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+}
+
+/* ── Middle Column ── */
+.col-middle {
+    flex: 2.5;
+    min-height: 0;
+    display: flex;
+    position: relative;
+}
+
+.central-panel {
+    background-color: var(--panel-bg);
+    border: 4px solid var(--border-color);
+    outline: 4px solid var(--border-light);
+    outline-offset: -4px;
+    width: 100%;
+    min-height: 0;
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 阈值行 */
+.threshold-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #dacfbe;
+    border: 2px solid var(--border-color);
+    padding: 6px 12px;
+    align-self: flex-end;
+    margin-right: -10px;
+}
+
+.threshold-label {
+    font-weight: bold;
+    font-size: 15px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.threshold-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text-dark);
+    letter-spacing: 2px;
+}
+
+/* 头像 + 属性 横排 */
+.mid-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    gap: 16px;
+    overflow: hidden;
+}
+
+/* 头像区 */
+.avatar-panel {
+    flex: 1.8;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid var(--border-color);
+    background-color: #1e2a24;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-panel img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+/* 头像无图时占位 */
+.avatar-panel img:not([src]), .avatar-panel img[src=""] {
+    display: none;
+}
+
+.avatar-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 10px 10px;
+    background: linear-gradient(to top, rgba(10,15,12,0.92) 60%, transparent);
+    color: #e6dfcd;
+}
+
+.avatar-name {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1.2;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    margin-bottom: 5px;
+}
+
+.avatar-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.avatar-tag {
+    font-size: 11px;
+    background-color: rgba(205, 126, 54, 0.75);
+    color: #fff;
+    border: 1px solid rgba(230, 223, 205, 0.4);
+    border-radius: 2px;
+    padding: 1px 6px;
+    letter-spacing: 0.5px;
+}
+
+/* 六维属性 */
+.attributes-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.attr-row {
+    display: flex;
+    align-items: stretch;
+    border: 2px solid var(--border-color);
+    background-color: #ffffff;
+}
+
+.attr-label {
+    background-color: var(--panel-bg);
+    font-weight: bold;
+    font-size: 15px;
+    padding: 5px 10px;
+    width: 85px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-right: 2px solid var(--border-color);
+}
+
+.attr-input {
+    flex: 1;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: inherit;
+    color: var(--text-dark);
+    padding: 5px 8px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-placeholder {
+    display: inline-block;
+    width: 22px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.btn-return {
+    /* position: absolute; */
+    /* bottom: -18px; */
+    /* left: 45%; */
+    /* transform: translateX(-50%); */
+    background-color: var(--label-bg);
+    border: 3px solid var(--border-color);
+    padding: 6px 20px;
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 2px 2px 0 var(--border-color);
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* ── Right Column : Radar + 武器信息 ── */
+.col-right {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    margin-right: 15px;
+}
+
+.radar-panel {
+    background-color: var(--panel-bg);
+    border: 0px solid var(--border-color);
+    outline: 4px solid var(--border-light);
+    outline-offset: -4px;
+    flex: 1;
+    min-height: 0;
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    box-sizing: border-box;
+}
+
+/* 武器 / 护甲 / 阈值 信息面板 */
+.weapon-info-panel {
+    background-color: var(--panel-bg);
+    border: 3px solid var(--border-color);
+    outline: 2px solid var(--border-light);
+    outline-offset: -3px;
+    padding: 7px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.wi-row {
+    font-size: 11.5px;
+    color: var(--text-dark);
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wi-row:empty { display: none; }
+
+/* 特质行：小字、圆鹰开头、换行 */
+.wi-trait {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    white-space: normal;
+    padding-left: 10px;
+    text-indent: -10px;
+}
+
+.wi-divider {
+    height: 1px;
+    background-color: rgba(55, 42, 35, 0.25);
+    margin: 2px 0;
+}
+
+.radar-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#radarChart {
+    max-width: 100%;
+    max-height: 100%;
+    z-index: 1;
+}
+
+.side-tab {
+    position: absolute;
+    right: -45px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+}
+
+.folder-icon {
+    background-color: var(--inactive-tab);
+    color: white;
+    border: 3px solid var(--border-light);
+    outline: 2px solid var(--border-color);
+    padding: 8px;
+    font-size: 24px;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    cursor: pointer;
+}
+
+/* ── Bottom Row ── */
+.bottom-row {
+    display: flex;
+    height: 160px;
+    gap: 20px;
+}
+
+.bottom-block {
+    flex: 1;
+    border-left: 4px solid var(--border-light);
+    border-top: 4px solid var(--border-light);
+    border-right: 2px solid var(--border-color);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.bottom-block::before {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    bottom: -15px;
+    right: -15px;
+    background: linear-gradient(135deg, transparent 50%, #f7eedb 50%);
+    z-index: 0;
+}
+
+.box-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    resize: none;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-dark);
+    z-index: 1;
+    position: relative;
+}
+
+.bottom-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+textarea::-webkit-scrollbar { width: 4px; }
+textarea::-webkit-scrollbar-thumb { background: #ba9d7a; }
+
+/* ── 资源追踪器（Resource Block）── */
+.resource-block {
+    background-color: var(--panel-bg);
+}
+
+#resource-tracker-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 6px 8px;
+    overflow: hidden;
+}
+
+/* DH.ResourceWidget 生成的行 */
+.dh-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 0;
+}
+
+.dh-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--text-dark);
+    width: 28px;
+    flex-shrink: 0;
+    text-align: right;
+}
+
+.dh-btn {
+    background-color: var(--label-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 9px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
+    color: var(--text-dark);
+    line-height: 1;
+}
+.dh-btn:hover { background-color: var(--active-tab); color: white; }
+.dh-btn:active { transform: scale(0.9); }
+
+.dh-count {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--text-dark);
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* 皮肤自定义展示区（emoji 序列） */
+.dh-display {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1px;
+    flex: 1;
+    align-items: center;
+    overflow: hidden;
+}
+
+.dh-pip {
+    font-size: 14px;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+}
+.dh-pip.empty { opacity: 0.4; }
+
+/* ── Radar Icons ── */
+.radar-icon {
+    position: absolute;
+    font-size: 18px;
+    background-color: #55534c;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: 2px solid var(--border-light);
+    box-shadow: 0 0 4px rgba(0,0,0,0.6);
+    z-index: 2;
+}
+
+.top-icon          { top: 0;    left: 50%; transform: translateX(-50%); }
+.top-right-icon    { top: 25%;  right: 5%; }
+.bottom-right-icon { bottom: 25%; right: 5%; }
+.bottom-icon       { bottom: 0; left: 50%; transform: translateX(-50%); }
+.bottom-left-icon  { bottom: 25%; left: 5%; }
+.top-left-icon     { top: 25%;  left: 5%; }
+

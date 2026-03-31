@@ -283,6 +283,161 @@ function setupGlobalActionButtons() {
         });
     }
     
+    // -------------------------------------------------------
+    // 使用皮肤按钮 - 弹出皮肤选择框
+    // -------------------------------------------------------
+    const viewSkinBtn = document.getElementById('view-skin-btn');
+    const skinModal   = document.getElementById('skin-selector-modal');
+    const skinList    = document.getElementById('skin-list');
+    const cancelBtn   = document.getElementById('skin-selector-cancel');
+    const confirmBtn  = document.getElementById('skin-selector-confirm');
+
+    let selectedSkinId = null; // 当前选中的皮肤 id
+
+    /**
+     * 扫描 skin/ 目录，通过解析 HTTP 目录列表 HTML 获取所有子文件夹名称。
+     * 适用于 VS Code Live Server、Python http.server 等带目录浏览的本地服务器。
+     * @returns {Promise<string[]>} 子文件夹名称数组
+     */
+    async function scanSkinFolders() {
+        const res = await fetch('skin/?_=' + Date.now());
+        if (!res.ok) throw new Error('无法访问 skin/ 目录，请确认使用 HTTP 服务器打开项目。');
+        const html = await res.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const folders = [];
+
+        doc.querySelectorAll('a[href]').forEach(a => {
+            const href = a.getAttribute('href');
+            // 目录链接以 / 结尾，排除父目录 ../ 和绝对路径
+            if (href && href.endsWith('/') && !href.startsWith('..') && !href.startsWith('/') && !href.startsWith('http')) {
+                const name = href.replace(/\/$/, '');
+                if (name) folders.push(name);
+            }
+        });
+
+        return folders;
+    }
+
+    /**
+     * 尝试读取某个皮肤文件夹内的 skin.json。
+     * 若文件不存在或内容不合法，则返回只含 id 的默认对象。
+     * @param {string} folder - 皮肤文件夹名
+     * @returns {Promise<object>}
+     */
+    async function loadSkinMeta(folder) {
+        try {
+            const res = await fetch(`skin/${folder}/skin.json?_=${Date.now()}`);
+            if (res.ok) {
+                const meta = await res.json();
+                // 合法性检查：至少要是一个对象
+                if (meta && typeof meta === 'object') {
+                    return {
+                        id:          folder,
+                        name:        meta.name        || folder,
+                        description: meta.description || '',
+                        author:      meta.author      || '未知',
+                        version:     meta.version     || '1.0'
+                    };
+                }
+            }
+        } catch (e) {
+            // skin.json 缺失或解析失败，静默降级
+        }
+        // 降级：只用文件夹名
+        return { id: folder, name: folder, description: '', author: '未知', version: '1.0' };
+    }
+
+    /** 渲染单张皮肤选择卡片 */
+    function renderSkinCard(skin, autoSelect) {
+        const card = document.createElement('div');
+        card.dataset.skinId = skin.id;
+        card.style.cssText = [
+            'padding:12px 16px',
+            'border:2px solid #4a5a50',
+            'border-radius:6px',
+            'cursor:pointer',
+            'transition:border-color 0.15s,background 0.15s',
+            'background:#253028'
+        ].join(';');
+
+        card.innerHTML = `
+            <div style="font-weight:bold;font-size:15px;color:#e6dfcd;">${skin.name}</div>
+            <div style="font-size:12px;color:#8ab09a;margin-top:3px;">${skin.description}</div>
+            <div style="font-size:11px;color:#6a8070;margin-top:2px;">
+                文件夹: skin/${skin.id}/
+                &nbsp;·&nbsp; 作者: ${skin.author}
+                &nbsp;·&nbsp; v${skin.version}
+            </div>
+        `;
+
+        card.addEventListener('click', () => {
+            skinList.querySelectorAll('[data-skin-id]').forEach(c => {
+                c.style.borderColor = '#4a5a50';
+                c.style.background  = '#253028';
+            });
+            card.style.borderColor = '#cd7e36';
+            card.style.background  = '#2e3d2a';
+            selectedSkinId         = skin.id;
+            confirmBtn.disabled    = false;
+            confirmBtn.style.opacity = '1';
+        });
+
+        skinList.appendChild(card);
+        if (autoSelect) card.click();
+    }
+
+    /** 打开皮肤选择弹窗 */
+    async function openSkinSelector() {
+        skinList.innerHTML = '<p style="color:#8ab09a;font-size:13px;">正在扫描皮肤目录...</p>';
+        selectedSkinId           = null;
+        confirmBtn.disabled      = true;
+        confirmBtn.style.opacity = '0.5';
+        skinModal.style.display  = 'flex';
+
+        try {
+            // 1. 扫描 skin/ 目录，获取所有子文件夹
+            const folders = await scanSkinFolders();
+
+            if (folders.length === 0) {
+                skinList.innerHTML = '<p style="color:#c08060;">未在 skin/ 目录下找到任何皮肤文件夹。</p>';
+                return;
+            }
+
+            // 2. 并行读取每个文件夹的 skin.json（或降级为文件夹名）
+            const skins = await Promise.all(folders.map(f => loadSkinMeta(f)));
+
+            // 3. 渲染列表
+            skinList.innerHTML = '';
+            skins.forEach((skin, i) => renderSkinCard(skin, skins.length === 1));
+
+        } catch (err) {
+            console.error('[SkinSelector]', err);
+            skinList.innerHTML = `<p style="color:#e06060;">扫描失败：${err.message}</p>`;
+        }
+    }
+
+    /** 关闭弹窗 */
+    function closeSkinSelector() {
+        skinModal.style.display = 'none';
+        selectedSkinId = null;
+    }
+
+    /** 打开选中的皮肤（新窗口） */
+    function launchSkin() {
+        if (!selectedSkinId) return;
+        const state = exportFormState();
+        localStorage.setItem('daggerheart_current_character', JSON.stringify(state));
+        window.open(`skin/${selectedSkinId}/index.html`, '_blank');
+        closeSkinSelector();
+    }
+
+    if (viewSkinBtn) viewSkinBtn.addEventListener('click', openSkinSelector);
+    if (cancelBtn)   cancelBtn.addEventListener('click', closeSkinSelector);
+    if (confirmBtn)  confirmBtn.addEventListener('click', launchSkin);
+    if (skinModal)   skinModal.addEventListener('click', e => { if (e.target === skinModal) closeSkinSelector(); });
+
     if (!importBtn || !exportBtn || !printBtn || !fileInput) {
         console.warn("一个或多个全局操作按钮未在DOM中找到。");
         return;

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超英派遣中心 | Daggerheart</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="top-bar">
+            <div class="top-left">
+                <span class="logo">SDN</span>
+                <span>11022 cS | 15.79% | 0:25 | 6096K ----------------- y ^ x</span>
+            </div>
+            <div class="top-right">
+                <span>温度: 49% | 6公里/小时SW120°</span>
+            </div>
+        </header>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Tab Bar -->
+            <div class="tab-bar">
+                <div class="tab-btn key-hint">Q</div>
+                <div class="tab active"><span class="tab-icon">⬡</span> 角色</div>
+                <div class="tab inactive"><span class="tab-icon">★</span> 能力</div>
+                <div class="tab inactive"><span class="tab-icon">ⓘ</span> 物品</div>
+                <div class="tab-btn key-hint">E</div>
+                <div class="btn-return">
+                    <span class="key-hint">ESC</span> 返回
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Left Column: 等级 / 闪避 / 护甲 -->
+                <div class="col-left">
+                    <div class="stat-block">
+                        <div class="stat-number" id="skin-level">1</div>
+                        <div class="stat-label">等级</div>
+                    </div>
+                    <div class="stat-block">
+                        <div class="stat-number" id="skin-evasion">—</div>
+                        <div class="stat-label">闪避</div>
+                    </div>
+                    <div class="stat-block">
+                        <div class="stat-number" id="skin-armor">—</div>
+                        <div class="stat-label">护甲</div>
+                    </div>
+                </div>
+
+                <!-- Middle Column -->
+                <div class="col-middle">
+                    <div class="central-panel">
+
+                        <!-- 头像 + 属性两栏 -->
+                        <div class="mid-body">
+                            <!-- 头像区 -->
+                            <div class="avatar-panel">
+                                <img id="skin-avatar" src="" alt="" />
+                                <div class="avatar-info">
+                                    <div class="avatar-name" id="skin-name">—</div>
+                                    <div class="avatar-tags" id="skin-tags">—</div>
+                                </div>
+                            </div>
+
+                            <!-- 六维属性 -->
+                            <div class="attributes-list">
+                                <div class="attr-row">
+                                    <div class="attr-label"><span class="icon-placeholder">🏃</span> 敏捷</div>
+                                    <div class="attr-input" id="attr-agi">0</div>
+                                </div>
+                                <div class="attr-row">
+                                    <div class="attr-label"><span class="icon-placeholder">💪</span> 力量</div>
+                                    <div class="attr-input" id="attr-str">0</div>
+                                </div>
+                                <div class="attr-row">
+                                    <div class="attr-label"><span class="icon-placeholder">🤚</span> 灵巧</div>
+                                    <div class="attr-input" id="attr-dex">0</div>
+                                </div>
+                                <div class="attr-row">
+                                    <div class="attr-label"><span class="icon-placeholder">👀</span> 本能</div>
+                                    <div class="attr-input" id="attr-ins">0</div>
+                                </div>
+                                <div class="attr-row">
+                                    <div class="attr-label"><span class="icon-placeholder">💬</span> 风度</div>
+                                    <div class="attr-input" id="attr-pre">0</div>
+                                </div>
+                                <div class="attr-row">
+                                    <div class="attr-label"><span class="icon-placeholder">💡</span> 知识</div>
+                                    <div class="attr-input" id="attr-kno">0</div>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+
+                <!-- Right Column: Radar + 武器/护甲信息 -->
+                <div class="col-right">
+                    <div class="radar-panel">
+                        <div class="radar-container">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 武器 / 护甲 / 阈值 信息面板 -->
+                    <div class="weapon-info-panel" id="weapon-info-panel">
+                        <div class="wi-row" id="wi-primary"></div>
+                        <div class="wi-row wi-trait" id="wi-primary-trait"></div>
+                        <div class="wi-row" id="wi-secondary"></div>
+                        <div class="wi-row wi-trait" id="wi-secondary-trait"></div>
+                        <div class="wi-divider"></div>
+                        <div class="wi-row" id="wi-armor"></div>
+                        <div class="wi-row wi-trait" id="wi-armor-trait"></div>
+                    </div>
+
+                    <div class="side-tab">
+                        <div class="folder-icon">📁</div>
+                        <div class="key-hint tab-hint">TAB</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Row -->
+            <div class="bottom-row">
+                <!-- 资源面板（生命/压力/护甲/希望） -->
+                <div class="bottom-block resource-block">
+                    <div id="resource-tracker-container"></div>
+                    <div class="stat-label">状态资源</div>
+                </div>
+                <div class="bottom-block">
+                    <textarea class="box-input bottom-input" id="skin-class-feature" readonly></textarea>
+                    <div class="stat-label">希望特性/职业特性</div>
+                </div>
+                <div class="bottom-block">
+                    <textarea class="box-input bottom-input" id="skin-experience" readonly></textarea>
+                    <div class="stat-label">经历</div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <footer class="bottom-bar">
+                <span>+ ======== &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 英雄解析完成 | 3/8 | 速度: 40 mbps | 输入检测: 键盘 | 电池: 100% [已接通电源] | 音量: 30% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ======== +</span>
+            </footer>
+        </div>
+    </div>
+    <script src="../skin_api.js"></script>
+    <script src="../resource_tracker.js"></script>
+    <script src="script.js?v=0401"></script>
+</body>
+</html>
+

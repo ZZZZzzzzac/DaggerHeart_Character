@@ -19,6 +19,7 @@
         <button id="export-json-btn">导出JSON</button>
         <button id="print-pdf-btn">导出PDF</button>
         <button id="clear-form-btn" style="background-color: rgb(255, 176, 184);">清空表单</button>
+        <button id="view-skin-btn" style="background-color: rgb(180, 140, 255);">使用皮肤</button>
 
         <button id="upload-custom-pack-btn">上传自定义卡包</button>
         <input type="file" id="custom-pack-upload" accept=".json" style="display: none;">
@@ -356,5 +357,18 @@
 
     <!-- Dedicated area for printing, hidden by default -->
     <div id="print-area" style="display: none;"></div>
+
+    <!-- 皮肤选择弹窗 -->
+    <div id="skin-selector-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+        <div id="skin-selector-content" style="background:#1e2d27; border:2px solid #a08060; border-radius:8px; padding:28px 32px; min-width:360px; max-width:520px; color:#e6dfcd; font-family:'Segoe UI','Microsoft YaHei',sans-serif;">
+            <h2 style="margin:0 0 6px 0; font-size:18px; color:#e6dfcd; border-bottom:1px solid #a08060; padding-bottom:10px;">选择皮肤</h2>
+            <p style="margin:8px 0 16px; font-size:13px; color:#8ab09a;">选择一套皮肤来展示当前角色卡</p>
+            <div id="skin-list" style="display:flex; flex-direction:column; gap:10px; max-height:360px; overflow-y:auto;"></div>
+            <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+                <button id="skin-selector-cancel" style="background:#3a4a40; color:#e6dfcd; border:1px solid #a08060; border-radius:4px; padding:7px 20px; cursor:pointer; font-size:14px;">取消</button>
+                <button id="skin-selector-confirm" style="background:#b47c3c; color:#fff; border:none; border-radius:4px; padding:7px 20px; cursor:pointer; font-size:14px; font-weight:bold;">打开皮肤</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
