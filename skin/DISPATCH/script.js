@@ -102,12 +102,25 @@ function updateRadarChart(values) {
 // ── 标签切换 ─────────────────────────────────────────────────
 document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', e => {
+        const targetId = e.currentTarget.dataset.target;
+        if (!targetId) return; // 如果没有 target，说明是无效标签（比如“信息”还没做）
+
+        // 更新 Tab 样式
         document.querySelectorAll('.tab').forEach(t => {
             t.classList.remove('active');
             t.classList.add('inactive');
         });
         e.currentTarget.classList.add('active');
         e.currentTarget.classList.remove('inactive');
+
+        // 更新页面容器显示
+        document.querySelectorAll('.page-container').forEach(page => {
+            page.classList.remove('active');
+        });
+        const targetPage = document.getElementById(targetId);
+        if (targetPage) {
+            targetPage.classList.add('active');
+        }
     });
 });
 
@@ -269,4 +282,159 @@ window.renderSkin = function(jsonData) {
     wiText('wi-armor',
         armorName ? `<b>护甲</b>：${armorName}&#8194;<span style="color:var(--text-muted)">阈值</span>&#8194;<b>${major} / ${severe}</b>` : '');
     wiText('wi-armor-trait', armorTrait ? `● ${armorTrait}` : '');
+
+    // ── 9. 能力卡片 (Abilities) ────────────────────────────────
+    const abilitiesGrid = document.getElementById('skin-abilities-grid');
+    if (abilitiesGrid) {
+        abilitiesGrid.innerHTML = '';
+        const cards = jsonData.cards || [];
+        
+        cards.forEach(cardItem => {
+            const data = cardItem.data || cardItem;
+            if (!data) return;
+
+            const cardEl = document.createElement('div');
+            cardEl.className = 'dh-card';
+
+            const resolvePath = (src) => {
+                if (!src.startsWith('http') && !src.startsWith('data:') && !src.startsWith('/')) {
+                    return '../../' + src; // 适配主工程相对路径
+                }
+                return src;
+            };
+
+            const renderMarkdown = (text) => {
+                return (text || '').replace(/\*\*|__|\*|_/g, ''); // 简单去掉粗体/斜体符号
+            };
+
+            if (typeof data === 'string') {
+                // 图片卡
+                const img = document.createElement('img');
+                img.src = resolvePath(data);
+                cardEl.appendChild(img);
+            } else if (typeof data === 'object') {
+                if (data.imageUrl) {
+                    const img = document.createElement('img');
+                    img.src = resolvePath(data.imageUrl);
+                    cardEl.appendChild(img);
+                } else {
+                    // 文本卡
+                    const title = data['名称'] || data['name'] || '未命名卡片';
+                    const type = data['类型'] || '通用特性';
+                    const descKeys = ["特性", "效果", "desc", "description", "描述"];
+                    let desc = "";
+                    for (const key of descKeys) {
+                        if (data[key]) {
+                            desc += (desc ? "\n" : "") + data[key];
+                        }
+                    }
+
+                    cardEl.innerHTML = `
+                        <div class="dh-card-text">
+                            <div class="dh-card-title">${renderMarkdown(title)}</div>
+                            <div class="dh-card-tag">${renderMarkdown(type)}</div>
+                            <div class="dh-card-desc">${renderMarkdown(desc)}</div>
+                        </div>
+                    `;
+                }
+            }
+
+            abilitiesGrid.appendChild(cardEl);
+        });
+    }
+
+    // ── 10. 信息页面 (Info Page) ────────────────────────────────
+    // 事件记录
+    setVal('skin-event-log', jsonData.EventLogTextbox || '');
+    
+    // 金钱
+    const gold = window.SkinUtils.parseGold(jsonData);
+    setText('skin-money', `金币：${gold.chest} 箱 / ${gold.bag} 袋 / ${gold.handful} 把`);
+
+    // 便携物品
+    setVal('skin-items', jsonData.ItemSlot1Textbox || '');
+
+    // 库存武器
+    const bw1Name   = jsonData.Backup1WeaponNameTextbox   || '';
+    const bw1Stat   = jsonData.Backup1WeaponStatTextbox   || '';
+    const bw1Dmg    = jsonData.Backup1WeaponDamageTextbox || '';
+    const bw1Trait  = jsonData.Backup1WeaponTraitTextbox  || '';
+    wiText('wi-backup1', bw1Name ? `<b>备用武器一</b>：${bw1Name}&#8194;<span style="color:var(--text-muted)">${bw1Stat}</span>&#8194;<b>${bw1Dmg}</b>` : '');
+    wiText('wi-backup1-trait', bw1Trait ? `● ${bw1Trait}` : '');
+
+    const bw2Name   = jsonData.Backup2WeaponNameTextbox   || '';
+    const bw2Stat   = jsonData.Backup2WeaponStatTextbox   || '';
+    const bw2Dmg    = jsonData.Backup2WeaponDamageTextbox || '';
+    const bw2Trait  = jsonData.Backup2WeaponTraitTextbox  || '';
+    wiText('wi-backup2', bw2Name ? `<b>备用武器二</b>：${bw2Name}&#8194;<span style="color:var(--text-muted)">${bw2Stat}</span>&#8194;<b>${bw2Dmg}</b>` : '');
+    wiText('wi-backup2-trait', bw2Trait ? `● ${bw2Trait}` : '');
+
+    const divider = document.getElementById('wi-backup-divider');
+    if (divider) {
+        divider.style.display = (bw1Name && bw2Name) ? 'block' : 'none';
+    }
+
+    // ── 11. 升级系统 (Level Up) ────────────────────────────────
+    const luContainer = document.getElementById('skin-levelup-container');
+    if (luContainer) {
+        luContainer.innerHTML = '';
+        
+        const levelupData = window.SkinUtils.parseLevelUp(jsonData);
+
+        // 渲染 Tabs
+        const tabsDiv = document.createElement('div');
+        tabsDiv.className = 'lu-tabs';
+        levelupData.forEach((tierData, idx) => {
+            const tab = document.createElement('div');
+            tab.className = `lu-tab ${idx === 0 ? 'active' : ''}`;
+            tab.textContent = tierData.title;
+            tab.dataset.target = `lu-content-${tierData.tier}`;
+            
+            tab.addEventListener('click', e => {
+                tabsDiv.querySelectorAll('.lu-tab').forEach(t => t.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                luContainer.querySelectorAll('.lu-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(`lu-content-${tierData.tier}`).classList.add('active');
+            });
+            tabsDiv.appendChild(tab);
+        });
+        luContainer.appendChild(tabsDiv);
+
+        // 渲染 Contents
+        levelupData.forEach((tierData, idx) => {
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `lu-content ${idx === 0 ? 'active' : ''}`;
+            contentDiv.id = `lu-content-${tierData.tier}`;
+
+            contentDiv.innerHTML = '';
+
+            tierData.options.forEach(opt => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'lu-item';
+
+                const boxesDiv = document.createElement('div');
+                boxesDiv.className = 'lu-boxes';
+
+                (opt.states || []).forEach(val => {
+                    let boxClass = 'lu-box';
+                    if (val === '1') boxClass += ' checked';
+                    else if (val === '2') boxClass += ' disabled';
+                    boxesDiv.innerHTML += `<div class="${boxClass}"></div>`;
+                });
+
+                itemDiv.appendChild(boxesDiv);
+
+                const textDiv = document.createElement('div');
+                textDiv.className = 'lu-text';
+                textDiv.textContent = opt.text;
+                itemDiv.appendChild(textDiv);
+
+                contentDiv.appendChild(itemDiv);
+            });
+
+
+
+            luContainer.appendChild(contentDiv);
+        });
+    }
 };

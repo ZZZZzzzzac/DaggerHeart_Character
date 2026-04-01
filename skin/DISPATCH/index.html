@@ -25,16 +25,18 @@
             <!-- Tab Bar -->
             <div class="tab-bar">
                 <div class="tab-btn key-hint">Q</div>
-                <div class="tab active"><span class="tab-icon">⬡</span> 角色</div>
-                <div class="tab inactive"><span class="tab-icon">★</span> 能力</div>
-                <div class="tab inactive"><span class="tab-icon">ⓘ</span> 物品</div>
+                <div class="tab active" data-target="page-character"><span class="tab-icon">⬡</span> 角色</div>
+                <div class="tab inactive" data-target="page-abilities"><span class="tab-icon">★</span> 能力</div>
+                <div class="tab inactive" data-target="page-info"><span class="tab-icon">ⓘ</span> 信息</div>
                 <div class="tab-btn key-hint">E</div>
                 <div class="btn-return">
                     <span class="key-hint">ESC</span> 返回
                 </div>
             </div>
 
-            <!-- Content Area -->
+            <!-- 页面一：角色 -->
+            <div id="page-character" class="page-container active">
+                <!-- Content Area -->
             <div class="content-area">
                 <!-- Left Column: 等级 / 闪避 / 护甲 -->
                 <div class="col-left">
@@ -138,6 +140,63 @@
                 <div class="bottom-block">
                     <textarea class="box-input bottom-input" id="skin-experience" readonly></textarea>
                     <div class="stat-label">经历</div>
+                </div>
+            </div>
+            </div>
+
+            <!-- 页面二：能力 -->
+            <div id="page-abilities" class="page-container">
+                <div class="abilities-grid" id="skin-abilities-grid">
+                    <!-- 卡片会在这里生成 -->
+                </div>
+            </div>
+
+            <!-- 页面三：信息 -->
+            <div id="page-info" class="page-container">
+                <div class="info-content-area">
+                    <!-- 记录框 -->
+                    <div class="info-col info-col-log">
+                        <div class="info-block">
+                            <div class="info-block-title">事件记录</div>
+                            <textarea class="box-input info-textarea" id="skin-event-log" readonly></textarea>
+                        </div>
+                    </div>
+
+                    <!-- 背包框 -->
+                    <div class="info-col info-col-inventory">
+                        <div class="info-block">
+                            <div class="info-block-title">背包与资产</div>
+                            <div class="inventory-section">
+                                <div class="inventory-subtitle" id="skin-money">金币：0 箱 / 0 袋 / 0 把</div>
+                            </div>
+                            <div class="inventory-divider"></div>
+                            <div class="inventory-section" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                                <div class="inventory-subtitle">便携物品</div>
+                                <textarea class="box-input inventory-textarea" id="skin-items" readonly></textarea>
+                            </div>
+                            <div class="inventory-divider"></div>
+                            <div class="inventory-section" style="display: flex; flex-direction: column;">
+                                <div class="inventory-subtitle">库存武器</div>
+                                <div class="weapon-info-panel inventory-weapons">
+                                    <div class="wi-row" id="wi-backup1"></div>
+                                    <div class="wi-row wi-trait" id="wi-backup1-trait"></div>
+                                    <div class="wi-divider" id="wi-backup-divider" style="display: none;"></div>
+                                    <div class="wi-row" id="wi-backup2"></div>
+                                    <div class="wi-row wi-trait" id="wi-backup2-trait"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 升级框 -->
+                    <div class="info-col info-col-levelup">
+                        <div class="info-block">
+                            <div class="info-block-title">成长与升级</div>
+                            <div class="levelup-container" id="skin-levelup-container">
+                                <!-- 由 JS 渲染升级系统 -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
