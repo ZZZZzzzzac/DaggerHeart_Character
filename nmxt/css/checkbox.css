@@ -1,0 +1,48 @@
+/* ── 逆命仙途 Checkbox 样式 ──────────────────────────────── */
+/* 复用 TriStateCheckbox.js 的类：state-checked / state-dashed  */
+
+.nmxt-cb {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.1s, border-color 0.1s;
+}
+
+/* ── 方形格（血量/储物/灵石包等）───────────────────────── */
+.cb-sq {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #333;
+    background: #fff;
+    border-radius: 2px;
+}
+.cb-sq.state-checked { background: #222; border-color: #000; }
+.cb-sq.state-dashed   { background: #ccc; border: 2px dashed #888; }
+
+/* 小方 (灵石:颗/袋/包) */
+.cb-sq-sm { width: 16px; height: 16px; border: 1.5px solid #444; background: #fff; border-radius: 1px; }
+.cb-sq-sm.state-checked { background: #222; }
+.cb-sq-sm.state-dashed  { background: #bbb; border-style: dashed; }
+
+/* 大方 (法宝格) */
+.cb-sq-lg { width: 24px; height: 24px; border: 2px solid #333; background: #fff; border-radius: 2px; }
+.cb-sq-lg.state-checked { background: #222; }
+.cb-sq-lg.state-dashed  { background: #ccc; border-style: dashed; }
+
+/* ── 圆形（行动点/防御次数/反应点）─────────────────────── */
+.cb-circ {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #333;
+    background: #fff;
+    border-radius: 50%;
+}
+.cb-circ.state-checked { background: #222; border-color: #000; }
+.cb-circ.state-dashed  { background: #ccc; border: 2px dashed #888; }
+
+/* ── 行内排列 checkbox 组 ───────────────────────────────── */
+.cb-row { position: absolute; display: flex; align-items: center; gap: 4px; line-height: 0; }
+.cb-row .nmxt-cb { position: relative; } /* 行内时不用 absolute */

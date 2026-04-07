@@ -1,0 +1,145 @@
+/* ── 逆命仙途 人物卡 主样式 ──────────────────────────────── */
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 10px;
+    background: #1e1e1e;
+    font-family: '黑体', 'SimHei', sans-serif;
+}
+
+/* ── 操作栏 ──────────────────────────────────────────────── */
+#action-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    background: #2a2a2a;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    border: 1px solid #444;
+}
+
+#action-container button {
+    padding: 6px 14px;
+    border: 1px solid #666;
+    border-radius: 4px;
+    background: #3a3a3a;
+    color: #eee;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: background 0.15s;
+}
+#action-container button:hover { background: #555; }
+
+#action-container .debug-toggle {
+    background: #4a2a2a;
+    border-color: #883333;
+    color: #ffaaaa;
+}
+#action-container .debug-toggle.active {
+    background: #882222;
+    border-color: #ff4444;
+    color: #fff;
+}
+
+.sheet-size-control {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #aaa;
+    font-size: 13px;
+}
+.sheet-size-control input {
+    width: 60px;
+    background: #3a3a3a;
+    color: #eee;
+    border: 1px solid #666;
+    border-radius: 3px;
+    padding: 4px;
+    font-size: 13px;
+}
+
+/* ── 人物卡容器 ─────────────────────────────────────────── */
+#character-sheet {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.page-container {
+    position: relative;
+    display: inline-block;
+    line-height: 0; /* 消除 img 下方空隙 */
+}
+
+.page-container .bg-img {
+    display: block;
+    width: var(--sheet-width, 960px);
+    height: auto;
+}
+
+/* ── 通用文本输入框 ──────────────────────────────────────── */
+.nf {  /* nmxt-field 简写 */
+    position: absolute;
+    background: transparent;
+    border: none;
+    padding: 1px 3px;
+    margin: 0;
+    font-family: '黑体', 'SimHei', sans-serif;
+    font-size: 14px;
+    color: #111;
+    resize: none;
+    outline: none;
+    overflow: hidden;
+    line-height: 1.4;
+}
+.nf:focus { overflow-y: auto; }
+
+/* ── checkbox 容器（行内排列） ───────────────────────────── */
+.cb-row {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ── Debug 模式 ─────────────────────────────────────────── */
+.debug-mode .nf {
+    background: rgba(255, 0, 0, 0.12) !important;
+    border: 1px solid red !important;
+}
+
+.debug-mode .nmxt-cb {
+    outline: 1px solid blue !important;
+}
+
+/* debug 标签：显示元素 id 和 top/left/w/h */
+.dbg-label {
+    display: none;
+    position: absolute;
+    background: rgba(200, 0, 0, 0.85);
+    color: #fff;
+    font-size: 9px;
+    font-family: monospace;
+    padding: 1px 3px;
+    pointer-events: none;
+    z-index: 9999;
+    white-space: nowrap;
+    transform: translateY(-100%);
+    line-height: 1.3;
+}
+.debug-mode .dbg-label { display: block; }
+
+/* ── 打印样式 ────────────────────────────────────────────── */
+@media print {
+    body { background: white; padding: 0; }
+    #action-container { display: none; }
+    .page-container { page-break-after: always; }
+    .page-container .bg-img { width: 100% !important; }
+    .nf { color: #000; }
+    .nmxt-cb { border-color: #000 !important; }
+}
