@@ -9,12 +9,42 @@
     cursor: pointer;
     user-select: none;
     transition: background 0.1s, border-color 0.1s;
+    font-size: var(--nmxt-cb-icon-size, 14px);
+    line-height: 1;
+}
+
+/*
+ * 后续如果要把 checkbox 换成专门图标或 emoji：
+ * 1. 直接设置 data-icon-empty / data-icon-checked / data-icon-dashed
+ * 2. 或改下面的默认变量
+ * 3. 需要调大小和间距时，优先改：
+ *    - .cb-sq / .cb-circ 的 width / height / border
+ *    - .cb-row 的 gap
+ *    - 具体某组在 HTML 里的 style width / height / top / left
+ */
+:root {
+    --nmxt-cb-empty: '';
+    --nmxt-cb-checked: '';
+    --nmxt-cb-dashed: '';
+}
+
+.nmxt-cb::before {
+    content: var(--nmxt-cb-empty);
+    display: block;
+}
+
+.nmxt-cb.state-checked::before {
+    content: var(--nmxt-cb-checked);
+}
+
+.nmxt-cb.state-dashed::before {
+    content: var(--nmxt-cb-dashed);
 }
 
 /* ── 方形格（血量/储物/灵石包等）───────────────────────── */
 .cb-sq {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     border: 2px solid #333;
     background: #fff;
     border-radius: 2px;
@@ -22,20 +52,10 @@
 .cb-sq.state-checked { background: #222; border-color: #000; }
 .cb-sq.state-dashed   { background: #ccc; border: 2px dashed #888; }
 
-/* 小方 (灵石:颗/袋/包) */
-.cb-sq-sm { width: 16px; height: 16px; border: 1.5px solid #444; background: #fff; border-radius: 1px; }
-.cb-sq-sm.state-checked { background: #222; }
-.cb-sq-sm.state-dashed  { background: #bbb; border-style: dashed; }
-
-/* 大方 (法宝格) */
-.cb-sq-lg { width: 24px; height: 24px; border: 2px solid #333; background: #fff; border-radius: 2px; }
-.cb-sq-lg.state-checked { background: #222; }
-.cb-sq-lg.state-dashed  { background: #ccc; border-style: dashed; }
-
 /* ── 圆形（行动点/防御次数/反应点）─────────────────────── */
 .cb-circ {
-    width: 22px;
-    height: 22px;
+    width: 32px;
+    height: 32px;
     border: 2px solid #333;
     background: #fff;
     border-radius: 50%;
@@ -44,5 +64,5 @@
 .cb-circ.state-dashed  { background: #ccc; border: 2px dashed #888; }
 
 /* ── 行内排列 checkbox 组 ───────────────────────────────── */
-.cb-row { position: absolute; display: flex; align-items: center; gap: 4px; line-height: 0; }
+.cb-row { position: absolute; display: flex; align-items: center; gap: 16px; line-height: 0; }
 .cb-row .nmxt-cb { position: relative; } /* 行内时不用 absolute */

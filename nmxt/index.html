@@ -16,8 +16,8 @@
     <button id="nmxt-export-btn">💾 导出JSON</button>
     <button id="nmxt-print-btn">🖨️ 打印PDF</button>
     <button id="nmxt-clear-btn" style="background:#4a2a2a;border-color:#883333;color:#ffaaaa;">🗑️ 清空</button>
-    <button id="nmxt-debug-btn" class="debug-toggle">🔵 DEBUG</button>
-    <div class="sheet-size-control">
+    <button id="nmxt-debug-btn" class="debug-toggle" style="display:none;">🔵 DEBUG</button>
+    <div class="sheet-size-control" style="display:none;">
         宽度: <input type="number" id="nmxt-width-input" value="960" min="400" max="2000">px
     </div>
 </div>
@@ -37,108 +37,104 @@
     <img class="bg-img" src="pdf2png/逆命仙途V0/逆命仙途V0.4角色卡-纯打印-1.png" alt="第1页">
 
     <!-- 角色名 | 玩家名 -->
-    <textarea id="Nmxt_角色名" class="nf" style="top:97px;left:140px;width:218px;height:56px;" placeholder="角色名"></textarea>
-    <textarea id="Nmxt_玩家名" class="nf" style="top:97px;left:451px;width:248px;height:56px;" placeholder="玩家名"></textarea>
+    <textarea id="Nmxt_角色名" class="nf nf-name" style="top:97px;left:140px;width:218px;height:56px;"></textarea>
+    <textarea id="Nmxt_玩家名" class="nf nf-name" style="top:97px;left:451px;width:248px;height:56px;"></textarea>
 
     <!-- 性别 | 年龄 | 种族 -->
-    <textarea id="Nmxt_性别" class="nf" style="top:163px;left:110px;width:134px;height:54px;" placeholder="性别"></textarea>
-    <textarea id="Nmxt_年龄" class="nf" style="top:163px;left:308px;width:144px;height:54px;" placeholder="年龄"></textarea>
-    <textarea id="Nmxt_种族" class="nf" style="top:163px;left:533px;width:161px;height:54px;" placeholder="种族"></textarea>
+    <textarea id="Nmxt_性别" class="nf nf-name" style="top:163px;left:110px;width:134px;height:54px;"></textarea>
+    <textarea id="Nmxt_年龄" class="nf nf-name" style="top:163px;left:308px;width:144px;height:54px;"></textarea>
+    <textarea id="Nmxt_种族" class="nf nf-name" style="top:163px;left:533px;width:161px;height:54px;"></textarea>
 
-    <!-- 正常血量 checkboxes (7实+2虚) | 损伤 (2实) -->
+    <!-- 正常血量 checkboxes (6实+1虚) | 损伤 (3实) -->
     <div class="cb-row" style="top:236px;left:140px;width:320px;height:40px;">
-        <label id="NmxtHP1"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtHP2"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtHP3"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtHP4"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtHP5"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtHP6"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtHP7"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtHP8"  class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
-        <label id="NmxtHP9"  class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
+        <label id="Nmxt_正常血量1"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_正常血量2"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_正常血量3"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_正常血量4"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_正常血量5"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_正常血量6"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_正常血量7"  class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
     </div>
     <div class="cb-row" style="top:236px;left:563px;width:123px;height:40px;">
-        <label id="NmxtDamage1" class="nmxt-cb cb-sq"></label>
-        <label id="NmxtDamage2" class="nmxt-cb cb-sq"></label>
-        <label id="NmxtDamage3" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_损伤1" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_损伤2" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_损伤3" class="nmxt-cb cb-sq"></label>
     </div>
 
-    <!-- 险境血量 (7实+2虚) | 调息 (1圆) -->
+    <!-- 险境血量 (6实+1虚) | 调息 (1圆) -->
     <div class="cb-row" style="top:298px;left:136px;width:334px;height:54px;">
-        <label id="NmxtCritHP1" class="nmxt-cb cb-sq"></label>
-        <label id="NmxtCritHP2" class="nmxt-cb cb-sq"></label>
-        <label id="NmxtCritHP3" class="nmxt-cb cb-sq"></label>
-        <label id="NmxtCritHP4" class="nmxt-cb cb-sq"></label>
-        <label id="NmxtCritHP5" class="nmxt-cb cb-sq"></label>
-        <label id="NmxtCritHP6" class="nmxt-cb cb-sq"></label>
-        <label id="NmxtCritHP7" class="nmxt-cb cb-sq"></label>
-        <label id="NmxtCritHP8" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
-        <label id="NmxtCritHP9" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
+        <label id="Nmxt_险境血量1" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_险境血量2" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_险境血量3" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_险境血量4" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_险境血量5" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_险境血量6" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_险境血量7" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
     </div>
-    <label id="NmxtTiaoxi" class="nmxt-cb cb-circ" style="top:308px;left:607px;width:34px;height:33px;"></label>
+    <label id="Nmxt_调息" class="nmxt-cb cb-circ" style="top:308px;left:607px;width:34px;height:33px;"></label>
 
-    <!-- 灵气 (9实+2虚) -->
+    <!-- 灵气 (8实+2虚) -->
     <div class="cb-row" style="top:367px;left:135px;width:554px;height:53px;">
-        <label id="NmxtLQ1"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtLQ2"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtLQ3"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtLQ4"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtLQ5"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtLQ6"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtLQ7"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtLQ8"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtLQ9"  class="nmxt-cb cb-sq"></label>
-        <label id="NmxtLQ10" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
-        <label id="NmxtLQ11" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
+        <label id="Nmxt_灵气1"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵气2"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵气3"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵气4"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵气5"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵气6"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵气7"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵气8"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵气9" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
+        <label id="Nmxt_灵气10" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
     </div>
 
     <!-- 道源行 -->
-    <textarea id="Nmxt_法门"  class="nf" style="top:467px;left:545px;width:155px;height:166px;" placeholder="法门"></textarea>
-    <textarea id="Nmxt_法门效果" class="nf" style="top:467px;left:700px;width:236px;height:166px;" placeholder="法门效果"></textarea>
-    <div id="nmxt-daoyuan-btn" style="position:absolute;top:255px;left:14px;width:38px;height:38px;cursor:pointer;background:rgba(0,100,255,0.15);border:1px dashed #4488ff;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:18px;" title="选择道源">＋</div>
+    <textarea id="Nmxt_法门"  class="nf nf-name" style="top:467px;left:545px;width:155px;height:166px;"></textarea>
+    <textarea id="Nmxt_法门效果" class="nf nf-desc" style="top:467px;left:700px;width:236px;height:166px;"></textarea>
+    <div id="nmxt-daoyuan-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:467px;left:145px;" title="选择道源">选</div>
     
     <!-- 道源效果 & 天人合一 -->
-    <textarea id="Nmxt_道源"  class="nf" style="top:467px;left:24px;width:154px;height:166px;" placeholder="道源"></textarea>
-    <textarea id="Nmxt_增益"  class="nf" style="top:428px;left:275px;width:264px;height:37px;" placeholder="增益"></textarea>
-    <textarea id="Nmxt_道源效果"   class="nf" style="top:467px;left:177px;width:362px;height:127px;" placeholder="道源效果"></textarea>
-    <textarea id="Nmxt_天人合一"   class="nf" style="top:594px;left:341px;width:197px;height:39px;" placeholder="天人合一检定值"></textarea>
+    <textarea id="Nmxt_道源"  class="nf nf-name" style="top:467px;left:24px;width:154px;height:166px;"></textarea>
+    <textarea id="Nmxt_增益"  class="nf nf-name" style="top:428px;left:275px;width:264px;height:37px;"></textarea>
+    <textarea id="Nmxt_道源效果"   class="nf nf-desc" style="top:467px;left:177px;width:362px;height:127px;"></textarea>
+    <textarea id="Nmxt_天人合一"   class="nf nf-name" style="top:594px;left:341px;width:197px;height:39px;"></textarea>
+    <div id="nmxt-famen-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:468px;left:907px;" title="选择法门">选</div>
 
     <!-- 属性：仙躯/身法/神魂/灵蕴 -->
-    <textarea id="Nmxt_仙躯基础" class="nf" style="top:662px;left:185px;width:100px;height:28px;" placeholder="0"></textarea>
-    <textarea id="Nmxt_仙躯境界" class="nf" style="top:662px;left:288px;width:100px;height:28px;" placeholder="0"></textarea>
-    <textarea id="Nmxt_仙躯总终" class="nf" style="top:662px;left:390px;width:105px;height:28px;" placeholder="0" readonly></textarea>
+    <textarea id="Nmxt_仙躯基础" class="nf nf-name" style="top:662px;left:185px;width:100px;height:28px;"></textarea>
+    <textarea id="Nmxt_仙躯境界" class="nf nf-name" style="top:662px;left:288px;width:100px;height:28px;"></textarea>
+    <textarea id="Nmxt_仙躯总终" class="nf nf-name" style="top:662px;left:390px;width:105px;height:28px;" readonly></textarea>
 
-    <textarea id="Nmxt_身法基础" class="nf" style="top:694px;left:185px;width:100px;height:28px;" placeholder="0"></textarea>
-    <textarea id="Nmxt_身法境界" class="nf" style="top:694px;left:288px;width:100px;height:28px;" placeholder="0"></textarea>
-    <textarea id="Nmxt_身法总终" class="nf" style="top:694px;left:390px;width:105px;height:28px;" placeholder="0" readonly></textarea>
+    <textarea id="Nmxt_身法基础" class="nf nf-name" style="top:694px;left:185px;width:100px;height:28px;"></textarea>
+    <textarea id="Nmxt_身法境界" class="nf nf-name" style="top:694px;left:288px;width:100px;height:28px;"></textarea>
+    <textarea id="Nmxt_身法总终" class="nf nf-name" style="top:694px;left:390px;width:105px;height:28px;" readonly></textarea>
 
-    <textarea id="Nmxt_神魂基础" class="nf" style="top:726px;left:185px;width:100px;height:28px;" placeholder="0"></textarea>
-    <textarea id="Nmxt_神魂境界" class="nf" style="top:726px;left:288px;width:100px;height:28px;" placeholder="0"></textarea>
-    <textarea id="Nmxt_神魂总终" class="nf" style="top:726px;left:390px;width:105px;height:28px;" placeholder="0" readonly></textarea>
+    <textarea id="Nmxt_神魂基础" class="nf nf-name" style="top:726px;left:185px;width:100px;height:28px;"></textarea>
+    <textarea id="Nmxt_神魂境界" class="nf nf-name" style="top:726px;left:288px;width:100px;height:28px;"></textarea>
+    <textarea id="Nmxt_神魂总终" class="nf nf-name" style="top:726px;left:390px;width:105px;height:28px;" readonly></textarea>
 
-    <textarea id="Nmxt_灵蕴基础" class="nf" style="top:758px;left:185px;width:100px;height:28px;" placeholder="0"></textarea>
-    <textarea id="Nmxt_灵蕴境界" class="nf" style="top:758px;left:288px;width:100px;height:28px;" placeholder="0"></textarea>
-    <textarea id="Nmxt_灵蕴总终" class="nf" style="top:758px;left:390px;width:105px;height:28px;" placeholder="0" readonly></textarea>
+    <textarea id="Nmxt_灵蕴基础" class="nf nf-name" style="top:758px;left:185px;width:100px;height:28px;"></textarea>
+    <textarea id="Nmxt_灵蕴境界" class="nf nf-name" style="top:758px;left:288px;width:100px;height:28px;"></textarea>
+    <textarea id="Nmxt_灵蕴总终" class="nf nf-name" style="top:758px;left:390px;width:105px;height:28px;" readonly></textarea>
 
     <!-- 道心 | 因果值 | 因果值效果 -->
-    <textarea id="Nmxt_道心"    class="nf" style="top:638px;left:662px;width:275px;height:45px;" placeholder="道心"></textarea>
-    <textarea id="Nmxt_因果值"  class="nf" style="top:688px;left:661px;width:275px;height:36px;" placeholder="因果值"></textarea>
-    <textarea id="Nmxt_因果值效果" class="nf" style="top:723px;left:545px;width:390px;height:149px;" placeholder="因果值效果"></textarea>
+    <textarea id="Nmxt_道心"    class="nf nf-name" style="top:638px;left:662px;width:275px;height:45px;"></textarea>
+    <textarea id="Nmxt_因果值"  class="nf nf-name" style="top:688px;left:661px;width:275px;height:36px;"></textarea>
+    <textarea id="Nmxt_因果值效果" class="nf nf-desc" style="top:723px;left:545px;width:390px;height:149px;"></textarea>
+    <div id="nmxt-yinguo-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:688px;left:904px;" title="选择因果值">选</div>
 
     <!-- 伤害阈值 - 肉体 -->
-    <textarea id="Nmxt_肉体轻伤" class="nf" style="top:874px;left:161px;width:66px;height:42px;" placeholder="轻伤阈值"></textarea>
-    <textarea id="Nmxt_肉体中伤" class="nf" style="top:943px;left:161px;width:66px;height:42px;" placeholder="中伤阈值"></textarea>
-    <textarea id="Nmxt_肉体重伤" class="nf" style="top:1010px;left:161px;width:66px;height:42px;" placeholder="重伤阈值"></textarea>
+    <textarea id="Nmxt_肉体轻伤" class="nf nf-name" style="top:874px;left:161px;width:66px;height:42px;"></textarea>
+    <textarea id="Nmxt_肉体中伤" class="nf nf-name" style="top:943px;left:161px;width:66px;height:42px;"></textarea>
+    <textarea id="Nmxt_肉体重伤" class="nf nf-name" style="top:1010px;left:161px;width:66px;height:42px;"></textarea>
 
     <!-- 伤害阈值 - 神魂 -->
-    <textarea id="Nmxt_神魂轻伤" class="nf" style="top:874px;left:421px;width:66px;height:42px;" placeholder="轻伤阈值"></textarea>
-    <textarea id="Nmxt_神魂中伤" class="nf" style="top:943px;left:421px;width:66px;height:42px;" placeholder="中伤阈值"></textarea>
-    <textarea id="Nmxt_神魂重伤" class="nf" style="top:1010px;left:421px;width:66px;height:42px;" placeholder="重伤阈值"></textarea>
+    <textarea id="Nmxt_神魂轻伤" class="nf nf-name" style="top:874px;left:421px;width:66px;height:42px;"></textarea>
+    <textarea id="Nmxt_神魂中伤" class="nf nf-name" style="top:943px;left:421px;width:66px;height:42px;"></textarea>
+    <textarea id="Nmxt_神魂重伤" class="nf nf-name" style="top:1010px;left:421px;width:66px;height:42px;"></textarea>
 
     <!-- 立绘框 -->
     <div id="nmxt-avatar-container" style="position:absolute;top:97px;left:703px;width:235px;height:328px;cursor:pointer;border:2px dashed rgba(100,100,255,0.4);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.05);" title="点击上传立绘">
         <img id="nmxt-avatar-image" src="" alt="" style="width:100%;height:100%;object-fit:contain;display:none;">
-        <div id="nmxt-avatar-placeholder" style="color:rgba(120,120,180,0.6);font-size:13px;text-align:center;pointer-events:none;">🖼 点击上传立绘</div>
         <button id="nmxt-avatar-remove-btn" title="移除立绘" style="display:none;position:absolute;top:4px;right:4px;background:rgba(180,0,0,0.7);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:14px;line-height:1;padding:0;">&#x2715;</button>
     </div>
     <input type="file" id="nmxt-avatar-upload" accept="image/*" style="display:none">
@@ -146,11 +142,11 @@
     <!-- 历练点 | 福缘点 -->
     <!-- 历练点: 2个方形checkbox -->
     <div class="cb-row" style="top:901px;left:608px;width:73px;height:37px;">
-        <label id="Nmxt_历练点1" class="nmxt-cb cb-sq"></label>
-        <label id="Nmxt_历练点2" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_历练点1" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
+        <label id="Nmxt_历练点2" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
     </div>
     <!-- 福缘点: 2实+2虚 -->
-    <div class="cb-row" style="top:898px;left:778px;width:133px;height:40px;">
+    <div class="cb-row" style="top:899px;left:764px;width:160px;height:38px;">
         <label id="Nmxt_福缘1" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_福缘2" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_福缘3" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
@@ -158,19 +154,22 @@
     </div>
 
     <!-- 出身 -->
-    <textarea id="Nmxt_出身"     class="nf" style="top:947px;left:663px;width:273px;height:37px;" placeholder="出身"></textarea>
-    <textarea id="Nmxt_出身效果" class="nf" style="top:985px;left:546px;width:389px;height:112px;" placeholder="出身效果"></textarea>
-    <div id="nmxt-chushen-btn" style="position:absolute;top:947px;left:663px;width:273px;height:37px;cursor:pointer;background:rgba(0,100,255,0.15);border:1px dashed #4488ff;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:16px;" title="选择出身">＋</div>
+    <textarea id="Nmxt_出身"     class="nf nf-name" style="top:947px;left:663px;width:273px;height:37px;"></textarea>
+    <textarea id="Nmxt_出身效果" class="nf nf-desc" style="top:985px;left:546px;width:389px;height:112px;"></textarea>
+    <div id="nmxt-chushen-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:947px;left:905px;" title="选择出身">选</div>
 
     <!-- 天赋/天道 表格 (3行) -->
-    <textarea id="Nmxt_天赋1名" class="nf" style="top:1139px;left:144px;width:215px;height:65px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_天赋1效" class="nf" style="top:1139px;left:359px;width:577px;height:65px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_天赋1名" class="nf nf-name" style="top:1139px;left:144px;width:215px;height:65px;"></textarea>
+    <textarea id="Nmxt_天赋1效" class="nf nf-desc" style="top:1139px;left:359px;width:577px;height:65px;"></textarea>
+    <div id="nmxt-tianfu1-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:1139px;left:329px;" title="选择天赋天谴">选</div>
 
-    <textarea id="Nmxt_天赋2名" class="nf" style="top:1204px;left:144px;width:215px;height:65px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_天赋2效" class="nf" style="top:1204px;left:359px;width:577px;height:65px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_天赋2名" class="nf nf-name" style="top:1204px;left:144px;width:215px;height:65px;"></textarea>
+    <textarea id="Nmxt_天赋2效" class="nf nf-desc" style="top:1204px;left:359px;width:577px;height:65px;"></textarea>
+    <div id="nmxt-tianfu2-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:1204px;left:329px;" title="选择天赋天谴">选</div>
 
-    <textarea id="Nmxt_天赋3名" class="nf" style="top:1269px;left:144px;width:215px;height:65px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_天赋3效" class="nf" style="top:1269px;left:359px;width:577px;height:65px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_天赋3名" class="nf nf-name" style="top:1269px;left:144px;width:215px;height:65px;"></textarea>
+    <textarea id="Nmxt_天赋3效" class="nf nf-desc" style="top:1269px;left:359px;width:577px;height:65px;"></textarea>
+    <div id="nmxt-tianfu3-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:1269px;left:329px;" title="选择天赋天谴">选</div>
 
 </div><!-- /page-1 -->
 
@@ -182,19 +181,19 @@
     <img class="bg-img" src="pdf2png/逆命仙途V0/逆命仙途V0.4角色卡-纯打印-2.png" alt="第2页">
 
     <!-- 境界 | 境界乘值 -->
-    <textarea id="Nmxt_境界"   class="nf" style="top:97px;left:142px;width:271px;height:86px;" placeholder="境界（如：练气一层）"></textarea>
-    <div id="nmxt-jingjie-btn" style="position:absolute;top:52px;left:46px;width:32px;height:36px;cursor:pointer;background:rgba(0,100,255,0.15);border:1px dashed #4488ff;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:16px;" title="选择境界">＋</div>
-    <textarea id="Nmxt_境界乘值" class="nf" style="top:185px;left:142px;width:271px;height:86px;" placeholder="境界乘值"></textarea>
+    <textarea id="Nmxt_境界"   class="nf nf-name" style="top:97px;left:142px;width:271px;height:86px;"></textarea>
+    <div id="nmxt-jingjie-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:101px;left:382px;" title="选择境界">选</div>
+    <textarea id="Nmxt_境界乘值" class="nf nf-name" style="top:185px;left:142px;width:271px;height:86px;"></textarea>
 
     <!-- 动作(2圆) | 防御/闪避(1圆) | 速度 | 速度加值 | 储物点 -->
     <div class="cb-row" style="top:110px;left:533px;width:78px;height:26px;">
         <label id="NmxtAction1" class="nmxt-cb cb-circ state-checked" data-state="1"></label>
         <label id="NmxtAction2" class="nmxt-cb cb-circ state-checked" data-state="1"></label>
     </div>
-    <label id="NmxtDefense1" class="nmxt-cb cb-circ" style="top:110px;left:862px;width:37px;height:30px;"></label>
+    <label id="NmxtDefense1" class="nmxt-cb cb-circ" style="top:110px;left:862px;"></label>
 
-    <textarea id="Nmxt_速度"    class="nf" style="top:158px;left:509px;width:132px;height:55px;" placeholder="速度"></textarea>
-    <textarea id="Nmxt_速度加值" class="nf" style="top:158px;left:772px;width:165px;height:55px;" placeholder="速度加值"></textarea>
+    <textarea id="Nmxt_速度"    class="nf nf-name" style="top:158px;left:509px;width:132px;height:55px;"></textarea>
+    <textarea id="Nmxt_速度加值" class="nf nf-name" style="top:158px;left:772px;width:165px;height:55px;"></textarea>
 
     <!-- 储物点 (5实+2虚) -->
     <div class="cb-row" style="top:224px;left:520px;width:404px;height:42px;">
@@ -203,67 +202,74 @@
         <label id="NmxtStore3" class="nmxt-cb cb-sq"></label>
         <label id="NmxtStore4" class="nmxt-cb cb-sq"></label>
         <label id="NmxtStore5" class="nmxt-cb cb-sq"></label>
-        <label id="NmxtStore6" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
+        <label id="NmxtStore6" class="nmxt-cb cb-sq"></label>
         <label id="NmxtStore7" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
+        <label id="NmxtStore8" class="nmxt-cb cb-sq state-dashed" data-state="2"></label>
     </div>
 
     <!-- 功法表格 (1行) -->
-    <textarea id="Nmxt_功法1境" class="nf" style="top:295px;left:143px;width:100px;height:132px;" placeholder="境界"></textarea>
-    <textarea id="Nmxt_功法1名" class="nf" style="top:295px;left:243px;width:116px;height:132px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_功法1效" class="nf" style="top:295px;left:359px;width:578px;height:132px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_功法1境" class="nf nf-name" style="top:295px;left:143px;width:100px;height:132px;"></textarea>
+    <textarea id="Nmxt_功法1名" class="nf nf-name" style="top:295px;left:243px;width:116px;height:132px;"></textarea>
+    <textarea id="Nmxt_功法1效" class="nf nf-desc" style="top:295px;left:359px;width:578px;height:132px;"></textarea>
+    <div id="nmxt-gongfa1-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:295px;left:329px;" title="选择功法">选</div>
 
     <!-- 通用动作 (1行) -->
-    <textarea id="Nmxt_通动1名" class="nf" style="top:468px;left:142px;width:104px;height:62px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_通动1气" class="nf" style="top:468px;left:246px;width:86px;height:62px;" placeholder="灵气"></textarea>
-    <textarea id="Nmxt_通动1点" class="nf" style="top:468px;left:332px;width:94px;height:62px;" placeholder="点数"></textarea>
-    <textarea id="Nmxt_通动1距" class="nf" style="top:468px;left:426px;width:149px;height:62px;" placeholder="释放距离"></textarea>
-    <textarea id="Nmxt_通动1标" class="nf" style="top:468px;left:575px;width:97px;height:62px;" placeholder="目标"></textarea>
-    <textarea id="Nmxt_通动1效" class="nf" style="top:468px;left:672px;width:266px;height:62px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_通动1名" class="nf nf-name" style="top:468px;left:142px;width:104px;height:62px;"></textarea>
+    <textarea id="Nmxt_通动1气" class="nf nf-name" style="top:468px;left:246px;width:86px;height:62px;"></textarea>
+    <textarea id="Nmxt_通动1点" class="nf nf-name" style="top:468px;left:332px;width:94px;height:62px;"></textarea>
+    <textarea id="Nmxt_通动1距" class="nf nf-name" style="top:468px;left:426px;width:149px;height:62px;"></textarea>
+    <textarea id="Nmxt_通动1标" class="nf nf-name" style="top:468px;left:575px;width:97px;height:62px;"></textarea>
+    <textarea id="Nmxt_通动1效" class="nf nf-desc" style="top:468px;left:672px;width:266px;height:62px;"></textarea>
 
     <!-- 行动神通 (3行) -->
-    <textarea id="Nmxt_行神1境" class="nf" style="top:569px;left:144px;width:72px;height:60px;" placeholder="境界"></textarea>
-    <textarea id="Nmxt_行神1名" class="nf" style="top:569px;left:216px;width:94px;height:60px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_行神1气" class="nf" style="top:569px;left:310px;width:78px;height:60px;" placeholder="灵气"></textarea>
-    <textarea id="Nmxt_行神1点" class="nf" style="top:569px;left:388px;width:86px;height:60px;" placeholder="点数"></textarea>
-    <textarea id="Nmxt_行神1距" class="nf" style="top:569px;left:474px;width:134px;height:60px;" placeholder="释放距离"></textarea>
-    <textarea id="Nmxt_行神1标" class="nf" style="top:569px;left:608px;width:87px;height:60px;" placeholder="目标"></textarea>
-    <textarea id="Nmxt_行神1效" class="nf" style="top:569px;left:695px;width:243px;height:60px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_行神1境" class="nf nf-name" style="top:569px;left:144px;width:72px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神1名" class="nf nf-name" style="top:569px;left:216px;width:94px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神1气" class="nf nf-name" style="top:569px;left:310px;width:78px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神1点" class="nf nf-name" style="top:569px;left:388px;width:86px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神1距" class="nf nf-name" style="top:569px;left:474px;width:134px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神1标" class="nf nf-name" style="top:569px;left:608px;width:87px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神1效" class="nf nf-desc" style="top:569px;left:695px;width:243px;height:60px;"></textarea>
 
-    <textarea id="Nmxt_行神2境" class="nf" style="top:629px;left:144px;width:72px;height:60px;" placeholder="境界"></textarea>
-    <textarea id="Nmxt_行神2名" class="nf" style="top:629px;left:216px;width:94px;height:60px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_行神2气" class="nf" style="top:629px;left:310px;width:78px;height:60px;" placeholder="灵气"></textarea>
-    <textarea id="Nmxt_行神2点" class="nf" style="top:629px;left:388px;width:86px;height:60px;" placeholder="点数"></textarea>
-    <textarea id="Nmxt_行神2距" class="nf" style="top:629px;left:474px;width:134px;height:60px;" placeholder="释放距离"></textarea>
-    <textarea id="Nmxt_行神2标" class="nf" style="top:629px;left:608px;width:87px;height:60px;" placeholder="目标"></textarea>
-    <textarea id="Nmxt_行神2效" class="nf" style="top:629px;left:695px;width:243px;height:60px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_行神2境" class="nf nf-name" style="top:629px;left:144px;width:72px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神2名" class="nf nf-name" style="top:629px;left:216px;width:94px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神2气" class="nf nf-name" style="top:629px;left:310px;width:78px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神2点" class="nf nf-name" style="top:629px;left:388px;width:86px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神2距" class="nf nf-name" style="top:629px;left:474px;width:134px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神2标" class="nf nf-name" style="top:629px;left:608px;width:87px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神2效" class="nf nf-desc" style="top:629px;left:695px;width:243px;height:60px;"></textarea>
 
-    <textarea id="Nmxt_行神3境" class="nf" style="top:689px;left:144px;width:72px;height:60px;" placeholder="境界"></textarea>
-    <textarea id="Nmxt_行神3名" class="nf" style="top:689px;left:216px;width:94px;height:60px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_行神3气" class="nf" style="top:689px;left:310px;width:78px;height:60px;" placeholder="灵气"></textarea>
-    <textarea id="Nmxt_行神3点" class="nf" style="top:689px;left:388px;width:86px;height:60px;" placeholder="点数"></textarea>
-    <textarea id="Nmxt_行神3距" class="nf" style="top:689px;left:474px;width:134px;height:60px;" placeholder="释放距离"></textarea>
-    <textarea id="Nmxt_行神3标" class="nf" style="top:689px;left:608px;width:87px;height:60px;" placeholder="目标"></textarea>
-    <textarea id="Nmxt_行神3效" class="nf" style="top:689px;left:695px;width:243px;height:60px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_行神3境" class="nf nf-name" style="top:689px;left:144px;width:72px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神3名" class="nf nf-name" style="top:689px;left:216px;width:94px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神3气" class="nf nf-name" style="top:689px;left:310px;width:78px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神3点" class="nf nf-name" style="top:689px;left:388px;width:86px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神3距" class="nf nf-name" style="top:689px;left:474px;width:134px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神3标" class="nf nf-name" style="top:689px;left:608px;width:87px;height:60px;"></textarea>
+    <textarea id="Nmxt_行神3效" class="nf nf-desc" style="top:689px;left:695px;width:243px;height:60px;"></textarea>
+    <div id="nmxt-xingshen2-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:629px;left:280px;" title="选择可选神通">选</div>
+    <div id="nmxt-xingshen3-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:689px;left:280px;" title="选择可选神通">选</div>
 
     <!-- 秘法 (1行) -->
-    <textarea id="Nmxt_秘法1境" class="nf" style="top:790px;left:144px;width:72px;height:66px;" placeholder="境界"></textarea>
-    <textarea id="Nmxt_秘法1名" class="nf" style="top:790px;left:216px;width:94px;height:66px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_秘法1气" class="nf" style="top:790px;left:310px;width:78px;height:66px;" placeholder="灵气"></textarea>
-    <textarea id="Nmxt_秘法1点" class="nf" style="top:790px;left:388px;width:86px;height:66px;" placeholder="点数"></textarea>
-    <textarea id="Nmxt_秘法1距" class="nf" style="top:790px;left:474px;width:134px;height:66px;" placeholder="释放距离"></textarea>
-    <textarea id="Nmxt_秘法1标" class="nf" style="top:790px;left:608px;width:88px;height:66px;" placeholder="目标"></textarea>
-    <textarea id="Nmxt_秘法1效" class="nf" style="top:790px;left:696px;width:242px;height:66px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_秘法1境" class="nf nf-name" style="top:790px;left:144px;width:72px;height:66px;"></textarea>
+    <textarea id="Nmxt_秘法1名" class="nf nf-name" style="top:790px;left:216px;width:94px;height:66px;"></textarea>
+    <textarea id="Nmxt_秘法1气" class="nf nf-name" style="top:790px;left:310px;width:78px;height:66px;"></textarea>
+    <textarea id="Nmxt_秘法1点" class="nf nf-name" style="top:790px;left:388px;width:86px;height:66px;"></textarea>
+    <textarea id="Nmxt_秘法1距" class="nf nf-name" style="top:790px;left:474px;width:134px;height:66px;"></textarea>
+    <textarea id="Nmxt_秘法1标" class="nf nf-name" style="top:790px;left:608px;width:88px;height:66px;"></textarea>
+    <textarea id="Nmxt_秘法1效" class="nf nf-desc" style="top:790px;left:696px;width:242px;height:66px;"></textarea>
 
     <!-- 感悟一 | 感悟二 -->
-    <textarea id="Nmxt_感悟一名" class="nf" style="top:859px;left:120px;width:353px;height:35px;" placeholder="感悟一名称"></textarea>
-    <textarea id="Nmxt_感悟一效" class="nf" style="top:893px;left:22px;width:454px;height:203px;" placeholder="感悟效果"></textarea>
+    <textarea id="Nmxt_感悟一名" class="nf nf-name" style="top:859px;left:120px;width:353px;height:35px;"></textarea>
+    <textarea id="Nmxt_感悟一效" class="nf nf-desc" style="top:893px;left:22px;width:454px;height:203px;"></textarea>
+    <div id="nmxt-ganwu1-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:859px;left:443px;" title="选择感悟一">选</div>
 
-    <textarea id="Nmxt_感悟二名" class="nf" style="top:860px;left:580px;width:353px;height:34px;" placeholder="感悟二名称"></textarea>
-    <textarea id="Nmxt_感悟二效" class="nf" style="top:893px;left:482px;width:455px;height:202px;" placeholder="感悟效果"></textarea>
+    <textarea id="Nmxt_感悟二名" class="nf nf-name" style="top:860px;left:580px;width:353px;height:34px;"></textarea>
+    <textarea id="Nmxt_感悟二效" class="nf nf-desc" style="top:893px;left:482px;width:455px;height:202px;"></textarea>
+    <div id="nmxt-ganwu2-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:860px;left:903px;" title="选择感悟二">选</div>
 
     <!-- 大道 -->
-    <textarea id="Nmxt_大道名称" class="nf" style="top:1105px;left:139px;width:799px;height:42px;" placeholder="大道名称"></textarea>
-    <textarea id="Nmxt_大道效果" class="nf" style="top:1146px;left:22px;width:914px;height:188px;" placeholder="大道效果"></textarea>
+    <textarea id="Nmxt_大道名称" class="nf nf-name" style="top:1105px;left:139px;width:799px;height:42px;"></textarea>
+    <textarea id="Nmxt_大道效果" class="nf nf-desc" style="top:1146px;left:22px;width:914px;height:188px;"></textarea>
+    <div id="nmxt-dadao-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:1105px;left:907px;" title="选择大道">选</div>
 
 </div><!-- /page-2 -->
 
@@ -275,10 +281,10 @@
     <img class="bg-img" src="pdf2png/逆命仙途V0/逆命仙途V0.4角色卡-纯打印-3.png" alt="第3页">
 
     <!-- ── 傀儡管理表（左半） ── -->
-    <textarea id="Nmxt_傀儡名称" class="nf" style="top:146px;left:96px;width:175px;height:49px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_傀儡形态" class="nf" style="top:146px;left:329px;width:146px;height:49px;" placeholder="形态"></textarea>
-    <textarea id="Nmxt_傀儡类型" class="nf" style="top:194px;left:96px;width:379px;height:49px;" placeholder="类型"></textarea>
-    <textarea id="Nmxt_傀儡核心属性值" class="nf" style="top:243px;left:152px;width:323px;height:49px;" placeholder="核心属性值"></textarea>
+    <textarea id="Nmxt_傀儡名称" class="nf" style="top:146px;left:96px;width:175px;height:49px;"></textarea>
+    <textarea id="Nmxt_傀儡形态" class="nf" style="top:146px;left:329px;width:146px;height:49px;"></textarea>
+    <textarea id="Nmxt_傀儡类型" class="nf" style="top:194px;left:96px;width:379px;height:49px;"></textarea>
+    <textarea id="Nmxt_傀儡核心属性值" class="nf" style="top:243px;left:152px;width:323px;height:49px;"></textarea>
 
     <!-- 傀儡行动点(1实心圆) | 反应点(1空心圆) -->
     <label id="Nmxt_傀儡行动点" class="nmxt-cb cb-circ state-checked" data-state="1" style="top:299px;left:195px;width:34px;height:34px;"></label>
@@ -291,17 +297,17 @@
         <label id="Nmxt_傀儡HP3" class="nmxt-cb cb-sq"></label>
     </div>
 
-    <textarea id="Nmxt_傀儡移动速度" class="nf" style="top:389px;left:165px;width:311px;height:50px;" placeholder="移动速度"></textarea>
-    <textarea id="Nmxt_傀儡伤害阈值" class="nf" style="top:437px;left:165px;width:310px;height:50px;" placeholder="伤害阈值"></textarea>
-    <textarea id="Nmxt_傀儡攻1" class="nf" style="top:485px;left:164px;width:310px;height:140px;" placeholder="傀儡攻击一"></textarea>
-    <textarea id="Nmxt_傀儡攻2" class="nf" style="top:623px;left:165px;width:309px;height:139px;" placeholder="傀儡攻击二"></textarea>
-    <textarea id="Nmxt_傀儡被" class="nf" style="top:764px;left:166px;width:310px;height:139px;" placeholder="傀儡被动"></textarea>
+    <textarea id="Nmxt_傀儡移动速度" class="nf" style="top:389px;left:165px;width:311px;height:50px;"></textarea>
+    <textarea id="Nmxt_傀儡伤害阈值" class="nf" style="top:437px;left:165px;width:310px;height:50px;"></textarea>
+    <textarea id="Nmxt_傀儡攻1" class="nf" style="top:485px;left:164px;width:310px;height:140px;"></textarea>
+    <textarea id="Nmxt_傀儡攻2" class="nf" style="top:623px;left:165px;width:309px;height:139px;"></textarea>
+    <textarea id="Nmxt_傀儡被" class="nf" style="top:764px;left:166px;width:310px;height:139px;"></textarea>
 
     <!-- ── 灵兽管理表（右半） ── -->
-    <textarea id="Nmxt_灵兽名称" class="nf" style="top:144px;left:557px;width:175px;height:50px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_灵兽形态" class="nf" style="top:146px;left:790px;width:148px;height:49px;" placeholder="形态"></textarea>
-    <textarea id="Nmxt_灵兽类型" class="nf" style="top:194px;left:557px;width:380px;height:50px;" placeholder="类型"></textarea>
-    <textarea id="Nmxt_灵兽核心属性值" class="nf" style="top:244px;left:614px;width:324px;height:49px;" placeholder="核心属性值"></textarea>
+    <textarea id="Nmxt_灵兽名称" class="nf" style="top:144px;left:557px;width:175px;height:50px;"></textarea>
+    <textarea id="Nmxt_灵兽形态" class="nf" style="top:146px;left:790px;width:148px;height:49px;"></textarea>
+    <textarea id="Nmxt_灵兽类型" class="nf" style="top:194px;left:557px;width:380px;height:50px;"></textarea>
+    <textarea id="Nmxt_灵兽核心属性值" class="nf" style="top:244px;left:614px;width:324px;height:49px;"></textarea>
 
     <label id="Nmxt_灵兽行动点" class="nmxt-cb cb-circ state-checked" data-state="1" style="top:296px;left:657px;width:40px;height:39px;"></label>
     <label id="Nmxt_灵兽反应点"  class="nmxt-cb cb-circ" style="top:297px;left:847px;width:40px;height:37px;"></label>
@@ -312,75 +318,80 @@
         <label id="Nmxt_灵兽HP3" class="nmxt-cb cb-sq"></label>
     </div>
 
-    <textarea id="Nmxt_灵兽移动速度" class="nf" style="top:389px;left:627px;width:307px;height:48px;" placeholder="移动速度"></textarea>
-    <textarea id="Nmxt_灵兽伤害阈值" class="nf" style="top:437px;left:626px;width:310px;height:50px;" placeholder="伤害阈值"></textarea>
-    <textarea id="Nmxt_灵兽攻击一" class="nf" style="top:487px;left:626px;width:310px;height:137px;" placeholder="灵兽攻击一"></textarea>
-    <textarea id="Nmxt_灵兽神通一" class="nf" style="top:624px;left:625px;width:310px;height:142px;" placeholder="灵兽神通一"></textarea>
-    <textarea id="Nmxt_灵兽被动" class="nf" style="top:764px;left:627px;width:309px;height:139px;" placeholder="灵兽被动"></textarea>
+    <textarea id="Nmxt_灵兽移动速度" class="nf" style="top:389px;left:627px;width:307px;height:48px;"></textarea>
+    <textarea id="Nmxt_灵兽伤害阈值" class="nf" style="top:437px;left:626px;width:310px;height:50px;"></textarea>
+    <textarea id="Nmxt_灵兽攻击一" class="nf" style="top:487px;left:626px;width:310px;height:137px;"></textarea>
+    <textarea id="Nmxt_灵兽神通一" class="nf" style="top:624px;left:625px;width:310px;height:142px;"></textarea>
+    <textarea id="Nmxt_灵兽被动" class="nf" style="top:764px;left:627px;width:309px;height:139px;"></textarea>
 
     <!-- ── 法宝表格（5行） ── -->
-    <textarea id="Nmxt_法宝1名" class="nf" style="top:941px;left:102px;width:207px;height:54px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_法宝1属" class="nf" style="top:941px;left:309px;width:164px;height:54px;" placeholder="属性要求"></textarea>
-    <textarea id="Nmxt_法宝1效" class="nf" style="top:941px;left:473px;width:465px;height:54px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_法宝1名" class="nf nf-name" style="top:941px;left:102px;width:207px;height:54px;"></textarea>
+    <textarea id="Nmxt_法宝1属" class="nf nf-name" style="top:941px;left:309px;width:164px;height:54px;"></textarea>
+    <textarea id="Nmxt_法宝1效" class="nf nf-desc" style="top:941px;left:473px;width:465px;height:54px;"></textarea>
+    <div id="nmxt-fabao1-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:941px;left:279px;" title="选择法宝">选</div>
 
-    <textarea id="Nmxt_法宝2名" class="nf" style="top:995px;left:102px;width:207px;height:54px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_法宝2属" class="nf" style="top:995px;left:309px;width:164px;height:54px;" placeholder="属性要求"></textarea>
-    <textarea id="Nmxt_法宝2效" class="nf" style="top:995px;left:473px;width:465px;height:54px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_法宝2名" class="nf nf-name" style="top:995px;left:102px;width:207px;height:54px;"></textarea>
+    <textarea id="Nmxt_法宝2属" class="nf nf-name" style="top:995px;left:309px;width:164px;height:54px;"></textarea>
+    <textarea id="Nmxt_法宝2效" class="nf nf-desc" style="top:995px;left:473px;width:465px;height:54px;"></textarea>
+    <div id="nmxt-fabao2-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:995px;left:279px;" title="选择法宝">选</div>
 
-    <textarea id="Nmxt_法宝3名" class="nf" style="top:1049px;left:102px;width:207px;height:54px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_法宝3属" class="nf" style="top:1049px;left:309px;width:164px;height:54px;" placeholder="属性要求"></textarea>
-    <textarea id="Nmxt_法宝3效" class="nf" style="top:1049px;left:473px;width:465px;height:54px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_法宝3名" class="nf nf-name" style="top:1049px;left:102px;width:207px;height:54px;"></textarea>
+    <textarea id="Nmxt_法宝3属" class="nf nf-name" style="top:1049px;left:309px;width:164px;height:54px;"></textarea>
+    <textarea id="Nmxt_法宝3效" class="nf nf-desc" style="top:1049px;left:473px;width:465px;height:54px;"></textarea>
+    <div id="nmxt-fabao3-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:1049px;left:279px;" title="选择法宝">选</div>
 
-    <textarea id="Nmxt_法宝4名" class="nf" style="top:1104px;left:102px;width:207px;height:54px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_法宝4属" class="nf" style="top:1104px;left:309px;width:164px;height:54px;" placeholder="属性要求"></textarea>
-    <textarea id="Nmxt_法宝4效" class="nf" style="top:1104px;left:473px;width:465px;height:54px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_法宝4名" class="nf nf-name" style="top:1104px;left:102px;width:207px;height:54px;"></textarea>
+    <textarea id="Nmxt_法宝4属" class="nf nf-name" style="top:1104px;left:309px;width:164px;height:54px;"></textarea>
+    <textarea id="Nmxt_法宝4效" class="nf nf-desc" style="top:1104px;left:473px;width:465px;height:54px;"></textarea>
+    <div id="nmxt-fabao4-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:1104px;left:279px;" title="选择法宝">选</div>
 
-    <textarea id="Nmxt_法宝5名" class="nf" style="top:1159px;left:102px;width:207px;height:54px;" placeholder="名称"></textarea>
-    <textarea id="Nmxt_法宝5属" class="nf" style="top:1159px;left:309px;width:164px;height:54px;" placeholder="属性要求"></textarea>
-    <textarea id="Nmxt_法宝5效" class="nf" style="top:1159px;left:473px;width:465px;height:54px;" placeholder="效果"></textarea>
+    <textarea id="Nmxt_法宝5名" class="nf nf-name" style="top:1159px;left:102px;width:207px;height:54px;"></textarea>
+    <textarea id="Nmxt_法宝5属" class="nf nf-name" style="top:1159px;left:309px;width:164px;height:54px;"></textarea>
+    <textarea id="Nmxt_法宝5效" class="nf nf-desc" style="top:1159px;left:473px;width:465px;height:54px;"></textarea>
+    <div id="nmxt-fabao5-btn" class="picker-btn" style="position:absolute;display:flex;width:28px;height:28px;min-width:28px;min-height:28px;top:1159px;left:279px;" title="选择法宝">选</div>
 
     <!-- ── 灵石（颗10圆 / 袋6圆 / 包8方 / 中品8方 / 上品6方×2排）── -->
     <!-- 颗（2排×5） -->
-    <div class="cb-row" style="top:1256px;left:109px;width:155px;height:32px;">
-        <label id="Nmxt_灵石_颗1"  class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_颗2"  class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_颗3"  class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_颗4"  class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_颗5"  class="nmxt-cb cb-sq-sm"></label>
+    <div class="cb-row" style="top:1256px;left:109px;width:155px;height:32px;gap:2px;">
+        <label id="Nmxt_灵石_颗1"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_颗2"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_颗3"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_颗4"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_颗5"  class="nmxt-cb cb-sq"></label>
     </div>
-    <div class="cb-row" style="top:1292px;left:108px;width:156px;height:32px;">
-        <label id="Nmxt_灵石_颗6"  class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_颗7"  class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_颗8"  class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_颗9"  class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_颗10" class="nmxt-cb cb-sq-sm"></label>
+    <div class="cb-row" style="top:1292px;left:108px;width:156px;height:32px;gap:2px;">
+        <label id="Nmxt_灵石_颗6"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_颗7"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_颗8"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_颗9"  class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_颗10" class="nmxt-cb cb-sq"></label>
     </div>
 
     <!-- 袋（2排×5） -->
-    <div class="cb-row" style="top:1254px;left:277px;width:151px;height:35px;">
-        <label id="Nmxt_灵石_袋1" class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_袋2" class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_袋3" class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_袋4" class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_袋5" class="nmxt-cb cb-sq-sm"></label>
+    <div class="cb-row" style="top:1254px;left:277px;width:151px;height:35px;gap:2px;">
+        <label id="Nmxt_灵石_袋1" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_袋2" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_袋3" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_袋4" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_袋5" class="nmxt-cb cb-sq"></label>
     </div>
-    <div class="cb-row" style="top:1290px;left:277px;width:154px;height:36px;">
-        <label id="Nmxt_灵石_袋6" class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_袋7" class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_袋8" class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_袋9" class="nmxt-cb cb-sq-sm"></label>
-        <label id="Nmxt_灵石_袋10" class="nmxt-cb cb-sq-sm"></label>
+    <div class="cb-row" style="top:1290px;left:277px;width:154px;height:36px;gap:2px;">
+        <label id="Nmxt_灵石_袋6" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_袋7" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_袋8" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_袋9" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_袋10" class="nmxt-cb cb-sq"></label>
     </div>
 
     <!-- 包（2排×5） -->
-    <div class="cb-row" style="top:1255px;left:443px;width:153px;height:31px;">
+    <div class="cb-row" style="top:1255px;left:443px;width:153px;height:31px;gap:2px;">
         <label id="Nmxt_灵石_包1" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_包2" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_包3" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_包4" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_包5" class="nmxt-cb cb-sq"></label>
     </div>
-    <div class="cb-row" style="top:1292px;left:445px;width:148px;height:36px;">
+    <div class="cb-row" style="top:1292px;left:445px;width:148px;height:36px;gap:2px;">
         <label id="Nmxt_灵石_包6" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_包7" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_包8" class="nmxt-cb cb-sq"></label>
@@ -389,14 +400,14 @@
     </div>
 
     <!-- 中品（2排×5） -->
-    <div class="cb-row" style="top:1256px;left:614px;width:147px;height:29px;">
+    <div class="cb-row" style="top:1256px;left:614px;width:147px;height:29px;gap:2px;">
         <label id="Nmxt_灵石_中品1" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_中品2" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_中品3" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_中品4" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_中品5" class="nmxt-cb cb-sq"></label>
     </div>
-    <div class="cb-row" style="top:1291px;left:612px;width:149px;height:35px;">
+    <div class="cb-row" style="top:1291px;left:612px;width:149px;height:35px;gap:2px;">
         <label id="Nmxt_灵石_中品6" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_中品7" class="nmxt-cb cb-sq"></label>
         <label id="Nmxt_灵石_中品8" class="nmxt-cb cb-sq"></label>
@@ -405,19 +416,19 @@
     </div>
 
     <!-- 上品（2排×5） -->
-    <div class="cb-row" style="top:1254px;left:779px;width:147px;height:32px;">
-        <label id="Nmxt_灵石_上品1" class="nmxt-cb cb-sq-lg"></label>
-        <label id="Nmxt_灵石_上品2" class="nmxt-cb cb-sq-lg"></label>
-        <label id="Nmxt_灵石_上品3" class="nmxt-cb cb-sq-lg"></label>
-        <label id="Nmxt_灵石_上品4" class="nmxt-cb cb-sq-lg"></label>
-        <label id="Nmxt_灵石_上品5" class="nmxt-cb cb-sq-lg"></label>
+    <div class="cb-row" style="top:1254px;left:779px;width:147px;height:32px;gap:2px;">
+        <label id="Nmxt_灵石_上品1" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_上品2" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_上品3" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_上品4" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_上品5" class="nmxt-cb cb-sq"></label>
     </div>
-    <div class="cb-row" style="top:1292px;left:779px;width:148px;height:34px;">
-        <label id="Nmxt_灵石_上品6" class="nmxt-cb cb-sq-lg"></label>
-        <label id="Nmxt_灵石_上品7" class="nmxt-cb cb-sq-lg"></label>
-        <label id="Nmxt_灵石_上品8" class="nmxt-cb cb-sq-lg"></label>
-        <label id="Nmxt_灵石_上品9" class="nmxt-cb cb-sq-lg"></label>
-        <label id="Nmxt_灵石_上品10" class="nmxt-cb cb-sq-lg"></label>
+    <div class="cb-row" style="top:1292px;left:779px;width:148px;height:34px;gap:2px;">
+        <label id="Nmxt_灵石_上品6" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_上品7" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_上品8" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_上品9" class="nmxt-cb cb-sq"></label>
+        <label id="Nmxt_灵石_上品10" class="nmxt-cb cb-sq"></label>
     </div>
 
 </div><!-- /page-3 -->
@@ -430,16 +441,16 @@
     <img class="bg-img" src="pdf2png/逆命仙途V0/逆命仙途V0.4角色卡-纯打印-4.png" alt="第4页">
 
     <!-- 第1条 -->
-    <textarea id="Nmxt_团时1" class="nf" style="top:95px;left:140px;width:796px;height:56px;" placeholder="跑团时间"></textarea>
-    <textarea id="Nmxt_团记1" class="nf" style="top:151px;left:22px;width:914px;height:358px;" placeholder="跑团记录…"></textarea>
+    <textarea id="Nmxt_团时1" class="nf" style="top:95px;left:140px;width:796px;height:56px;"></textarea>
+    <textarea id="Nmxt_团记1" class="nf" style="top:151px;left:22px;width:914px;height:358px;"></textarea>
 
     <!-- 第2条 -->
-    <textarea id="Nmxt_团时2" class="nf" style="top:508px;left:140px;width:796px;height:56px;" placeholder="跑团时间"></textarea>
-    <textarea id="Nmxt_团记2" class="nf" style="top:564px;left:22px;width:914px;height:358px;" placeholder="跑团记录…"></textarea>
+    <textarea id="Nmxt_团时2" class="nf" style="top:508px;left:140px;width:796px;height:56px;"></textarea>
+    <textarea id="Nmxt_团记2" class="nf" style="top:564px;left:22px;width:914px;height:358px;"></textarea>
 
     <!-- 第3条 -->
-    <textarea id="Nmxt_团时3" class="nf" style="top:919px;left:140px;width:796px;height:56px;" placeholder="跑团时间"></textarea>
-    <textarea id="Nmxt_团记3" class="nf" style="top:975px;left:22px;width:914px;height:358px;" placeholder="跑团记录…"></textarea>
+    <textarea id="Nmxt_团时3" class="nf" style="top:919px;left:140px;width:796px;height:56px;"></textarea>
+    <textarea id="Nmxt_团记3" class="nf" style="top:975px;left:22px;width:914px;height:358px;"></textarea>
 
 </div><!-- /page-4 -->
 

@@ -99,6 +99,68 @@ body {
 }
 .nf:focus { overflow-y: auto; }
 
+/*
+ * 文本样式分两类，方便手动微调：
+ * 1. .nf-name  用于名字 / 标题类输入框
+ * 2. .nf-desc  用于描述 / 效果类输入框
+ *
+ * 你可以重点手调这里：
+ * - font-family: 改成更合适的楷体栈
+ * - text-align: 改成居中 / 左对齐
+ * - font-size: 放大字号
+ * - line-height: 调整行距
+ */
+.nf-name {
+    font-family: '京华老宋', 'Source Han Serif SC', '思源宋体', 'Noto Serif SC', 'STSong', serif;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.15;
+    padding: 0 4px;
+}
+
+.nf-desc {
+    font-family: '京华老宋', 'Source Han Serif SC', '思源宋体', 'Noto Serif SC', 'STSong', serif;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 0 4px;
+}
+
+/* 小角标选择按钮：不覆盖输入框，保留手动编辑能力 */
+.picker-btn {
+    position: absolute !important;
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    cursor: pointer;
+    background: #111;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    z-index: 9999 !important;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 2px 6px rgba(0,0,0,0.35);
+    pointer-events: auto;
+    overflow: visible;
+}
+
+.page-container .picker-btn {
+    display: flex !important;
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+}
+.picker-btn:hover { filter: brightness(1.08); }
+
 /* ── checkbox 容器（行内排列） ───────────────────────────── */
 .cb-row {
     position: absolute;
@@ -136,10 +198,54 @@ body {
 
 /* ── 打印样式 ────────────────────────────────────────────── */
 @media print {
-    body { background: white; padding: 0; }
-    #action-container { display: none; }
-    .page-container { page-break-after: always; }
-    .page-container .bg-img { width: 100% !important; }
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    body > *:not(#character-sheet) {
+        display: none !important;
+    }
+
+    #character-sheet {
+        display: block !important;
+        transform: none !important;
+        transform-origin: top left !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: max-content !important;
+        gap: 0 !important;
+    }
+
+    .page-container {
+        position: relative;
+        display: block;
+        break-after: page;
+        page-break-after: always;
+    }
+
+    .page-container:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+
+    .page-container .bg-img {
+        width: var(--sheet-width, 960px) !important;
+        height: auto !important;
+    }
+
     .nf { color: #000; }
     .nmxt-cb { border-color: #000 !important; }
+    .picker-btn,
+    .print-hidden,
+    [title^="选择"],
+    .dbg-label { display: none !important; }
 }

@@ -60,6 +60,7 @@ function nmxtImportState(state) {
     }
 
     nmxtUpdateTitle();
+    if (typeof _realignAllFields === 'function') _realignAllFields();
 }
 
 // ─── 保存到 localStorage ─────────────────────────────────
@@ -78,12 +79,14 @@ function nmxtLoad() {
 function nmxtClear() {
     document.querySelectorAll('.nf[id]').forEach(el => { el.value = ''; });
     document.querySelectorAll('.nmxt-cb[id]').forEach(el => {
-        if (el._cbInstance) el._cbInstance.setState(0);
-        else { el.dataset.state = '0'; _applyCbVisual(el); }
+        const defaultState = el.dataset.defaultState ?? el.dataset.state ?? '0';
+        if (el._cbInstance) el._cbInstance.setState(defaultState);
+        else { el.dataset.state = defaultState; _applyCbVisual(el); }
     });
     _nmxtClearAvatar();
     localStorage.removeItem(NMXT_STORAGE_KEY);
     nmxtUpdateTitle();
+    if (typeof _realignAllFields === 'function') _realignAllFields();
 }
 
 // ─── 导出 JSON 文件 ──────────────────────────────────────
@@ -105,7 +108,50 @@ function nmxtImportJSON() {
 }
 
 // ─── 打印 ─────────────────────────────────────────────────
-function nmxtPrint() { window.print(); }
+function nmxtPrint() {
+    const sheet = document.getElementById('character-sheet');
+    const prevTransform = sheet?.style.transform || '';
+    const prevMarginBottom = sheet?.style.marginBottom || '';
+    const prevSheetWidth = document.documentElement.style.getPropertyValue('--sheet-width');
+    const inputWidth = parseInt(document.getElementById('nmxt-width-input')?.value, 10) || 960;
+    const pickerButtons = Array.from(document.querySelectorAll('.picker-btn'));
+    const prevPickerDisplay = pickerButtons.map(el => el.style.display || '');
+
+    if (sheet) {
+        sheet.style.transform = 'none';
+        sheet.style.marginBottom = '0';
+    }
+
+    pickerButtons.forEach(el => {
+        el.classList.add('print-hidden');
+        el.style.display = 'none';
+        el.style.visibility = 'hidden';
+        el.style.opacity = '0';
+    });
+
+    document.documentElement.style.setProperty('--sheet-width', `${inputWidth}px`);
+
+    window.print();
+
+    setTimeout(() => {
+        if (sheet) {
+            sheet.style.transform = prevTransform;
+            sheet.style.marginBottom = prevMarginBottom;
+        }
+        pickerButtons.forEach((el, index) => {
+            el.classList.remove('print-hidden');
+            el.style.display = prevPickerDisplay[index];
+            el.style.visibility = '';
+            el.style.opacity = '';
+        });
+        if (prevSheetWidth) {
+            document.documentElement.style.setProperty('--sheet-width', prevSheetWidth);
+        } else {
+            document.documentElement.style.removeProperty('--sheet-width');
+        }
+        _nmxtAutoScale();
+    }, 0);
+}
 
 // ─── 更新页面标题 ─────────────────────────────────────────
 function nmxtUpdateTitle() {
@@ -123,6 +169,12 @@ function _applyCbVisual(el) {
 
 // ─── 初始化操作按钮 ──────────────────────────────────────
 function nmxtSetupActions() {
+    document.querySelectorAll('.nmxt-cb[id]').forEach(el => {
+        if (el.dataset.defaultState === undefined) {
+            el.dataset.defaultState = el.dataset.state || '0';
+        }
+    });
+
     // 导出
     document.getElementById('nmxt-export-btn')?.addEventListener('click', nmxtExportJSON);
 
