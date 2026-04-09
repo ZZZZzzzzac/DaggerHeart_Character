@@ -128,6 +128,40 @@ body {
     padding: 0 4px;
 }
 
+/*
+ * nmxt 新版文本类：后续请主要调这些 class 的 font-size。
+ * 命名约定：
+ * - nmxt-name-big / large / median / small / number / multiline
+ * - nmxt-desc-big / large / median / small / number / multiline
+ */
+.nmxt-name-big { font-size: 30px; }
+.nmxt-name-large { font-size: 50px; }
+.nmxt-name-median { font-size: 24px; }
+.nmxt-name-small { font-size: 16px; }
+.nmxt-name-number { font-size: 20px; }
+.nmxt-name-multiline { font-size: 22px; }
+
+.nmxt-desc-big { font-size: 18px; }
+.nmxt-desc-large { font-size: 17px; }
+.nmxt-desc-median { font-size: 16px; }
+.nmxt-desc-small { font-size: 14px; }
+.nmxt-desc-number { font-size: 16px; }
+.nmxt-desc-multiline { font-size: 16px; }
+
+/* 旧类保留为兼容别名，逐步迁移完再删 */
+.nmxt-name-meta { font-size: inherit; }
+.nmxt-name-section { font-size: inherit; }
+.nmxt-name-stat { font-size: inherit; }
+.nmxt-name-grid { font-size: inherit; }
+.nmxt-desc-main { font-size: inherit; }
+.nmxt-desc-grid { font-size: inherit; }
+.nmxt-desc-companion { font-size: inherit; }
+
+/* 天谴字段高亮：当前用于天赋/天谴名称与效果框 */
+.nmxt-tianqian {
+    color: #a40000 !important;
+}
+
 /* 小角标选择按钮：不覆盖输入框，保留手动编辑能力 */
 .picker-btn {
     position: absolute !important;

@@ -45,7 +45,7 @@ window.addEventListener('DOMContentLoaded', () => {
     nmxtUpdateTitle();
 
     // 7.5 初始内容加载后重新计算文字垂直居中
-    _realignAllFields();
+    _scheduleRealign();
 
     // 8. 默认开启 Debug 模式（F5 后直接可用测量工具）
     // document.getElementById('nmxt-debug-btn')?.click();
@@ -143,6 +143,18 @@ function _bindTableTriggers() {
     );
 
     bindTableModalTrigger(
+        'nmxt-xingshen1-btn',
+        () => _currentOptionalShentong(),
+        () => ({
+            title: '选择行动神通',
+            filterableColumns: ['道源', '类型'],
+            preselectedFilters: _currentDaoyuanFilter(),
+            columnWidths: { 道源: '8%', 类型: '10%', 名称: '12%', 灵气: '6%', 点数: '8%', 释放距离: '12%', 目标: '10%', 效果: '34%' },
+        }),
+        row => _applySkillRow(row, 'Nmxt_行神1')
+    );
+
+    bindTableModalTrigger(
         'nmxt-xingshen2-btn',
         () => _currentOptionalShentong(),
         () => ({
@@ -164,6 +176,18 @@ function _bindTableTriggers() {
             columnWidths: { 道源: '8%', 类型: '10%', 名称: '12%', 灵气: '6%', 点数: '8%', 释放距离: '12%', 目标: '10%', 效果: '34%' },
         }),
         row => _applySkillRow(row, 'Nmxt_行神3')
+    );
+
+    bindTableModalTrigger(
+        'nmxt-mifa1-btn',
+        () => _currentMifaOptions(),
+        () => ({
+            title: '选择秘法',
+            filterableColumns: ['道源', '类型'],
+            preselectedFilters: _currentMifaFilter(),
+            columnWidths: { 道源: '8%', 类型: '10%', 名称: '12%', 灵气: '6%', 点数: '8%', 释放距离: '12%', 目标: '10%', 效果: '34%' },
+        }),
+        row => _applySkillRow(row, 'Nmxt_秘法1')
     );
 
     ['1', '2', '3', '4', '5'].forEach(index => {
@@ -236,6 +260,17 @@ function _realignAllFields() {
     document.querySelectorAll('.nf-name, .nf-desc').forEach(_alignFieldText);
 }
 
+let _realignScheduled = false;
+
+function _scheduleRealign() {
+    if (_realignScheduled) return;
+    _realignScheduled = true;
+    requestAnimationFrame(() => {
+        _realignScheduled = false;
+        _realignAllFields();
+    });
+}
+
 function _alignFieldText(el) {
     if (!el) return;
 
@@ -297,8 +332,6 @@ function _applyDaoyuan(row) {
     _set('Nmxt_神魂重伤', row['神魂重伤'] || '');
 
     _applyDefaultAttack();
-    _applySkillRow(_findDaoyuanResource(row['名称'], '初始神通'), 'Nmxt_行神1');
-    _applySkillRow(_findDaoyuanResource(row['名称'], '初始秘法'), 'Nmxt_秘法1');
     _syncFamenFromName();
 }
 
@@ -361,9 +394,16 @@ function _applySimpleNameEffect(row, nameId, effectId) {
 
 function _applyTianfuRow(row, index) {
     if (!row) return;
-    const label = [row['名称'], row['等级'] ? `（${row['等级']}${row['类型'] || ''}）` : ''].join('');
-    _set(`Nmxt_天赋${index}名`, label);
-    _set(`Nmxt_天赋${index}效`, row['效果'] || '');
+    const nameId = `Nmxt_天赋${index}名`;
+    const effectId = `Nmxt_天赋${index}效`;
+    const label = row['等级'] ? `${row['名称']}-${row['等级']}` : (row['名称'] || '');
+
+    _set(nameId, label);
+    _set(effectId, row['效果'] || '');
+
+    const isTianqian = row['类型'] === '天谴';
+    document.getElementById(nameId)?.classList.toggle('nmxt-tianqian', isTianqian);
+    document.getElementById(effectId)?.classList.toggle('nmxt-tianqian', isTianqian);
 }
 
 function _applyFamenRow(row) {
@@ -396,10 +436,20 @@ function _currentOptionalShentong() {
     return NMXT_DAOYUAN_RESOURCES.filter(row => row['类型'] === '可选神通');
 }
 
+function _currentMifaOptions() {
+    return NMXT_DAOYUAN_RESOURCES.filter(row => row['类型'] === '初始秘法');
+}
+
 function _currentDaoyuanFilter() {
     const name = document.getElementById('Nmxt_道源')?.value?.trim();
     const normalized = _normalizeDaoyuanName(name);
     return normalized ? { 道源: normalized, 类型: '可选神通' } : { 类型: '可选神通' };
+}
+
+function _currentMifaFilter() {
+    const name = document.getElementById('Nmxt_道源')?.value?.trim();
+    const normalized = _normalizeDaoyuanName(name);
+    return normalized ? { 道源: normalized, 类型: '初始秘法' } : { 类型: '初始秘法' };
 }
 
 function _currentFamenInsights() {
@@ -453,12 +503,11 @@ function _parseTianfuPlans(limitText) {
 
 function _findTianfuByLabel(label) {
     if (!label) return null;
-    const match = label.match(/^(.*?)(?:（([天地人凡])(天赋|天谴)）)?$/);
+    const match = label.match(/^(.*?)(?:-([天地人凡]))?$/);
     if (!match) return null;
     const name = (match[1] || '').trim();
     const level = match[2] || '';
-    const type = match[3] || '';
-    return NMXT_TIANFU.find(item => item['名称'] === name && (!level || item['等级'] === level) && (!type || item['类型'] === type)) || null;
+    return NMXT_TIANFU.find(item => item['名称'] === name && (!level || item['等级'] === level)) || null;
 }
 
 function _syncDaoyuanFromName() {
@@ -497,12 +546,20 @@ function _syncTianfuFromNames() {
     ['天赋1', '天赋2', '天赋3'].forEach(prefix => {
         const name = document.getElementById(`Nmxt_${prefix}名`)?.value?.trim();
         const row = _findTianfuByLabel(name) || NMXT_TIANFU.find(item => item['名称'] === name);
+        const nameEl = document.getElementById(`Nmxt_${prefix}名`);
+        const effectEl = document.getElementById(`Nmxt_${prefix}效`);
         if (row) {
             _set(`Nmxt_${prefix}效`, row['效果'] || '');
+            const isTianqian = row['类型'] === '天谴';
+            nameEl?.classList.toggle('nmxt-tianqian', isTianqian);
+            effectEl?.classList.toggle('nmxt-tianqian', isTianqian);
             const currentLabel = document.getElementById(`Nmxt_${prefix}名`)?.value?.trim();
             if (currentLabel === row['名称']) {
                 _applyTianfuRow(row, prefix.replace('天赋', ''));
             }
+        } else {
+            nameEl?.classList.remove('nmxt-tianqian');
+            effectEl?.classList.remove('nmxt-tianqian');
         }
     });
 }
@@ -512,5 +569,10 @@ function _syncTianfuFromNames() {
 // ────────────────────────────────────────────────────────
 function _set(id, val) {
     const el = document.getElementById(id);
-    if (el) el.value = val;
+    if (el) {
+        el.value = val;
+        if (el.classList.contains('nf-name') || el.classList.contains('nf-desc')) {
+            _scheduleRealign();
+        }
+    }
 }

@@ -131,26 +131,28 @@ function nmxtPrint() {
 
     document.documentElement.style.setProperty('--sheet-width', `${inputWidth}px`);
 
-    window.print();
+    requestAnimationFrame(() => {
+        window.print();
 
-    setTimeout(() => {
-        if (sheet) {
-            sheet.style.transform = prevTransform;
-            sheet.style.marginBottom = prevMarginBottom;
-        }
-        pickerButtons.forEach((el, index) => {
-            el.classList.remove('print-hidden');
-            el.style.display = prevPickerDisplay[index];
-            el.style.visibility = '';
-            el.style.opacity = '';
-        });
-        if (prevSheetWidth) {
-            document.documentElement.style.setProperty('--sheet-width', prevSheetWidth);
-        } else {
-            document.documentElement.style.removeProperty('--sheet-width');
-        }
-        _nmxtAutoScale();
-    }, 0);
+        setTimeout(() => {
+            if (sheet) {
+                sheet.style.transform = prevTransform;
+                sheet.style.marginBottom = prevMarginBottom;
+            }
+            pickerButtons.forEach((el, index) => {
+                el.classList.remove('print-hidden');
+                el.style.display = prevPickerDisplay[index];
+                el.style.visibility = '';
+                el.style.opacity = '';
+            });
+            if (prevSheetWidth) {
+                document.documentElement.style.setProperty('--sheet-width', prevSheetWidth);
+            } else {
+                document.documentElement.style.removeProperty('--sheet-width');
+            }
+            _nmxtAutoScale();
+        }, 0);
+    });
 }
 
 // ─── 更新页面标题 ─────────────────────────────────────────
