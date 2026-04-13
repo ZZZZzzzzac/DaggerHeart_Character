@@ -1,0 +1,281 @@
+{
+    "NameTextbox": "啄鵺",
+    "RaceTextbox": "器灵-羽鸟",
+    "CommunityTextbox": "自由之民 FREEBORNE",
+    "ClassTextbox": "术士-元素起源",
+    "ClassDomainTextbox": "奥术+午夜",
+    "LevelTextbox": "5",
+    "EvasionTextbox": "10",
+    "ArmorTextbox": "6",
+    "AgilityTextbox": "1",
+    "StrengthTextbox": "-1",
+    "FinesseTextbox": "4",
+    "InstinctTextbox": "0",
+    "PresenceTextbox": "3",
+    "KnowledgeTextbox": "0",
+    "MajorTextbox": "18",
+    "SevereTextbox": "36",
+    "Experience1Textbox": "【哪里都有鵺师傅】",
+    "Experience1ModifierTextbox": "+4",
+    "Experience2Textbox": "老大鸽",
+    "Experience2ModifierTextbox": "+3",
+    "Experience3Textbox": "整点薯条",
+    "Experience3ModifierTextbox": "+2",
+    "Experience4Textbox": "",
+    "Experience4ModifierTextbox": "",
+    "Experience5Textbox": "",
+    "Experience5ModifierTextbox": "",
+    "ClassFeatureTextbox": "无常魔法: 花费 3 希望点来重掷你在一次造成魔法伤害的攻击中任意数量的伤害骰。\n\n奥术感应: 你可以在近距离范围内感知魔法个体和物品的存在。\n次级幻术: 进行一次施法掷骰（10）。成功时，你在近距离范围内创造一个不超过自身大小的次级视觉幻象。该幻象对处于近距离范围或更远距离的观察者而言足以乱真。\n引导原力: 每长休一次，你可以将一张领域卡从你的配置中放入你的宝库，并选择下列选项之一：\n\n- 获得等同于卡牌等级的希望点。\n- 增强一个造成伤害的法术，你的伤害掷骰获得等同于卡牌等级两倍的加值。",
+    "PrimaryWeaponNameTextbox": "金刚啄",
+    "PrimaryWeaponStatTextbox": "灵巧／近战",
+    "PrimaryWeaponDamageTextbox": "d8+7／物理",
+    "PrimaryWeaponTraitTextbox": "",
+    "SecondaryWeaponNameTextbox": "无影爪",
+    "SecondaryWeaponStatTextbox": "灵巧／近距离",
+    "SecondaryWeaponDamageTextbox": "d6+4／物理",
+    "SecondaryWeaponTraitTextbox": "出钩：进行一次成功的攻击后，你可以将目标拉至你的近战范围内。",
+    "ArmorNameTextbox": "繁殖羽",
+    "ArmorThresholdTextbox": "13／31",
+    "ArmorScoreTextbox": "6",
+    "ArmorTraitTextbox": "重型：闪避值-1。",
+    "ItemSlot1Textbox": "小型生命药水: 立刻恢复 1d4 生命点。\n月之石：惠伶斩月现场掉落的月亮碎片，被啄鵺悄悄藏起来。",
+    "Backup1WeaponNameTextbox": "",
+    "Backup1WeaponStatTextbox": "",
+    "Backup1WeaponDamageTextbox": "",
+    "Backup1WeaponTraitTextbox": "",
+    "Backup2WeaponNameTextbox": "",
+    "Backup2WeaponStatTextbox": "",
+    "Backup2WeaponDamageTextbox": "",
+    "Backup2WeaponTraitTextbox": "",
+    "EventLogTextbox": "啄鵺总觉得自己比那只木头脑袋的兄弟啄页强。\n\n和啄页这个一天到晚待在藏经阁里，被弟子们畏惧的教习监督不一样，它啄鵺可是十里八乡的红人！无论是它和蔼可亲毛茸茸的外表，还是风趣幽默的性格，它总是能受到人们的喜爱。\n\n它是掌门在吸取制作啄页的经验后，做出来陪伴惠伶长大的新型号，是晚上带着外门弟子们溜出山门去吃夜宵的带头大哥，是只需趴在阳光里午睡就会有人投喂薯条的主子。\n\n忘形派的弟子们和它打成一片，师长们喜爱它撒娇卖萌，就连山下酒馆里大爷大妈们，也会给它在说书人那里留一个装满坚果和瓜子小窝。更别说看着一路长大的宁惠伶和制造它的宁掌门了，那是它最亲最亲的家人。\n\n但是扛住逝症没有死的是啄页，集合了剩余忘形派弟子对抗逝症的是啄页，送走掌门最后一程的是啄页，陪伴惠伶斩月的是啄页，代掌门之位也是啄页。\n\n而那时的啄鵺，只能以灵核的形式寄生在啄页身上旁观这一切，它是逝症到来后第一批死去的。\n\n等到一切结束，啄页重新将啄鵺的身体造出来后，它便头也不回地逃了。逃到中州，逃到琼南，逃到挽天楼的万户计划中去，它其实不太懂挽天楼那帮人神神叨叨的理想，也不懂啄页和宵太祖是从《神州要术》里看到了什么才这样支持他们造揽星机。\n\n它只是不再想待在已经一个家人都没有了的忘形派里，只是想着，说不定上了天，还能找到已经成仙的伶儿。\n\n于是它依然在天南海北的飞，充当着朝廷、挽天楼、忘形派之间的联络人，不知不觉间在各地都混了个脸熟，还被太祖硬塞了个“督造”的官职，但是它却总是感觉自己并非属于这里。在挽天楼共事的期间，有安权衡和沈星悦一天到晚忘我的讨论学术问题，有烬红荒看着神奇发明眼中的闪闪发光，有挽天楼弟子们为了同一个理想奋斗三代的热情；啄鵺似乎看到了逝症之前的忘形派中有着同样的景象，那时自己也是中的一员……\n\n……而这份热情，几乎让现在的它窒息。\n\n\n\n---\n\n\n\n“啄鵺，你听我说...”  \n又来了。  \n“惠伶她已经不在此世，按计算，她每十年都能下来门派过一天，不算很久你若真想见惠伶，等十年就是了。”  \n不算很久？他怎么敢...。  \n可他偏偏还真能这样说，掌门想要一个有羽毛有暖意的小鸟，于是你诞生了，所谓有得就有舍，逝症来时你第一个领死，那些啄页羡慕的漂亮羽毛和血肉会随着时间萎缩，腐烂，消失。  \n明天和意外不知道哪个先来，又哪来那么多十年可等呢？  \n你那木头脑袋的兄弟总是如此，仗着自己的木制身体和构造特殊的脑袋不会老去，就敢如此大言不惭，难不成要让小师妹每天下来看他啄鵺大哥越来越枯朽的身躯？等没了再重新造一个新的啄鵺出来？  \n这个新啄鵺还是自己吗？  \n那些和你混耍的师长，大爷大妈皆是长者，逝症席卷，其他人要么死了，要么尚在恢复，看见你还会叫你们名字——鵺与页二字并无读音上的明显差距，可你就是知道他们喊得就是你那个木头兄弟。  \n“啄页拯救了西境，现在又是代掌门，啄鵺啊，你醒了以后也别总是像以前一样吊儿郎当的，门派现在百废待兴，不把这里收拾好，到时候惠伶回来了不满意就是天怒呢，我们受得起吗？”  \n在废墟里重建有什么意义呢？原本的那群人一个都不在了，掌门，惠伶，小满，对你来说不过是在废墟之上又建了一个新的废墟，不能被称之为家。  \n那些遗留下来的痕迹总叫你看着心烦，你领了个需要远走的活，头也不回的走了。  \n“啄鵺，你听我说，如今民生凋敝，高祖他再怎么得民心，也不可能真的力排众议到让人民饿着肚子看他发射揽星机，予他《神州要术》只是他确实算得上是一位贤君，我想支持他，但不意味着所有忘形派弟子都要支持他，理性而言，揽星机项目还没做好准备，至少不适合这个朝代，我并不看好这次发射，你要想清楚。”  \n想清楚，再然后呢？  \n再等个千年，等到一切都完满了再干吗？  \n难道要让小师妹在月亮上孤单的度过这样久的时间吗？  \n你啄鵺要怎么样做到和啄页一样理性又冷酷？  \n“啄鵺，你听我...”  \n你挥挥翅膀拍走了那些絮絮叨叨的鸟影，炸土豆的香气飘过，在吃不饱饭的现在，能尝到这种东西属实奢侈，眼前的也不再是那个满嘴责任的木头兄弟——虽然这帮人也喜欢喊着梦想啊愿望什么的奋力燃烧。  \n人就是如此，总要给自己背上一些信念才能迈出前进的脚步。  \n“啄鵺老兄，高祖特赏，不过现在还拿在我手里，你如果想吃，就得把你的故事说来听听，跳过那些乱七八糟的西境英雄故事，那些我们都听厌了，就是‘你’的故事。”  \n怎么，堂堂啄鵺还会被一袋薯饼拿捏不成？\n\n\n\n---\n\n\n\n“啄页，你莫要再说...”\n那些道理它啄鵺怎么会不懂呢？它到底还是个器灵，不是真的血肉。可明白道理是一回事，它却没法像木头脑袋一样接受。它已失去肉身并重塑一回，知晓自己并不会就这么消失，但……\n\n它无法这么理性的看着自己只能待在地上无动于衷。\n它害怕再像逝症那时一样第一个抛下家人。\n它想向啄页和其他人证明些什么。\n它或许只是有点寂寞了。\n\n“莫急莫急~老兄我出场的精彩部分马上就要到哩！方才说道，那忘形派一众弟子一不留神，皆陷进了那女鬼设下的幻阵之中。而你们的鵺师傅却丝毫没被迷惑，扇扇翅膀就把当今代掌门给救了出来……”\n\n这算是为数不多你能压过啄页一头的经历了，引的让桌下的沈星悦和烬红荒连连称奇，只是一旁安衡权有些冰冷的眼神让它背后冒汗，也不知道这女人看穿了多少……啄鵺低头想再吃一点炸鱼薯条掩饰掩饰，却发现盘子里只剩下了发苦的炒薯叶。为了维持鵺师傅的形象，它也只能闷头一根一根地吃完，才不是怕了厨子！\n\n它也说不清，选择这样一个形象，究竟是自己本性如此，还是故意就是要与啄页完全相反。也不知道，自己一头扎进揽星机这个大坑里，到底是想给谁证明什么。\n\n桌下的热点话题早已从自己的西境传奇转到了宵高祖起义的话本故事里，有那么一瞬间，啄鵺觉得叽叽喳喳的她们似乎比自己更像鸟儿……也好，坑里不是只有自己一个，它跳下桌子，也加入了吵闹的行列当中。\n\n这似曾相识的吵闹，当年也是它与惠伶的日常，它有些怀念她为自己掐羽管的触感。\n\n距离发射还有36个时辰，就快了，就快了……",
+    "AvatarTextbox": "",
+    "BackgroundQuestion1Textbox": "你做了什么事让社群里的人对你心存戒备？",
+    "BackgroundQuestion2Textbox": "哪位导师教会你控制你那狂野的魔法，以及导师为何不再能指导你？",
+    "BackgroundQuestion3Textbox": "你深藏着一个不敢告人的恐惧。它是什么？为何令你如此畏惧？",
+    "ConnectQuestion1Textbox": "为什么你如此信任我？",
+    "ConnectQuestion2Textbox": "我做过什么事让你对我心存戒备？",
+    "ConnectQuestion3Textbox": "为什么我们要对共同的过去守口如瓶？",
+    "BackgroundAnswer1Textbox": "",
+    "BackgroundAnswer2Textbox": "",
+    "BackgroundAnswer3Textbox": "",
+    "ConnectAnswer1Textbox": "",
+    "ConnectAnswer2Textbox": "",
+    "ConnectAnswer3Textbox": "",
+    "ArmorSlotCheckbox1": "0",
+    "ArmorSlotCheckbox2": "0",
+    "ArmorSlotCheckbox3": "0",
+    "ArmorSlotCheckbox4": "0",
+    "ArmorSlotCheckbox5": "0",
+    "ArmorSlotCheckbox6": "0",
+    "ArmorSlotCheckbox7": "2",
+    "ArmorSlotCheckbox8": "2",
+    "ArmorSlotCheckbox9": "2",
+    "ArmorSlotCheckbox10": "2",
+    "ArmorSlotCheckbox11": "2",
+    "ArmorSlotCheckbox12": "2",
+    "TraitSlotCheckbox1": "0",
+    "TraitSlotCheckbox2": "0",
+    "TraitSlotCheckbox3": "0",
+    "TraitSlotCheckbox4": "0",
+    "TraitSlotCheckbox5": "0",
+    "TraitSlotCheckbox6": "0",
+    "HpSlotCheckbox1": "0",
+    "HpSlotCheckbox2": "0",
+    "HpSlotCheckbox3": "0",
+    "HpSlotCheckbox4": "0",
+    "HpSlotCheckbox5": "0",
+    "HpSlotCheckbox6": "0",
+    "HpSlotCheckbox7": "2",
+    "HpSlotCheckbox8": "2",
+    "HpSlotCheckbox9": "2",
+    "HpSlotCheckbox10": "2",
+    "HpSlotCheckbox11": "2",
+    "HpSlotCheckbox12": "2",
+    "StressSlotCheckbox1": "0",
+    "StressSlotCheckbox2": "0",
+    "StressSlotCheckbox3": "0",
+    "StressSlotCheckbox4": "0",
+    "StressSlotCheckbox5": "0",
+    "StressSlotCheckbox6": "0",
+    "StressSlotCheckbox7": "0",
+    "StressSlotCheckbox8": "0",
+    "StressSlotCheckbox9": "2",
+    "StressSlotCheckbox10": "2",
+    "StressSlotCheckbox11": "2",
+    "StressSlotCheckbox12": "2",
+    "HopeSlotCheckbox1": "1",
+    "HopeSlotCheckbox2": "1",
+    "HopeSlotCheckbox3": "0",
+    "HopeSlotCheckbox4": "0",
+    "HopeSlotCheckbox5": "0",
+    "HopeSlotCheckbox6": "0",
+    "HandfulGoldCheckbox1": "1",
+    "HandfulGoldCheckbox2": "0",
+    "HandfulGoldCheckbox3": "0",
+    "HandfulGoldCheckbox4": "0",
+    "HandfulGoldCheckbox5": "0",
+    "HandfulGoldCheckbox6": "0",
+    "HandfulGoldCheckbox7": "0",
+    "HandfulGoldCheckbox8": "0",
+    "HandfulGoldCheckbox9": "0",
+    "BagGoldCheckbox1": "0",
+    "BagGoldCheckbox2": "0",
+    "BagGoldCheckbox3": "0",
+    "BagGoldCheckbox4": "0",
+    "BagGoldCheckbox5": "0",
+    "BagGoldCheckbox6": "0",
+    "BagGoldCheckbox7": "0",
+    "BagGoldCheckbox8": "0",
+    "BagGoldCheckbox9": "0",
+    "ChestGoldCheckbox1": "0",
+    "ProficiencyCheckbox1": "1",
+    "ProficiencyCheckbox2": "1",
+    "ProficiencyCheckbox3": "0",
+    "ProficiencyCheckbox4": "0",
+    "ProficiencyCheckbox5": "0",
+    "TwohandedCheckbox1": "0",
+    "TwohandedCheckbox2": "0",
+    "TwohandedCheckbox3": "0",
+    "BackupWeapon1Primary": "0",
+    "BackupWeapon1Secondary": "0",
+    "BackupWeapon2Primary": "0",
+    "BackupWeapon2Secondary": "0",
+    "LevelupT2_A1": "0",
+    "LevelupT2_A2": "0",
+    "LevelupT2_A3": "1",
+    "LevelupT2_B1": "1",
+    "LevelupT2_B2": "0",
+    "LevelupT2_C1": "1",
+    "LevelupT2_C2": "1",
+    "LevelupT2_D1": "1",
+    "LevelupT2_E1": "1",
+    "LevelupT2_G1": "0",
+    "LevelupT3_A1": "0",
+    "LevelupT3_A2": "0",
+    "LevelupT3_A3": "1",
+    "LevelupT3_B1": "0",
+    "LevelupT3_B2": "0",
+    "LevelupT3_C1": "0",
+    "LevelupT3_C2": "0",
+    "LevelupT3_D1": "0",
+    "LevelupT3_E1": "0",
+    "LevelupT3_F1": "1",
+    "LevelupT3_G1": "0",
+    "LevelupT3_H1": "0",
+    "LevelupT3_I1": "2",
+    "LevelupT4_A1": "0",
+    "LevelupT4_A2": "0",
+    "LevelupT4_A3": "0",
+    "LevelupT4_B1": "0",
+    "LevelupT4_B2": "0",
+    "LevelupT4_C1": "0",
+    "LevelupT4_C2": "0",
+    "LevelupT4_D1": "0",
+    "LevelupT4_E1": "0",
+    "LevelupT4_F1": "0",
+    "LevelupT4_G1": "0",
+    "LevelupT4_H1": "0",
+    "LevelupT4_I1": "0",
+    "cards": [
+        {
+            "data": {
+                "名称": "械灵+仙灵",
+                "类型": "种族",
+                "描述": "定制设计: 决定你是由谁创造以及为何目的而创造的。在创建角色时，选择一个最符合此目的的经历，永久获得 +1 加值。\n\n翅膀: 你可以飞行。飞行时，在敌人对你进行攻击之后，你可以**标记 1 压力点**在该攻击中闪避获得 +2 加值。"
+            },
+            "position": {
+                "left": "",
+                "top": ""
+            }
+        },
+        {
+            "data": "data/全卡图/职业/基础/帮派豪杰-基础.png",
+            "position": {
+                "left": "297px",
+                "top": "-1px"
+            }
+        },
+        {
+            "data": "data/全卡图/职业/进阶/帮派豪杰-进阶.png",
+            "position": {
+                "left": "598px",
+                "top": "-1px"
+            }
+        },
+        {
+            "data": {
+                "名称": "自由之民 FREEBORNE",
+                "类型": "社群",
+                "描述": "作为自由之民的一员意味着你来自一个曾生活在专制统治下，如今已获得解放的集体。\n\n无拘无束 Unbound: 每场游戏一次，当你进行一次掷出恐惧结果的动作掷骰时，你可以将其改为掷出希望结果。"
+            },
+            "position": {
+                "left": "898px",
+                "top": "-1px"
+            }
+        },
+        {
+            "data": "data/全卡图/领域/1/妙手空空.png",
+            "position": {
+                "left": "0px",
+                "top": "420px"
+            }
+        },
+        {
+            "data": "data/全卡图/领域/1/奇异伪装.png",
+            "position": {
+                "left": "300px",
+                "top": "422px"
+            }
+        },
+        {
+            "data": "data/全卡图/领域/4/借力打力.png",
+            "position": {
+                "left": "300px",
+                "top": "844px"
+            }
+        },
+        {
+            "data": "data/全卡图/领域/5/沉默不言.png",
+            "position": {
+                "left": "602px",
+                "top": "843px"
+            }
+        },
+        {
+            "data": "data/全卡图/领域/3/战术行家.png",
+            "position": {
+                "left": "-1px",
+                "top": "842px"
+            }
+        },
+        {
+            "data": "data/全卡图/领域/4/潜行专家.png",
+            "position": {
+                "left": "600px",
+                "top": "421px"
+            }
+        },
+        {
+            "data": "data/全卡图/领域/2/午夜精魂.png",
+            "position": {
+                "left": "904px",
+                "top": "842px"
+            }
+        },
+        {
+            "data": "data/全卡图/职业/进阶/元素结社-进阶.png",
+            "position": {
+                "left": "",
+                "top": ""
+            }
+        },
+        {
+            "data": "data/全卡图/职业/基础/元素起源-基础.png",
+            "position": {
+                "left": "",
+                "top": ""
+            }
+        }
+    ],
+    "avatarImageSrc": "图片的base64数据，这里省略"
+}
