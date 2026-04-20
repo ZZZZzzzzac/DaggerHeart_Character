@@ -22,7 +22,6 @@
 ## Skins
 - Skin selection in `js/action.js` reads `skin/folders.json` first and only falls back to directory listing if the server exposes it. In normal repo work, keep `skin/folders.json` current.
 - After adding/removing a skin folder under `skin/`, run `python skin/gen_skins_manifest.py`.
-- `skin/skins_manifest.json` exists but is not used by the current runtime; do not update it instead of `skin/folders.json`.
 - A skin must provide `skin/<name>/index.html` and usually `skin.json`; the host opens the skin in a new window after exporting current character data to `daggerheart_current_character`.
 - Skin pages depend on `../skin_api.js`; optional resource controls come from `../resource_tracker.js`.
 
