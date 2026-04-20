@@ -7,83 +7,30 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="skin-app">
-    <header class="topbar">
-      <div class="topbar-main">
-        <h1>SealChat Bridge Skin</h1>
-        <div class="status-line" id="bridge-status">等待模板连接…</div>
+  <div id="app"></div>
+
+  <div id="rollModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-title" id="modalTitle">二元骰掷骰</div>
+      <div class="modal-mode-row">
+        <button id="modalToggleAdv" class="modal-chip" type="button" onclick="toggleRollOption('adv')">优势</button>
+        <button id="modalToggleDis" class="modal-chip" type="button" onclick="toggleRollOption('dis')">劣势</button>
+        <button id="modalToggleReaction" class="modal-chip" type="button" onclick="toggleRollOption('reaction')">反应</button>
       </div>
-      <div class="roll-dock">
-        <label class="mod-field">
-          <span>额外加值</span>
-          <input id="global-extra-mod" type="number" value="0">
-        </label>
-        <div class="toggle-group" id="adv-toggle-group">
-          <button type="button" class="toggle-btn is-active" data-adv="normal">普通</button>
-          <button type="button" class="toggle-btn" data-adv="adv">优势</button>
-          <button type="button" class="toggle-btn" data-adv="dis">劣势</button>
-        </div>
+      <div class="dice-mod-row center roll-note">属性修正 <span id="modalAttrMod" class="roll-fixed-mod">+0</span></div>
+      <div class="dice-mod-row center">
+        <span>额外调整值</span>
+        <input id="modalMod" class="dice-mod-input" type="number" value="0">
       </div>
-    </header>
-
-    <nav class="tabbar">
-      <button type="button" class="tab-btn is-active" data-tab="overview">概览</button>
-      <button type="button" class="tab-btn" data-tab="cards">卡片</button>
-      <button type="button" class="tab-btn" data-tab="details">详情</button>
-    </nav>
-
-    <main class="tab-panels">
-      <section class="tab-panel is-active" data-panel="overview">
-        <div class="overview-layout">
-          <aside class="panel profile-panel">
-            <div class="avatar-shell">
-              <img id="avatar-image" alt="角色头像">
-              <div class="avatar-fallback" id="avatar-fallback">无头像</div>
-            </div>
-            <div class="field-grid" id="basic-fields"></div>
-          </aside>
-
-          <section class="panel main-panel">
-            <div class="section-block">
-              <div class="section-title">属性与掷骰</div>
-              <div class="attr-grid" id="attr-fields"></div>
-            </div>
-            <div class="section-block">
-              <div class="section-title">资源</div>
-              <div class="resource-grid" id="resource-fields"></div>
-            </div>
-            <div class="section-block">
-              <div class="section-title">经历</div>
-              <div class="experience-list" id="experience-fields"></div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <section class="tab-panel" data-panel="cards">
-        <div class="panel full-panel">
-          <div class="section-title">卡片展示</div>
-          <div class="cards-grid" id="cards-grid"></div>
-        </div>
-      </section>
-
-      <section class="tab-panel" data-panel="details">
-        <div class="details-layout">
-          <div class="panel">
-            <div class="section-title">装备</div>
-            <div class="field-stack" id="equipment-fields"></div>
-          </div>
-          <div class="panel">
-            <div class="section-title">特性与物品</div>
-            <div class="meta-line" id="gold-display">金币：0 箱 / 0 袋 / 0 把</div>
-            <div class="field-stack" id="note-fields"></div>
-          </div>
-        </div>
-      </section>
-    </main>
+      <div class="dice-mod-row center roll-note">总固定修正 = 属性修正 + 额外调整值</div>
+      <div class="modal-actions">
+        <button class="modal-btn hope-btn" onclick="execRoll()">掷骰</button>
+      </div>
+      <button class="modal-cancel" onclick="closeRollModal()">取消</button>
+    </div>
   </div>
 
   <script src="../skin_api.js"></script>
-  <script src="script.js?v=20260420a"></script>
+  <script src="script.js?v=20260420c"></script>
 </body>
 </html>
