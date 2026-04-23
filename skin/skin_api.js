@@ -44,19 +44,31 @@
 
   const STORAGE_KEY = 'daggerheart_current_character';
 
+  function isEmbeddedMode() {
+    try {
+      return window.parent !== window;
+    } catch (e) {
+      return true;
+    }
+  }
+
   /**
    * 从 Local Storage 读取角色数据
    * @returns {object|null}
    */
   function loadCharacterData() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = window.localStorage.getItem(STORAGE_KEY);
       if (!raw) {
         console.warn('[SkinAPI] 未找到角色数据，请先在主工程中点击"查看皮肤"。');
         return null;
       }
       return JSON.parse(raw);
     } catch (e) {
+      if (e && e.name === 'SecurityError') {
+        console.info('[SkinAPI] 当前运行在 sandbox iframe 中，跳过 localStorage 预览加载。');
+        return null;
+      }
       console.error('[SkinAPI] 解析角色数据失败:', e);
       return null;
     }
@@ -66,6 +78,10 @@
    * 调用皮肤作者实现的 renderSkin 函数
    */
   function bootstrap() {
+    if (isEmbeddedMode()) {
+      return;
+    }
+
     const data = loadCharacterData();
 
     if (typeof window.renderSkin !== 'function') {
@@ -86,7 +102,7 @@
   // 在 DOM 完全加载后执行
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bootstrap);
-    // 已经加载完毕（如果 script 在底部）
+  } else {
     bootstrap();
   }
 

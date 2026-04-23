@@ -30,7 +30,13 @@
     </div>
   </div>
 
-  <script src="../skin_api.js"></script>
   <script src="script.js?v=20260420c"></script>
+  <script>
+    if (window.parent === window) {
+      var skinApiScript = document.createElement('script');
+      skinApiScript.src = '../skin_api.js';
+      document.body.appendChild(skinApiScript);
+    }
+  </script>
 </body>
 </html>
