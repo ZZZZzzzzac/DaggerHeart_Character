@@ -1,42 +1,1210 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SealChat Bridge Skin</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>匕首之心角色卡</title>
+<style>
+:root {
+  --bg: #0e1117;
+  --card: #161b22;
+  --border: #30363d;
+  --text: #c9d1d9;
+  --dim: #6e7681;
+  --white: #e6edf3;
+  --hope: #3fb950;
+  --fear: #f85149;
+  --accent: #58a6ff;
+  --gold: #e3b341;
+  --stress: #f0883e;
+  --hover: #21262d;
+  --input-bg: #0d1117;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --mono: "Cascadia Code", "Fira Code", Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 8px;
+  padding-bottom: 36px;
+}
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sheet {
+  max-width: 540px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.section { background: var(--card); padding: 10px 12px; }
+.section-title {
+  font-size: 11px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.header {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  background: linear-gradient(180deg, #161b22, #0d1117);
+}
+.header-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.header-info {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: var(--dim);
+  background: #000;
+  flex-shrink: 0;
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.char-name { font-size: 18px; font-weight: 700; color: #fff; cursor: pointer; }
+.char-name:hover { color: var(--accent); }
+.char-sub { font-size: 11px; color: var(--dim); }
+.header-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 6px;
+  text-align: right;
+  flex: 0 0 auto;
+}
+.defense-item { color: var(--text); font-size: 15px; font-weight: 600; white-space: nowrap; }
+.defense-key { color: var(--dim); margin-right: 6px; font-size: 12px; font-weight: 500; }
+.inline-link { color: var(--white); cursor: pointer; }
+.inline-link:hover { color: var(--accent); }
+.grid6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--border); }
+.cell {
+  background: var(--card);
+  padding: 8px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.cell-label { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; }
+.cell-main { display: flex; align-items: center; justify-content: center; gap: 4px; }
+.cell-val {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--white);
+  cursor: pointer;
+  min-width: 20px;
+  text-align: center;
+}
+.cell-val:hover { color: var(--accent); }
+.attr-roll-btn {
+  border: none;
+  background: transparent;
+  color: var(--dim);
+  padding: 0;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+}
+.attr-roll-btn:hover { color: var(--accent); }
+.resource-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+.resource-card {
+  flex: 1 1 180px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  background: var(--input-bg);
+}
+.res-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.res-label { font-size: 11px; color: var(--dim); min-width: 48px; }
+.res-btn {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--hover);
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.res-btn:hover { border-color: var(--accent); color: var(--accent); }
+.res-val {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  min-width: 24px;
+  text-align: center;
+  cursor: pointer;
+}
+.res-val:hover { color: var(--accent); }
+.res-hp .res-val { color: var(--fear); }
+.res-stress .res-val { color: var(--stress); }
+.res-armor .res-val { color: var(--accent); }
+.res-hope .res-val { color: var(--hope); }
+.exp-wrap {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.exp-card {
+  flex: 1 1 140px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 8px;
+  background: var(--input-bg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.exp-name {
+  flex: 1;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.exp-name:hover { color: var(--accent); }
+.exp-mod {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--hope);
+  cursor: pointer;
+  min-width: 28px;
+  text-align: right;
+}
+.exp-mod:hover { color: var(--accent); }
+.equip-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.equip-block {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 6px;
+  background: var(--input-bg);
+}
+.equip-title { font-size: 12px; font-weight: 600; color: var(--white); margin-bottom: 4px; cursor: pointer; }
+.equip-title:hover { color: var(--accent); }
+.equip-line { font-size: 11px; color: var(--dim); cursor: pointer; padding: 1px 0; white-space: pre-wrap; }
+.equip-line:hover { color: var(--text); }
+.gold-wrap { display: flex; gap: 16px; flex-wrap: wrap; }
+.gold-row { display: flex; align-items: center; gap: 8px; }
+.gold-label { font-size: 11px; color: var(--gold); min-width: 40px; }
+.gold-val { font-family: var(--mono); font-size: 14px; color: var(--gold); cursor: pointer; }
+.gold-val:hover { color: var(--accent); }
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.card-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.card-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #000;
+}
+.card-meta {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--white);
+}
+.card-type {
+  font-size: 11px;
+  color: var(--accent);
+}
+.card-desc {
+  font-size: 11px;
+  color: var(--dim);
+  white-space: pre-wrap;
+}
+.empty-state {
+  color: var(--dim);
+  font-size: 12px;
+  font-style: italic;
+  padding: 12px;
+}
+.dice-mod-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 12px; }
+.dice-mod-row.center { justify-content: center; }
+.modal-mode-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.modal-chip {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--hover);
+  color: var(--text);
+  padding: 7px 6px;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: center;
+}
+.modal-chip:hover { border-color: var(--accent); }
+.modal-chip.active {
+  border-color: var(--accent);
+  background: rgba(88, 166, 255, .16);
+  color: var(--white);
+}
+.dice-mod-input {
+  width: 56px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 3px 6px;
+  font-size: 12px;
+  text-align: center;
+}
+.roll-note { color: var(--dim); font-size: 11px; }
+.roll-fixed-mod { color: var(--accent); font-weight: 600; }
+.inline-edit {
+  background: var(--input-bg);
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  color: #fff;
+  font-size: inherit;
+  font-family: inherit;
+  text-align: center;
+  padding: 1px 4px;
+  outline: none;
+}
+.empty { padding: 30px; text-align: center; color: var(--dim); font-style: italic; }
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  width: 90%;
+  max-width: 300px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .6);
+}
+.modal-title { font-size: 16px; font-weight: 700; color: #fff; text-align: center; margin-bottom: 12px; }
+.modal-actions { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.modal-btn {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--hover);
+  color: var(--text);
+  padding: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: center;
+}
+.modal-btn:hover { border-color: var(--accent); }
+.modal-btn.hope-btn {
+  background: rgba(63, 185, 80, .1);
+  border-color: rgba(63, 185, 80, .3);
+  color: var(--hope);
+  font-weight: 600;
+}
+.modal-btn.hope-btn:hover { background: rgba(63, 185, 80, .2); }
+.modal-cancel {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--dim);
+  cursor: pointer;
+  padding: 8px 0;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.modal-cancel:hover { color: #fff; }
+.roll-preview-label {
+  font-size: 11px;
+  color: var(--dim);
+  margin-bottom: 4px;
+}
+.roll-preview-command {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--white);
+  word-break: break-all;
+}
+@media (max-width: 460px) {
+  .header { flex-direction: column; align-items: stretch; }
+  .header-side { align-items: flex-start; text-align: left; }
+  .grid6 { grid-template-columns: repeat(3, 1fr); }
+  .equip-grid { grid-template-columns: 1fr; }
+  .cards-grid { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
-  <div id="app"></div>
+<div id="app"></div>
 
-  <div id="rollModal" class="modal-overlay">
-    <div class="modal-box">
-      <div class="modal-title" id="modalTitle">二元骰掷骰</div>
-      <div class="modal-mode-row">
-        <button id="modalToggleAdv" class="modal-chip" type="button" onclick="toggleRollOption('adv')">优势</button>
-        <button id="modalToggleDis" class="modal-chip" type="button" onclick="toggleRollOption('dis')">劣势</button>
-        <button id="modalToggleReaction" class="modal-chip" type="button" onclick="toggleRollOption('reaction')">反应</button>
-      </div>
-      <div class="dice-mod-row center roll-note">属性修正 <span id="modalAttrMod" class="roll-fixed-mod">+0</span></div>
-      <div class="dice-mod-row center">
-        <span>额外调整值</span>
-        <input id="modalMod" class="dice-mod-input" type="number" value="0">
-      </div>
-      <div class="dice-mod-row center roll-note">总固定修正 = 属性修正 + 额外调整值</div>
-      <div class="modal-actions">
-        <button class="modal-btn hope-btn" onclick="execRoll()">掷骰</button>
-      </div>
-      <button class="modal-cancel" onclick="closeRollModal()">取消</button>
+<div id="rollModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle">二元骰掷骰</div>
+    <div class="modal-mode-row">
+      <button id="modalToggleAdv" class="modal-chip" type="button" onclick="toggleRollOption('adv')">优势</button>
+      <button id="modalToggleDis" class="modal-chip" type="button" onclick="toggleRollOption('dis')">劣势</button>
+      <button id="modalToggleReaction" class="modal-chip" type="button" onclick="toggleRollOption('reaction')">反应</button>
     </div>
+    <div class="dice-mod-row center roll-note">属性修正 <span id="modalAttrMod" class="roll-fixed-mod">+0</span></div>
+    <div class="dice-mod-row center">
+      <span>额外调整值</span>
+      <input id="modalMod" class="dice-mod-input" type="number" value="0"/>
+    </div>
+    <div class="dice-mod-row center roll-note">总固定修正 = 属性修正 + 额外调整值</div>
+    <div class="modal-actions">
+      <button class="modal-btn hope-btn" onclick="execRoll()">掷骰</button>
+    </div>
+    <button class="modal-cancel" onclick="closeRollModal()">取消</button>
   </div>
+</div>
 
-  <script src="script.js?v=20260420c"></script>
-  <script>
-    if (window.parent === window) {
-      var skinApiScript = document.createElement('script');
-      skinApiScript.src = '../skin_api.js';
-      document.body.appendChild(skinApiScript);
+<script>
+var _windowId = null;
+var _rollDispatchMode = 'default';
+var _hostUpdateCallback = null;
+var _hostListenerBound = false;
+var _queuedPreviewPayload = null;
+var _skinPreviewMode = false;
+var _lastPreviewRollLabel = '';
+var _lastPreviewRollCommand = '';
+var _pendingRollLabel = '';
+var _pendingAttrMod = 0;
+var _pendingRollOptions = { adv: false, dis: false, reaction: false };
+
+function postEvent(action, payload) {
+  if (!_windowId) return;
+  window.parent.postMessage({
+    type: 'SEALCHAT_EVENT',
+    version: 1,
+    windowId: _windowId,
+    action: action,
+    payload: payload
+  }, '*');
+}
+
+function dispatchIncomingUpdate(payload) {
+  if (typeof _hostUpdateCallback === 'function') {
+    _hostUpdateCallback(payload);
+    return;
+  }
+  _queuedPreviewPayload = payload;
+}
+
+function bindSealchatHostUpdates() {
+  if (_hostListenerBound) return;
+  _hostListenerBound = true;
+  window.addEventListener('message', function(e) {
+    if (e.source !== window.parent) return;
+    if (!e.data || e.data.type !== 'SEALCHAT_UPDATE') return;
+    _windowId = e.data.payload.windowId;
+    _skinPreviewMode = false;
+    dispatchIncomingUpdate(e.data.payload);
+  });
+}
+
+function buildPreviewPayload(jsonData) {
+  var attrs = shallowClone(jsonData || {});
+  return {
+    name: attrs.NameTextbox || '',
+    avatarUrl: attrs.avatarImageSrc || attrs.avatarUrl || '',
+    attrs: attrs
+  };
+}
+
+function persistSkinPreviewState() {
+  if (!_skinPreviewMode) return;
+  try {
+    var storage = window.localStorage;
+    if (!storage) return;
+    var raw = storage.getItem('daggerheart_current_character');
+    var next = raw ? JSON.parse(raw) : {};
+    for (var key in S.attrs) next[key] = S.attrs[key];
+    next.NameTextbox = S.attrs.NameTextbox || S.name || next.NameTextbox || '';
+    if (S.avatarUrl) next.avatarUrl = S.avatarUrl;
+    storage.setItem('daggerheart_current_character', JSON.stringify(next));
+  } catch (e) {}
+}
+
+function previewRollCommand(command, label) {
+  _skinPreviewMode = true;
+  _lastPreviewRollLabel = label || '检定';
+  _lastPreviewRollCommand = command || '';
+  window.__SEALCHAT_SKIN_PREVIEW_COMMAND__ = {
+    label: _lastPreviewRollLabel,
+    command: _lastPreviewRollCommand
+  };
+  render();
+}
+
+function tryLoadSkinApi() {
+  if (window.parent !== window) return;
+  if (document.querySelector('script[data-skin-api="1"]')) return;
+  var script = document.createElement('script');
+  script.src = '../skin_api.js';
+  script.dataset.skinApi = '1';
+  script.onerror = function() {};
+  document.body.appendChild(script);
+}
+
+window.sealchat = {
+  onUpdate: function(cb) {
+    _hostUpdateCallback = cb;
+    bindSealchatHostUpdates();
+    if (_queuedPreviewPayload) {
+      var queuedPayload = _queuedPreviewPayload;
+      _queuedPreviewPayload = null;
+      cb(queuedPayload);
     }
-  </script>
+  },
+  setRollDispatchMode: function(mode) {
+    _rollDispatchMode = mode === 'template' ? 'template' : 'default';
+  },
+  setRollMode: function(mode) {
+    _rollDispatchMode = mode === 'template' ? 'template' : 'default';
+  },
+  roll: function(template, label, args) {
+    if (_windowId) {
+      postEvent('ROLL_DICE', {
+        roll: { template: template, label: label || '', args: args || {}, dispatchMode: _rollDispatchMode }
+      });
+      return;
+    }
+    previewRollCommand(template, label || '检定');
+  },
+  updateAttrs: function(attrs) {
+    if (_windowId) {
+      postEvent('UPDATE_ATTRS', { attrs: attrs });
+      return;
+    }
+    persistSkinPreviewState();
+  }
+};
+
+window.sealchat.setRollDispatchMode('template');
+
+var S = {
+  name: '',
+  avatarUrl: '',
+  attrs: {}
+};
+
+var ATTR_KEYS = {
+  agility: 'AgilityTextbox',
+  strength: 'StrengthTextbox',
+  finesse: 'FinesseTextbox',
+  instinct: 'InstinctTextbox',
+  presence: 'PresenceTextbox',
+  knowledge: 'KnowledgeTextbox'
+};
+var ATTR_LABELS = {
+  agility: '敏捷',
+  strength: '力量',
+  finesse: '灵巧',
+  instinct: '直觉',
+  presence: '风度',
+  knowledge: '学识'
+};
+var RES_KEYS = {
+  hp: { cur: 'HpCurrent', max: 'HpMax' },
+  stress: { cur: 'StressCurrent', max: 'StressMax' },
+  armor: { cur: 'ArmorCurrent', max: 'ArmorTextbox' },
+  hope: { cur: 'HopeCurrent', max: 'HopeMax' }
+};
+var INFO_KEYS = {
+  race: 'RaceTextbox',
+  community: 'CommunityTextbox',
+  class_: 'ClassTextbox',
+  classDomain: 'ClassDomainTextbox',
+  level: 'LevelTextbox',
+  evasion: 'EvasionTextbox',
+  major: 'MajorTextbox',
+  severe: 'SevereTextbox',
+  classFeature: 'ClassFeatureTextbox',
+  itemSlot: 'ItemSlot1Textbox'
+};
+var EXP_COUNT = 5;
+var GOLD_KEYS = { handful: 'GoldHandful', bag: 'GoldBag', chest: 'GoldChest' };
+var STRIPPED_ATTR_KEYS = {
+  EventLogTextbox: true,
+  AvatarTextbox: true,
+  BackgroundQuestion1Textbox: true,
+  BackgroundQuestion2Textbox: true,
+  BackgroundQuestion3Textbox: true,
+  ConnectQuestion1Textbox: true,
+  ConnectQuestion2Textbox: true,
+  ConnectQuestion3Textbox: true,
+  BackgroundAnswer1Textbox: true,
+  BackgroundAnswer2Textbox: true,
+  BackgroundAnswer3Textbox: true,
+  ConnectAnswer1Textbox: true,
+  ConnectAnswer2Textbox: true,
+  ConnectAnswer3Textbox: true,
+  avatarImageSrc: true,
+  LevelupT2_A1: true,
+  LevelupT2_A2: true,
+  LevelupT2_A3: true,
+  LevelupT2_B1: true,
+  LevelupT2_B2: true,
+  LevelupT2_C1: true,
+  LevelupT2_C2: true,
+  LevelupT2_D1: true,
+  LevelupT2_E1: true,
+  LevelupT2_G1: true,
+  LevelupT3_A1: true,
+  LevelupT3_A2: true,
+  LevelupT3_A3: true,
+  LevelupT3_B1: true,
+  LevelupT3_B2: true,
+  LevelupT3_C1: true,
+  LevelupT3_C2: true,
+  LevelupT3_D1: true,
+  LevelupT3_E1: true,
+  LevelupT3_F1: true,
+  LevelupT3_G1: true,
+  LevelupT3_H1: true,
+  LevelupT3_I1: true,
+  LevelupT4_A1: true,
+  LevelupT4_A2: true,
+  LevelupT4_A3: true,
+  LevelupT4_B1: true,
+  LevelupT4_B2: true,
+  LevelupT4_C1: true,
+  LevelupT4_C2: true,
+  LevelupT4_D1: true,
+  LevelupT4_E1: true,
+  LevelupT4_F1: true,
+  LevelupT4_G1: true,
+  LevelupT4_H1: true,
+  LevelupT4_I1: true,
+  avatarImageData: true,
+  avatarBase64: true,
+  portraitImageSrc: true,
+  portraitImageData: true,
+  portraitBase64: true
+};
+var DATA_IMAGE_PREFIX_RE = /^data:image\/[a-z0-9.+-]+;base64,/i;
+var LARGE_DATA_URI_MIN_LENGTH = 2048;
+var CARD_HOST_BASE_URL = 'https://daggerheart.cn/';
+var CARD_ASSET_BASE_URL = CARD_HOST_BASE_URL + 'character/';
+
+function esc(text) {
+  var div = document.createElement('div');
+  div.textContent = text == null ? '' : String(text);
+  return div.innerHTML;
+}
+function num(value) {
+  var parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function signed(value) {
+  return (value >= 0 ? '+' : '') + value;
+}
+function shallowClone(obj) {
+  var out = {};
+  for (var key in obj) out[key] = obj[key];
+  return out;
+}
+function shouldStripTransientAttr(key, value) {
+  if (value == null) return false;
+  if (STRIPPED_ATTR_KEYS[key]) return true;
+  if (typeof value !== 'string') return false;
+  if (value.length < LARGE_DATA_URI_MIN_LENGTH) return false;
+  if (!DATA_IMAGE_PREFIX_RE.test(value)) return false;
+  return /(avatar|portrait).*(image|src|base64)/i.test(String(key || ''));
+}
+function stripTransientAttrs(attrs, cleanupPatch) {
+  if (!attrs) return;
+  for (var key in attrs) {
+    if (!shouldStripTransientAttr(key, attrs[key])) continue;
+    if (attrs[key] !== '' && cleanupPatch) cleanupPatch[key] = '';
+    attrs[key] = '';
+  }
+}
+function a(key, source) {
+  var obj = source || S.attrs;
+  var value = obj[key];
+  return value == null ? '' : String(value);
+}
+function an(key, source) {
+  return num((source || S.attrs)[key]);
+}
+function getResourceMax(resId, source) {
+  var attrs = source || S.attrs;
+  var max = an(RES_KEYS[resId].max, attrs);
+  if (max > 0) return max;
+  if (resId === 'armor') return num(a('ArmorScoreTextbox', attrs)) || 0;
+  if (resId === 'hope') return 6;
+  return 6;
+}
+function getResourceState(resId, source) {
+  var attrs = source || S.attrs;
+  return {
+    current: an(RES_KEYS[resId].cur, attrs),
+    max: getResourceMax(resId, attrs)
+  };
+}
+function buildDerivedBadgeAttrs(source) {
+  var attrs = source || S.attrs;
+  var hpState = getResourceState('hp', attrs);
+  var stressState = getResourceState('stress', attrs);
+  var armorState = getResourceState('armor', attrs);
+  var hopeState = getResourceState('hope', attrs);
+  return {
+    hp: String(hpState.current),
+    hpCurrent: String(hpState.current),
+    hpMax: String(hpState.max),
+    hpText: hpState.current + '/' + hpState.max,
+    stress: String(stressState.current),
+    stressCurrent: String(stressState.current),
+    stressMax: String(stressState.max),
+    stressText: stressState.current + '/' + stressState.max,
+    armor: String(armorState.current),
+    armorCurrent: String(armorState.current),
+    armorMax: String(armorState.max),
+    armorText: armorState.current + '/' + armorState.max,
+    hope: String(hopeState.current),
+    hopeCurrent: String(hopeState.current),
+    hopeMax: String(hopeState.max),
+    hopeText: hopeState.current + '/' + hopeState.max
+  };
+}
+function syncDerivedBadgeAttrs(syncRemote, basePatch) {
+  var derived = buildDerivedBadgeAttrs(S.attrs);
+  var patch = basePatch ? shallowClone(basePatch) : {};
+  for (var key in derived) {
+    if (String(S.attrs[key] == null ? '' : S.attrs[key]) !== String(derived[key])) {
+      patch[key] = derived[key];
+    }
+  }
+  if (Object.keys(patch).length > 0) {
+    setAttrsLocal(patch, syncRemote !== false);
+  }
+}
+function setAttrsLocal(patch, syncRemote) {
+  if (!patch) return;
+  for (var key in patch) S.attrs[key] = patch[key];
+  if (syncRemote !== false && window.sealchat && window.sealchat.updateAttrs) {
+    window.sealchat.updateAttrs(patch);
+  }
+}
+function patchAttrs(patch) {
+  setAttrsLocal(patch, true);
+  syncDerivedBadgeAttrs(true);
+  render();
+}
+
+function formatDdTerm(value) {
+  var parsed = num(value);
+  if (!parsed) return '';
+  return (parsed > 0 ? '+' : '') + parsed;
+}
+
+function buildDdCommand(attrModifier, extraModifier, advantageMode) {
+  var expr = '';
+  expr += formatDdTerm(attrModifier);
+  expr += formatDdTerm(extraModifier);
+  if (advantageMode === 'adv') expr += '+1d6';
+  if (advantageMode === 'dis') expr += '-1d6';
+  if (!expr) expr = '0';
+  return '.dd ' + expr;
+}
+
+function sendDdRollCommand(sourceLabel, attrModifier, extraModifier, advantageMode) {
+  var command = buildDdCommand(attrModifier, extraModifier, advantageMode);
+  window.sealchat.roll(command, sourceLabel || '检定', {});
+}
+
+function render() {
+  var el = document.getElementById('app');
+  if (!S.attrs || Object.keys(S.attrs).length === 0) {
+    el.innerHTML = '<div class="empty">等待角色数据…</div>';
+    return;
+  }
+
+  var avatarHtml = S.avatarUrl ? '<img src="' + esc(S.avatarUrl) + '">' : esc((a('NameTextbox') || S.name || '?').charAt(0));
+  var levelText = a(INFO_KEYS.level) || '0';
+  var classLine = 'LV' + levelText + ' ' + (a(INFO_KEYS.class_) || '-') + ' ' + (a(INFO_KEYS.classDomain) || '-');
+  var order = ['agility', 'strength', 'finesse', 'instinct', 'presence', 'knowledge'];
+  var html = '';
+
+  html += '<div class="sheet">';
+  html += '<div class="header">';
+  html += '  <div class="header-main">';
+  html += '    <div class="avatar">' + avatarHtml + '</div>';
+  html += '    <div class="header-info">';
+  html += '      <div class="char-name" data-edit-key="NameTextbox">' + esc(a('NameTextbox') || S.name || '未命名') + '</div>';
+  html += '      <div class="char-sub">' + esc(a(INFO_KEYS.race)) + ' · ' + esc(a(INFO_KEYS.community)) + '</div>';
+  html += '      <div class="char-sub">' + esc(classLine) + '</div>';
+  html += '    </div>';
+  html += '  </div>';
+  html += '  <div class="header-side">';
+  html += '    <div class="defense-item"><span class="defense-key">闪避</span><span class="inline-link" data-edit-key="' + INFO_KEYS.evasion + '">' + esc(a(INFO_KEYS.evasion) || '-') + '</span></div>';
+  html += '    <div class="defense-item"><span class="defense-key">阈值</span><span class="inline-link" data-edit-key="' + INFO_KEYS.major + '">' + esc(a(INFO_KEYS.major) || '-') + '</span> / <span class="inline-link" data-edit-key="' + INFO_KEYS.severe + '">' + esc(a(INFO_KEYS.severe) || '-') + '</span></div>';
+  html += '  </div>';
+  html += '</div>';
+
+  html += '<div class="section"><div class="grid6">';
+  for (var i = 0; i < order.length; i++) {
+    var attrId = order[i];
+    html += cellV(ATTR_LABELS[attrId], a(ATTR_KEYS[attrId]), ATTR_KEYS[attrId], attrId);
+  }
+  html += '</div></div>';
+
+  html += '<div class="section"><div class="resource-wrap">';
+  html += resCard('生命', 'hp', 'res-hp');
+  html += resCard('压力', 'stress', 'res-stress');
+  html += resCard('护甲', 'armor', 'res-armor');
+  html += resCard('希望', 'hope', 'res-hope');
+  html += '</div></div>';
+
+  html += '<div class="section"><div class="exp-wrap">';
+  for (var expIndex = 1; expIndex <= EXP_COUNT; expIndex++) {
+    var expNameKey = 'Experience' + expIndex + 'Textbox';
+    var expModKey = 'Experience' + expIndex + 'ModifierTextbox';
+    var expName = a(expNameKey);
+    var expMod = a(expModKey);
+    if (!expName && !expMod && expIndex > 3) continue;
+    html += '<div class="exp-card">';
+    html += '  <span class="exp-name" data-edit-key="' + expNameKey + '">' + esc(expName || '(空)') + '</span>';
+    html += '  <span class="exp-mod" data-edit-key="' + expModKey + '">' + esc(expMod || '+0') + '</span>';
+    html += '</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="section"><div class="section-title">装备 Equipment</div><div class="equip-grid">';
+  html += equipBlock('Primary', '主武器');
+  html += equipBlock('Secondary', '副武器');
+  html += armorBlock();
+  if (a('Backup1WeaponNameTextbox')) html += equipBlock('Backup1', '备用武器1');
+  if (a('Backup2WeaponNameTextbox')) html += equipBlock('Backup2', '备用武器2');
+  html += '</div>';
+  if (a(INFO_KEYS.itemSlot)) {
+    html += '<div class="equip-block"><div class="equip-title">物品栏</div><div class="equip-line" data-edit-key="' + INFO_KEYS.itemSlot + '">' + esc(a(INFO_KEYS.itemSlot)) + '</div></div>';
+  }
+  html += '</div>';
+
+  html += '<div class="section"><div class="section-title">金币 Gold</div><div class="gold-wrap">';
+  html += goldCell('🪙', '一把', GOLD_KEYS.handful);
+  html += goldCell('💰', '一袋', GOLD_KEYS.bag);
+  html += goldCell('📦', '一箱', GOLD_KEYS.chest);
+  html += '</div></div>';
+
+  if (a(INFO_KEYS.classFeature)) {
+    html += '<div class="section"><div class="section-title">职业特性 Class Features</div><div class="equip-line" data-edit-key="' + INFO_KEYS.classFeature + '">' + esc(a(INFO_KEYS.classFeature)) + '</div></div>';
+  }
+
+  if (_skinPreviewMode && _lastPreviewRollCommand) {
+    html += '<div class="section"><div class="section-title">掷骰预览</div><div class="roll-preview-label">' + esc(_lastPreviewRollLabel || '检定') + '</div><div class="roll-preview-command">' + esc(_lastPreviewRollCommand) + '</div></div>';
+  }
+
+  html += '<div class="section"><div class="section-title">卡片 Cards</div><div class="cards-grid">' + buildCardsHtml() + '</div></div>';
+
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function cellV(label, value, key, rollAttr) {
+  var html = '<div class="cell"><span class="cell-label">' + esc(label) + '</span><div class="cell-main"><span class="cell-val" data-edit-key="' + key + '">' + esc(value || '-') + '</span>';
+  if (rollAttr) html += '<button class="attr-roll-btn" data-roll-attr="' + rollAttr + '" title="掷骰">🎲</button>';
+  html += '</div></div>';
+  return html;
+}
+function equipBlock(prefix, label) {
+  var nameKey = prefix + 'WeaponNameTextbox';
+  var trait = a(prefix + 'WeaponTraitTextbox');
+  return '<div class="equip-block">'
+    + '<div class="equip-title" data-edit-key="' + nameKey + '">' + esc(label + ': ' + (a(nameKey) || '(无)')) + '</div>'
+    + '<div class="equip-line" data-edit-key="' + prefix + 'WeaponStatTextbox">属性: ' + esc(a(prefix + 'WeaponStatTextbox') || '-') + '</div>'
+    + '<div class="equip-line" data-edit-key="' + prefix + 'WeaponDamageTextbox">伤害: ' + esc(a(prefix + 'WeaponDamageTextbox') || '-') + '</div>'
+    + (trait ? '<div class="equip-line" data-edit-key="' + prefix + 'WeaponTraitTextbox">特性: ' + esc(trait) + '</div>' : '')
+    + '</div>';
+}
+function armorBlock() {
+  var trait = a('ArmorTraitTextbox');
+  return '<div class="equip-block">'
+    + '<div class="equip-title" data-edit-key="ArmorNameTextbox">' + esc('护甲: ' + (a('ArmorNameTextbox') || '(无)')) + '</div>'
+    + '<div class="equip-line" data-edit-key="ArmorThresholdTextbox">阈值: ' + esc(a('ArmorThresholdTextbox') || '-') + '</div>'
+    + '<div class="equip-line" data-edit-key="ArmorScoreTextbox">护甲值: ' + esc(a('ArmorScoreTextbox') || '-') + '</div>'
+    + (trait ? '<div class="equip-line" data-edit-key="ArmorTraitTextbox">特性: ' + esc(trait) + '</div>' : '')
+    + '</div>';
+}
+function resRow(label, resId, cls) {
+  var state = getResourceState(resId);
+  return '<div class="res-row ' + cls + '">'
+    + '<span class="res-label">' + esc(label) + '</span>'
+    + '<button class="res-btn" data-res-delta="' + resId + ':-1">−</button>'
+    + '<span class="res-val" data-edit-key="' + RES_KEYS[resId].cur + '">' + state.current + '</span>'
+    + '<span style="color:var(--dim)">/</span>'
+    + '<span class="res-val" data-edit-key="' + RES_KEYS[resId].max + '">' + state.max + '</span>'
+    + '<button class="res-btn" data-res-delta="' + resId + ':1">+</button>'
+    + '</div>';
+}
+function resCard(label, resId, cls) {
+  return '<div class="resource-card">' + resRow(label, resId, cls) + '</div>';
+}
+function goldCell(icon, label, key) {
+  return '<div class="gold-row"><span>' + icon + '</span><span class="gold-label">' + esc(label) + '</span><span class="gold-val" data-edit-key="' + key + '">' + esc(an(key)) + '</span></div>';
+}
+function resolveCardSrc(src) {
+  var normalized = String(src == null ? '' : src).trim();
+  if (!normalized) return '';
+  normalized = normalized.replace(/\\/g, '/');
+  if (/^(https?:|data:)/i.test(normalized)) return normalized;
+  if (/^character\//i.test(normalized)) return encodeURI(CARD_HOST_BASE_URL + normalized);
+  if (/^\/data\//i.test(normalized)) return encodeURI(CARD_HOST_BASE_URL + normalized.slice(1));
+  if (/^data\//i.test(normalized)) return encodeURI(CARD_ASSET_BASE_URL + normalized);
+  if (/^\/?全卡图\//.test(normalized)) return encodeURI(CARD_ASSET_BASE_URL + 'data/' + normalized.replace(/^\//, ''));
+  normalized = normalized.replace(/^\.\//, '').replace(/^\//, '');
+  return encodeURI(CARD_ASSET_BASE_URL + normalized);
+}
+function buildCardsHtml() {
+  var cards = Array.isArray(S.attrs.cards) ? S.attrs.cards : [];
+  if (!cards.length) {
+    return '<div class="empty-state">当前没有卡片数据。</div>';
+  }
+
+  var html = '';
+  for (var i = 0; i < cards.length; i++) {
+    var cardInfo = cards[i];
+    var data = cardInfo && cardInfo.data != null ? cardInfo.data : cardInfo;
+    if (!data) continue;
+
+    var cardHtml = '';
+    if (typeof data === 'string') {
+      var imageSrc = resolveCardSrc(data);
+      if (!imageSrc) continue;
+      cardHtml = '<img src="' + esc(imageSrc) + '" alt="卡图">';
+    } else if (typeof data === 'object') {
+      var previewSrc = data.imageUrl || data.image || data.src || data.url || '';
+      var title = data['名称'] || data.name || '未命名卡片';
+      var type = data['类型'] || data.type || '';
+      var desc = data['描述'] || data.description || data.desc || data['效果'] || data['特性'] || '';
+
+      if (previewSrc) {
+        cardHtml += '<img src="' + esc(resolveCardSrc(previewSrc)) + '" alt="' + esc(title) + '">';
+      }
+      cardHtml += '<div class="card-meta">';
+      cardHtml += '<div class="card-title">' + esc(title) + '</div>';
+      if (type) cardHtml += '<div class="card-type">' + esc(type) + '</div>';
+      if (desc) cardHtml += '<div class="card-desc">' + esc(desc) + '</div>';
+      cardHtml += '</div>';
+    }
+
+    if (!cardHtml) continue;
+    html += '<div class="card-item">' + cardHtml + '</div>';
+  }
+
+  return html || '<div class="empty-state">当前没有卡片数据。</div>';
+}
+function startEdit(el, key) {
+  if (el.dataset.editing === '1') return;
+  var current = a(key);
+  var isMultiline = current.indexOf('\n') >= 0 || key === INFO_KEYS.classFeature || key === INFO_KEYS.itemSlot;
+  var input = document.createElement(isMultiline ? 'textarea' : 'input');
+  input.className = 'inline-edit';
+  input.value = current;
+  if (!isMultiline) {
+    input.style.width = Math.max(el.offsetWidth + 20, 40) + 'px';
+  } else {
+    input.style.width = '100%';
+    input.style.minHeight = '80px';
+    input.style.textAlign = 'left';
+  }
+  el.textContent = '';
+  el.appendChild(input);
+  el.dataset.editing = '1';
+  input.focus();
+  if (input.select) input.select();
+  var commit = function() {
+    var patch = {};
+    patch[key] = input.value;
+    patchAttrs(patch);
+  };
+  var cancel = function() { render(); };
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', function(e) {
+    if (!isMultiline && e.key === 'Enter') {
+      e.preventDefault();
+      commit();
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancel();
+    }
+  });
+  input.addEventListener('click', function(e) { e.stopPropagation(); });
+}
+function rollDualityDice(mode, totalModifier) {
+  var hope = randInt(1, 12);
+  var fear = randInt(1, 12);
+  var advValue = 0;
+  if (mode === 'adv') advValue = randInt(1, 6);
+  if (mode === 'dis') advValue = -randInt(1, 6);
+  var modifier = num(totalModifier);
+  return {
+    hope: hope,
+    fear: fear,
+    advDis: mode || '',
+    advVal: advValue,
+    modifier: modifier,
+    total: hope + fear + advValue + modifier,
+    outcome: hope === fear ? 'crit' : (hope > fear ? 'hope' : 'fear')
+  };
+}
+function applyDiceResult(rollResult) {
+  var nextAttrs = shallowClone(S.attrs);
+  var patch = {};
+  if (!rollResult.isReaction && (rollResult.outcome === 'hope' || rollResult.outcome === 'crit')) {
+    var hopeState = getResourceState('hope', nextAttrs);
+    var newHope = clamp(hopeState.current + 1, 0, hopeState.max);
+    patch[RES_KEYS.hope.cur] = newHope;
+    nextAttrs[RES_KEYS.hope.cur] = newHope;
+  }
+  if (!rollResult.isReaction && rollResult.outcome === 'crit') {
+    var stressState = getResourceState('stress', nextAttrs);
+    var newStress = clamp(stressState.current - 1, 0, stressState.max);
+    patch[RES_KEYS.stress.cur] = newStress;
+    nextAttrs[RES_KEYS.stress.cur] = newStress;
+  }
+  S.attrs = nextAttrs;
+  if (Object.keys(patch).length > 0 && window.sealchat && window.sealchat.updateAttrs) {
+    window.sealchat.updateAttrs(patch);
+  }
+  syncDerivedBadgeAttrs(true);
+  render();
+}
+function sendRollEvent(rollRequest, sourceLabel) {
+  sendDdRollCommand(
+    sourceLabel || '检定',
+    rollRequest && rollRequest.attrModifier,
+    rollRequest && rollRequest.extraModifier,
+    rollRequest && rollRequest.advDis
+  );
+}
+function syncRollOptionButtons() {
+  document.getElementById('modalToggleAdv').classList.toggle('active', !!_pendingRollOptions.adv);
+  document.getElementById('modalToggleDis').classList.toggle('active', !!_pendingRollOptions.dis);
+  document.getElementById('modalToggleReaction').classList.toggle('active', !!_pendingRollOptions.reaction);
+}
+window.toggleRollOption = function(option) {
+  if (option === 'adv') {
+    _pendingRollOptions.adv = !_pendingRollOptions.adv;
+    if (_pendingRollOptions.adv) _pendingRollOptions.dis = false;
+  }
+  if (option === 'dis') {
+    _pendingRollOptions.dis = !_pendingRollOptions.dis;
+    if (_pendingRollOptions.dis) _pendingRollOptions.adv = false;
+  }
+  if (option === 'reaction') {
+    _pendingRollOptions.reaction = !_pendingRollOptions.reaction;
+  }
+  syncRollOptionButtons();
+};
+function openRollModal(label, modifier) {
+  _pendingRollLabel = label;
+  _pendingAttrMod = num(modifier);
+  _pendingRollOptions = { adv: false, dis: false, reaction: false };
+  document.getElementById('modalTitle').textContent = label + '检定';
+  document.getElementById('modalAttrMod').textContent = signed(_pendingAttrMod);
+  document.getElementById('modalMod').value = '0';
+  syncRollOptionButtons();
+  document.getElementById('rollModal').classList.add('active');
+}
+window.closeRollModal = function() {
+  document.getElementById('rollModal').classList.remove('active');
+};
+window.execRoll = function() {
+  var extraMod = num(document.getElementById('modalMod').value);
+  var rollMode = _pendingRollOptions.adv ? 'adv' : (_pendingRollOptions.dis ? 'dis' : '');
+  sendRollEvent({
+    attrModifier: _pendingAttrMod,
+    extraModifier: extraMod,
+    advDis: rollMode,
+    isReaction: !!_pendingRollOptions.reaction
+  }, _pendingRollLabel || '二元骰掷骰');
+  closeRollModal();
+};
+document.addEventListener('click', function(e) {
+  var target = e.target;
+  var editEl = target.closest('[data-edit-key]');
+  if (editEl && editEl.dataset.editing !== '1') {
+    startEdit(editEl, editEl.dataset.editKey);
+    return;
+  }
+  var resDelta = target.closest('[data-res-delta]');
+  if (resDelta) {
+    var parts = resDelta.dataset.resDelta.split(':');
+    var resId = parts[0];
+    var delta = num(parts[1]);
+    var state = getResourceState(resId);
+    var patch = {};
+    patch[RES_KEYS[resId].cur] = clamp(state.current + delta, 0, state.max);
+    patchAttrs(patch);
+    return;
+  }
+  var attrRoll = target.closest('[data-roll-attr]');
+  if (attrRoll) {
+    var attrId = attrRoll.dataset.rollAttr;
+    openRollModal(ATTR_LABELS[attrId] || attrId, an(ATTR_KEYS[attrId]));
+    return;
+  }
+  if (target.id === 'rollModal') {
+    closeRollModal();
+  }
+});
+function initDefaults(attrs) {
+  var defs = {};
+  if (attrs.HpCurrent == null) {
+    var hp = 0;
+    var hpMax = 0;
+    for (var hpIndex = 1; hpIndex <= 12; hpIndex++) {
+      var hpValue = num(attrs['HpSlotCheckbox' + hpIndex]);
+      if (hpValue !== 2) {
+        hpMax++;
+        if (hpValue === 1) hp++;
+      }
+    }
+    defs.HpCurrent = hpMax > 0 ? hp : 0;
+    defs.HpMax = hpMax > 0 ? hpMax : 6;
+  }
+  if (attrs.StressCurrent == null) {
+    var stress = 0;
+    var stressMax = 0;
+    for (var stressIndex = 1; stressIndex <= 12; stressIndex++) {
+      var stressValue = num(attrs['StressSlotCheckbox' + stressIndex]);
+      if (stressValue !== 2) {
+        stressMax++;
+        if (stressValue === 1) stress++;
+      }
+    }
+    defs.StressCurrent = stressMax > 0 ? stress : 0;
+    defs.StressMax = stressMax > 0 ? stressMax : 6;
+  }
+  if (attrs.ArmorCurrent == null) {
+    var armorMax = num(attrs.ArmorTextbox);
+    defs.ArmorCurrent = armorMax;
+    if (!attrs.ArmorTextbox) {
+      defs.ArmorTextbox = '0';
+      defs.ArmorCurrent = 0;
+    }
+  }
+  if (attrs.HopeCurrent == null) {
+    var hope = 0;
+    var hopeMax = 0;
+    for (var hopeIndex = 1; hopeIndex <= 6; hopeIndex++) {
+      var hopeValue = num(attrs['HopeSlotCheckbox' + hopeIndex]);
+      if (hopeValue !== 2) {
+        hopeMax++;
+        if (hopeValue === 1) hope++;
+      }
+    }
+    defs.HopeCurrent = hopeMax > 0 ? hope : 2;
+    defs.HopeMax = hopeMax > 0 ? hopeMax : 6;
+  }
+  if (attrs.GoldHandful == null) {
+    var handful = 0;
+    for (var handfulIndex = 1; handfulIndex <= 9; handfulIndex++) {
+      if (num(attrs['HandfulGoldCheckbox' + handfulIndex]) === 1) handful++;
+    }
+    defs.GoldHandful = handful;
+  }
+  if (attrs.GoldBag == null) {
+    var bag = 0;
+    for (var bagIndex = 1; bagIndex <= 9; bagIndex++) {
+      if (num(attrs['BagGoldCheckbox' + bagIndex]) === 1) bag++;
+    }
+    defs.GoldBag = bag;
+  }
+  if (attrs.GoldChest == null) defs.GoldChest = num(attrs.ChestGoldCheckbox1) === 1 ? 1 : 0;
+  for (var key in defs) {
+    if (attrs[key] == null) attrs[key] = defs[key];
+  }
+  return attrs;
+}
+window.sealchat.onUpdate(function(data) {
+  S.name = data && data.name || '';
+  S.avatarUrl = data && data.avatarUrl || '';
+  var nextAttrs = shallowClone(S.attrs || {});
+  var incomingAttrs = data && data.attrs || {};
+  for (var key in incomingAttrs) nextAttrs[key] = incomingAttrs[key];
+  var cleanupPatch = {};
+  stripTransientAttrs(nextAttrs, cleanupPatch);
+  S.attrs = initDefaults(nextAttrs);
+  syncDerivedBadgeAttrs(true, cleanupPatch);
+  render();
+});
+
+window.renderSkin = function(jsonData) {
+  _windowId = null;
+  _skinPreviewMode = true;
+  dispatchIncomingUpdate(buildPreviewPayload(jsonData));
+};
+
+tryLoadSkinApi();
+</script>
 </body>
 </html>
