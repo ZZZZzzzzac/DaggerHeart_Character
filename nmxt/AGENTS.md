@@ -4,8 +4,13 @@
 - This file is only for `nmxt/`. The root app under `/index.html` is a different character sheet and should not be used as a behavior reference except for focused patterns like print handling.
 
 ## Runtime
-- `nmxt/` is still plain HTML/CSS/vanilla JS. Serve the repo over HTTP from the repo root and open `http://localhost:8080/nmxt/`.
+- `nmxt/` is still plain HTML/CSS/vanilla JS and can now run as a standalone directory. Serve `nmxt/` itself over HTTP and open `http://localhost:8080`.
 - `nmxt` persists to `localStorage['nmxt_characterSheetData']`.
+
+## Standalone Packaging
+- Shared runtime helpers used by `nmxt` are vendored inside `nmxt/js/`; do not switch them back to `../js/*` unless you also give the standalone package those files.
+- Build the standalone zip from the repo root with `python package_nmxt.py`.
+- The standalone package includes `server.bat` so Windows users can start a local HTTP server from the extracted package root.
 
 ## Source Of Truth
 - The current `nmxt` data tables were extracted from the workbook `nmxt/逆命仙途半自动卡V0.4（可打印A4) - 增加可选神通1.1 - 副本 (2).xlsx`.

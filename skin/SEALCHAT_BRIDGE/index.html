@@ -921,8 +921,113 @@ function resolveCardSrc(src) {
   normalized = normalized.replace(/^\.\//, '').replace(/^\//, '');
   return encodeURI(CARD_ASSET_BASE_URL + normalized);
 }
+function splitCardMapEntries(source) {
+  var body = String(source == null ? '' : source).trim();
+  if (!body) return [];
+  if (body.charAt(0) === '[' && body.charAt(body.length - 1) === ']') {
+    body = body.slice(1, -1);
+  }
+
+  var entries = [];
+  var index = 0;
+  while (index < body.length) {
+    var start = body.indexOf('map[', index);
+    if (start === -1) break;
+
+    var depth = 0;
+    var cursor = start;
+    while (cursor < body.length) {
+      if (body.slice(cursor, cursor + 4) === 'map[') {
+        depth += 1;
+        cursor += 4;
+        continue;
+      }
+      if (body.charAt(cursor) === ']') {
+        depth -= 1;
+        cursor += 1;
+        if (depth === 0) break;
+        continue;
+      }
+      cursor += 1;
+    }
+
+    if (depth === 0) {
+      entries.push(body.slice(start, cursor));
+      index = cursor;
+      continue;
+    }
+    break;
+  }
+
+  return entries;
+}
+function parseCardObjectData(raw) {
+  var inner = String(raw == null ? '' : raw).replace(/^map\[/, '').replace(/\]$/, '');
+  var titleMarker = '名称:';
+  var descMarker = ' 描述:';
+  var typeMarker = ' 类型:';
+  var titleStart = inner.indexOf(titleMarker);
+  var descStart = inner.indexOf(descMarker);
+  var typeStart = inner.lastIndexOf(typeMarker);
+  var title = '';
+  var desc = '';
+  var type = '';
+
+  if (titleStart !== -1) {
+    var titleEnd = descStart !== -1 ? descStart : (typeStart !== -1 ? typeStart : inner.length);
+    title = inner.slice(titleStart + titleMarker.length, titleEnd).trim();
+  }
+  if (descStart !== -1) {
+    var descEnd = typeStart !== -1 ? typeStart : inner.length;
+    desc = inner.slice(descStart + descMarker.length, descEnd).trim();
+  }
+  if (typeStart !== -1) {
+    type = inner.slice(typeStart + typeMarker.length).trim();
+  }
+
+  return {
+    '名称': title,
+    '描述': desc,
+    '类型': type
+  };
+}
+function parseCardMapEntry(entry) {
+  var source = String(entry == null ? '' : entry);
+  var dataStart = source.indexOf('data:');
+  if (dataStart === -1) return null;
+
+  var positionStart = source.indexOf(' position:map[', dataStart);
+  var rawData = positionStart === -1 ? source.slice(dataStart + 5) : source.slice(dataStart + 5, positionStart);
+  rawData = rawData.trim();
+  if (!rawData) return null;
+
+  if (rawData.indexOf('map[') === 0) {
+    return { data: parseCardObjectData(rawData) };
+  }
+  return { data: rawData };
+}
+function normalizeCards(cardsValue) {
+  if (Array.isArray(cardsValue)) return cardsValue;
+  if (typeof cardsValue !== 'string') return [];
+
+  var trimmed = cardsValue.trim();
+  if (!trimmed) return [];
+
+  try {
+    var parsed = JSON.parse(trimmed);
+    if (Array.isArray(parsed)) return parsed;
+  } catch (e) {}
+
+  var entries = splitCardMapEntries(trimmed);
+  var cards = [];
+  for (var i = 0; i < entries.length; i++) {
+    var parsedEntry = parseCardMapEntry(entries[i]);
+    if (parsedEntry) cards.push(parsedEntry);
+  }
+  return cards;
+}
 function buildCardsHtml() {
-  var cards = Array.isArray(S.attrs.cards) ? S.attrs.cards : [];
+  var cards = normalizeCards(S.attrs.cards);
   if (!cards.length) {
     return '<div class="empty-state">当前没有卡片数据。</div>';
   }
