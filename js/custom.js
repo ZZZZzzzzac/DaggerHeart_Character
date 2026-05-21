@@ -9,8 +9,39 @@ function processUploadedPack(packData) {
         subclass: 0,
         race: 0,
         community: 0,
+        primaryWeapon: 0,
+        secondaryWeapon: 0,
+        armor: 0,
+        loot: 0,
         other: 0
     };
+
+    const knownTypes = new Set([
+        '领域卡',
+        '主职',
+        '子职',
+        '种族',
+        '社群',
+        '主武器',
+        '副武器',
+        '护甲',
+        '物品',
+        '消耗品'
+    ]);
+    const lootLikeKeys = new Set(['名称', '原名', '位阶', '类型', '描述', '掷骰']);
+
+    function addUniqueCard(targetArray, card) {
+        if (!targetArray || targetArray.some(c => c.名称 === card.名称)) {
+            return false;
+        }
+        targetArray.push(card);
+        return true;
+    }
+
+    function isLootLikeCard(card) {
+        const keys = Object.keys(card);
+        return keys.length > 0 && keys.every(key => lootLikeKeys.has(key));
+    }
 
     if (!Array.isArray(packData)) {
         console.error("提供的卡包数据不是一个数组:", packData);
@@ -28,36 +59,59 @@ function processUploadedPack(packData) {
 
         switch (cardType) {
             case '领域卡':
-                if (DOMAIN_CARDS && !DOMAIN_CARDS.some(c => c.名称 === card.名称)) {
-                    DOMAIN_CARDS.push(card);
+                if (addUniqueCard(DOMAIN_CARDS, card)) {
                     addedCounts.domain++;
                 }
                 break;
             case '主职':
-                if (MAIN_CLASS && !MAIN_CLASS.some(c => c.名称 === card.名称)) {
-                    MAIN_CLASS.push(card);
+                if (addUniqueCard(MAIN_CLASS, card)) {
                     addedCounts.class++;
                 }
                 break;
             case '子职':
-                if (SUB_CLASS && !SUB_CLASS.some(c => c.名称 === card.名称)) {
-                    SUB_CLASS.push(card);
+                if (addUniqueCard(SUB_CLASS, card)) {
                     addedCounts.subclass++;
                 }
                 break;
             case '种族':
-                if (typeof RACES_DATA !== 'undefined' && RACES_DATA && !RACES_DATA.some(c => c.名称 === card.名称)) {
-                    RACES_DATA.push(card);
+                if (typeof RACES_DATA !== 'undefined' && addUniqueCard(RACES_DATA, card)) {
                     addedCounts.race++;
                 }
                 break;
             case '社群':
-                if (typeof COMM_DATA !== 'undefined' && COMM_DATA && !COMM_DATA.some(c => c.名称 === card.名称)) {
-                    COMM_DATA.push(card);
+                if (typeof COMM_DATA !== 'undefined' && addUniqueCard(COMM_DATA, card)) {
                     addedCounts.community++;
                 }
                 break;
+            case '主武器':
+                if (typeof PRIMARY_WEAPON !== 'undefined' && addUniqueCard(PRIMARY_WEAPON, card)) {
+                    addedCounts.primaryWeapon++;
+                }
+                break;
+            case '副武器':
+                if (typeof SECONDARY_WEAPON !== 'undefined' && addUniqueCard(SECONDARY_WEAPON, card)) {
+                    addedCounts.secondaryWeapon++;
+                }
+                break;
+            case '护甲':
+                if (typeof ARMOR !== 'undefined' && addUniqueCard(ARMOR, card)) {
+                    addedCounts.armor++;
+                }
+                break;
+            case '物品':
+            case '消耗品':
+                if (typeof LOOT_DATA !== 'undefined' && addUniqueCard(LOOT_DATA, card)) {
+                    addedCounts.loot++;
+                }
+                break;
             default:
+                if (!knownTypes.has(cardType) && isLootLikeCard(card)) {
+                    if (typeof LOOT_DATA !== 'undefined' && addUniqueCard(LOOT_DATA, card)) {
+                        addedCounts.loot++;
+                    }
+                    break;
+                }
+
                 // 如果类型不匹配或不存在，则直接创建卡牌
                 if (typeof createCard === 'function') {
                     createCard(card);
@@ -84,6 +138,18 @@ function processUploadedPack(packData) {
     }
     if (addedCounts.community > 0) {
         messageParts.push(`- 新增社群: ${addedCounts.community}`);
+    }
+    if (addedCounts.primaryWeapon > 0) {
+        messageParts.push(`- 新增主武器: ${addedCounts.primaryWeapon}`);
+    }
+    if (addedCounts.secondaryWeapon > 0) {
+        messageParts.push(`- 新增副武器: ${addedCounts.secondaryWeapon}`);
+    }
+    if (addedCounts.armor > 0) {
+        messageParts.push(`- 新增护甲: ${addedCounts.armor}`);
+    }
+    if (addedCounts.loot > 0) {
+        messageParts.push(`- 新增物品/消耗品: ${addedCounts.loot}`);
     }
     if (addedCounts.other > 0) {
         messageParts.push(`- 直接创建到页面的其他卡牌: ${addedCounts.other}`);

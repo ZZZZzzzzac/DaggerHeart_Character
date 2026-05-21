@@ -42,7 +42,7 @@ function setupDataModalButtons() {
 
             showTableModal(dataSource, {
                 title: modalTitle,
-                hiddenColumns: ['类型'],
+                hiddenColumns: ['类型', '原名'],
                 filterableColumns: ['属性', '距离', '双手', '伤害类型', '位阶'],
                 storageKey,
                 columnWidths,
@@ -128,7 +128,7 @@ function setupDataModalButtons() {
 
             showTableModal(ARMOR, {
                 title: '选择护甲',
-                hiddenColumns: ['类型'],
+                hiddenColumns: ['类型', '原名'],
                 filterableColumns: ['重伤阈值', '严重阈值', '护甲值', '位阶'],
                 storageKey: 'armorFilterState',
                 columnWidths: { 名称: '10%', 重伤阈值: '5%', 严重阈值: '5%', 护甲值: '5%', 位阶: '5%' },
@@ -189,6 +189,7 @@ function setupDataModalButtons() {
 
             showTableModal(ITEMS, {
                 title: '选择物品',
+                hiddenColumns: ['原名', '位阶'],
                 filterableColumns: ['类型'],
                 storageKey: 'itemFilterState',
                 columnWidths: { 名称: '15%', 类型: '5%', 掷骰: '5%' },
@@ -222,7 +223,7 @@ function setupDataModalButtons() {
 
             showTableModal(DOMAIN_CARDS, {
                 title: modalTitle,
-                hiddenColumns: ['类型'],
+                hiddenColumns: ['类型', '原名'],
                 filterableColumns: ['领域', '等级', '属性', '回想'],
                 storageKey: 'domainCardFilterState',
                 columnWidths: { 名称: '10%', 领域: '5%', 等级: '5%', 属性: '5%', 回想: '5%' },
@@ -244,7 +245,7 @@ function setupDataModalButtons() {
 
             const modalConfig = {
                 title: '选择第一个种族',
-                hiddenColumns: ['简介', '类型'],
+                hiddenColumns: ['简介', '类型', '原名'],
                 storageKey: 'ancestryCardFilterState',
                 columnWidths: { 名称: '10%', 特性1名称: '10%', 特性2名称: '10%' },
             };
@@ -290,7 +291,7 @@ function setupDataModalButtons() {
 
             showTableModal(COMM_DATA, {
                 title: '选择社群',
-                hiddenColumns: ['简介', '性格', '类型'],
+                hiddenColumns: ['简介', '性格', '类型', '原名'],
                 storageKey: 'communityCardFilterState',
                 columnWidths: { 名称: '10%', 特性名称: '10%' },
             }).then(selectedItem => {
@@ -338,7 +339,7 @@ function setupDataModalButtons() {
 
             showTableModal(MAIN_CLASS, {
                 title: '选择职业',
-                hiddenColumns: ['背景问题', '关系问题'],
+                hiddenColumns: ['背景问题', '关系问题', '原名', '类型', '描述', '职业装备'],
                 storageKey: 'classCardFilterState',
                 columnWidths: { 名称: '7%', 领域: '7%', 初始闪避值: '5%', 初始生命点: '5%', 希望特性: '15%' },
             }).then(selectedItem => {
@@ -410,6 +411,7 @@ function setupDataModalButtons() {
 
             showTableModal(SUB_CLASS, {
                 title: '选择子职业',
+                hiddenColumns: ['原名', '类型'],
                 filterableColumns: ['主职'],
                 storageKey: 'subclassCardFilterState',
                 columnWidths: { 名称: '10%', 主职: '10%', 施法属性: '7%', 等级: '7%' },
