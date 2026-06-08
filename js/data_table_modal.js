@@ -42,7 +42,6 @@ function setupDataModalButtons() {
 
             showTableModal(dataSource, {
                 title: modalTitle,
-                hiddenColumns: ['类型', '原名'],
                 filterableColumns: ['属性', '距离', '双手', '伤害类型', '位阶'],
                 storageKey,
                 columnWidths,
@@ -71,7 +70,7 @@ function setupDataModalButtons() {
 
     const weaponWidths = {
         名称: '10%', 伤害: '5%', 属性: '5%', 距离: '7%',
-        双手: '5%', 伤害类型: '5%', 位阶: '5%',
+        双手: '5%', 伤害类型: '5%', 位阶: '5%', 描述: ''
     };
 
     // ── 主武器 ────────────────────────────────────────────────────────────────
@@ -128,10 +127,9 @@ function setupDataModalButtons() {
 
             showTableModal(ARMOR, {
                 title: '选择护甲',
-                hiddenColumns: ['类型', '原名'],
                 filterableColumns: ['重伤阈值', '严重阈值', '护甲值', '位阶'],
                 storageKey: 'armorFilterState',
-                columnWidths: { 名称: '10%', 重伤阈值: '5%', 严重阈值: '5%', 护甲值: '5%', 位阶: '5%' },
+                columnWidths: { 名称: '10%', 重伤阈值: '5%', 严重阈值: '5%', 护甲值: '5%', 位阶: '5%', 描述: ''},
             }).then(selectedItem => {
                 // 直接映射
                 const directMap = {
@@ -189,10 +187,9 @@ function setupDataModalButtons() {
 
             showTableModal(ITEMS, {
                 title: '选择物品',
-                hiddenColumns: ['原名', '位阶'],
                 filterableColumns: ['类型'],
                 storageKey: 'itemFilterState',
-                columnWidths: { 名称: '15%', 类型: '5%', 掷骰: '5%' },
+                columnWidths: { 名称: '15%', 类型: '5%', 掷骰: '5%', 描述: ''},
             }).then(selectedItem => {
                 const targetTextbox = document.getElementById('ItemSlot1Textbox');
                 if (targetTextbox) {
@@ -223,10 +220,9 @@ function setupDataModalButtons() {
 
             showTableModal(DOMAIN_CARDS, {
                 title: modalTitle,
-                hiddenColumns: ['类型', '原名'],
                 filterableColumns: ['领域', '等级', '属性', '回想'],
                 storageKey: 'domainCardFilterState',
-                columnWidths: { 名称: '10%', 领域: '5%', 等级: '5%', 属性: '5%', 回想: '5%' },
+                columnWidths: { 名称: '10%', 领域: '5%', 等级: '5%', 属性: '5%', 回想: '5%', 描述: '' },
             }).then(selectedItem => {
                 createCard(selectedItem);
             }).catch(() => { /* 用户关闭弹窗，忽略 */ });
@@ -245,9 +241,8 @@ function setupDataModalButtons() {
 
             const modalConfig = {
                 title: '选择第一个种族',
-                hiddenColumns: ['简介', '类型', '原名'],
                 storageKey: 'ancestryCardFilterState',
-                columnWidths: { 名称: '10%', 特性1名称: '10%', 特性2名称: '10%' },
+                columnWidths: { 名称: '10%', 简介: '30%', 描述: '' },
             };
 
             try {
@@ -291,9 +286,8 @@ function setupDataModalButtons() {
 
             showTableModal(COMM_DATA, {
                 title: '选择社群',
-                hiddenColumns: ['简介', '性格', '类型', '原名'],
                 storageKey: 'communityCardFilterState',
-                columnWidths: { 名称: '10%', 特性名称: '10%' },
+                columnWidths: { 名称: '10%', 简介: '30%', 描述: '' },
             }).then(selectedItem => {
                 const communityTextbox = document.getElementById('CommunityTextbox');
                 if (communityTextbox) communityTextbox.value = selectedItem['名称'] || '';
@@ -314,12 +308,11 @@ function setupDataModalButtons() {
 
             showTableModal(BEAST_FORM, {
                 title: '选择野兽形态',
-                hiddenColumns: ['例子', '类型'],
                 filterableColumns: ['位阶', '属性', '闪避值', '攻击范围', '攻击属性', '攻击伤害', '攻击类型', '获得优势'],
                 storageKey: 'beastFormCardFilterState',
                 columnWidths: {
                     名称: '10%', 位阶: '5%', 属性: '5%', 闪避值: '5%',
-                    攻击范围: '5%', 攻击属性: '5%', 攻击伤害: '5%', 攻击类型: '5%', 获得优势: '10%',
+                    攻击范围: '5%', 攻击属性: '5%', 攻击伤害: '5%', 攻击类型: '5%', 获得优势: '10%', 描述: '' 
                 },
             }).then(selectedItem => {
                 createCard(selectedItem);
@@ -339,9 +332,8 @@ function setupDataModalButtons() {
 
             showTableModal(MAIN_CLASS, {
                 title: '选择职业',
-                hiddenColumns: ['背景问题', '关系问题', '原名', '类型', '描述', '职业装备'],
                 storageKey: 'classCardFilterState',
-                columnWidths: { 名称: '7%', 领域: '7%', 初始闪避值: '5%', 初始生命点: '5%', 希望特性: '15%' },
+                columnWidths: { 名称: '7%', 领域: '7%', 初始闪避值: '5%', 初始生命点: '5%', 希望特性: '15%', 职业特性: ''  },
             }).then(selectedItem => {
                 // 领域（隐藏字段）
                 const classDomainTextbox = document.getElementById('ClassDomainTextbox');
@@ -411,10 +403,9 @@ function setupDataModalButtons() {
 
             showTableModal(SUB_CLASS, {
                 title: '选择子职业',
-                hiddenColumns: ['原名', '类型'],
                 filterableColumns: ['主职'],
                 storageKey: 'subclassCardFilterState',
-                columnWidths: { 名称: '10%', 主职: '10%', 施法属性: '7%', 等级: '7%' },
+                columnWidths: { 名称: '10%', 主职: '10%', 施法属性: '7%', 等级: '7%', 描述: ''  },
                 preselectedFilters: parentClass ? { '主职': parentClass } : {},
             }).then(selectedItem => {
                 const classTextbox = document.getElementById('ClassTextbox');

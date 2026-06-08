@@ -63,7 +63,6 @@ function _bindTableTriggers() {
         {
             title: '选择道源',
             columnMap: { 名称: '道源名称' },
-            hiddenColumns: ['法门'],
             filterableColumns: [],
         },
         row => {
@@ -110,7 +109,7 @@ function _bindTableTriggers() {
     bindTableModalTrigger(
         'nmxt-famen-btn',
         () => NMXT_FAMEN,
-        { title: '选择法门', columnWidths: { 名称: '14%', 法门效果: '42%', 感悟一名称: '14%', 感悟二名称: '14%', 感悟一效果: '0%', 感悟二效果: '0%' }, hiddenColumns: ['感悟一效果', '感悟二效果'] },
+        { title: '选择法门', columnWidths: { 名称: '14%', 法门效果: '42%', 感悟一名称: '14%', 感悟二名称: '14%', 感悟一效果: '0%', 感悟二效果: '0%' } },
         row => _applyFamenRow(row)
     );
 

@@ -507,17 +507,43 @@ function setupGlobalActionButtons() {
             const file = event.target.files[0];
             if (!file) return;
 
+            const isDHCB = file.name.toLowerCase().endsWith('.dhcb');
             const reader = new FileReader();
+
             reader.onload = (e) => {
                 try {
-                    const packData = JSON.parse(e.target.result);
-                    processUploadedPack(packData);
+                    if (isDHCB) {
+                        JSZip.loadAsync(e.target.result).then((zip) => {
+                            var cardFile = zip.file(/^cards\.json$/i);
+                            if (!cardFile || cardFile.length === 0) {
+                                cardFile = zip.file(/\.json$/i);
+                            }
+                            if (!cardFile || cardFile.length === 0) {
+                                throw new Error('压缩包内未找到cards.json或任何JSON文件');
+                            }
+                            return cardFile[0].async('string');
+                        }).then((jsonText) => {
+                            const packData = RRRConverter.normalizeCardPack(JSON.parse(jsonText));
+                            processUploadedPack(packData);
+                        }).catch((error) => {
+                            console.error('导入自定义卡包失败:', error);
+                            alert('导入失败，请检查文件是否为有效的DHCB卡包。');
+                        });
+                    } else {
+                        const packData = RRRConverter.normalizeCardPack(JSON.parse(e.target.result));
+                        processUploadedPack(packData);
+                    }
                 } catch (error) {
                     console.error('导入自定义卡包失败:', error);
                     alert('导入失败，请检查文件格式是否为有效的JSON。');
                 }
             };
-            reader.readAsText(file);
+
+            if (isDHCB) {
+                reader.readAsArrayBuffer(file);
+            } else {
+                reader.readAsText(file);
+            }
             customPackInput.value = '';
         });
     }

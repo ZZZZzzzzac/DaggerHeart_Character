@@ -19,10 +19,9 @@
  *
  * ─── config 配置项 ─────────────────────────────────────────────────────────
  *   title            {string}   弹窗标题（支持 HTML）
- *   hiddenColumns    {string[]} 不显示的列键名
+ *   columnWidths     {Object}   列键名 -> CSS 宽度，只显示此对象中的键对应的列（白名单）
  *   columnMap        {Object}   列键名 -> 显示名称 的映射
  *   filterableColumns{string[]} 需要下拉筛选的列键名
- *   columnWidths     {Object}   列键名 -> CSS 宽度，如 { "名称": "20%" }
  *   storageKey       {string}   用于 localStorage 持久化筛选状态的唯一 key
  *   preselectedFilters{Object}  初始预选筛选值，如 { "类型": "武器" }
  *   cellFormatter    {Function} (key, value, rowData) => string  自定义单元格文本
@@ -215,7 +214,6 @@
 
             const {
                 title            = '',
-                hiddenColumns    = [],
                 columnMap        = {},
                 filterableColumns= [],
                 columnWidths     = {},
@@ -224,15 +222,14 @@
                 cellFormatter    = null,
             } = config;
 
-            // ── 收集所有键（去重，保序，过滤隐藏列）───────────────────────
-            const allKeysSet = new Set();
-            data.forEach(item => {
-                Object.keys(item).forEach(k => allKeysSet.add(k));
-            });
-            const keys = [...allKeysSet].filter(k => !hiddenColumns.includes(k));
+            // ── 白名单：只显示 columnWidths 中定义的列；未定义则显示全部列 ──
+            const columnKeys = Object.keys(columnWidths);
+            const keys = columnKeys.length > 0
+                ? columnKeys
+                : [...(() => { const s = new Set(); data.forEach(item => { Object.keys(item).forEach(k => s.add(k)); }); return s; })()];
 
             if (keys.length === 0) {
-                reject('所有列均被隐藏，没有可显示的列。');
+                reject('没有可显示的列。');
                 return;
             }
 
