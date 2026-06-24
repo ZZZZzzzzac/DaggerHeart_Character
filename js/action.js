@@ -254,6 +254,212 @@ function clearForm() {
 }
 
 
+/**
+ * 随机生成社群、种族、职业、子职，并根据当前等级抽取领域卡。
+ * 等级1抽2张领域卡，之后每级多抽1张。
+ */
+function randomGenerate() {
+    clearForm();
+
+    const levelEl = document.getElementById('LevelTextbox');
+    const level = parseInt(levelEl?.value, 10) || 1;
+
+    // ── 社群 ──
+    if (typeof COMM_DATA === 'undefined' || COMM_DATA.length === 0) {
+        alert('错误：社群数据未加载。');
+        return;
+    }
+    const comm = COMM_DATA[Math.floor(Math.random() * COMM_DATA.length)];
+    const commEl = document.getElementById('CommunityTextbox');
+    if (commEl) commEl.value = comm['名称'] || '';
+    createCard(comm);
+
+    // ── 种族 ──
+    if (typeof RACES_DATA === 'undefined' || RACES_DATA.length === 0) {
+        alert('错误：种族数据未加载。');
+        return;
+    }
+    const race = RACES_DATA[Math.floor(Math.random() * RACES_DATA.length)];
+    const raceEl = document.getElementById('RaceTextbox');
+    if (raceEl) raceEl.value = race['名称'] || '';
+    createCard(race);
+
+    // ── 职业 ──
+    if (typeof MAIN_CLASS === 'undefined' || MAIN_CLASS.length === 0) {
+        alert('错误：职业数据未加载。');
+        return;
+    }
+    const cls = MAIN_CLASS[Math.floor(Math.random() * MAIN_CLASS.length)];
+
+    const domainEl = document.getElementById('ClassDomainTextbox');
+    if (domainEl) domainEl.value = cls['领域'] || '';
+
+    const classEl = document.getElementById('ClassTextbox');
+    if (classEl) classEl.value = cls['名称'] || '';
+
+    const evasionEl = document.getElementById('EvasionTextbox');
+    if (evasionEl) evasionEl.value = cls['初始闪避值'] || '';
+
+    const initialHp = parseInt(cls['初始生命点'], 10);
+    if (!isNaN(initialHp)) {
+        document.querySelectorAll('#hp-container .hp-slot-checkbox').forEach((slot, index) => {
+            if (slot.checkboxInstance) {
+                slot.checkboxInstance.setState(index < initialHp ? '0' : '2');
+            }
+        });
+    }
+
+    const featureEl = document.getElementById('ClassFeatureTextbox');
+    if (featureEl) {
+        featureEl.value = removeMarkdownFormatting(
+            `${cls['希望特性'] || ''}\n\n${cls['职业特性'] || ''}`
+        );
+    }
+
+    ['BackgroundQuestion1Textbox', 'BackgroundQuestion2Textbox', 'BackgroundQuestion3Textbox']
+        .forEach((id, i) => {
+            const el = document.getElementById(id);
+            if (el && cls['背景问题']) el.value = cls['背景问题'][i] || '';
+        });
+
+    ['ConnectQuestion1Textbox', 'ConnectQuestion2Textbox', 'ConnectQuestion3Textbox']
+        .forEach((id, i) => {
+            const el = document.getElementById(id);
+            if (el && cls['关系问题']) el.value = cls['关系问题'][i] || '';
+        });
+
+    // ── 推荐初始属性 ──
+    if (cls['推荐初始属性']) {
+        const attrMap = {
+            '敏捷': 'AgilityTextbox', '力量': 'StrengthTextbox',
+            '灵巧': 'FinesseTextbox', '本能': 'InstinctTextbox',
+            '风度': 'PresenceTextbox', '知识': 'KnowledgeTextbox'
+        };
+        for (const [attr, elId] of Object.entries(attrMap)) {
+            const el = document.getElementById(elId);
+            if (el && cls['推荐初始属性'][attr] !== undefined) {
+                el.value = cls['推荐初始属性'][attr];
+            }
+        }
+    }
+
+    // ── 推荐初始武器 ──
+    if (cls['推荐初始武器'] && typeof PRIMARY_WEAPON !== 'undefined') {
+        const weaponNames = cls['推荐初始武器'].split('+').map(s => s.trim());
+        const primaryWeapon = PRIMARY_WEAPON.find(w => w['名称'] === weaponNames[0]);
+        if (primaryWeapon) {
+            const elName = document.getElementById('PrimaryWeaponNameTextbox');
+            if (elName) elName.value = primaryWeapon['名称'] || '';
+            const elStat = document.getElementById('PrimaryWeaponStatTextbox');
+            if (elStat) elStat.value = `${primaryWeapon['属性'] || ''}／${primaryWeapon['距离'] || ''}`;
+            const elDmg = document.getElementById('PrimaryWeaponDamageTextbox');
+            if (elDmg) elDmg.value = `${primaryWeapon['伤害'] || ''}／${primaryWeapon['伤害类型'] || ''}`;
+            const elTrait = document.getElementById('PrimaryWeaponTraitTextbox');
+            if (elTrait) elTrait.value = removeMarkdownFormatting(primaryWeapon['描述'] || '');
+        }
+        if (weaponNames.length > 1 && typeof SECONDARY_WEAPON !== 'undefined') {
+            const secondaryWeapon = SECONDARY_WEAPON.find(w => w['名称'] === weaponNames[1]);
+            if (secondaryWeapon) {
+                const elName = document.getElementById('SecondaryWeaponNameTextbox');
+                if (elName) elName.value = secondaryWeapon['名称'] || '';
+                const elStat = document.getElementById('SecondaryWeaponStatTextbox');
+                if (elStat) elStat.value = `${secondaryWeapon['属性'] || ''}／${secondaryWeapon['距离'] || ''}`;
+                const elDmg = document.getElementById('SecondaryWeaponDamageTextbox');
+                if (elDmg) elDmg.value = `${secondaryWeapon['伤害'] || ''}／${secondaryWeapon['伤害类型'] || ''}`;
+                const elTrait = document.getElementById('SecondaryWeaponTraitTextbox');
+                if (elTrait) elTrait.value = removeMarkdownFormatting(secondaryWeapon['描述'] || '');
+            }
+        }
+    }
+
+    // ── 推荐初始护甲 ──
+    if (cls['推荐初始护甲'] && typeof ARMOR !== 'undefined') {
+        const armor = ARMOR.find(a => a['名称'] === cls['推荐初始护甲']);
+        if (armor) {
+            const elName = document.getElementById('ArmorNameTextbox');
+            if (elName) elName.value = armor['名称'] || '';
+            const elScore = document.getElementById('ArmorScoreTextbox');
+            if (elScore) elScore.value = armor['护甲值'] || '';
+            const elTrait = document.getElementById('ArmorTraitTextbox');
+            if (elTrait) elTrait.value = removeMarkdownFormatting(armor['描述'] || '');
+
+            const elThresh = document.getElementById('ArmorThresholdTextbox');
+            if (elThresh) elThresh.value = `${armor['重伤阈值'] || ''}／${armor['严重阈值'] || ''}`;
+
+            const majorThreshold = (parseInt(armor['重伤阈值'], 10) || level) + level;
+            const severeThreshold = (parseInt(armor['严重阈值'], 10) || level * 2) + level;
+            const armorValue = parseInt(armor['护甲值'], 10) || 0;
+
+            const majorEl = document.getElementById('MajorTextbox');
+            if (majorEl) majorEl.value = majorThreshold;
+            const severeEl = document.getElementById('SevereTextbox');
+            if (severeEl) severeEl.value = severeThreshold;
+            const armorEl = document.getElementById('ArmorTextbox');
+            if (armorEl) armorEl.value = armorValue;
+
+            const armorSlots = document.querySelectorAll('#armor-slots-container .armor-slot-checkbox');
+            armorSlots.forEach((slot, index) => {
+                if (slot.checkboxInstance) {
+                    slot.checkboxInstance.setState(index < armorValue ? '0' : '2');
+                }
+            });
+        }
+    }
+
+    // ── 职业物品 ──
+    if (cls['职业物品']) {
+        const itemEl = document.getElementById('ItemSlot1Textbox');
+        if (itemEl) {
+            const itemText = `职业物品: ${cls['职业物品']}`;
+            itemEl.value = itemEl.value.trim() === '' ? itemText : `${itemEl.value}\n${itemText}`;
+        }
+    }
+
+    // ── 子职 ──
+    let subClassName = '';
+    if (typeof SUB_CLASS !== 'undefined') {
+        const matchingSubs = SUB_CLASS.filter(s => s['主职'] === cls['名称'] && s['等级'] === '基础');
+        if (matchingSubs.length > 0) {
+            const sub = matchingSubs[Math.floor(Math.random() * matchingSubs.length)];
+            let namePart = sub['名称'] || '';
+            const lastDash = namePart.lastIndexOf('-');
+            if (lastDash > -1) namePart = namePart.substring(0, lastDash).trim();
+            subClassName = namePart;
+            if (classEl) classEl.value = `${sub['主职']}-${namePart}`;
+            createCard(sub);
+        }
+    }
+
+    // ── 领域卡 ──
+    let domainCardCount = 0;
+    if (typeof DOMAIN_CARDS !== 'undefined' && cls['领域']) {
+        const classDomains = cls['领域'].split('+').map(d => d.trim());
+        const availableCards = DOMAIN_CARDS.filter(c =>
+            classDomains.includes(c['领域']) && c['等级'] <= level
+        );
+
+        const cardCount = level + 1; // 1级2张，2级3张...
+        const toDraw = Math.min(cardCount, availableCards.length);
+        const drawnIdx = new Set();
+
+        while (drawnIdx.size < toDraw) {
+            const idx = Math.floor(Math.random() * availableCards.length);
+            if (!drawnIdx.has(idx)) {
+                drawnIdx.add(idx);
+                createCard(availableCards[idx]);
+            }
+        }
+        domainCardCount = toDraw;
+    }
+
+    saveFormStateToLocalStorage();
+    alert(
+        `已随机生成：${cls['名称']}${subClassName ? '-' + subClassName : ''}\n` +
+        `种族：${race['名称']}  社群：${comm['名称']}\n` +
+        `领域卡：${domainCardCount}张`
+    );
+}
+
 function setupGlobalActionButtons() {
     const importBtn = document.getElementById('import-json-btn');
     const exportBtn = document.getElementById('export-json-btn');
@@ -270,6 +476,15 @@ function setupGlobalActionButtons() {
     const closeAvatarImageBtn = document.getElementById('close-avatar-image-btn');
     const avatarTextbox = document.getElementById('AvatarTextbox');
     const nameTextbox = document.getElementById('NameTextbox');
+    const randomGenBtn = document.getElementById('random-generate-btn');
+
+    if (randomGenBtn) {
+        randomGenBtn.addEventListener('click', () => {
+            if (confirm('随机生成将覆盖当前社群/种族/职业/子职和领域卡数据，是否继续？')) {
+                randomGenerate();
+            }
+        });
+    }
 
     if (nameTextbox) {
         nameTextbox.addEventListener('blur', updatePageTitle);
