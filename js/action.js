@@ -258,75 +258,14 @@ function clearForm() {
  * 随机生成社群、种族、职业、子职，并根据当前等级抽取领域卡。
  * 等级1抽2张领域卡，之后每级多抽1张。
  */
-function randomGenerate() {
-    clearForm();
-
+/**
+ * 根据职业数据填充推荐初始属性、武器、护甲、职业物品。
+ * 供随机生成和正常选职共用。
+ * @param {Object} cls - MAIN_CLASS 中的职业条目
+ */
+function fillClassRecommendations(cls) {
     const levelEl = document.getElementById('LevelTextbox');
     const level = parseInt(levelEl?.value, 10) || 1;
-
-    // ── 社群 ──
-    if (typeof COMM_DATA === 'undefined' || COMM_DATA.length === 0) {
-        alert('错误：社群数据未加载。');
-        return;
-    }
-    const comm = COMM_DATA[Math.floor(Math.random() * COMM_DATA.length)];
-    const commEl = document.getElementById('CommunityTextbox');
-    if (commEl) commEl.value = comm['名称'] || '';
-    createCard(comm);
-
-    // ── 种族 ──
-    if (typeof RACES_DATA === 'undefined' || RACES_DATA.length === 0) {
-        alert('错误：种族数据未加载。');
-        return;
-    }
-    const race = RACES_DATA[Math.floor(Math.random() * RACES_DATA.length)];
-    const raceEl = document.getElementById('RaceTextbox');
-    if (raceEl) raceEl.value = race['名称'] || '';
-    createCard(race);
-
-    // ── 职业 ──
-    if (typeof MAIN_CLASS === 'undefined' || MAIN_CLASS.length === 0) {
-        alert('错误：职业数据未加载。');
-        return;
-    }
-    const cls = MAIN_CLASS[Math.floor(Math.random() * MAIN_CLASS.length)];
-
-    const domainEl = document.getElementById('ClassDomainTextbox');
-    if (domainEl) domainEl.value = cls['领域'] || '';
-
-    const classEl = document.getElementById('ClassTextbox');
-    if (classEl) classEl.value = cls['名称'] || '';
-
-    const evasionEl = document.getElementById('EvasionTextbox');
-    if (evasionEl) evasionEl.value = cls['初始闪避值'] || '';
-
-    const initialHp = parseInt(cls['初始生命点'], 10);
-    if (!isNaN(initialHp)) {
-        document.querySelectorAll('#hp-container .hp-slot-checkbox').forEach((slot, index) => {
-            if (slot.checkboxInstance) {
-                slot.checkboxInstance.setState(index < initialHp ? '0' : '2');
-            }
-        });
-    }
-
-    const featureEl = document.getElementById('ClassFeatureTextbox');
-    if (featureEl) {
-        featureEl.value = removeMarkdownFormatting(
-            `${cls['希望特性'] || ''}\n\n${cls['职业特性'] || ''}`
-        );
-    }
-
-    ['BackgroundQuestion1Textbox', 'BackgroundQuestion2Textbox', 'BackgroundQuestion3Textbox']
-        .forEach((id, i) => {
-            const el = document.getElementById(id);
-            if (el && cls['背景问题']) el.value = cls['背景问题'][i] || '';
-        });
-
-    ['ConnectQuestion1Textbox', 'ConnectQuestion2Textbox', 'ConnectQuestion3Textbox']
-        .forEach((id, i) => {
-            const el = document.getElementById(id);
-            if (el && cls['关系问题']) el.value = cls['关系问题'][i] || '';
-        });
 
     // ── 推荐初始属性 ──
     if (cls['推荐初始属性']) {
@@ -414,6 +353,79 @@ function randomGenerate() {
             itemEl.value = itemEl.value.trim() === '' ? itemText : `${itemEl.value}\n${itemText}`;
         }
     }
+}
+
+function randomGenerate() {
+    clearForm();
+
+    const levelEl = document.getElementById('LevelTextbox');
+    const level = parseInt(levelEl?.value, 10) || 1;
+
+    // ── 社群 ──
+    if (typeof COMM_DATA === 'undefined' || COMM_DATA.length === 0) {
+        alert('错误：社群数据未加载。');
+        return;
+    }
+    const comm = COMM_DATA[Math.floor(Math.random() * COMM_DATA.length)];
+    const commEl = document.getElementById('CommunityTextbox');
+    if (commEl) commEl.value = comm['名称'] || '';
+    createCard(comm);
+
+    // ── 种族 ──
+    if (typeof RACES_DATA === 'undefined' || RACES_DATA.length === 0) {
+        alert('错误：种族数据未加载。');
+        return;
+    }
+    const race = RACES_DATA[Math.floor(Math.random() * RACES_DATA.length)];
+    const raceEl = document.getElementById('RaceTextbox');
+    if (raceEl) raceEl.value = race['名称'] || '';
+    createCard(race);
+
+    // ── 职业 ──
+    if (typeof MAIN_CLASS === 'undefined' || MAIN_CLASS.length === 0) {
+        alert('错误：职业数据未加载。');
+        return;
+    }
+    const cls = MAIN_CLASS[Math.floor(Math.random() * MAIN_CLASS.length)];
+
+    const domainEl = document.getElementById('ClassDomainTextbox');
+    if (domainEl) domainEl.value = cls['领域'] || '';
+
+    const classEl = document.getElementById('ClassTextbox');
+    if (classEl) classEl.value = cls['名称'] || '';
+
+    const evasionEl = document.getElementById('EvasionTextbox');
+    if (evasionEl) evasionEl.value = cls['初始闪避值'] || '';
+
+    const initialHp = parseInt(cls['初始生命点'], 10);
+    if (!isNaN(initialHp)) {
+        document.querySelectorAll('#hp-container .hp-slot-checkbox').forEach((slot, index) => {
+            if (slot.checkboxInstance) {
+                slot.checkboxInstance.setState(index < initialHp ? '0' : '2');
+            }
+        });
+    }
+
+    const featureEl = document.getElementById('ClassFeatureTextbox');
+    if (featureEl) {
+        featureEl.value = removeMarkdownFormatting(
+            `${cls['希望特性'] || ''}\n\n${cls['职业特性'] || ''}`
+        );
+    }
+
+    ['BackgroundQuestion1Textbox', 'BackgroundQuestion2Textbox', 'BackgroundQuestion3Textbox']
+        .forEach((id, i) => {
+            const el = document.getElementById(id);
+            if (el && cls['背景问题']) el.value = cls['背景问题'][i] || '';
+        });
+
+    ['ConnectQuestion1Textbox', 'ConnectQuestion2Textbox', 'ConnectQuestion3Textbox']
+        .forEach((id, i) => {
+            const el = document.getElementById(id);
+            if (el && cls['关系问题']) el.value = cls['关系问题'][i] || '';
+        });
+
+    fillClassRecommendations(cls);
 
     // ── 子职 ──
     let subClassName = '';

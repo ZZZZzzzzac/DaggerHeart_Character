@@ -378,6 +378,9 @@ function setupDataModalButtons() {
                         if (el && selectedItem['关系问题']) el.value = selectedItem['关系问题'][i] || '';
                     });
 
+                // 推荐初始属性/武器/护甲/职业物品
+                fillClassRecommendations(selectedItem);
+
                 // 自动触发子职业选择
                 const subClassBtn = document.getElementById('add-subclass-card-btn');
                 if (subClassBtn) {
